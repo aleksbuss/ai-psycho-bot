@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>AI Психолог</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+  <style>
+    :root { --bg-color: #f5f7fa; --chat-bg: #ffffff; --primary-color: #5d9cec; --bot-msg-bg: #f0f2f5; --user-msg-bg: #5d9cec; --user-msg-text: #ffffff; }
+    body.dark-mode { --bg-color: #1e1e1e; --chat-bg: #2c2c2c; --bot-msg-bg: #3a3a3a; }
+    body { font-family: sans-serif; background-color: var(--bg-color); color: #333; margin: 0; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+    #chat-container { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+    .message { max-width: 80%; padding: 10px 15px; border-radius: 15px; font-size: 15px; line-height: 1.4; word-wrap: break-word; }
+    .msg-bot { align-self: flex-start; background-color: var(--bot-msg-bg); border-bottom-left-radius: 2px; }
+    .msg-user { align-self: flex-end; background-color: var(--user-msg-bg); color: var(--user-msg-text); border-bottom-right-radius: 2px; }
+    .input-area { background: var(--chat-bg); padding: 10px; display: flex; gap: 10px; border-top: 1px solid #ccc; }
+    input { flex: 1; padding: 10px; border-radius: 20px; border: 1px solid #ccc; font-size: 16px; }
+    button { background: var(--primary-color); color: white; border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+    .typing { display: none; font-size: 12px; color: #888; margin-left: 20px; margin-bottom: 5px; }
+  </style>
+</head>
+<body>
+  <div id="chat-container">
+    <div class="message msg-bot">Привет! Я на связи. Чем помочь?</div>
+  </div>
+  <div class="typing" id="typing">AI печатает...</div>
+  <div class="input-area">
+    <input type="text" id="userInput" placeholder="Сообщение..." autocomplete="off">
+    <button id="sendBtn"><span class="material-icons-round">send</span></button>
+  </div>
+
+  <script>
+    // ВСТАВЬ СЮДА СВОЮ ССЫЛКУ GOOGLE APPS SCRIPT (КОТОРАЯ ЗАКАНЧИВАЕТСЯ НА /exec)
+    const GOOGLE_SCRIPT_URL = "hhttps://script.google.com/macros/s/AKfycbz2M379wTTJo517r1SoCMfgIPCMsvVO7Koh704cRy9xj0BZSnItDBDBNZpObDwi8qkR/exec";
+
+    const tg = window.Telegram.WebApp;
+    tg.expand();
+    if (tg.colorScheme === 'dark') document.body.classList.add('dark-mode');
+
+    const chat = document.getElementById('chat-container');
+    const input = document.getElementById('userInput');
+    const btn = document.getElementById('sendBtn');
+    const typing = document.getElementById('typing');
+    const userId = tg.initDataUnsafe?.user?.id || 'test_user';
+
+    function addMsg(text, isUser) {
+      const div = document.createElement('div');
+      div.className = 'message ' + (isUser ? 'msg-user' : 'msg-bot');
+      div.innerText = text;
+      chat.appendChild(div);
+      chat.scrollTop = chat.scrollHeight;
+    }
+
+    btn.onclick = () => {
+      const text = input.value.trim();
+      if (!text) return;
+      addMsg(text, true);
+      input.value = '';
+      typing.style.display = 'block';
+
+      fetch(GOOGLE_SCRIPT_URL + '?act=api', {
+        method: 'POST',
+        mode: 'no-cors', // ВАЖНО: Это позволяет отправлять данные без блокировки
+        headers: { 'Content-Type': 'application/json' }, // Меняем на JSON
+        body: JSON.stringify({ text: text, userId: userId })
+      }).then(() => {
+        // В режиме no-cors мы не видим ответ сразу, но запрос ушел
+        // Чтобы видеть ответ, нам нужно немного усложнить скрипт, 
+        // но давай проверим, доходит ли сообщение.
+        // Для полноценного ответа лучше использовать redirect mode или text/plain
+        
+        // ПОВТОРНЫЙ ЗАПРОС (ПРАВИЛЬНЫЙ ДЛЯ ПОЛУЧЕНИЯ ОТВЕТА):
+        return fetch(GOOGLE_SCRIPT_URL + '?act=api', {
+            method: 'POST',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify({ text: text, userId: userId })
+        });
+      })
+      .then(res => res.json())
+      .then(data => {
+        typing.style.display = 'none';
+        if(data.status === 'success') addMsg(data.text, false);
+        else addMsg("⚠️ Ошибка: " + data.text, false);
+      })
+      .catch(err => {
+        typing.style.display = 'none';
+        addMsg("❌ Ошибка сети (попробуй позже)", false);
+        console.error(err);
+      });
+    };
+  </script>
+</body>
+</html>
