@@ -59,35 +59,33 @@
       input.value = '';
       typing.style.display = 'block';
 
+      // ВОТ ТУТ НАЧИНАЕТСЯ НОВЫЙ КОД
       fetch(GOOGLE_SCRIPT_URL + '?act=api', {
         method: 'POST',
-        mode: 'no-cors', // ВАЖНО: Это позволяет отправлять данные без блокировки
-        headers: { 'Content-Type': 'application/json' }, // Меняем на JSON
+        redirect: "follow",
+        headers: {
+            "Content-Type": "text/plain;charset=utf-8",
+        },
         body: JSON.stringify({ text: text, userId: userId })
-      }).then(() => {
-        // В режиме no-cors мы не видим ответ сразу, но запрос ушел
-        // Чтобы видеть ответ, нам нужно немного усложнить скрипт, 
-        // но давай проверим, доходит ли сообщение.
-        // Для полноценного ответа лучше использовать redirect mode или text/plain
-        
-        // ПОВТОРНЫЙ ЗАПРОС (ПРАВИЛЬНЫЙ ДЛЯ ПОЛУЧЕНИЯ ОТВЕТА):
-        return fetch(GOOGLE_SCRIPT_URL + '?act=api', {
-            method: 'POST',
-            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-            body: JSON.stringify({ text: text, userId: userId })
-        });
       })
       .then(res => res.json())
       .then(data => {
         typing.style.display = 'none';
-        if(data.status === 'success') addMsg(data.text, false);
-        else addMsg("⚠️ Ошибка: " + data.text, false);
+        if(data.status === 'success') {
+            addMsg(data.text, false);
+            if(window.Telegram.WebApp.HapticFeedback) {
+                window.Telegram.WebApp.HapticFeedback.notificationOccurred('success');
+            }
+        } else {
+            addMsg("⚠️ Ошибка бота: " + data.text, false);
+        }
       })
       .catch(err => {
         typing.style.display = 'none';
-        addMsg("❌ Ошибка сети (попробуй позже)", false);
+        addMsg("❌ Ошибка соединения. Проверь ссылку скрипта.", false);
         console.error(err);
       });
+      // ВОТ ТУТ ОН ЗАКАНЧИВАЕТСЯ
     };
   </script>
 </body>
