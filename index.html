@@ -2,91 +2,287 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>AI Психолог</title>
+  <title>Мой Психолог</title>
+  <!-- Подключаем Telegram Web App SDK -->
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <!-- Иконки (опционально) -->
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+  
   <style>
-    :root { --bg-color: #f5f7fa; --chat-bg: #ffffff; --primary-color: #5d9cec; --bot-msg-bg: #f0f2f5; --user-msg-bg: #5d9cec; --user-msg-text: #ffffff; }
-    body.dark-mode { --bg-color: #1e1e1e; --chat-bg: #2c2c2c; --bot-msg-bg: #3a3a3a; }
-    body { font-family: sans-serif; background-color: var(--bg-color); color: #333; margin: 0; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
-    #chat-container { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
-    .message { max-width: 80%; padding: 10px 15px; border-radius: 15px; font-size: 15px; line-height: 1.4; word-wrap: break-word; }
-    .msg-bot { align-self: flex-start; background-color: var(--bot-msg-bg); border-bottom-left-radius: 2px; }
-    .msg-user { align-self: flex-end; background-color: var(--user-msg-bg); color: var(--user-msg-text); border-bottom-right-radius: 2px; }
-    .input-area { background: var(--chat-bg); padding: 10px; display: flex; gap: 10px; border-top: 1px solid #ccc; }
-    input { flex: 1; padding: 10px; border-radius: 20px; border: 1px solid #ccc; font-size: 16px; }
-    button { background: var(--primary-color); color: white; border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-    .typing { display: none; font-size: 12px; color: #888; margin-left: 20px; margin-bottom: 5px; }
+    :root {
+      /* Цветовая палитра: Спокойствие и доверие */
+      --bg-color: #f5f7fa;
+      --chat-bg: #ffffff;
+      --primary-color: #5d9cec; /* Мягкий синий */
+      --primary-dark: #4a89dc;
+      --text-color: #333333;
+      --secondary-text: #888888;
+      --bot-msg-bg: #f0f2f5;
+      --user-msg-bg: #5d9cec;
+      --user-msg-text: #ffffff;
+    }
+
+    /* Адаптация под темную тему Телеграма */
+    body.dark-mode {
+      --bg-color: #1e1e1e;
+      --chat-bg: #2c2c2c;
+      --text-color: #e0e0e0;
+      --bot-msg-bg: #3a3a3a;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden; /* Чтобы не скроллился весь боди */
+    }
+
+    /* --- Шапка --- */
+    header {
+      padding: 15px 20px;
+      background: var(--chat-bg);
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .header-title h1 { font-size: 18px; font-weight: 600; }
+    .header-title p { font-size: 12px; color: var(--secondary-text); margin-top: 2px; }
+    .status-dot { height: 8px; width: 8px; background-color: #8cc152; border-radius: 50%; display: inline-block; margin-right: 5px; }
+
+    /* --- Область чата --- */
+    #chat-container {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto; /* Скролл только здесь */
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      scroll-behavior: smooth;
+    }
+
+    .message {
+      max-width: 80%;
+      padding: 12px 16px;
+      border-radius: 18px;
+      font-size: 15px;
+      line-height: 1.5;
+      position: relative;
+      animation: fadeIn 0.3s ease;
+      word-wrap: break-word;
+    }
+
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* Сообщение бота */
+    .msg-bot {
+      align-self: flex-start;
+      background-color: var(--bot-msg-bg);
+      border-bottom-left-radius: 4px;
+      color: var(--text-color);
+    }
+
+    /* Сообщение пользователя */
+    .msg-user {
+      align-self: flex-end;
+      background-color: var(--user-msg-bg);
+      color: var(--user-msg-text);
+      border-bottom-right-radius: 4px;
+      box-shadow: 0 2px 5px rgba(93, 156, 236, 0.3);
+    }
+
+    /* Индикатор набора текста */
+    .typing-indicator {
+      display: none; /* Скрыт по умолчанию */
+      align-self: flex-start;
+      background-color: var(--bot-msg-bg);
+      padding: 10px 15px;
+      border-radius: 18px;
+      border-bottom-left-radius: 4px;
+      margin-bottom: 10px;
+    }
+    .dot {
+      height: 7px; width: 7px; background-color: #bbb; border-radius: 50%; display: inline-block;
+      animation: bounce 1.4s infinite ease-in-out both; margin: 0 2px;
+    }
+    .dot:nth-child(1) { animation-delay: -0.32s; }
+    .dot:nth-child(2) { animation-delay: -0.16s; }
+    
+    @keyframes bounce { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
+
+    /* --- Поле ввода --- */
+    .input-area {
+      background: var(--chat-bg);
+      padding: 15px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-top: 1px solid rgba(0,0,0,0.05);
+    }
+
+    input[type="text"] {
+      flex: 1;
+      padding: 12px 15px;
+      border-radius: 25px;
+      border: 1px solid #e0e0e0;
+      font-size: 16px;
+      outline: none;
+      transition: border-color 0.2s;
+      background: var(--bg-color);
+      color: var(--text-color);
+    }
+
+    input[type="text"]:focus { border-color: var(--primary-color); }
+
+    button#sendBtn {
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.1s, background-color 0.2s;
+      box-shadow: 0 3px 10px rgba(93, 156, 236, 0.3);
+    }
+
+    button#sendBtn:active { transform: scale(0.95); }
+    button#sendBtn:disabled { background-color: #ccc; box-shadow: none; }
+
   </style>
 </head>
 <body>
+
+  <header>
+    <div class="header-title">
+      <h1>AI Психолог</h1>
+      <p><span class="status-dot"></span>Онлайн</p>
+    </div>
+  </header>
+
   <div id="chat-container">
-    <div class="message msg-bot">Привет! Я на связи. Чем помочь?</div>
+    <div class="message msg-bot">
+      Привет! Я здесь, чтобы выслушать и поддержать. Как ты себя чувствуешь сейчас? 🌿
+    </div>
+    
+    <!-- Анимация печатания -->
+    <div class="typing-indicator" id="typing">
+      <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+    </div>
   </div>
-  <div class="typing" id="typing">AI печатает...</div>
+
   <div class="input-area">
-    <input type="text" id="userInput" placeholder="Сообщение..." autocomplete="off">
-    <button id="sendBtn"><span class="material-icons-round">send</span></button>
+    <input type="text" id="userInput" placeholder="Напиши что-нибудь..." autocomplete="off">
+    <button id="sendBtn">
+      <span class="material-icons-round">send</span>
+    </button>
   </div>
 
   <script>
-    // ВСТАВЬ СЮДА СВОЮ ССЫЛКУ GOOGLE APPS SCRIPT (КОТОРАЯ ЗАКАНЧИВАЕТСЯ НА /exec)
-    const GOOGLE_SCRIPT_URL = "hhttps://script.google.com/macros/s/AKfycbz2M379wTTJo517r1SoCMfgIPCMsvVO7Koh704cRy9xj0BZSnItDBDBNZpObDwi8qkR/exec";
+    // ---------------------------------------------------------
+    // ВСТАВЬ СЮДА СВОЮ ССЫЛКУ, КОТОРАЯ ЗАКАНЧИВАЕТСЯ НА /exec
+    // ---------------------------------------------------------
+    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwfZ4OH8TXstzCQe9lZ8zfnqjR6lS6d_KKFRGe0dq36lEN5re84ICuno9Cexn_5cbWS/exec";
 
+    // --- ИНИЦИАЛИЗАЦИЯ ---
     const tg = window.Telegram.WebApp;
     tg.expand();
-    if (tg.colorScheme === 'dark') document.body.classList.add('dark-mode');
 
-    const chat = document.getElementById('chat-container');
-    const input = document.getElementById('userInput');
-    const btn = document.getElementById('sendBtn');
-    const typing = document.getElementById('typing');
-    const userId = tg.initDataUnsafe?.user?.id || 'test_user';
-
-    function addMsg(text, isUser) {
-      const div = document.createElement('div');
-      div.className = 'message ' + (isUser ? 'msg-user' : 'msg-bot');
-      div.innerText = text;
-      chat.appendChild(div);
-      chat.scrollTop = chat.scrollHeight;
+    // Автоматическая темная тема
+    if (tg.colorScheme === 'dark') {
+      document.body.classList.add('dark-mode');
     }
 
-    btn.onclick = () => {
-      const text = input.value.trim();
-      if (!text) return;
-      addMsg(text, true);
-      input.value = '';
-      typing.style.display = 'block';
+    const chatContainer = document.getElementById('chat-container');
+    const userInput = document.getElementById('userInput');
+    const sendBtn = document.getElementById('sendBtn');
+    const typingIndicator = document.getElementById('typing');
+    
+    // Получаем ID юзера (или тестовый)
+    const userId = tg.initDataUnsafe?.user?.id || 'test_user_' + Math.floor(Math.random() * 1000);
 
-      // ВОТ ТУТ НАЧИНАЕТСЯ НОВЫЙ КОД
+    // --- ФУНКЦИИ ---
+
+    function scrollToBottom() {
+      chatContainer.scrollTop = chatContainer.scrollHeight;
+    }
+
+    function addMessage(text, isUser = false) {
+      const msgDiv = document.createElement('div');
+      msgDiv.classList.add('message');
+      msgDiv.classList.add(isUser ? 'msg-user' : 'msg-bot');
+      // Заменяем переносы строк на <br> для красивого отображения
+      msgDiv.innerHTML = text.replace(/\n/g, '<br>');
+      chatContainer.insertBefore(msgDiv, typingIndicator);
+      scrollToBottom();
+    }
+
+    function showTyping(show) {
+      typingIndicator.style.display = show ? 'block' : 'none';
+      scrollToBottom();
+    }
+
+    // --- ГЛАВНАЯ ФУНКЦИЯ ОТПРАВКИ ---
+    function sendMessage() {
+      const text = userInput.value.trim();
+      if (!text) return;
+
+      // 1. Показываем сообщение пользователя
+      addMessage(text, true);
+      userInput.value = '';
+      sendBtn.disabled = true;
+      showTyping(true);
+
+      // 2. Отправляем запрос (ИСПРАВЛЕННЫЙ МЕТОД)
       fetch(GOOGLE_SCRIPT_URL + '?act=api', {
         method: 'POST',
-        redirect: "follow",
+        redirect: "follow", // Разрешаем редиректы Google
         headers: {
-            "Content-Type": "text/plain;charset=utf-8",
+            "Content-Type": "text/plain;charset=utf-8", // Обход CORS
         },
         body: JSON.stringify({ text: text, userId: userId })
       })
-      .then(res => res.json())
+      .then(response => response.json())
       .then(data => {
-        typing.style.display = 'none';
-        if(data.status === 'success') {
-            addMsg(data.text, false);
-            if(window.Telegram.WebApp.HapticFeedback) {
-                window.Telegram.WebApp.HapticFeedback.notificationOccurred('success');
-            }
+        showTyping(false);
+        sendBtn.disabled = false;
+        userInput.focus();
+        
+        if (data.status === 'success') {
+          addMessage(data.text, false);
+          // Вибрация (Haptic Feedback)
+          if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
         } else {
-            addMsg("⚠️ Ошибка бота: " + data.text, false);
+          addMessage("⚠️ " + data.text, false);
         }
       })
-      .catch(err => {
-        typing.style.display = 'none';
-        addMsg("❌ Ошибка соединения. Проверь ссылку скрипта.", false);
-        console.error(err);
+      .catch(error => {
+        showTyping(false);
+        sendBtn.disabled = false;
+        console.error('Error:', error);
+        addMessage("❌ Ошибка соединения. Проверь ссылку скрипта.", false);
       });
-      // ВОТ ТУТ ОН ЗАКАНЧИВАЕТСЯ
-    };
+    }
+
+    // --- СОБЫТИЯ ---
+    sendBtn.addEventListener('click', sendMessage);
+    userInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') sendMessage();
+    });
+    
+    // Исправление скролла на мобильных при открытии клавиатуры
+    window.visualViewport.addEventListener('resize', scrollToBottom);
+
   </script>
 </body>
 </html>
