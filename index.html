@@ -656,11 +656,12 @@
     window.visualViewport.addEventListener('resize', () => {
        if(screens.chat.classList.contains('active')) scrollToBottom();
     });
-// --- ГОЛОСОВОЙ ВВОД ---
+// --- ГОЛОСОВОЙ ВВОД (Оптимизированный) ---
     const micBtn = document.getElementById('micBtn');
     let mediaRecorder;
     let audioChunks = [];
     let isRecording = false;
+    let globalStream = null; // Храним доступ к микрофону здесь
 
     micBtn.addEventListener('click', async () => {
       if (!isRecording) {
@@ -672,8 +673,13 @@
 
     async function startRecording() {
       try {
-        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        mediaRecorder = new MediaRecorder(stream);
+        // Проверяем: если потока нет или он неактивен — просим доступ
+        if (!globalStream || !globalStream.active) {
+            globalStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        }
+
+        // Используем сохраненный поток
+        mediaRecorder = new MediaRecorder(globalStream);
         audioChunks = [];
 
         mediaRecorder.ondataavailable = event => {
@@ -684,17 +690,20 @@
 
         mediaRecorder.start();
         isRecording = true;
+        
+        // Визуальные эффекты
         micBtn.classList.add('recording');
         micBtn.innerHTML = '<span class="material-icons-round">stop</span>';
         
-        // Вибрация начала записи
         if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
         
         userInput.placeholder = "Запись голоса...";
         userInput.disabled = true;
       } catch (err) {
         console.error("Ошибка микрофона:", err);
-        addMessage("⚠️ Не удалось получить доступ к микрофону.", false);
+        addMessage("⚠️ Нет доступа к микрофону. Разрешите доступ в настройках.", false);
+        // Сбрасываем поток, если была ошибка
+        globalStream = null;
       }
     }
 
@@ -702,14 +711,17 @@
       if (mediaRecorder && isRecording) {
         mediaRecorder.stop();
         isRecording = false;
+        
         micBtn.classList.remove('recording');
         micBtn.innerHTML = '<span class="material-icons-round">mic</span>';
         
-        // Вибрация конца записи
         if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
 
         userInput.placeholder = "Напиши сообщение...";
         userInput.disabled = false;
+        
+        // ВАЖНО: Мы НЕ останавливаем globalStream (tracks), 
+        // чтобы в следующий раз не спрашивать разрешение снова.
       }
     }
 
@@ -721,32 +733,31 @@
       
       reader.readAsDataURL(audioBlob);
       reader.onloadend = () => {
-        const base64Audio = reader.result; // Это строка data:audio/webm;base64,....
+        const base64Audio = reader.result;
         
-        // Показываем в чате, что отправили голосовое
         addMessage("🎤 <i>Аудиосообщение...</i>", true);
 
-        // Отправка на сервер
+        // Отправка (ждем и текст, и аудио в ответ)
         fetch(GOOGLE_SCRIPT_URL + '?act=api', {
           method: 'POST',
           mode: 'cors',
           credentials: 'omit',
           redirect: "follow",
-          body: JSON.stringify({ userId: userId, audio: base64Audio }) // Отправляем аудио
+          body: JSON.stringify({ userId: userId, audio: base64Audio })
         })
         .then(response => response.json())
         .then(data => {
           showTyping(false);
           if (data.status === 'success') {
-            // 1. Показываем текст, который распознал ИИ (если есть)
+            // 1. Показываем распознанный текст
             if (data.recognizedText) {
                addMessage("🗣 " + data.recognizedText, true); 
             }
             
-            // 2. Показываем ответ ИИ
+            // 2. Показываем ответ ИИ текстом
             addMessage(data.text, false);
             
-            // 3. Если есть аудио-ответ - играем
+            // 3. Играем аудио-ответ (если он пришел)
             if (data.audio) {
                playAudioResponse(data.audio);
             }
@@ -762,8 +773,14 @@
     }
 
     function playAudioResponse(base64Audio) {
+       // Создаем аудио объект
        const audio = new Audio("data:audio/mp3;base64," + base64Audio);
-       audio.play().catch(e => console.log("Автовоспроизведение блокировано:", e));
+       
+       // Пытаемся воспроизвести
+       audio.play().catch(e => {
+           console.log("Автовоспроизведение блокировано:", e);
+           addMessage("🔊 Нажми, чтобы прослушать", false);
+       });
     }
   </script>
 </body>
