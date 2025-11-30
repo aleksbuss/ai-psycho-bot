@@ -37,26 +37,37 @@
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden; /* Запрещаем скролл на уровне страницы */
+    }
+
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       background-color: var(--bg-color);
       color: var(--text-color);
-      height: 100vh;
-      overflow: hidden;
+      /* Используем fixed позиционирование для гарантии полного экрана в WebApp */
+      position: fixed; 
+      top: 0; 
+      left: 0; 
+      right: 0; 
+      bottom: 0;
       display: flex;
       flex-direction: column;
     }
 
     /* --- Шапка --- */
     header {
-      padding: 15px 20px;
+      padding: 0 20px;
       background: var(--chat-bg);
       box-shadow: 0 2px 10px rgba(0,0,0,0.05);
       z-index: 100;
       display: flex;
       align-items: center;
-      height: 60px;
-      flex-shrink: 0;
+      height: 60px; /* Фиксированная высота шапки */
+      flex-shrink: 0; /* Шапка никогда не сжимается */
+      width: 100%;
     }
 
     .header-left {
@@ -81,11 +92,13 @@
 
     /* --- Экраны --- */
     .screen {
-      flex: 1;
+      flex: 1; /* Занимает ВСЁ оставшееся пространство */
       display: none;
       flex-direction: column;
-      height: calc(100vh - 60px);
+      width: 100%;
+      height: 100%; /* Гарантия высоты */
       overflow: hidden;
+      position: relative;
     }
 
     .screen.active {
@@ -99,9 +112,7 @@
     #menu-screen {
       padding: 20px;
       gap: 15px;
-      overflow-y: auto;
-      display: grid;
-      grid-template-columns: 1fr; /* Одна колонка */
+      overflow-y: auto; /* Скролл только внутри контента */
     }
 
     .menu-card {
@@ -119,6 +130,7 @@
       min-height: 110px;
       padding: 20px;
       border: 1px solid transparent;
+      width: 100%; /* Растягиваем карточки */
     }
 
     .menu-card:active { transform: scale(0.98); }
@@ -137,7 +149,13 @@
 
     /* --- ЧАТ --- */
     #chat-container {
-      flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; scroll-behavior: smooth;
+      flex: 1; /* Растягивается на всю высоту */
+      padding: 20px; 
+      overflow-y: auto; 
+      display: flex; 
+      flex-direction: column; 
+      gap: 15px; 
+      scroll-behavior: smooth;
     }
     .message { max-width: 80%; padding: 12px 16px; border-radius: 18px; font-size: 15px; line-height: 1.5; word-wrap: break-word; }
     .msg-bot { align-self: flex-start; background-color: var(--bot-msg-bg); border-bottom-left-radius: 4px; }
@@ -146,12 +164,22 @@
     .dot { height: 7px; width: 7px; background-color: #bbb; border-radius: 50%; display: inline-block; animation: bounce 1.4s infinite ease-in-out both; margin: 0 2px; }
     .dot:nth-child(1) { animation-delay: -0.32s; } .dot:nth-child(2) { animation-delay: -0.16s; }
     @keyframes bounce { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
-    .input-area { background: var(--chat-bg); padding: 15px; display: flex; align-items: center; gap: 10px; border-top: 1px solid rgba(0,0,0,0.05); }
+    
+    .input-area { 
+      background: var(--chat-bg); 
+      padding: 15px; 
+      display: flex; 
+      align-items: center; 
+      gap: 10px; 
+      border-top: 1px solid rgba(0,0,0,0.05); 
+      flex-shrink: 0; /* Не сжимается */
+      margin-bottom: env(safe-area-inset-bottom); /* Учет айфонов без кнопки */
+    }
     input[type="text"] { flex: 1; padding: 12px 15px; border-radius: 25px; border: 1px solid #e0e0e0; font-size: 16px; outline: none; background: var(--bg-color); color: var(--text-color); }
     button#sendBtn { background-color: var(--primary-color); color: white; border: none; width: 45px; height: 45px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; }
 
     /* --- ВИДЕО И МУЗЫКА --- */
-    .content-list { padding: 20px; overflow-y: auto; }
+    .content-list { padding: 20px; overflow-y: auto; flex: 1; }
     .media-item { background: var(--chat-bg); padding: 15px; border-radius: 12px; margin-bottom: 15px; display: flex; align-items: center; gap: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
     .media-icon { width: 50px; height: 50px; background: #eee; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 24px; color: #666; }
     .media-info h3 { font-size: 16px; margin-bottom: 4px; }
@@ -192,7 +220,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: all 4s ease-in-out; /* Плавность для Вдоха */
+      transition: all 4s ease-in-out;
       box-shadow: 0 10px 25px rgba(0,0,0,0.1);
       transform: scale(0.5);
       background-color: var(--breath-exhale);
@@ -206,20 +234,9 @@
       text-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
     
-    /* Состояния анимации */
-    .state-inhale {
-      transform: scale(1);
-      background-color: var(--breath-inhale);
-    }
-    .state-hold {
-      transform: scale(1); /* Держим размер */
-      background-color: var(--breath-hold);
-    }
-    .state-exhale {
-      transform: scale(0.5);
-      background-color: var(--breath-exhale);
-      /* Меняем текст на темный при выдохе если фон светлый */
-    }
+    .state-inhale { transform: scale(1); background-color: var(--breath-inhale); }
+    .state-hold { transform: scale(1); background-color: var(--breath-hold); }
+    .state-exhale { transform: scale(0.5); background-color: var(--breath-exhale); }
 
     .instruction-text {
       font-size: 20px;
@@ -229,24 +246,11 @@
       font-weight: 500;
     }
 
-    .game-controls {
-      display: flex;
-      gap: 15px;
-    }
+    .game-controls { display: flex; gap: 15px; }
 
     .btn-game {
-      padding: 12px 30px;
-      border-radius: 30px;
-      border: none;
-      font-size: 16px;
-      font-weight: 600;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      transition: opacity 0.2s;
+      padding: 12px 30px; border-radius: 30px; border: none; font-size: 16px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: opacity 0.2s;
     }
-
     .btn-start { background-color: var(--primary-color); color: white; box-shadow: 0 4px 10px rgba(93, 156, 236, 0.3); }
     .btn-stop { background-color: #fce4ec; color: #c2185b; }
     .btn-reset { background-color: #f0f2f5; color: #666; padding: 12px; border-radius: 50%; }
@@ -396,7 +400,7 @@
       chat: document.getElementById('chat-screen'),
       video: document.getElementById('video-screen'),
       music: document.getElementById('music-screen'),
-      game: document.getElementById('game-screen') // Добавлен экран игры
+      game: document.getElementById('game-screen')
     };
 
     const backBtn = document.getElementById('back-btn');
@@ -444,29 +448,23 @@
     }
 
     function goBack() {
-      // Если уходим с игры - сбрасываем её
       if(screens.game.classList.contains('active')) {
         resetBreathing();
       }
       navigateTo('menu');
     }
 
-    // --- ЛОГИКА ИГРЫ (ДЫХАНИЕ) ---
+    // --- ЛОГИКА ИГРЫ ---
     let breathInterval = null;
     let breathTimer = 0;
     let isBreathing = false;
-    
-    // Тайминги в секундах
     const INHALE_TIME = 4;
     const HOLD_TIME = 7;
     const EXHALE_TIME = 8;
 
     function toggleBreathing() {
-      if (isBreathing) {
-        stopBreathing();
-      } else {
-        startBreathing();
-      }
+      if (isBreathing) stopBreathing();
+      else startBreathing();
     }
 
     function startBreathing() {
@@ -476,13 +474,10 @@
       breathStartBtn.classList.remove('btn-start');
       breathStartBtn.classList.add('btn-stop');
       
-      // Запускаем цикл каждую секунду
       breathInterval = setInterval(() => {
         breathTimer++;
         updateBreathVisuals();
       }, 1000);
-      
-      // Сразу запускаем первый шаг
       updateBreathVisuals();
     }
 
@@ -490,7 +485,6 @@
       isBreathing = false;
       clearInterval(breathInterval);
       breathInterval = null;
-      
       playIcon.innerText = 'play_arrow';
       playText.innerText = 'Продолжить';
       breathStartBtn.classList.add('btn-start');
@@ -500,14 +494,10 @@
     function resetBreathing() {
       stopBreathing();
       breathTimer = 0;
-      
-      // Сброс UI
       playText.innerText = 'Старт';
-      breathCircle.className = 'breath-circle'; // Убираем модификаторы
+      breathCircle.className = 'breath-circle';
       breathLabel.innerText = 'Relax';
       breathInstruction.innerText = 'Нажми Старт, чтобы начать';
-      
-      // Текст внутри круга белый или темный в зависимости от темы
       if (document.body.classList.contains('dark-mode')) {
          breathLabel.style.color = 'white';
       } else {
@@ -516,29 +506,24 @@
     }
 
     function updateBreathVisuals() {
-      // Общий цикл = 4 + 7 + 8 = 19 секунд
       const cycleTime = breathTimer % (INHALE_TIME + HOLD_TIME + EXHALE_TIME);
 
-      breathCircle.className = 'breath-circle'; // Сброс классов
-      breathLabel.style.color = 'white'; // Текст всегда белый на активных фазах
+      breathCircle.className = 'breath-circle';
+      breathLabel.style.color = 'white'; 
 
       if (cycleTime < INHALE_TIME) {
-        // ВДОХ (0-4 сек)
         breathCircle.classList.add('state-inhale');
         breathLabel.innerText = 'Вдох';
         breathInstruction.innerText = 'Глубокий вдох через нос...';
       } 
       else if (cycleTime < INHALE_TIME + HOLD_TIME) {
-        // ЗАДЕРЖКА (4-11 сек)
         breathCircle.classList.add('state-hold');
         breathLabel.innerText = 'Держи';
         breathInstruction.innerText = 'Задержи дыхание...';
       } 
       else {
-        // ВЫДОХ (11-19 сек)
         breathCircle.classList.add('state-exhale');
         breathLabel.innerText = 'Выдох';
-        // На светлом фоне выдох (серый круг) требует темного текста
         if (!document.body.classList.contains('dark-mode')) {
            breathLabel.style.color = '#555';
         }
