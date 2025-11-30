@@ -207,10 +207,68 @@
     .dot:nth-child(1) { animation-delay: -0.32s; } .dot:nth-child(2) { animation-delay: -0.16s; }
     @keyframes bounce { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
     
+    /* Обновленная панель ввода */
     .input-area { 
-      background: white; padding: 10px; display: flex; align-items: center; gap: 10px; border-top: 1px solid #ddd; 
-      margin-bottom: env(safe-area-inset-bottom);
+      background: white; padding: 10px 15px; display: flex; align-items: center; gap: 10px; 
+      border-top: 1px solid #ddd; margin-bottom: env(safe-area-inset-bottom);
     }
+    input[type="text"] { flex: 1; padding: 12px 15px; border-radius: 20px; border: 1px solid #E0E0E0; font-size: 16px; outline: none; background: #F9FAFB; transition: border 0.2s; }
+    input[type="text"]:focus { border-color: #5D9CEC; background: white; }
+    
+    /* Кнопки */
+    .btn-circle {
+      width: 44px; height: 44px; border-radius: 50%; border: none; 
+      display: flex; align-items: center; justify-content: center; cursor: pointer;
+      transition: transform 0.1s, background-color 0.2s;
+      flex-shrink: 0;
+    }
+    .btn-circle:active { transform: scale(0.95); }
+    
+    #sendBtn { background-color: var(--user-msg-bg); color: white; box-shadow: 0 2px 5px rgba(93, 156, 236, 0.3); }
+    
+    /* Кнопка микрофона */
+    #micBtn { background-color: #F0F2F5; color: #5D9CEC; }
+    #micBtn.recording { background-color: #EF5350; color: white; animation: pulse 1.5s infinite; }
+    
+    @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(239, 83, 80, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(239, 83, 80, 0); } 100% { box-shadow: 0 0 0 0 rgba(239, 83, 80, 0); } }
+    input[type="text"] { flex: 1; padding: 12px 15px; border-radius: 20px; border: 1px solid #E0E0E0; font-size: 16px; outline: none; background: #F9FAFB; transition: border 0.2s; }
+    input[type="text"]:focus { border-color: #5D9CEC; background: white; }
+    
+    /* Кнопки */
+    .btn-circle {
+      width: 44px; height: 44px; border-radius: 50%; border: none; 
+      display: flex; align-items: center; justify-content: center; cursor: pointer;
+      transition: transform 0.1s, background-color 0.2s;
+      flex-shrink: 0;
+    }
+    .btn-circle:active { transform: scale(0.95); }
+    
+    #sendBtn { background-color: var(--user-msg-bg); color: white; box-shadow: 0 2px 5px rgba(93, 156, 236, 0.3); }
+    
+    /* Кнопка микрофона */
+    #micBtn { background-color: #F0F2F5; color: #5D9CEC; }
+    #micBtn.recording { background-color: #EF5350; color: white; animation: pulse 1.5s infinite; }
+    
+    @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(239, 83, 80, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(239, 83, 80, 0); } 100% { box-shadow: 0 0 0 0 rgba(239, 83, 80, 0); } }
+    input[type="text"] { flex: 1; padding: 12px 15px; border-radius: 20px; border: 1px solid #E0E0E0; font-size: 16px; outline: none; background: #F9FAFB; transition: border 0.2s; }
+    input[type="text"]:focus { border-color: #5D9CEC; background: white; }
+    
+    /* Кнопки */
+    .btn-circle {
+      width: 44px; height: 44px; border-radius: 50%; border: none; 
+      display: flex; align-items: center; justify-content: center; cursor: pointer;
+      transition: transform 0.1s, background-color 0.2s;
+      flex-shrink: 0;
+    }
+    .btn-circle:active { transform: scale(0.95); }
+    
+    #sendBtn { background-color: var(--user-msg-bg); color: white; box-shadow: 0 2px 5px rgba(93, 156, 236, 0.3); }
+    
+    /* Кнопка микрофона */
+    #micBtn { background-color: #F0F2F5; color: #5D9CEC; }
+    #micBtn.recording { background-color: #EF5350; color: white; animation: pulse 1.5s infinite; }
+    
+    @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(239, 83, 80, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(239, 83, 80, 0); } 100% { box-shadow: 0 0 0 0 rgba(239, 83, 80, 0); } }
     input[type="text"] { flex: 1; padding: 10px 15px; border-radius: 20px; border: 1px solid #ddd; font-size: 16px; outline: none; }
     button#sendBtn { background-color: var(--user-msg-bg); color: white; border: none; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
 
@@ -323,8 +381,11 @@
       </div>
     </div>
     <div class="input-area">
-      <input type="text" id="userInput" placeholder="Напиши сообщение..." autocomplete="off">
-      <button id="sendBtn">
+      <button id="micBtn" class="btn-circle">
+        <span class="material-icons-round">mic</span>
+      </button>
+      <input type="text" id="userInput" placeholder="Сообщение..." autocomplete="off">
+      <button id="sendBtn" class="btn-circle">
         <span class="material-icons-round">send</span>
       </button>
     </div>
@@ -595,7 +656,115 @@
     window.visualViewport.addEventListener('resize', () => {
        if(screens.chat.classList.contains('active')) scrollToBottom();
     });
+// --- ГОЛОСОВОЙ ВВОД ---
+    const micBtn = document.getElementById('micBtn');
+    let mediaRecorder;
+    let audioChunks = [];
+    let isRecording = false;
 
+    micBtn.addEventListener('click', async () => {
+      if (!isRecording) {
+        startRecording();
+      } else {
+        stopRecording();
+      }
+    });
+
+    async function startRecording() {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        mediaRecorder = new MediaRecorder(stream);
+        audioChunks = [];
+
+        mediaRecorder.ondataavailable = event => {
+          audioChunks.push(event.data);
+        };
+
+        mediaRecorder.onstop = sendVoiceMessage;
+
+        mediaRecorder.start();
+        isRecording = true;
+        micBtn.classList.add('recording');
+        micBtn.innerHTML = '<span class="material-icons-round">stop</span>';
+        
+        // Вибрация начала записи
+        if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
+        
+        userInput.placeholder = "Запись голоса...";
+        userInput.disabled = true;
+      } catch (err) {
+        console.error("Ошибка микрофона:", err);
+        addMessage("⚠️ Не удалось получить доступ к микрофону.", false);
+      }
+    }
+
+    function stopRecording() {
+      if (mediaRecorder && isRecording) {
+        mediaRecorder.stop();
+        isRecording = false;
+        micBtn.classList.remove('recording');
+        micBtn.innerHTML = '<span class="material-icons-round">mic</span>';
+        
+        // Вибрация конца записи
+        if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
+
+        userInput.placeholder = "Напиши сообщение...";
+        userInput.disabled = false;
+      }
+    }
+
+    function sendVoiceMessage() {
+      const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+      const reader = new FileReader();
+      
+      showTyping(true);
+      
+      reader.readAsDataURL(audioBlob);
+      reader.onloadend = () => {
+        const base64Audio = reader.result; // Это строка data:audio/webm;base64,....
+        
+        // Показываем в чате, что отправили голосовое
+        addMessage("🎤 <i>Аудиосообщение...</i>", true);
+
+        // Отправка на сервер
+        fetch(GOOGLE_SCRIPT_URL + '?act=api', {
+          method: 'POST',
+          mode: 'cors',
+          credentials: 'omit',
+          redirect: "follow",
+          body: JSON.stringify({ userId: userId, audio: base64Audio }) // Отправляем аудио
+        })
+        .then(response => response.json())
+        .then(data => {
+          showTyping(false);
+          if (data.status === 'success') {
+            // 1. Показываем текст, который распознал ИИ (если есть)
+            if (data.recognizedText) {
+               addMessage("🗣 " + data.recognizedText, true); 
+            }
+            
+            // 2. Показываем ответ ИИ
+            addMessage(data.text, false);
+            
+            // 3. Если есть аудио-ответ - играем
+            if (data.audio) {
+               playAudioResponse(data.audio);
+            }
+          } else {
+            addMessage("⚠️ " + data.text, false);
+          }
+        })
+        .catch(err => {
+          showTyping(false);
+          addMessage("❌ Ошибка отправки аудио.", false);
+        });
+      };
+    }
+
+    function playAudioResponse(base64Audio) {
+       const audio = new Audio("data:audio/mp3;base64," + base64Audio);
+       audio.play().catch(e => console.log("Автовоспроизведение блокировано:", e));
+    }
   </script>
 </body>
 </html>
