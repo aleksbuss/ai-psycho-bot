@@ -545,7 +545,7 @@
       scrollToBottom();
     }
 
-    // --- ГЛАВНАЯ ФУНКЦИЯ ОТПРАВКИ (DEBUG ВЕРСИЯ) ---
+    // --- ИСПРАВЛЕННАЯ ФУНКЦИЯ ОТПРАВКИ ---
     function sendMessage() {
       const text = userInput.value.trim();
       if (!text) return;
@@ -555,52 +555,36 @@
       sendBtn.disabled = true;
       showTyping(true);
 
-      console.log("Отправка на:", GOOGLE_SCRIPT_URL); // Для отладки
-
+      // Важно: credentials: 'omit' решает проблему "Load failed" на мобилках
       fetch(GOOGLE_SCRIPT_URL + '?act=api', {
         method: 'POST',
-        redirect: "follow", 
-        headers: {
-            "Content-Type": "text/plain;charset=utf-8", 
-        },
+        mode: 'cors',
+        credentials: 'omit', 
+        redirect: "follow",
         body: JSON.stringify({ text: text, userId: userId })
       })
       .then(response => {
-        // Проверяем, нормальный ли ответ
-        if (!response.ok) {
-           throw new Error('Server status: ' + response.status);
-        }
-        return response.text(); // Сначала берем как текст, чтобы не упасть на JSON
+        if (!response.ok) throw new Error('Server error: ' + response.status);
+        return response.json();
       })
-      .then(textData => {
-        try {
-           // Пробуем превратить текст в JSON
-           const data = JSON.parse(textData);
-           
-           showTyping(false);
-           sendBtn.disabled = false;
-           userInput.focus();
-           
-           if (data.status === 'success') {
-             addMessage(data.text, false);
-             if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
-           } else {
-             addMessage("⚠️ Ошибка от AI: " + data.text, false);
-           }
-        } catch (e) {
-           // Если это не JSON, значит пришла HTML ошибка от Google
-           showTyping(false);
-           sendBtn.disabled = false;
-           // Выводим этот текст ошибки прямо в чат, чтобы прочитать
-           addMessage("❌ ОШИБКА (Сырой ответ): " + textData.substring(0, 200), false);
-           console.error("Raw response:", textData);
+      .then(data => {
+        showTyping(false);
+        sendBtn.disabled = false;
+        userInput.focus();
+        
+        if (data.status === 'success') {
+          addMessage(data.text, false);
+          if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
+        } else {
+          addMessage("⚠️ " + data.text, false);
         }
       })
       .catch(error => {
         showTyping(false);
         sendBtn.disabled = false;
-        // Показываем реальный текст ошибки
-        addMessage("❌ КРИТИЧЕСКАЯ ОШИБКА: " + error.toString(), false);
+        console.error('Error:', error);
+        // Если ошибка осталась, просим проверить деплой
+        addMessage("❌ Ошибка доступа. Проверь настройки Deploy в Google Script (должно быть 'Anyone' и 'Me').", false);
       });
     }
 
