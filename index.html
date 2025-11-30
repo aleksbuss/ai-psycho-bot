@@ -2,32 +2,31 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Мой Психолог</title>
-  <!-- Подключаем Telegram Web App SDK -->
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <!-- Иконки (опционально) -->
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
   
   <style>
     :root {
-      /* Цветовая палитра: Спокойствие и доверие */
       --bg-color: #f5f7fa;
       --chat-bg: #ffffff;
-      --primary-color: #5d9cec; /* Мягкий синий */
+      --primary-color: #5d9cec;
       --primary-dark: #4a89dc;
       --text-color: #333333;
       --secondary-text: #888888;
       --bot-msg-bg: #f0f2f5;
       --user-msg-bg: #5d9cec;
       --user-msg-text: #ffffff;
+      --card-shadow: 0 4px 15px rgba(0,0,0,0.05);
     }
 
-    /* Адаптация под темную тему Телеграма */
     body.dark-mode {
       --bg-color: #1e1e1e;
       --chat-bg: #2c2c2c;
       --text-color: #e0e0e0;
       --bot-msg-bg: #3a3a3a;
+      --card-shadow: 0 4px 15px rgba(0,0,0,0.3);
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -37,9 +36,9 @@
       background-color: var(--bg-color);
       color: var(--text-color);
       height: 100vh;
+      overflow: hidden;
       display: flex;
       flex-direction: column;
-      overflow: hidden; /* Чтобы не скроллился весь боди */
     }
 
     /* --- Шапка --- */
@@ -47,171 +46,318 @@
       padding: 15px 20px;
       background: var(--chat-bg);
       box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-      z-index: 10;
+      z-index: 100;
       display: flex;
       align-items: center;
-      justify-content: space-between;
+      height: 60px;
+      flex-shrink: 0;
     }
 
-    .header-title h1 { font-size: 18px; font-weight: 600; }
+    .header-left {
+      display: flex;
+      align-items: center;
+      flex: 1;
+    }
+
+    #back-btn {
+      background: none;
+      border: none;
+      color: var(--text-color);
+      cursor: pointer;
+      margin-right: 15px;
+      display: none; /* Скрыта по умолчанию */
+      padding: 5px;
+    }
+
+    .header-title h1 { font-size: 18px; font-weight: 600; margin: 0; }
     .header-title p { font-size: 12px; color: var(--secondary-text); margin-top: 2px; }
     .status-dot { height: 8px; width: 8px; background-color: #8cc152; border-radius: 50%; display: inline-block; margin-right: 5px; }
 
-    /* --- Область чата --- */
+    /* --- Экраны (Страницы) --- */
+    .screen {
+      flex: 1;
+      display: none; /* Скрыты по умолчанию */
+      flex-direction: column;
+      height: calc(100vh - 60px); /* Высота минус шапка */
+      overflow: hidden;
+    }
+
+    .screen.active {
+      display: flex;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    /* --- ГЛАВНОЕ МЕНЮ --- */
+    #menu-screen {
+      padding: 20px;
+      gap: 20px;
+      overflow-y: auto;
+    }
+
+    .menu-card {
+      flex: 1;
+      background: var(--chat-bg);
+      border-radius: 20px;
+      box-shadow: var(--card-shadow);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      position: relative;
+      overflow: hidden;
+      min-height: 120px;
+      border: 1px solid transparent;
+    }
+
+    .menu-card:active { transform: scale(0.98); }
+
+    /* Градиентные подложки для красоты */
+    .card-chat { background: linear-gradient(135deg, #5d9cec 0%, #4a89dc 100%); color: white; }
+    .card-video { background: var(--chat-bg); border: 1px solid rgba(0,0,0,0.05); }
+    .card-music { background: var(--chat-bg); border: 1px solid rgba(0,0,0,0.05); }
+
+    .menu-card .icon-box {
+      font-size: 48px;
+      margin-bottom: 10px;
+    }
+    .menu-card h2 { font-size: 20px; font-weight: 600; }
+    .menu-card p { font-size: 14px; opacity: 0.8; margin-top: 5px; text-align: center; }
+
+    /* Цвета иконок для светлых карточек */
+    .card-video .icon-box { color: #e05d5d; }
+    .card-music .icon-box { color: #8cc152; }
+    
+    /* --- ЧАТ --- */
     #chat-container {
       flex: 1;
       padding: 20px;
-      overflow-y: auto; /* Скролл только здесь */
+      overflow-y: auto;
       display: flex;
       flex-direction: column;
       gap: 15px;
       scroll-behavior: smooth;
     }
-
+    
     .message {
       max-width: 80%;
       padding: 12px 16px;
       border-radius: 18px;
       font-size: 15px;
       line-height: 1.5;
-      position: relative;
-      animation: fadeIn 0.3s ease;
       word-wrap: break-word;
     }
+    .msg-bot { align-self: flex-start; background-color: var(--bot-msg-bg); border-bottom-left-radius: 4px; }
+    .msg-user { align-self: flex-end; background-color: var(--user-msg-bg); color: var(--user-msg-text); border-bottom-right-radius: 4px; }
 
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-    /* Сообщение бота */
-    .msg-bot {
-      align-self: flex-start;
-      background-color: var(--bot-msg-bg);
-      border-bottom-left-radius: 4px;
-      color: var(--text-color);
-    }
-
-    /* Сообщение пользователя */
-    .msg-user {
-      align-self: flex-end;
-      background-color: var(--user-msg-bg);
-      color: var(--user-msg-text);
-      border-bottom-right-radius: 4px;
-      box-shadow: 0 2px 5px rgba(93, 156, 236, 0.3);
-    }
-
-    /* Индикатор набора текста */
     .typing-indicator {
-      display: none; /* Скрыт по умолчанию */
-      align-self: flex-start;
-      background-color: var(--bot-msg-bg);
-      padding: 10px 15px;
-      border-radius: 18px;
-      border-bottom-left-radius: 4px;
-      margin-bottom: 10px;
+      display: none; align-self: flex-start; background-color: var(--bot-msg-bg);
+      padding: 10px 15px; border-radius: 18px; border-bottom-left-radius: 4px; margin-bottom: 10px;
     }
-    .dot {
-      height: 7px; width: 7px; background-color: #bbb; border-radius: 50%; display: inline-block;
-      animation: bounce 1.4s infinite ease-in-out both; margin: 0 2px;
-    }
+    .dot { height: 7px; width: 7px; background-color: #bbb; border-radius: 50%; display: inline-block; animation: bounce 1.4s infinite ease-in-out both; margin: 0 2px; }
     .dot:nth-child(1) { animation-delay: -0.32s; }
     .dot:nth-child(2) { animation-delay: -0.16s; }
-    
     @keyframes bounce { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
 
-    /* --- Поле ввода --- */
     .input-area {
+      background: var(--chat-bg); padding: 15px; display: flex; align-items: center; gap: 10px; border-top: 1px solid rgba(0,0,0,0.05);
+    }
+    input[type="text"] { flex: 1; padding: 12px 15px; border-radius: 25px; border: 1px solid #e0e0e0; font-size: 16px; outline: none; background: var(--bg-color); color: var(--text-color); }
+    button#sendBtn { background-color: var(--primary-color); color: white; border: none; width: 45px; height: 45px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+
+    /* --- ВИДЕО И МУЗЫКА (Контент) --- */
+    .content-list { padding: 20px; overflow-y: auto; }
+    .media-item {
       background: var(--chat-bg);
       padding: 15px;
+      border-radius: 12px;
+      margin-bottom: 15px;
       display: flex;
       align-items: center;
-      gap: 10px;
-      border-top: 1px solid rgba(0,0,0,0.05);
+      gap: 15px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
     }
-
-    input[type="text"] {
-      flex: 1;
-      padding: 12px 15px;
-      border-radius: 25px;
-      border: 1px solid #e0e0e0;
-      font-size: 16px;
-      outline: none;
-      transition: border-color 0.2s;
-      background: var(--bg-color);
-      color: var(--text-color);
-    }
-
-    input[type="text"]:focus { border-color: var(--primary-color); }
-
-    button#sendBtn {
-      background-color: var(--primary-color);
-      color: white;
-      border: none;
-      width: 45px;
-      height: 45px;
-      border-radius: 50%;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: transform 0.1s, background-color 0.2s;
-      box-shadow: 0 3px 10px rgba(93, 156, 236, 0.3);
-    }
-
-    button#sendBtn:active { transform: scale(0.95); }
-    button#sendBtn:disabled { background-color: #ccc; box-shadow: none; }
+    .media-icon { width: 50px; height: 50px; background: #eee; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 24px; color: #666; }
+    .media-info h3 { font-size: 16px; margin-bottom: 4px; }
+    .media-info p { font-size: 13px; color: var(--secondary-text); }
+    .play-btn { margin-left: auto; color: var(--primary-color); }
 
   </style>
 </head>
 <body>
 
   <header>
-    <div class="header-title">
-      <h1>AI Психолог</h1>
-      <p><span class="status-dot"></span>Онлайн</p>
+    <div class="header-left">
+      <button id="back-btn" onclick="goBack()">
+        <span class="material-icons-round">arrow_back</span>
+      </button>
+      <div class="header-title" id="header-title-block">
+        <h1 id="page-title">Меню</h1>
+        <p id="page-subtitle"><span class="status-dot"></span>Онлайн</p>
+      </div>
     </div>
   </header>
 
-  <div id="chat-container">
-    <div class="message msg-bot">
-      Привет! Я здесь, чтобы выслушать и поддержать. Как ты себя чувствуешь сейчас? 🌿
-    </div>
+  <!-- ЭКРАН 1: ГЛАВНОЕ МЕНЮ -->
+  <div id="menu-screen" class="screen active">
     
-    <!-- Анимация печатания -->
-    <div class="typing-indicator" id="typing">
-      <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+    <div class="menu-card card-chat" onclick="navigateTo('chat')">
+      <span class="material-icons-round icon-box">chat_bubble</span>
+      <h2>Чат с Психологом</h2>
+      <p>Поделись переживаниями, я здесь.</p>
+    </div>
+
+    <div class="menu-card card-video" onclick="navigateTo('video')">
+      <span class="material-icons-round icon-box">play_circle_filled</span>
+      <h2>Медитации и Видео</h2>
+      <p>Успокаивающий визуальный ряд.</p>
+    </div>
+
+    <div class="menu-card card-music" onclick="navigateTo('music')">
+      <span class="material-icons-round icon-box">headphones</span>
+      <h2>Музыка для релакса</h2>
+      <p>Звуки природы и эмбиент.</p>
+    </div>
+
+  </div>
+
+  <!-- ЭКРАН 2: ЧАТ -->
+  <div id="chat-screen" class="screen">
+    <div id="chat-container">
+      <div class="message msg-bot">
+        Привет! Я здесь, чтобы выслушать и поддержать. Как ты себя чувствуешь сейчас? 🌿
+      </div>
+      <div class="typing-indicator" id="typing">
+        <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+      </div>
+    </div>
+    <div class="input-area">
+      <input type="text" id="userInput" placeholder="Напиши что-нибудь..." autocomplete="off">
+      <button id="sendBtn">
+        <span class="material-icons-round">send</span>
+      </button>
     </div>
   </div>
 
-  <div class="input-area">
-    <input type="text" id="userInput" placeholder="Напиши что-нибудь..." autocomplete="off">
-    <button id="sendBtn">
-      <span class="material-icons-round">send</span>
-    </button>
+  <!-- ЭКРАН 3: ВИДЕО (Заглушка) -->
+  <div id="video-screen" class="screen">
+    <div class="content-list">
+      <div class="media-item">
+        <div class="media-icon"><span class="material-icons-round">spa</span></div>
+        <div class="media-info">
+          <h3>Дыхательная гимнастика</h3>
+          <p>5 минут спокойствия</p>
+        </div>
+        <span class="material-icons-round play-btn">play_arrow</span>
+      </div>
+      <div class="media-item">
+        <div class="media-icon"><span class="material-icons-round">waves</span></div>
+        <div class="media-info">
+          <h3>Шум моря</h3>
+          <p>Визуализация для сна</p>
+        </div>
+        <span class="material-icons-round play-btn">play_arrow</span>
+      </div>
+      <!-- Здесь можно добавить реальные iframe с YouTube -->
+    </div>
+  </div>
+
+  <!-- ЭКРАН 4: МУЗЫКА (Заглушка) -->
+  <div id="music-screen" class="screen">
+    <div class="content-list">
+      <div class="media-item">
+        <div class="media-icon"><span class="material-icons-round">music_note</span></div>
+        <div class="media-info">
+          <h3>Lo-Fi Relax</h3>
+          <p>Для концентрации</p>
+        </div>
+        <span class="material-icons-round play-btn">play_arrow</span>
+      </div>
+      <div class="media-item">
+        <div class="media-icon"><span class="material-icons-round">forest</span></div>
+        <div class="media-info">
+          <h3>Звуки леса</h3>
+          <p>Птицы и ветер</p>
+        </div>
+        <span class="material-icons-round play-btn">play_arrow</span>
+      </div>
+    </div>
   </div>
 
   <script>
     // ---------------------------------------------------------
-    // ВСТАВЬ СЮДА СВОЮ ССЫЛКУ, КОТОРАЯ ЗАКАНЧИВАЕТСЯ НА /exec
+    // ВСТАВЬ СЮДА СВОЮ ССЫЛКУ ИЗ GOOGLE APPS SCRIPT
     // ---------------------------------------------------------
-    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwfZ4OH8TXstzCQe9lZ8zfnqjR6lS6d_KKFRGe0dq36lEN5re84ICuno9Cexn_5cbWS/exec";
+    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzOq4mO0Dgx9PH9AzH8ozKOYcQ0CshNHldt51VyynuR1uJZ8ZW_x71KNhG-4QV6nPF8/exec";
 
-    // --- ИНИЦИАЛИЗАЦИЯ ---
+    // --- ИНИЦИАЛИЗАЦИЯ TELEGRAM ---
     const tg = window.Telegram.WebApp;
     tg.expand();
+    
+    // Включаем кнопку "Назад" на уровне Телеграма
+    tg.BackButton.onClick(goBack);
 
-    // Автоматическая темная тема
+    // Темная тема
     if (tg.colorScheme === 'dark') {
       document.body.classList.add('dark-mode');
     }
 
+    // --- ЭЛЕМЕНТЫ UI ---
+    const screens = {
+      menu: document.getElementById('menu-screen'),
+      chat: document.getElementById('chat-screen'),
+      video: document.getElementById('video-screen'),
+      music: document.getElementById('music-screen')
+    };
+
+    const backBtn = document.getElementById('back-btn');
+    const pageTitle = document.getElementById('page-title');
+    const pageSubtitle = document.getElementById('page-subtitle');
+    
+    // Элементы чата
     const chatContainer = document.getElementById('chat-container');
     const userInput = document.getElementById('userInput');
     const sendBtn = document.getElementById('sendBtn');
     const typingIndicator = document.getElementById('typing');
-    
-    // Получаем ID юзера (или тестовый)
     const userId = tg.initDataUnsafe?.user?.id || 'test_user_' + Math.floor(Math.random() * 1000);
 
-    // --- ФУНКЦИИ ---
+    // --- НАВИГАЦИЯ ---
+    function navigateTo(screenName) {
+      // 1. Скрываем все экраны
+      Object.values(screens).forEach(el => el.classList.remove('active'));
+      
+      // 2. Показываем нужный
+      screens[screenName].classList.add('active');
+
+      // 3. Обновляем шапку
+      if (screenName === 'menu') {
+        backBtn.style.display = 'none';
+        tg.BackButton.hide();
+        pageTitle.innerText = 'AI Психолог';
+        pageSubtitle.style.display = 'block';
+      } else {
+        backBtn.style.display = 'block';
+        tg.BackButton.show();
+        pageSubtitle.style.display = 'none';
+        
+        if (screenName === 'chat') {
+            pageTitle.innerText = 'Чат';
+            setTimeout(scrollToBottom, 100); // Фикс скролла при переходе
+        }
+        else if (screenName === 'video') pageTitle.innerText = 'Видео';
+        else if (screenName === 'music') pageTitle.innerText = 'Музыка';
+      }
+    }
+
+    function goBack() {
+      // Всегда возвращаемся в меню
+      navigateTo('menu');
+    }
+
+    // --- ЛОГИКА ЧАТА (без изменений) ---
 
     function scrollToBottom() {
       chatContainer.scrollTop = chatContainer.scrollHeight;
@@ -221,7 +367,6 @@
       const msgDiv = document.createElement('div');
       msgDiv.classList.add('message');
       msgDiv.classList.add(isUser ? 'msg-user' : 'msg-bot');
-      // Заменяем переносы строк на <br> для красивого отображения
       msgDiv.innerHTML = text.replace(/\n/g, '<br>');
       chatContainer.insertBefore(msgDiv, typingIndicator);
       scrollToBottom();
@@ -232,24 +377,20 @@
       scrollToBottom();
     }
 
-    // --- ГЛАВНАЯ ФУНКЦИЯ ОТПРАВКИ ---
     function sendMessage() {
       const text = userInput.value.trim();
       if (!text) return;
 
-      // 1. Показываем сообщение пользователя
       addMessage(text, true);
       userInput.value = '';
       sendBtn.disabled = true;
       showTyping(true);
 
-      // 2. Отправляем запрос (ИСПРАВЛЕННЫЙ МЕТОД)
+      // API запрос
       fetch(GOOGLE_SCRIPT_URL + '?act=api', {
         method: 'POST',
-        redirect: "follow", // Разрешаем редиректы Google
-        headers: {
-            "Content-Type": "text/plain;charset=utf-8", // Обход CORS
-        },
+        redirect: "follow",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
         body: JSON.stringify({ text: text, userId: userId })
       })
       .then(response => response.json())
@@ -260,7 +401,6 @@
         
         if (data.status === 'success') {
           addMessage(data.text, false);
-          // Вибрация (Haptic Feedback)
           if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
         } else {
           addMessage("⚠️ " + data.text, false);
@@ -270,7 +410,7 @@
         showTyping(false);
         sendBtn.disabled = false;
         console.error('Error:', error);
-        addMessage("❌ Ошибка соединения. Проверь ссылку скрипта.", false);
+        addMessage("❌ Ошибка соединения.", false);
       });
     }
 
@@ -279,9 +419,9 @@
     userInput.addEventListener('keypress', (e) => {
       if (e.key === 'Enter') sendMessage();
     });
-    
-    // Исправление скролла на мобильных при открытии клавиатуры
-    window.visualViewport.addEventListener('resize', scrollToBottom);
+    window.visualViewport.addEventListener('resize', () => {
+       if(screens.chat.classList.contains('active')) scrollToBottom();
+    });
 
   </script>
 </body>
