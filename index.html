@@ -9,187 +9,217 @@
   
   <style>
     :root {
-      /* Основной фон (мягкий градиент как на скрине) */
-      --bg-gradient: linear-gradient(180deg, #EBF4F5 0%, #F5F7FA 100%);
+      /* Фон всего приложения */
+      --bg-color: #F3F6F8;
       
+      /* Единые цвета текста */
       --text-main: #2C3E50;
-      --text-secondary: #7F8C8D;
+      --text-secondary: #546E7A;
       
-      --card-shadow: 0 8px 20px rgba(0,0,0,0.06);
+      /* Цвета чата (классические, как просил) */
+      --bot-msg-bg: #FFFFFF;
+      --user-msg-bg: #5D9CEC;
+      --user-msg-text: #FFFFFF;
       
-      /* Цвета карточек */
+      /* Градиенты карточек */
       --card-blue-bg: linear-gradient(135deg, #89C4F4 0%, #5D9CEC 100%);
       --card-green-bg: linear-gradient(135deg, #A8E6CF 0%, #DCEDC8 100%);
       --card-gray-bg: linear-gradient(135deg, #E6E9F0 0%, #EEF1F5 100%);
       --card-white-bg: #FFFFFF;
 
-      /* Цвета для дыхания (игры) */
+      /* Дыхание */
       --breath-inhale: #89C4F4;
       --breath-hold: #5D9CEC;
       --breath-exhale: #E2E8F0;
-      
-      /* Сообщения */
-      --bot-msg-bg: #FFFFFF;
-      --user-msg-bg: #5D9CEC;
-      --user-msg-text: #FFFFFF;
     }
 
-    /* Темная тема (адаптация, если включена в ТГ) */
-    body.dark-mode {
-      --bg-gradient: #1e1e1e;
-      --text-main: #ecf0f1;
-      --text-secondary: #bdc3c7;
-      --card-white-bg: #2c3e50;
-      --card-gray-bg: #34495e;
-      --bot-msg-bg: #2c2c2c;
-      --breath-exhale: #475569;
-    }
-
+    /* Сброс и база */
     * { box-sizing: border-box; margin: 0; padding: 0; }
-
-    html, body {
-      width: 100%; height: 100%; overflow: hidden;
-    }
-
+    html, body { width: 100%; height: 100%; overflow: hidden; }
+    
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      background: var(--bg-gradient);
+      background-color: var(--bg-color);
       color: var(--text-main);
       position: fixed; top: 0; left: 0; right: 0; bottom: 0;
       display: flex; flex-direction: column;
     }
 
-    /* --- ШАПКА --- */
+    /* --- ШАПКА НАВИГАЦИИ (видна только внутри разделов) --- */
     header {
-      padding: 10px 20px;
-      /* Прозрачная шапка, чтобы сливалась с фоном */
-      background: transparent; 
+      padding: 0 15px;
+      background: #FFFFFF;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
       z-index: 100;
-      display: flex;
+      display: none; /* Скрыта в главном меню */
       align-items: center;
-      justify-content: space-between;
-      height: 60px;
+      height: 50px;
       flex-shrink: 0;
       width: 100%;
     }
 
     #back-btn {
       background: none; border: none; color: var(--text-main);
-      cursor: pointer; display: none; padding: 5px;
+      cursor: pointer; padding: 5px; display: flex; align-items: center;
     }
+    .header-title { font-size: 16px; font-weight: 600; margin-left: 10px; }
 
-    .header-title h1 { font-size: 18px; font-weight: 700; margin: 0; opacity: 0; /* Скрываем заголовок в меню, показываем внутри */ transition: opacity 0.2s; }
-    
     /* --- ЭКРАНЫ --- */
     .screen {
       flex: 1; display: none; flex-direction: column; width: 100%; height: 100%;
       overflow: hidden; position: relative;
     }
-    .screen.active { display: flex; animation: fadeIn 0.3s ease; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    .screen.active { display: flex; animation: fadeIn 0.2s ease; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-    /* --- МЕНЮ (ГЛАВНАЯ СТРАНИЦА) --- */
+    /* --- ГЛАВНОЕ МЕНЮ --- */
     #menu-screen {
-      padding: 0 20px 20px 20px;
+      /* Убираем отступы, чтобы профиль был от края до края */
+      padding: 0; 
+      background-color: var(--bg-color);
       overflow-y: auto;
-      gap: 16px;
     }
 
-    /* Профиль (Заглушка как на скрине) */
-    .profile-card {
+    /* БЛОК ПРОФИЛЯ (Верхний баннер) */
+    .profile-section {
       background: white;
-      border-radius: 24px;
-      padding: 20px;
+      width: 100%;
+      padding: 25px 20px;
       display: flex;
       align-items: center;
       gap: 15px;
-      box-shadow: var(--card-shadow);
-      margin-bottom: 10px;
-      margin-top: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      margin-bottom: 20px;
     }
 
     .profile-placeholder-img {
       width: 60px; height: 60px;
-      background-color: #E0E0E0; /* Серый круг-заглушка */
+      background-color: #E0E0E0;
       border-radius: 50%;
       flex-shrink: 0;
     }
 
-    .profile-info h2 { font-size: 18px; font-weight: 700; color: #2C3E50; margin-bottom: 4px; }
-    .profile-info p { font-size: 13px; color: #95A5A6; font-weight: 500; display: flex; align-items: center; gap: 5px; }
-    .online-dot { width: 8px; height: 8px; background: #2ECC71; border-radius: 50%; display: inline-block; }
+    .profile-info h2 { 
+      font-size: 18px; 
+      font-weight: 700; 
+      color: var(--text-main); 
+      margin-bottom: 4px; 
+    }
+    .profile-info p { 
+      font-size: 14px; 
+      color: #2ECC71; /* Зеленый текст "Онлайн" */
+      font-weight: 500; 
+      display: flex; align-items: center; gap: 5px; 
+    }
 
-    /* Карточки Меню */
+    /* КОНТЕЙНЕР ДЛЯ КАРТОЧЕК МЕНЮ */
+    .menu-list {
+      padding: 0 15px 20px 15px;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
     .menu-card {
-      border-radius: 24px;
+      border-radius: 20px;
       padding: 24px 20px;
       display: flex;
       align-items: center;
       gap: 16px;
-      box-shadow: var(--card-shadow);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
       cursor: pointer;
-      position: relative;
-      transition: transform 0.1s;
       min-height: 100px;
     }
-    .menu-card:active { transform: scale(0.98); }
+    .menu-card:active { transform: scale(0.98); transition: transform 0.1s; }
 
+    /* Единый стиль текста внутри карточек */
+    .menu-content h3 { 
+      font-size: 17px; 
+      font-weight: 700; 
+      margin-bottom: 4px; 
+      color: #333333; /* Всегда темный */
+    }
+    .menu-content p { 
+      font-size: 13px; 
+      font-weight: 400; 
+      color: #555555; /* Всегда темно-серый */
+    }
+
+    /* Иконки */
     .menu-card .icon-circle {
-      width: 45px; height: 45px;
+      width: 48px; height: 48px;
       border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
-      background: rgba(255, 255, 255, 0.2); /* Полупрозрачный круг */
+      background: rgba(255, 255, 255, 0.4);
       flex-shrink: 0;
     }
-    .menu-card .icon-circle span { font-size: 24px; }
+    .menu-card .icon-circle span { font-size: 26px; }
 
-    .menu-content h3 { font-size: 17px; font-weight: 700; margin-bottom: 4px; }
-    .menu-content p { font-size: 13px; opacity: 0.85; font-weight: 400; line-height: 1.3; }
-
-    /* Стилизация конкретных карточек под скриншот */
+    /* Стилизация конкретных карточек */
     
-    /* 1. Чат (Синий) */
-    .card-chat { background: var(--card-blue-bg); color: white; }
-    .card-chat .icon-circle span { color: white; }
+    /* Чат */
+    .card-chat { background: var(--card-blue-bg); }
+    .card-chat .icon-circle span { color: #FFFFFF; }
+    .card-chat h3, .card-chat p { color: white !important; } /* Исключение: в синей карточке текст белый */
 
-    /* 2. Медитации (Видео - Зеленый/Мятный) */
-    .card-video { background: var(--card-green-bg); color: #2C3E50; }
-    .card-video .icon-circle { background: rgba(255,255,255, 0.6); }
+    /* Медитации */
+    .card-video { background: var(--card-green-bg); }
     .card-video .icon-circle span { color: #27AE60; }
-    .card-video p { color: #555; }
 
-    /* 3. Дыхание (Игра - Серо-голубой) */
-    .card-game { background: var(--card-gray-bg); color: #2C3E50; }
-    .card-game .icon-circle { background: white; }
+    /* Дыхание */
+    .card-game { background: var(--card-gray-bg); }
+    .card-game .icon-circle { background: #FFFFFF; }
     .card-game .icon-circle span { color: #5D9CEC; }
-    .card-game p { color: #7F8C8D; }
 
-    /* 4. Музыка (Дневник/Музыка - Белый) */
-    .card-music { background: var(--card-white-bg); color: #2C3E50; }
+    /* Дневник (Светлая, почти белая) */
+    .card-music { background: #FFFFFF; border: 1px solid #EAEAEA; }
     .card-music .icon-circle { background: #F5F7FA; }
-    .card-music .icon-circle span { color: #E74C3C; } /* Красное сердце как на скрине */
-    .card-music p { color: #7F8C8D; }
+    .card-music .icon-circle span { color: #E74C3C; }
 
+    /* --- ЧАТ (Возврат к классике) --- */
+    #chat-container { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; background: #F0F2F5; }
+    
+    .message { 
+      max-width: 80%; 
+      padding: 10px 14px; 
+      border-radius: 12px; 
+      font-size: 15px; 
+      line-height: 1.4;
+      position: relative;
+    }
+    
+    .msg-bot { 
+      align-self: flex-start; 
+      background-color: var(--bot-msg-bg); 
+      color: #000;
+      border-top-left-radius: 2px;
+    }
+    
+    .msg-user { 
+      align-self: flex-end; 
+      background-color: var(--user-msg-bg); 
+      color: var(--user-msg-text);
+      border-top-right-radius: 2px;
+    }
 
-    /* --- ЧАТ ЭКРАН --- */
-    #chat-container { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; scroll-behavior: smooth; background: #F9FAFB; }
-    .message { max-width: 80%; padding: 12px 16px; border-radius: 18px; font-size: 15px; line-height: 1.5; word-wrap: break-word; }
-    .msg-bot { align-self: flex-start; background-color: var(--bot-msg-bg); color: #333; border-bottom-left-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-    .msg-user { align-self: flex-end; background-color: var(--user-msg-bg); color: var(--user-msg-text); border-bottom-right-radius: 4px; box-shadow: 0 4px 10px rgba(93, 156, 236, 0.3); }
-    .typing-indicator { display: none; align-self: flex-start; background-color: var(--bot-msg-bg); padding: 10px 15px; border-radius: 18px; border-bottom-left-radius: 4px; margin-bottom: 10px; }
-    .dot { height: 7px; width: 7px; background-color: #bbb; border-radius: 50%; display: inline-block; animation: bounce 1.4s infinite ease-in-out both; margin: 0 2px; }
+    .typing-indicator { display: none; align-self: flex-start; background: white; padding: 10px 15px; border-radius: 12px; margin-bottom: 10px; }
+    .dot { height: 6px; width: 6px; background-color: #bbb; border-radius: 50%; display: inline-block; animation: bounce 1.4s infinite ease-in-out both; margin: 0 2px; }
     .dot:nth-child(1) { animation-delay: -0.32s; } .dot:nth-child(2) { animation-delay: -0.16s; }
     @keyframes bounce { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
-    .input-area { background: white; padding: 15px; display: flex; align-items: center; gap: 10px; border-top: 1px solid rgba(0,0,0,0.05); flex-shrink: 0; margin-bottom: env(safe-area-inset-bottom); }
-    input[type="text"] { flex: 1; padding: 12px 15px; border-radius: 25px; border: 1px solid #e0e0e0; font-size: 16px; outline: none; background: #F5F7FA; color: #333; }
-    button#sendBtn { background-color: var(--user-msg-bg); color: white; border: none; width: 45px; height: 45px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(93, 156, 236, 0.3); }
+    
+    .input-area { 
+      background: white; padding: 10px; display: flex; align-items: center; gap: 10px; border-top: 1px solid #ddd; 
+      margin-bottom: env(safe-area-inset-bottom);
+    }
+    input[type="text"] { flex: 1; padding: 10px 15px; border-radius: 20px; border: 1px solid #ddd; font-size: 16px; outline: none; }
+    button#sendBtn { background-color: var(--user-msg-bg); color: white; border: none; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
 
-    /* --- КОНТЕНТ (ВИДЕО/МУЗЫКА) --- */
+    /* --- КОНТЕНТ (Видео/Музыка) --- */
     .content-list { padding: 20px; overflow-y: auto; flex: 1; background: #F9FAFB; }
-    .media-item { background: white; padding: 15px; border-radius: 16px; margin-bottom: 15px; display: flex; align-items: center; gap: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.03); }
-    .media-icon { width: 50px; height: 50px; background: #F0F2F5; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px; color: #5D9CEC; }
-    .media-info h3 { font-size: 16px; margin-bottom: 4px; color: #333; }
-    .media-info p { font-size: 13px; color: #999; }
+    .media-item { background: white; padding: 15px; border-radius: 12px; margin-bottom: 10px; display: flex; align-items: center; gap: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+    .media-icon { width: 45px; height: 45px; background: #F0F2F5; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 24px; color: #5D9CEC; }
+    .media-info h3 { font-size: 15px; margin-bottom: 3px; color: #333; }
+    .media-info p { font-size: 12px; color: #888; }
     .play-btn { margin-left: auto; color: #5D9CEC; }
 
     /* --- ИГРА (ДЫХАНИЕ) --- */
@@ -212,73 +242,74 @@
 </head>
 <body>
 
-  <header>
-    <div class="header-left">
-      <button id="back-btn" onclick="goBack()">
-        <span class="material-icons-round">arrow_back</span>
-      </button>
-      <div class="header-title">
-        <h1 id="page-title">Меню</h1>
-      </div>
-    </div>
+  <!-- ШАПКА ВНУТРЕННЯЯ -->
+  <header id="main-header">
+    <button id="back-btn" onclick="goBack()">
+      <span class="material-icons-round">arrow_back</span>
+      <span class="header-title" id="page-title">Назад</span>
+    </button>
   </header>
 
   <!-- ЭКРАН 1: ГЛАВНОЕ МЕНЮ -->
   <div id="menu-screen" class="screen active">
     
-    <!-- Профиль с заглушкой -->
-    <div class="profile-card">
+    <!-- Блок профиля (На всю ширину, белый) -->
+    <div class="profile-section">
       <div class="profile-placeholder-img"></div>
       <div class="profile-info">
         <h2>Анна Иванова</h2>
-        <p>Клинический Психолог • Онлайн <span class="online-dot"></span></p>
+        <p>Клинический Психолог • Онлайн</p>
       </div>
     </div>
 
-    <!-- Пункт 1: Чат (Синий) -->
-    <div class="menu-card card-chat" onclick="navigateTo('chat')">
-      <div class="icon-circle">
-        <span class="material-icons-round">chat_bubble_outline</span>
+    <!-- Список карточек -->
+    <div class="menu-list">
+      
+      <!-- Чат (Синий фон, белый текст) -->
+      <div class="menu-card card-chat" onclick="navigateTo('chat')">
+        <div class="icon-circle">
+          <span class="material-icons-round">chat_bubble_outline</span>
+        </div>
+        <div class="menu-content">
+          <h3>Чат с Психологом</h3>
+          <p>Поделитесь переживаниями, я здесь</p>
+        </div>
       </div>
-      <div class="menu-content">
-        <h3>Чат с Психологом</h3>
-        <p>Поделись переживаниями, я здесь</p>
-      </div>
-    </div>
 
-    <!-- Пункт 2: Медитации (Зеленый) -->
-    <div class="menu-card card-video" onclick="navigateTo('video')">
-      <div class="icon-circle">
-        <span class="material-icons-round">spa</span>
+      <!-- Медитации (Зеленый фон) -->
+      <div class="menu-card card-video" onclick="navigateTo('video')">
+        <div class="icon-circle">
+          <span class="material-icons-round">spa</span>
+        </div>
+        <div class="menu-content">
+          <h3>Медитации</h3>
+          <p>Аудио для релаксации</p>
+        </div>
       </div>
-      <div class="menu-content">
-        <h3>Медитации</h3>
-        <p>Аудио для релаксации</p>
-      </div>
-    </div>
 
-    <!-- Пункт 3: Дыхание (Серый/Голубой) -->
-    <div class="menu-card card-game" onclick="navigateTo('game')">
-      <div class="icon-circle">
-        <span class="material-icons-round">air</span>
+      <!-- Дыхание (Серый фон) -->
+      <div class="menu-card card-game" onclick="navigateTo('game')">
+        <div class="icon-circle">
+          <span class="material-icons-round">air</span>
+        </div>
+        <div class="menu-content">
+          <h3>Дыхательные Практики</h3>
+          <p>Техники для снижения тревоги</p>
+        </div>
       </div>
-      <div class="menu-content">
-        <h3>Дыхательные Практики</h3>
-        <p>Техники для снятия тревоги</p>
-      </div>
-    </div>
 
-    <!-- Пункт 4: Музыка (Белый) -->
-    <div class="menu-card card-music" onclick="navigateTo('music')">
-      <div class="icon-circle">
-        <span class="material-icons-round">favorite_border</span>
+      <!-- Дневник (Белый фон, почти белый) -->
+      <div class="menu-card card-music" onclick="navigateTo('music')">
+        <div class="icon-circle">
+          <span class="material-icons-round">favorite_border</span>
+        </div>
+        <div class="menu-content">
+          <h3>Дневник Эмоций</h3>
+          <p>Отслеживайте свое состояние</p>
+        </div>
       </div>
-      <div class="menu-content">
-        <h3>Дневник Эмоций</h3>
-        <p>Отслеживайте свое состояние</p>
-      </div>
-    </div>
 
+    </div>
   </div>
 
   <!-- ЭКРАН 2: ЧАТ -->
@@ -292,7 +323,7 @@
       </div>
     </div>
     <div class="input-area">
-      <input type="text" id="userInput" placeholder="Напиши что-нибудь..." autocomplete="off">
+      <input type="text" id="userInput" placeholder="Напиши сообщение..." autocomplete="off">
       <button id="sendBtn">
         <span class="material-icons-round">send</span>
       </button>
@@ -358,16 +389,13 @@
   </div>
 
   <script>
+    // ВСТАВЬ СЮДА СВОЮ ССЫЛКУ ИЗ GOOGLE APPS SCRIPT
     const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwfZ4OH8TXstzCQe9lZ8zfnqjR6lS6d_KKFRGe0dq36lEN5re84ICuno9Cexn_5cbWS/exec";
 
     // --- ИНИЦИАЛИЗАЦИЯ ---
     const tg = window.Telegram.WebApp;
     tg.expand();
     tg.BackButton.onClick(goBack);
-
-    if (tg.colorScheme === 'dark') {
-      document.body.classList.add('dark-mode');
-    }
 
     // --- UI ЭЛЕМЕНТЫ ---
     const screens = {
@@ -378,7 +406,7 @@
       game: document.getElementById('game-screen')
     };
 
-    const backBtn = document.getElementById('back-btn');
+    const header = document.getElementById('main-header');
     const pageTitle = document.getElementById('page-title');
     
     // Элементы игры
@@ -402,20 +430,18 @@
       screens[screenName].classList.add('active');
 
       if (screenName === 'menu') {
-        backBtn.style.display = 'none';
+        header.style.display = 'none'; // Скрываем шапку с кнопкой назад в меню
         tg.BackButton.hide();
-        pageTitle.style.opacity = '0'; // Скрываем заголовок в меню (как на скрине)
       } else {
-        backBtn.style.display = 'block';
+        header.style.display = 'flex'; // Показываем шапку внутри разделов
         tg.BackButton.show();
-        pageTitle.style.opacity = '1';
         
         if (screenName === 'chat') {
-           pageTitle.innerText = 'Чат';
+           pageTitle.innerText = 'Чат с Психологом';
            setTimeout(scrollToBottom, 100);
         }
         else if (screenName === 'video') pageTitle.innerText = 'Медитации';
-        else if (screenName === 'music') pageTitle.innerText = 'Дневник';
+        else if (screenName === 'music') pageTitle.innerText = 'Дневник Эмоций';
         else if (screenName === 'game') pageTitle.innerText = 'Дыхание';
       }
     }
