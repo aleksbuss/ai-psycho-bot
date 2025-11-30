@@ -19,6 +19,11 @@
       --user-msg-bg: #5d9cec;
       --user-msg-text: #ffffff;
       --card-shadow: 0 4px 15px rgba(0,0,0,0.05);
+      
+      /* Цвета для дыхания */
+      --breath-inhale: #7dd3fc;
+      --breath-hold: #38bdf8;
+      --breath-exhale: #e2e8f0;
     }
 
     body.dark-mode {
@@ -27,6 +32,7 @@
       --text-color: #e0e0e0;
       --bot-msg-bg: #3a3a3a;
       --card-shadow: 0 4px 15px rgba(0,0,0,0.3);
+      --breath-exhale: #475569;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -65,7 +71,7 @@
       color: var(--text-color);
       cursor: pointer;
       margin-right: 15px;
-      display: none; /* Скрыта по умолчанию */
+      display: none;
       padding: 5px;
     }
 
@@ -73,12 +79,12 @@
     .header-title p { font-size: 12px; color: var(--secondary-text); margin-top: 2px; }
     .status-dot { height: 8px; width: 8px; background-color: #8cc152; border-radius: 50%; display: inline-block; margin-right: 5px; }
 
-    /* --- Экраны (Страницы) --- */
+    /* --- Экраны --- */
     .screen {
       flex: 1;
-      display: none; /* Скрыты по умолчанию */
+      display: none;
       flex-direction: column;
-      height: calc(100vh - 60px); /* Высота минус шапка */
+      height: calc(100vh - 60px);
       overflow: hidden;
     }
 
@@ -92,12 +98,13 @@
     /* --- ГЛАВНОЕ МЕНЮ --- */
     #menu-screen {
       padding: 20px;
-      gap: 20px;
+      gap: 15px;
       overflow-y: auto;
+      display: grid;
+      grid-template-columns: 1fr; /* Одна колонка */
     }
 
     .menu-card {
-      flex: 1;
       background: var(--chat-bg);
       border-radius: 20px;
       box-shadow: var(--card-shadow);
@@ -109,81 +116,140 @@
       transition: transform 0.2s, box-shadow 0.2s;
       position: relative;
       overflow: hidden;
-      min-height: 120px;
+      min-height: 110px;
+      padding: 20px;
       border: 1px solid transparent;
     }
 
     .menu-card:active { transform: scale(0.98); }
 
-    /* Градиентные подложки для красоты */
     .card-chat { background: linear-gradient(135deg, #5d9cec 0%, #4a89dc 100%); color: white; }
-    .card-video { background: var(--chat-bg); border: 1px solid rgba(0,0,0,0.05); }
-    .card-music { background: var(--chat-bg); border: 1px solid rgba(0,0,0,0.05); }
+    .card-video { border: 1px solid rgba(0,0,0,0.05); }
+    .card-music { border: 1px solid rgba(0,0,0,0.05); }
+    .card-game { background: linear-gradient(135deg, #a0d468 0%, #8cc152 100%); color: white; }
 
-    .menu-card .icon-box {
-      font-size: 48px;
-      margin-bottom: 10px;
-    }
-    .menu-card h2 { font-size: 20px; font-weight: 600; }
-    .menu-card p { font-size: 14px; opacity: 0.8; margin-top: 5px; text-align: center; }
+    .menu-card .icon-box { font-size: 40px; margin-bottom: 8px; }
+    .menu-card h2 { font-size: 18px; font-weight: 600; }
+    .menu-card p { font-size: 13px; opacity: 0.8; margin-top: 4px; text-align: center; }
 
-    /* Цвета иконок для светлых карточек */
     .card-video .icon-box { color: #e05d5d; }
     .card-music .icon-box { color: #8cc152; }
-    
+
     /* --- ЧАТ --- */
     #chat-container {
-      flex: 1;
-      padding: 20px;
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
-      scroll-behavior: smooth;
+      flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; scroll-behavior: smooth;
     }
-    
-    .message {
-      max-width: 80%;
-      padding: 12px 16px;
-      border-radius: 18px;
-      font-size: 15px;
-      line-height: 1.5;
-      word-wrap: break-word;
-    }
+    .message { max-width: 80%; padding: 12px 16px; border-radius: 18px; font-size: 15px; line-height: 1.5; word-wrap: break-word; }
     .msg-bot { align-self: flex-start; background-color: var(--bot-msg-bg); border-bottom-left-radius: 4px; }
     .msg-user { align-self: flex-end; background-color: var(--user-msg-bg); color: var(--user-msg-text); border-bottom-right-radius: 4px; }
-
-    .typing-indicator {
-      display: none; align-self: flex-start; background-color: var(--bot-msg-bg);
-      padding: 10px 15px; border-radius: 18px; border-bottom-left-radius: 4px; margin-bottom: 10px;
-    }
+    .typing-indicator { display: none; align-self: flex-start; background-color: var(--bot-msg-bg); padding: 10px 15px; border-radius: 18px; border-bottom-left-radius: 4px; margin-bottom: 10px; }
     .dot { height: 7px; width: 7px; background-color: #bbb; border-radius: 50%; display: inline-block; animation: bounce 1.4s infinite ease-in-out both; margin: 0 2px; }
-    .dot:nth-child(1) { animation-delay: -0.32s; }
-    .dot:nth-child(2) { animation-delay: -0.16s; }
+    .dot:nth-child(1) { animation-delay: -0.32s; } .dot:nth-child(2) { animation-delay: -0.16s; }
     @keyframes bounce { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
-
-    .input-area {
-      background: var(--chat-bg); padding: 15px; display: flex; align-items: center; gap: 10px; border-top: 1px solid rgba(0,0,0,0.05);
-    }
+    .input-area { background: var(--chat-bg); padding: 15px; display: flex; align-items: center; gap: 10px; border-top: 1px solid rgba(0,0,0,0.05); }
     input[type="text"] { flex: 1; padding: 12px 15px; border-radius: 25px; border: 1px solid #e0e0e0; font-size: 16px; outline: none; background: var(--bg-color); color: var(--text-color); }
     button#sendBtn { background-color: var(--primary-color); color: white; border: none; width: 45px; height: 45px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; }
 
-    /* --- ВИДЕО И МУЗЫКА (Контент) --- */
+    /* --- ВИДЕО И МУЗЫКА --- */
     .content-list { padding: 20px; overflow-y: auto; }
-    .media-item {
-      background: var(--chat-bg);
-      padding: 15px;
-      border-radius: 12px;
-      margin-bottom: 15px;
-      display: flex;
-      align-items: center;
-      gap: 15px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-    }
+    .media-item { background: var(--chat-bg); padding: 15px; border-radius: 12px; margin-bottom: 15px; display: flex; align-items: center; gap: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
     .media-icon { width: 50px; height: 50px; background: #eee; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 24px; color: #666; }
     .media-info h3 { font-size: 16px; margin-bottom: 4px; }
     .media-info p { font-size: 13px; color: var(--secondary-text); }
     .play-btn { margin-left: auto; color: var(--primary-color); }
+
+    /* --- ИГРА (ДЫХАНИЕ) --- */
+    #game-screen {
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .breath-container {
+      position: relative;
+      width: 250px;
+      height: 250px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 40px;
+    }
+
+    /* Внешнее кольцо */
+    .breath-ring {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      border: 2px solid rgba(150, 150, 150, 0.2);
+    }
+    
+    /* Анимированный круг */
+    .breath-circle {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 4s ease-in-out; /* Плавность для Вдоха */
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+      transform: scale(0.5);
+      background-color: var(--breath-exhale);
+    }
+
+    .breath-text {
+      color: white;
+      font-size: 24px;
+      font-weight: 600;
+      z-index: 10;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    /* Состояния анимации */
+    .state-inhale {
+      transform: scale(1);
+      background-color: var(--breath-inhale);
+    }
+    .state-hold {
+      transform: scale(1); /* Держим размер */
+      background-color: var(--breath-hold);
+    }
+    .state-exhale {
+      transform: scale(0.5);
+      background-color: var(--breath-exhale);
+      /* Меняем текст на темный при выдохе если фон светлый */
+    }
+
+    .instruction-text {
+      font-size: 20px;
+      color: var(--text-color);
+      height: 30px;
+      margin-bottom: 30px;
+      font-weight: 500;
+    }
+
+    .game-controls {
+      display: flex;
+      gap: 15px;
+    }
+
+    .btn-game {
+      padding: 12px 30px;
+      border-radius: 30px;
+      border: none;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: opacity 0.2s;
+    }
+
+    .btn-start { background-color: var(--primary-color); color: white; box-shadow: 0 4px 10px rgba(93, 156, 236, 0.3); }
+    .btn-stop { background-color: #fce4ec; color: #c2185b; }
+    .btn-reset { background-color: #f0f2f5; color: #666; padding: 12px; border-radius: 50%; }
 
   </style>
 </head>
@@ -221,6 +287,13 @@
       <h2>Музыка для релакса</h2>
       <p>Звуки природы и эмбиент.</p>
     </div>
+    
+    <!-- НОВЫЙ ПУНКТ -->
+    <div class="menu-card card-game" onclick="navigateTo('game')">
+      <span class="material-icons-round icon-box">air</span>
+      <h2>Игра: Дыхание</h2>
+      <p>Техника 4-7-8 для успокоения.</p>
+    </div>
 
   </div>
 
@@ -242,7 +315,7 @@
     </div>
   </div>
 
-  <!-- ЭКРАН 3: ВИДЕО (Заглушка) -->
+  <!-- ЭКРАН 3: ВИДЕО -->
   <div id="video-screen" class="screen">
     <div class="content-list">
       <div class="media-item">
@@ -261,11 +334,10 @@
         </div>
         <span class="material-icons-round play-btn">play_arrow</span>
       </div>
-      <!-- Здесь можно добавить реальные iframe с YouTube -->
     </div>
   </div>
 
-  <!-- ЭКРАН 4: МУЗЫКА (Заглушка) -->
+  <!-- ЭКРАН 4: МУЗЫКА -->
   <div id="music-screen" class="screen">
     <div class="content-list">
       <div class="media-item">
@@ -276,48 +348,70 @@
         </div>
         <span class="material-icons-round play-btn">play_arrow</span>
       </div>
-      <div class="media-item">
-        <div class="media-icon"><span class="material-icons-round">forest</span></div>
-        <div class="media-info">
-          <h3>Звуки леса</h3>
-          <p>Птицы и ветер</p>
-        </div>
-        <span class="material-icons-round play-btn">play_arrow</span>
-      </div>
     </div>
   </div>
 
-  <script>
-    // ---------------------------------------------------------
-    // ВСТАВЬ СЮДА СВОЮ ССЫЛКУ ИЗ GOOGLE APPS SCRIPT
-    // ---------------------------------------------------------
-    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzOq4mO0Dgx9PH9AzH8ozKOYcQ0CshNHldt51VyynuR1uJZ8ZW_x71KNhG-4QV6nPF8/exec";
+  <!-- ЭКРАН 5: ИГРА (ДЫХАНИЕ) -->
+  <div id="game-screen" class="screen">
+    
+    <div class="breath-container">
+      <div class="breath-ring"></div>
+      <div class="breath-circle" id="breathCircle">
+        <span class="breath-text" id="breathLabel">Relax</span>
+      </div>
+    </div>
 
-    // --- ИНИЦИАЛИЗАЦИЯ TELEGRAM ---
+    <div class="instruction-text" id="breathInstruction">
+      Нажми Старт, чтобы начать
+    </div>
+
+    <div class="game-controls">
+      <button class="btn-game btn-start" id="breathStartBtn" onclick="toggleBreathing()">
+        <span class="material-icons-round" id="playIcon">play_arrow</span>
+        <span id="playText">Старт</span>
+      </button>
+      
+      <button class="btn-game btn-reset" onclick="resetBreathing()">
+        <span class="material-icons-round">refresh</span>
+      </button>
+    </div>
+
+  </div>
+
+  <script>
+    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwfZ4OH8TXstzCQe9lZ8zfnqjR6lS6d_KKFRGe0dq36lEN5re84ICuno9Cexn_5cbWS/exec";
+
+    // --- ИНИЦИАЛИЗАЦИЯ ---
     const tg = window.Telegram.WebApp;
     tg.expand();
-    
-    // Включаем кнопку "Назад" на уровне Телеграма
     tg.BackButton.onClick(goBack);
 
-    // Темная тема
     if (tg.colorScheme === 'dark') {
       document.body.classList.add('dark-mode');
     }
 
-    // --- ЭЛЕМЕНТЫ UI ---
+    // --- UI ЭЛЕМЕНТЫ ---
     const screens = {
       menu: document.getElementById('menu-screen'),
       chat: document.getElementById('chat-screen'),
       video: document.getElementById('video-screen'),
-      music: document.getElementById('music-screen')
+      music: document.getElementById('music-screen'),
+      game: document.getElementById('game-screen') // Добавлен экран игры
     };
 
     const backBtn = document.getElementById('back-btn');
     const pageTitle = document.getElementById('page-title');
     const pageSubtitle = document.getElementById('page-subtitle');
     
-    // Элементы чата
+    // Элементы игры
+    const breathCircle = document.getElementById('breathCircle');
+    const breathLabel = document.getElementById('breathLabel');
+    const breathInstruction = document.getElementById('breathInstruction');
+    const playIcon = document.getElementById('playIcon');
+    const playText = document.getElementById('playText');
+    const breathStartBtn = document.getElementById('breathStartBtn');
+
+    // Переменные чата
     const chatContainer = document.getElementById('chat-container');
     const userInput = document.getElementById('userInput');
     const sendBtn = document.getElementById('sendBtn');
@@ -326,13 +420,9 @@
 
     // --- НАВИГАЦИЯ ---
     function navigateTo(screenName) {
-      // 1. Скрываем все экраны
       Object.values(screens).forEach(el => el.classList.remove('active'));
-      
-      // 2. Показываем нужный
       screens[screenName].classList.add('active');
 
-      // 3. Обновляем шапку
       if (screenName === 'menu') {
         backBtn.style.display = 'none';
         tg.BackButton.hide();
@@ -344,21 +434,119 @@
         pageSubtitle.style.display = 'none';
         
         if (screenName === 'chat') {
-            pageTitle.innerText = 'Чат';
-            setTimeout(scrollToBottom, 100); // Фикс скролла при переходе
+           pageTitle.innerText = 'Чат';
+           setTimeout(scrollToBottom, 100);
         }
         else if (screenName === 'video') pageTitle.innerText = 'Видео';
         else if (screenName === 'music') pageTitle.innerText = 'Музыка';
+        else if (screenName === 'game') pageTitle.innerText = 'Игра: Дыхание';
       }
     }
 
     function goBack() {
-      // Всегда возвращаемся в меню
+      // Если уходим с игры - сбрасываем её
+      if(screens.game.classList.contains('active')) {
+        resetBreathing();
+      }
       navigateTo('menu');
     }
 
-    // --- ЛОГИКА ЧАТА (без изменений) ---
+    // --- ЛОГИКА ИГРЫ (ДЫХАНИЕ) ---
+    let breathInterval = null;
+    let breathTimer = 0;
+    let isBreathing = false;
+    
+    // Тайминги в секундах
+    const INHALE_TIME = 4;
+    const HOLD_TIME = 7;
+    const EXHALE_TIME = 8;
 
+    function toggleBreathing() {
+      if (isBreathing) {
+        stopBreathing();
+      } else {
+        startBreathing();
+      }
+    }
+
+    function startBreathing() {
+      isBreathing = true;
+      playIcon.innerText = 'pause';
+      playText.innerText = 'Пауза';
+      breathStartBtn.classList.remove('btn-start');
+      breathStartBtn.classList.add('btn-stop');
+      
+      // Запускаем цикл каждую секунду
+      breathInterval = setInterval(() => {
+        breathTimer++;
+        updateBreathVisuals();
+      }, 1000);
+      
+      // Сразу запускаем первый шаг
+      updateBreathVisuals();
+    }
+
+    function stopBreathing() {
+      isBreathing = false;
+      clearInterval(breathInterval);
+      breathInterval = null;
+      
+      playIcon.innerText = 'play_arrow';
+      playText.innerText = 'Продолжить';
+      breathStartBtn.classList.add('btn-start');
+      breathStartBtn.classList.remove('btn-stop');
+    }
+
+    function resetBreathing() {
+      stopBreathing();
+      breathTimer = 0;
+      
+      // Сброс UI
+      playText.innerText = 'Старт';
+      breathCircle.className = 'breath-circle'; // Убираем модификаторы
+      breathLabel.innerText = 'Relax';
+      breathInstruction.innerText = 'Нажми Старт, чтобы начать';
+      
+      // Текст внутри круга белый или темный в зависимости от темы
+      if (document.body.classList.contains('dark-mode')) {
+         breathLabel.style.color = 'white';
+      } else {
+         breathLabel.style.color = '#666'; 
+      }
+    }
+
+    function updateBreathVisuals() {
+      // Общий цикл = 4 + 7 + 8 = 19 секунд
+      const cycleTime = breathTimer % (INHALE_TIME + HOLD_TIME + EXHALE_TIME);
+
+      breathCircle.className = 'breath-circle'; // Сброс классов
+      breathLabel.style.color = 'white'; // Текст всегда белый на активных фазах
+
+      if (cycleTime < INHALE_TIME) {
+        // ВДОХ (0-4 сек)
+        breathCircle.classList.add('state-inhale');
+        breathLabel.innerText = 'Вдох';
+        breathInstruction.innerText = 'Глубокий вдох через нос...';
+      } 
+      else if (cycleTime < INHALE_TIME + HOLD_TIME) {
+        // ЗАДЕРЖКА (4-11 сек)
+        breathCircle.classList.add('state-hold');
+        breathLabel.innerText = 'Держи';
+        breathInstruction.innerText = 'Задержи дыхание...';
+      } 
+      else {
+        // ВЫДОХ (11-19 сек)
+        breathCircle.classList.add('state-exhale');
+        breathLabel.innerText = 'Выдох';
+        // На светлом фоне выдох (серый круг) требует темного текста
+        if (!document.body.classList.contains('dark-mode')) {
+           breathLabel.style.color = '#555';
+        }
+        breathInstruction.innerText = 'Медленный выдох через рот...';
+      }
+    }
+
+    // --- ЛОГИКА ЧАТА ---
     function scrollToBottom() {
       chatContainer.scrollTop = chatContainer.scrollHeight;
     }
@@ -386,7 +574,6 @@
       sendBtn.disabled = true;
       showTyping(true);
 
-      // API запрос
       fetch(GOOGLE_SCRIPT_URL + '?act=api', {
         method: 'POST',
         redirect: "follow",
@@ -398,7 +585,6 @@
         showTyping(false);
         sendBtn.disabled = false;
         userInput.focus();
-        
         if (data.status === 'success') {
           addMessage(data.text, false);
           if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
@@ -414,7 +600,6 @@
       });
     }
 
-    // --- СОБЫТИЯ ---
     sendBtn.addEventListener('click', sendMessage);
     userInput.addEventListener('keypress', (e) => {
       if (e.key === 'Enter') sendMessage();
