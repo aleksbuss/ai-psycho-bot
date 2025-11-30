@@ -656,12 +656,13 @@
     window.visualViewport.addEventListener('resize', () => {
        if(screens.chat.classList.contains('active')) scrollToBottom();
     });
-// --- ГОЛОСОВОЙ ВВОД (Оптимизированный) ---
+// --- ГОЛОСОВОЙ ВВОД И АУДИОПЛЕЕР ---
     const micBtn = document.getElementById('micBtn');
     let mediaRecorder;
     let audioChunks = [];
     let isRecording = false;
-    let globalStream = null; // Храним доступ к микрофону здесь
+    let globalStream = null; 
+    let currentAudio = null; // Глобальная переменная для текущего звука
 
     micBtn.addEventListener('click', async () => {
       if (!isRecording) {
@@ -672,13 +673,14 @@
     });
 
     async function startRecording() {
+      // 1. Если бот что-то говорит - затыкаем его перед записью
+      stopCurrentAudio();
+
       try {
-        // Проверяем: если потока нет или он неактивен — просим доступ
         if (!globalStream || !globalStream.active) {
             globalStream = await navigator.mediaDevices.getUserMedia({ audio: true });
         }
 
-        // Используем сохраненный поток
         mediaRecorder = new MediaRecorder(globalStream);
         audioChunks = [];
 
@@ -691,7 +693,6 @@
         mediaRecorder.start();
         isRecording = true;
         
-        // Визуальные эффекты
         micBtn.classList.add('recording');
         micBtn.innerHTML = '<span class="material-icons-round">stop</span>';
         
@@ -701,8 +702,7 @@
         userInput.disabled = true;
       } catch (err) {
         console.error("Ошибка микрофона:", err);
-        addMessage("⚠️ Нет доступа к микрофону. Разрешите доступ в настройках.", false);
-        // Сбрасываем поток, если была ошибка
+        addMessage("⚠️ Нет доступа к микрофону.", false);
         globalStream = null;
       }
     }
@@ -719,9 +719,6 @@
 
         userInput.placeholder = "Напиши сообщение...";
         userInput.disabled = false;
-        
-        // ВАЖНО: Мы НЕ останавливаем globalStream (tracks), 
-        // чтобы в следующий раз не спрашивать разрешение снова.
       }
     }
 
@@ -737,7 +734,6 @@
         
         addMessage("🎤 <i>Аудиосообщение...</i>", true);
 
-        // Отправка (ждем и текст, и аудио в ответ)
         fetch(GOOGLE_SCRIPT_URL + '?act=api', {
           method: 'POST',
           mode: 'cors',
@@ -749,15 +745,12 @@
         .then(data => {
           showTyping(false);
           if (data.status === 'success') {
-            // 1. Показываем распознанный текст
             if (data.recognizedText) {
                addMessage("🗣 " + data.recognizedText, true); 
             }
             
-            // 2. Показываем ответ ИИ текстом
             addMessage(data.text, false);
             
-            // 3. Играем аудио-ответ (если он пришел)
             if (data.audio) {
                playAudioResponse(data.audio);
             }
@@ -772,15 +765,31 @@
       };
     }
 
+    // Вспомогательная функция для остановки звука
+    function stopCurrentAudio() {
+      if (currentAudio) {
+        currentAudio.pause();
+        currentAudio.currentTime = 0; // Перемотка в начало
+        currentAudio = null;
+      }
+    }
+
     function playAudioResponse(base64Audio) {
-       // Создаем аудио объект
-       const audio = new Audio("data:audio/mp3;base64," + base64Audio);
+       // Сначала останавливаем всё, что играло до этого
+       stopCurrentAudio();
+
+       // Создаем новый плеер
+       currentAudio = new Audio("data:audio/mp3;base64," + base64Audio);
        
-       // Пытаемся воспроизвести
-       audio.play().catch(e => {
+       currentAudio.play().catch(e => {
            console.log("Автовоспроизведение блокировано:", e);
-           addMessage("🔊 Нажми, чтобы прослушать", false);
+           // Если автоплей запрещен, можно показать кнопку Play (опционально)
        });
+       
+       // Когда аудио закончится, очищаем переменную
+       currentAudio.onended = () => {
+         currentAudio = null;
+       };
     }
   </script>
 </body>
