@@ -120,22 +120,20 @@
     .media-info p { font-size: 12px; color: #888; }
     .play-btn { margin-left: auto; color: #5D9CEC; }
 
-   /* --- ИГРА (ЧАСТИЦЫ / PARTICLE SYSTEM) --- */
+   /* --- ИГРА (ЧАСТИЦЫ - НЕБО) --- */
     #game-screen {
       display: none; 
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      /* Темный глубокий фон для контраста с частицами */
-      background: linear-gradient(135deg, #1a2a6c 0%, #b21f1f 50%, #fdbb2d 100%); /* Резервный */
-      background: radial-gradient(ellipse at center, #1B2735 0%, #090A0F 100%);
+      /* НОВЫЙ ЦВЕТ: Спокойный небесный градиент */
+      background: radial-gradient(circle at center, #64B5F6 0%, #1976D2 100%);
       padding: 0;
       position: relative;
       overflow: hidden;
     }
     #game-screen.active { display: flex; }
 
-    /* Холст для рисования */
     canvas#breathCanvas {
       position: absolute;
       top: 0; left: 0;
@@ -143,17 +141,26 @@
       z-index: 1;
     }
 
-    /* UI поверх холста */
     .game-ui-overlay {
       position: relative;
       z-index: 10;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
+      justify-content: flex-end; 
       height: 100%;
       width: 100%;
-      pointer-events: none; /* Чтобы клики проходили, если надо */
+      padding-bottom: 80px; 
+      pointer-events: none;
+    }
+
+    .breath-text-container {
+      flex: 1; 
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px; 
     }
 
     .breath-status {
@@ -162,58 +169,53 @@
       color: white;
       text-transform: uppercase;
       letter-spacing: 4px;
-      text-shadow: 0 0 20px rgba(255,255,255,0.5);
-      margin-bottom: 10px;
-      opacity: 0.9;
-      transition: all 0.5s ease;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+      margin-bottom: 15px;
+      opacity: 1;
     }
 
     .breath-timer-text {
-      font-size: 16px;
-      color: rgba(255,255,255,0.7);
-      margin-bottom: 50px;
-      font-weight: 400;
+      font-size: 18px;
+      color: rgba(255,255,255,0.9);
+      font-weight: 500;
       letter-spacing: 1px;
     }
 
     .game-controls { 
-      pointer-events: auto; /* Включаем клики для кнопок */
+      pointer-events: auto;
       display: flex; 
       gap: 20px; 
-      margin-top: 20px;
     }
 
     .btn-game-glass {
       padding: 18px 40px;
       border-radius: 50px;
-      border: 1px solid rgba(255,255,255,0.2);
+      border: 1px solid rgba(255,255,255,0.3);
       font-size: 18px;
       font-weight: 600;
       cursor: pointer;
       display: flex; align-items: center; gap: 10px;
+      /* Стекло для светлого фона */
+      background: rgba(255, 255, 255, 0.2);
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
       transition: all 0.3s;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-    }
-
-    .btn-start-glass {
-      background: rgba(255, 255, 255, 0.15);
+      box-shadow: 0 5px 20px rgba(0,0,0,0.1);
       color: white;
     }
-    .btn-start-glass:hover { background: rgba(255, 255, 255, 0.25); transform: scale(1.05); }
+
+    .btn-start-glass:hover { background: rgba(255, 255, 255, 0.3); transform: scale(1.05); }
     
     .btn-stop-glass {
-      background: rgba(255, 80, 80, 0.2);
-      color: #ffcccc;
-      border-color: rgba(255, 80, 80, 0.4);
+      background: rgba(255, 150, 150, 0.3);
+      border-color: rgba(255, 100, 100, 0.3);
     }
 
     .btn-reset-glass {
       padding: 18px; border-radius: 50%;
-      background: rgba(255,255,255,0.1);
-      color: rgba(255,255,255,0.8);
-      border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.2);
+      color: white;
+      border: 1px solid rgba(255,255,255,0.3);
     }
 
   </style>
@@ -291,9 +293,13 @@
     <canvas id="breathCanvas"></canvas>
     
     <div class="game-ui-overlay">
-      <div class="breath-status" id="breathLabel">RELAX</div>
-      <div class="breath-timer-text" id="breathInstruction">Нажми Старт</div>
+      <!-- Текст поднят выше, в отдельный контейнер -->
+      <div class="breath-text-container">
+        <div class="breath-status" id="breathLabel">RELAX</div>
+        <div class="breath-timer-text" id="breathInstruction">Нажми Старт</div>
+      </div>
 
+      <!-- Кнопки прижаты к низу -->
       <div class="game-controls">
         <button class="btn-game-glass btn-start-glass" id="breathStartBtn" onclick="toggleBreathing()">
           <span class="material-icons-round" id="playIcon">play_arrow</span>
@@ -366,7 +372,6 @@
 
       if (screenName === 'menu') {
         header.style.display = 'none'; tg.BackButton.hide();
-        // Останавливаем анимацию если ушли из игры
         stopBreathingAnimationLoop();
       } else {
         header.style.display = 'flex'; tg.BackButton.show();
@@ -376,7 +381,6 @@
         else if (screenName === 'music') pageTitle.innerText = 'Дневник';
         else if (screenName === 'game') {
            pageTitle.innerText = 'Дыхание';
-           // Инициализация Canvas
            resizeCanvas();
            startBreathingAnimationLoop();
         }
@@ -391,11 +395,13 @@
     // --- ЛОГИКА ИГРЫ (CANVAS PARTICLES) ---
     let animationId;
     let particles = [];
-    let baseRadius = 80;
-    let targetRadius = 80;
-    let currentRadius = 80;
-    let breathPhase = 'ready'; // ready, inhale, hold, exhale
     
+    // РАДИУСЫ
+    let baseRadius = 110; 
+    let targetRadius = 110;
+    let currentRadius = 110;
+    
+    let breathPhase = 'ready'; 
     let breathInterval = null;
     let breathTimer = 0;
     let isBreathing = false;
@@ -405,7 +411,6 @@
     const HOLD_TIME = 7;
     const EXHALE_TIME = 8;
 
-    // Настройка Canvas
     function resizeCanvas() {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
@@ -419,39 +424,36 @@
         this.distance = baseRadius + Math.random() * 20;
         this.size = Math.random() * 3 + 1;
         this.speed = Math.random() * 0.02 + 0.005;
-        this.color = `rgba(255, 255, 255, ${Math.random() * 0.5 + 0.2})`;
+        // Более светлые частицы для синего фона
+        this.color = `rgba(255, 255, 255, ${Math.random() * 0.5 + 0.3})`;
         this.wobble = Math.random() * 20;
       }
       
       update(radius, phase) {
-        // Движение по кругу
         this.angle += this.speed;
-        
-        // Плавное изменение радиуса
         let targetDist = radius + Math.sin(Date.now() / 500 + this.wobble) * 10;
         
-        // Магия движения частиц при вдохе/выдохе
         if (phase === 'inhale') {
-           // При вдохе частицы разлетаются чуть хаотично
            targetDist += Math.random() * 10;
-           this.color = `rgba(100, 200, 255, ${Math.random() * 0.6 + 0.4})`; // Голубой
+           // Ярко-белый/голубой при вдохе
+           this.color = `rgba(255, 255, 255, ${Math.random() * 0.7 + 0.3})`;
         } else if (phase === 'hold') {
-           // При задержке дрожат
            targetDist += Math.random() * 2;
-           this.color = `rgba(100, 255, 200, ${Math.random() * 0.6 + 0.4})`; // Мятный
+           // Мятный оттенок на задержке
+           this.color = `rgba(200, 255, 240, ${Math.random() * 0.6 + 0.4})`;
         } else if (phase === 'exhale') {
-           // При выдохе успокаиваются
-           this.color = `rgba(200, 200, 255, ${Math.random() * 0.4 + 0.2})`; // Спокойный
+           // Мягкий прозрачный белый на выдохе
+           this.color = `rgba(255, 255, 255, ${Math.random() * 0.4 + 0.1})`;
         } else {
-           this.color = `rgba(255, 255, 255, 0.3)`;
+           this.color = `rgba(255, 255, 255, 0.4)`;
         }
 
-        // Плавное приближение к целевому радиусу (Lerp)
         this.distance += (targetDist - this.distance) * 0.05;
 
-        // Координаты
         const cx = canvas.width / 2;
-        const cy = canvas.height / 2 - 50; // Чуть выше центра
+        // ПОДНЯЛИ ЦЕНТР ЧАСТИЦ ВЫШЕ, ЧТОБЫ НЕ НАЕЗЖАТЬ НА КНОПКИ
+        const cy = (canvas.height / 2) - 60; 
+        
         this.x = cx + Math.cos(this.angle) * this.distance;
         this.y = cy + Math.sin(this.angle) * this.distance;
       }
@@ -482,19 +484,14 @@
 
     function animate() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      
-      // Плавное изменение общего радиуса сферы
       currentRadius += (targetRadius - currentRadius) * 0.02;
-
       particles.forEach(p => {
         p.update(currentRadius, breathPhase);
         p.draw();
       });
-      
       animationId = requestAnimationFrame(animate);
     }
 
-    // Логика таймера
     function toggleBreathing() {
       if (isBreathing) stopBreathing();
       else startBreathing();
@@ -528,7 +525,7 @@
       stopBreathing();
       breathTimer = 0;
       breathPhase = 'ready';
-      targetRadius = 80;
+      targetRadius = 110; 
       
       playText.innerText = 'Старт';
       playIcon.innerText = 'play_arrow';
@@ -542,25 +539,25 @@
 
       if (cycleTime < INHALE_TIME) {
         breathPhase = 'inhale';
-        targetRadius = 160; // Расширяем сферу
+        targetRadius = 180; 
         breathLabel.innerText = 'ВДОХ';
         breathInstruction.innerText = 'Глубокий вдох...';
       } 
       else if (cycleTime < INHALE_TIME + HOLD_TIME) {
         breathPhase = 'hold';
-        targetRadius = 170; // Держим большой
+        targetRadius = 190;
         breathLabel.innerText = 'ПАУЗА';
         breathInstruction.innerText = 'Задержи дыхание...';
       } 
       else {
         breathPhase = 'exhale';
-        targetRadius = 80; // Сжимаем
+        targetRadius = 110; 
         breathLabel.innerText = 'ВЫДОХ';
         breathInstruction.innerText = 'Медленный выдох...';
       }
     }
 
-    // --- ЛОГИКА ЧАТА И АУДИО (СОКРАЩЕНО ДЛЯ ЭКОНОМИИ МЕСТА, ОСТАЛОСЬ ПРЕЖНИМ) ---
+    // --- ЛОГИКА ЧАТА И АУДИО ---
     function scrollToBottom() { chatContainer.scrollTop = chatContainer.scrollHeight; }
     function addMessage(text, isUser = false) {
       const msgDiv = document.createElement('div'); msgDiv.classList.add('message');
