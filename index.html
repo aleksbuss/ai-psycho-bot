@@ -26,11 +26,6 @@
       --card-green-bg: linear-gradient(135deg, #A8E6CF 0%, #DCEDC8 100%);
       --card-gray-bg: linear-gradient(135deg, #E6E9F0 0%, #EEF1F5 100%);
       --card-white-bg: #FFFFFF;
-
-      /* Дыхание */
-      --breath-inhale: #89C4F4;
-      --breath-hold: #5D9CEC;
-      --breath-exhale: #E2E8F0;
     }
 
     /* Сброс и база */
@@ -196,136 +191,146 @@
     .media-info p { font-size: 12px; color: #888; }
     .play-btn { margin-left: auto; color: #5D9CEC; }
 
-   /* --- ИГРА (ДЫХАНИЕ - ИСПРАВЛЕННЫЙ ДИЗАЙН) --- */
+   /* --- ИГРА: LIQUID HARMONY (ЖИДКИЙ ДИЗАЙН) --- */
     #game-screen {
-      /* ВАЖНО: Скрываем по умолчанию, перебивая специфичность ID */
-      display: none; 
+      display: none; /* Скрыто по умолчанию */
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      background: linear-gradient(180deg, #FFFFFF 0%, #F0F4F8 100%);
+      /* Глубокий, спокойный фон */
+      background: radial-gradient(circle at center, #F0F8FF 0%, #E3F2FD 100%);
       padding: 20px;
       text-align: center;
       position: relative;
+      overflow: hidden;
     }
-    
-    /* Когда добавлен класс active - показываем */
-    #game-screen.active {
-      display: flex;
-    }
+    #game-screen.active { display: flex; }
 
-    /* Контейнер круга */
-    .breath-container {
+    /* Контейнер для жидкости */
+    .breath-visual-container {
       position: relative;
-      width: 300px;
-      height: 300px;
+      width: 320px;
+      height: 320px;
       display: flex;
       align-items: center;
       justify-content: center;
-      margin-bottom: 50px;
+      margin-bottom: 60px;
     }
 
-    /* Фоновые кольца */
-    .breath-ripple {
+    /* Общий класс для слоев капли */
+    .blob {
       position: absolute;
-      border-radius: 50%;
-      border: 1px solid rgba(93, 156, 236, 0.1);
-      background: rgba(93, 156, 236, 0.05);
-      width: 100%;
-      height: 100%;
-      transform: scale(0.8);
-      opacity: 0;
-      transition: all 4s ease-in-out;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+      mix-blend-mode: multiply; /* Эффект наложения цветов */
+      filter: blur(8px);
+      transition: all 1s ease;
+      opacity: 0.8;
+      will-change: transform, border-radius;
+    }
+
+    /* Слой 1: Основной (Голубой) */
+    .blob-1 {
+      background: linear-gradient(135deg, #A1C4FD 0%, #C2E9FB 100%);
+      animation: morph 8s linear infinite;
+      z-index: 2;
+    }
+
+    /* Слой 2: Вторичный (Мятный) */
+    .blob-2 {
+      background: linear-gradient(135deg, #D4FC79 0%, #96E6A1 100%);
+      animation: morph 8s linear infinite reverse;
+      opacity: 0.6;
+      transform: scale(0.9) rotate(45deg);
       z-index: 1;
     }
 
-    /* Главный круг */
-    .breath-circle {
-      width: 220px;
-      height: 220px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+    /* Слой 3: Сияние */
+    .blob-3 {
+      background: #FFFFFF;
+      opacity: 0.4;
+      filter: blur(20px);
+      transform: scale(0.8);
+      z-index: 3;
+    }
+
+    /* Текст внутри */
+    .breath-content {
+      position: relative;
       z-index: 10;
-      background: linear-gradient(135deg, #E2E8F0 0%, #FFFFFF 100%);
-      box-shadow: 0 10px 30px rgba(0,0,0,0.05), inset 0 0 20px rgba(255,255,255,0.8);
-      transform: scale(1);
-      transition: all 4s cubic-bezier(0.4, 0.0, 0.2, 1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
 
     .breath-text {
-      color: #546E7A;
-      font-size: 28px;
-      font-weight: 700;
-      letter-spacing: 1px;
-      transition: opacity 0.3s;
-    }
-
-    /* Анимации */
-    .state-inhale .breath-circle {
-      transform: scale(1.3);
-      background: linear-gradient(135deg, #89C4F4 0%, #5D9CEC 100%);
-      box-shadow: 0 20px 50px rgba(93, 156, 236, 0.4);
-    }
-    .state-inhale .breath-text { color: white; }
-    .state-inhale .breath-ripple { transform: scale(1.5); opacity: 1; border-color: rgba(93, 156, 236, 0.2); }
-
-    .state-hold .breath-circle {
-      transform: scale(1.3);
-      background: linear-gradient(135deg, #4FC3F7 0%, #29B6F6 100%);
-      box-shadow: 0 20px 50px rgba(41, 182, 246, 0.3);
-    }
-    .state-hold .breath-text { color: white; }
-    .state-hold .breath-ripple { transform: scale(1.6); opacity: 0.5; }
-
-    .state-exhale .breath-circle {
-      transform: scale(1);
-      background: linear-gradient(135deg, #E2E8F0 0%, #F5F7FA 100%);
-      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-    }
-    .state-exhale .breath-text { color: #546E7A; }
-    .state-exhale .breath-ripple { transform: scale(0.8); opacity: 0; }
-
-    .instruction-text {
-      font-size: 22px;
-      color: #2C3E50;
-      height: 40px;
-      margin-bottom: 40px;
-      font-weight: 600;
-      opacity: 0.8;
+      color: #37474F;
+      font-size: 32px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      text-shadow: 0 2px 10px rgba(255,255,255,0.5);
       transition: opacity 0.5s;
     }
 
-    .game-controls { display: flex; gap: 20px; align-items: center; }
+    /* --- АНИМАЦИИ СОСТОЯНИЙ --- */
+    .breath-visual-container.state-inhale .blob { transform: scale(1.4); }
+    .breath-visual-container.state-inhale .blob-1 {
+      background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+      box-shadow: 0 0 60px rgba(0, 198, 251, 0.4);
+    }
 
+    .breath-visual-container.state-hold .blob { transform: scale(1.45); filter: blur(4px); }
+    .breath-visual-container.state-hold .blob-1 {
+      background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+    }
+
+    .breath-visual-container.state-exhale .blob { transform: scale(0.9); border-radius: 50%; }
+    .breath-visual-container.state-exhale .blob-1 {
+      background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+    }
+
+    @keyframes morph {
+      0% { border-radius: 40% 60% 60% 40% / 60% 30% 70% 40%; }
+      33% { border-radius: 70% 30% 30% 70% / 50% 60% 30% 60%; }
+      66% { border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%; }
+      100% { border-radius: 40% 60% 60% 40% / 60% 30% 70% 40%; }
+    }
+
+    .instruction-text {
+      margin-top: -20px;
+      font-size: 18px;
+      font-weight: 500;
+      color: #78909C;
+      height: 24px;
+      margin-bottom: 50px;
+      transition: opacity 0.3s;
+    }
+
+    /* Кнопки (Стекломорфизм) */
+    .game-controls { display: flex; gap: 20px; z-index: 20; }
+    
     .btn-game {
-      padding: 16px 32px;
-      border-radius: 50px;
-      border: none;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.6);
+      box-shadow: 0 8px 32px rgba(31, 38, 135, 0.1);
+      border-radius: 20px;
+      padding: 15px 40px;
       font-size: 18px;
       font-weight: 600;
       cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      transition: all 0.2s;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+      display: flex; align-items: center; gap: 8px;
+      transition: transform 0.1s;
     }
+    .btn-game:active { transform: scale(0.95); }
 
-    .btn-start {
-      background: linear-gradient(135deg, #5D9CEC 0%, #4A89DC 100%);
-      color: white;
-      box-shadow: 0 8px 20px rgba(93, 156, 236, 0.3);
-    }
-    .btn-start:active { transform: scale(0.95); }
-
-    .btn-stop { background: #FFCDD2; color: #C62828; }
-    
+    .btn-start { background: rgba(255, 255, 255, 0.6); color: #2C3E50; }
+    .btn-stop { background: rgba(255, 200, 200, 0.4); color: #C62828; }
     .btn-reset {
-      background: white; color: #90A4AE;
-      width: 54px; height: 54px; padding: 0;
-      justify-content: center; border-radius: 50%;
+      padding: 15px; border-radius: 50%;
+      background: rgba(255,255,255,0.4); color: #546E7A;
     }
 
   </style>
@@ -439,15 +444,16 @@
     </div>
   </div>
 
-  <!-- ЭКРАН 4: ИГРА (ДЫХАНИЕ) -->
+  <!-- ЭКРАН 4: ИГРА (ДЫХАНИЕ - ЖИДКИЙ ДИЗАЙН) -->
   <div id="game-screen" class="screen">
     
-    <div class="breath-container" id="breathContainer">
-      <div class="breath-ripple" style="transition-delay: 0.1s"></div>
-      <div class="breath-ripple" style="transition-delay: 0.2s"></div>
+    <div class="breath-visual-container" id="breathVisuals">
+      <div class="blob blob-1"></div>
+      <div class="blob blob-2"></div>
+      <div class="blob blob-3"></div>
       
-      <div class="breath-circle" id="breathCircle">
-        <span class="breath-text" id="breathLabel">Relax</span>
+      <div class="breath-content">
+        <span class="breath-text" id="breathLabel">RELAX</span>
       </div>
     </div>
 
@@ -506,7 +512,6 @@
     const pageTitle = document.getElementById('page-title');
     
     // Элементы игры
-    const breathCircle = document.getElementById('breathCircle');
     const breathLabel = document.getElementById('breathLabel');
     const breathInstruction = document.getElementById('breathInstruction');
     const playIcon = document.getElementById('playIcon');
@@ -598,33 +603,33 @@
       breathStartBtn.classList.remove('btn-stop');
       breathStartBtn.classList.add('btn-start');
       
-      const container = document.getElementById('breathContainer');
-      if (container) container.classList.remove('state-inhale', 'state-hold', 'state-exhale');
+      const visuals = document.getElementById('breathVisuals');
+      if (visuals) visuals.classList.remove('state-inhale', 'state-hold', 'state-exhale');
       
-      breathLabel.innerText = 'Relax';
+      breathLabel.innerText = 'RELAX';
       breathInstruction.innerText = 'Нажми Старт';
     }
 
     function updateBreathVisuals() {
       const cycleTime = breathTimer % (INHALE_TIME + HOLD_TIME + EXHALE_TIME);
-      const container = document.getElementById('breathContainer');
+      const visuals = document.getElementById('breathVisuals');
       
-      container.classList.remove('state-inhale', 'state-hold', 'state-exhale');
+      visuals.classList.remove('state-inhale', 'state-hold', 'state-exhale');
 
       if (cycleTime < INHALE_TIME) {
-        container.classList.add('state-inhale');
-        breathLabel.innerText = 'Вдох';
-        breathInstruction.innerText = 'Глубокий вдох носом...';
+        visuals.classList.add('state-inhale');
+        breathLabel.innerText = 'ВДОХ';
+        breathInstruction.innerText = 'Наполняй легкие воздухом...';
       } 
       else if (cycleTime < INHALE_TIME + HOLD_TIME) {
-        container.classList.add('state-hold');
-        breathLabel.innerText = 'Держи';
-        breathInstruction.innerText = 'Задержи дыхание...';
+        visuals.classList.add('state-hold');
+        breathLabel.innerText = 'ПАУЗА';
+        breathInstruction.innerText = 'Сохраняй спокойствие...';
       } 
       else {
-        container.classList.add('state-exhale');
-        breathLabel.innerText = 'Выдох';
-        breathInstruction.innerText = 'Медленный выдох ртом...';
+        visuals.classList.add('state-exhale');
+        breathLabel.innerText = 'ВЫДОХ';
+        breathInstruction.innerText = 'Отпускай напряжение...';
       }
     }
 
@@ -729,13 +734,13 @@
        if(screens.chat.classList.contains('active')) scrollToBottom();
     });
 
-    // --- ГОЛОСОВОЙ ВВОД ---
+    // --- ГОЛОСОВОЙ ВВОД И АУДИОПЛЕЕР ---
     const micBtn = document.getElementById('micBtn');
     let mediaRecorder;
     let audioChunks = [];
     let isRecording = false;
     let globalStream = null; 
-    let currentAudio = null;
+    let currentAudio = null; // Глобальная переменная для текущего звука
 
     micBtn.addEventListener('click', async () => {
       if (!isRecording) {
@@ -746,6 +751,7 @@
     });
 
     async function startRecording() {
+      // 1. Если бот что-то говорит - затыкаем его перед записью
       stopCurrentAudio();
 
       try {
@@ -789,7 +795,7 @@
         
         if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
 
-        userInput.placeholder = "Сообщение...";
+        userInput.placeholder = "Напиши сообщение...";
         userInput.disabled = false;
       }
     }
@@ -851,6 +857,7 @@
        
        currentAudio.play().catch(e => {
            console.log("Автовоспроизведение блокировано:", e);
+           addMessage("🔊 Нажми, чтобы прослушать", false);
        });
        
        currentAudio.onended = () => {
