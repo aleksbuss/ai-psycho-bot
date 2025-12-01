@@ -280,21 +280,158 @@
     .media-info p { font-size: 12px; color: #888; }
     .play-btn { margin-left: auto; color: #5D9CEC; }
 
-    /* --- ИГРА (ДЫХАНИЕ) --- */
-    #game-screen { align-items: center; justify-content: center; padding: 20px; text-align: center; background: white; }
-    .breath-container { position: relative; width: 250px; height: 250px; display: flex; align-items: center; justify-content: center; margin-bottom: 40px; }
-    .breath-ring { position: absolute; inset: 0; border-radius: 50%; border: 2px solid rgba(150, 150, 150, 0.1); }
-    .breath-circle { width: 100%; height: 100%; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 4s ease-in-out; box-shadow: 0 10px 25px rgba(0,0,0,0.1); transform: scale(0.5); background-color: var(--breath-exhale); }
-    .breath-text { color: white; font-size: 24px; font-weight: 600; z-index: 10; text-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-    .state-inhale { transform: scale(1); background-color: var(--breath-inhale); }
-    .state-hold { transform: scale(1); background-color: var(--breath-hold); }
-    .state-exhale { transform: scale(0.5); background-color: var(--breath-exhale); }
-    .instruction-text { font-size: 20px; color: #333; height: 30px; margin-bottom: 30px; font-weight: 500; }
-    .game-controls { display: flex; gap: 15px; }
-    .btn-game { padding: 12px 30px; border-radius: 30px; border: none; font-size: 16px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: opacity 0.2s; }
-    .btn-start { background-color: var(--breath-hold); color: white; box-shadow: 0 4px 10px rgba(93, 156, 236, 0.3); }
-    .btn-stop { background-color: #fce4ec; color: #c2185b; }
-    .btn-reset { background-color: #f0f2f5; color: #666; padding: 12px; border-radius: 50%; }
+   /* --- ИГРА (ДЫХАНИЕ - ОБНОВЛЕННЫЙ ДИЗАЙН) --- */
+    #game-screen {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      /* Легкий фоновый градиент для атмосферы */
+      background: linear-gradient(180deg, #FFFFFF 0%, #F0F4F8 100%);
+      padding: 20px;
+      text-align: center;
+      position: relative;
+    }
+
+    /* Контейнер круга */
+    .breath-container {
+      position: relative;
+      width: 300px;
+      height: 300px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 50px;
+    }
+
+    /* Фоновые кольца (Эффект ряби) */
+    .breath-ripple {
+      position: absolute;
+      border-radius: 50%;
+      border: 1px solid rgba(93, 156, 236, 0.1);
+      background: rgba(93, 156, 236, 0.05);
+      width: 100%;
+      height: 100%;
+      transform: scale(0.8);
+      opacity: 0;
+      transition: all 4s ease-in-out;
+      z-index: 1;
+    }
+
+    /* Главный круг */
+    .breath-circle {
+      width: 220px;
+      height: 220px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+      /* Красивый градиент и тень */
+      background: linear-gradient(135deg, #E2E8F0 0%, #FFFFFF 100%);
+      box-shadow: 
+        0 10px 30px rgba(0,0,0,0.05),
+        inset 0 0 20px rgba(255,255,255,0.8);
+      transform: scale(1);
+      transition: all 4s cubic-bezier(0.4, 0.0, 0.2, 1); /* Более плавная анимация */
+    }
+
+    /* Текст внутри круга */
+    .breath-text {
+      color: #546E7A;
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      transition: opacity 0.3s;
+    }
+
+    /* --- Состояния Анимации --- */
+    
+    /* 1. ВДОХ (Растем и голубеем) */
+    .state-inhale .breath-circle {
+      transform: scale(1.3); /* Увеличиваем масштаб */
+      background: linear-gradient(135deg, #89C4F4 0%, #5D9CEC 100%);
+      box-shadow: 0 20px 50px rgba(93, 156, 236, 0.4); /* Сильное свечение */
+    }
+    .state-inhale .breath-text { color: white; }
+    
+    .state-inhale .breath-ripple {
+      transform: scale(1.5);
+      opacity: 1;
+      border-color: rgba(93, 156, 236, 0.2);
+    }
+
+    /* 2. ЗАДЕРЖКА (Держим цвет и размер) */
+    .state-hold .breath-circle {
+      transform: scale(1.3);
+      background: linear-gradient(135deg, #4FC3F7 0%, #29B6F6 100%);
+      box-shadow: 0 20px 50px rgba(41, 182, 246, 0.3);
+    }
+    .state-hold .breath-text { color: white; }
+    .state-hold .breath-ripple { transform: scale(1.6); opacity: 0.5; }
+
+    /* 3. ВЫДОХ (Уменьшаемся) */
+    .state-exhale .breath-circle {
+      transform: scale(1);
+      background: linear-gradient(135deg, #E2E8F0 0%, #F5F7FA 100%);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    }
+    .state-exhale .breath-text { color: #546E7A; }
+    .state-exhale .breath-ripple { transform: scale(0.8); opacity: 0; }
+
+    /* Текст инструкции под кругом */
+    .instruction-text {
+      font-size: 22px;
+      color: #2C3E50;
+      height: 40px;
+      margin-bottom: 40px;
+      font-weight: 600;
+      opacity: 0.8;
+      transition: opacity 0.5s;
+    }
+
+    /* Кнопки управления */
+    .game-controls {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+    }
+
+    .btn-game {
+      padding: 16px 32px;
+      border-radius: 50px;
+      border: none;
+      font-size: 18px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: all 0.2s;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    }
+
+    .btn-start {
+      background: linear-gradient(135deg, #5D9CEC 0%, #4A89DC 100%);
+      color: white;
+      box-shadow: 0 8px 20px rgba(93, 156, 236, 0.3);
+    }
+    .btn-start:active { transform: scale(0.95); }
+
+    .btn-stop {
+      background: #FFCDD2;
+      color: #C62828;
+    }
+
+    .btn-reset {
+      background: white;
+      color: #90A4AE;
+      width: 54px;
+      height: 54px;
+      padding: 0;
+      justify-content: center;
+      border-radius: 50%;
+    }
 
   </style>
 </head>
@@ -415,24 +552,32 @@
 
   <!-- ЭКРАН 4: ИГРА (ДЫХАНИЕ) -->
   <div id="game-screen" class="screen">
-    <div class="breath-container">
-      <div class="breath-ring"></div>
+    
+    <div class="breath-container" id="breathContainer">
+      <!-- Добавили два кольца для эффекта "эхо" -->
+      <div class="breath-ripple" style="transition-delay: 0.1s"></div>
+      <div class="breath-ripple" style="transition-delay: 0.2s"></div>
+      
       <div class="breath-circle" id="breathCircle">
         <span class="breath-text" id="breathLabel">Relax</span>
       </div>
     </div>
+
     <div class="instruction-text" id="breathInstruction">
-      Нажми Старт, чтобы начать
+      Нажми Старт
     </div>
+
     <div class="game-controls">
       <button class="btn-game btn-start" id="breathStartBtn" onclick="toggleBreathing()">
         <span class="material-icons-round" id="playIcon">play_arrow</span>
         <span id="playText">Старт</span>
       </button>
+      
       <button class="btn-game btn-reset" onclick="resetBreathing()">
         <span class="material-icons-round">refresh</span>
       </button>
     </div>
+
   </div>
 
   <!-- ЭКРАН 5: МУЗЫКА (Дневник) -->
@@ -554,36 +699,46 @@
     function resetBreathing() {
       stopBreathing();
       breathTimer = 0;
+      
       playText.innerText = 'Старт';
-      breathCircle.className = 'breath-circle';
+      playIcon.innerText = 'play_arrow'; // Возвращаем иконку Play
+      breathStartBtn.classList.remove('btn-stop');
+      breathStartBtn.classList.add('btn-start');
+      
+      // Сброс визуала
+      const container = document.getElementById('breathContainer');
+      if (container) container.classList.remove('state-inhale', 'state-hold', 'state-exhale');
+      
       breathLabel.innerText = 'Relax';
-      breathInstruction.innerText = 'Нажми Старт, чтобы начать';
-      breathLabel.style.color = 'white';
+      breathInstruction.innerText = 'Нажми Старт';
     }
 
     function updateBreathVisuals() {
       const cycleTime = breathTimer % (INHALE_TIME + HOLD_TIME + EXHALE_TIME);
-
-      breathCircle.className = 'breath-circle';
-      breathLabel.style.color = 'white'; 
+      
+      // Находим контейнер, чтобы менять классы у всего блока
+      const container = document.getElementById('breathContainer');
+      
+      // Сбрасываем классы
+      container.classList.remove('state-inhale', 'state-hold', 'state-exhale');
 
       if (cycleTime < INHALE_TIME) {
-        breathCircle.classList.add('state-inhale');
+        // ВДОХ
+        container.classList.add('state-inhale');
         breathLabel.innerText = 'Вдох';
-        breathInstruction.innerText = 'Глубокий вдох...';
+        breathInstruction.innerText = 'Глубокий вдох носом...';
       } 
       else if (cycleTime < INHALE_TIME + HOLD_TIME) {
-        breathCircle.classList.add('state-hold');
+        // ЗАДЕРЖКА
+        container.classList.add('state-hold');
         breathLabel.innerText = 'Держи';
         breathInstruction.innerText = 'Задержи дыхание...';
       } 
       else {
-        breathCircle.classList.add('state-exhale');
+        // ВЫДОХ
+        container.classList.add('state-exhale');
         breathLabel.innerText = 'Выдох';
-        if (!document.body.classList.contains('dark-mode')) {
-           breathLabel.style.color = '#555';
-        }
-        breathInstruction.innerText = 'Медленный выдох...';
+        breathInstruction.innerText = 'Медленный выдох ртом...';
       }
     }
 
