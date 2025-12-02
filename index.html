@@ -590,7 +590,7 @@
       addMessage(text, true); userInput.value = ''; sendBtn.disabled = true; showTyping(true);
       fetch(GOOGLE_SCRIPT_URL + '?act=api', {
         method: 'POST', mode: 'cors', credentials: 'omit', redirect: "follow",
-        body: JSON.stringify({ text: text, userId: userId })
+        body: JSON.stringify({ text: text, userId: userId, initData: tg.initData })
       }).then(r => r.json()).then(d => {
         showTyping(false); sendBtn.disabled = false; userInput.focus();
         if (d.status === 'success') {
@@ -636,7 +636,7 @@
         addMessage("🎤 <i>Аудио...</i>", true);
         fetch(GOOGLE_SCRIPT_URL + '?act=api', {
           method: 'POST', mode: 'cors', credentials: 'omit', redirect: "follow",
-          body: JSON.stringify({ userId: userId, audio: reader.result })
+          body: JSON.stringify({ userId: userId, audio: reader.result, initData: tg.initData })
         }).then(r => r.json()).then(d => {
           showTyping(false);
           if (d.status === 'success') {
