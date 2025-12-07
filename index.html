@@ -1,331 +1,421 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Мой Психолог</title>
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
-  
-  <style>
-    :root {
-      --bg-color: #F3F6F8;
-      --text-main: #2C3E50;
-      --text-secondary: #546E7A;
-      --bot-msg-bg: #FFFFFF;
-      --user-msg-bg: #5D9CEC;
-      --user-msg-text: #FFFFFF;
-      
-      --card-blue-bg: linear-gradient(135deg, #89C4F4 0%, #5D9CEC 100%);
-      --card-green-bg: linear-gradient(135deg, #A8E6CF 0%, #DCEDC8 100%);
-      --card-gray-bg: linear-gradient(135deg, #E6E9F0 0%, #EEF1F5 100%);
-      --card-white-bg: #FFFFFF;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>AI Психолог</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+    <style>
+        :root {
+            /* --- НОВАЯ ЦВЕТОВАЯ ПАЛИТРА (под скриншот) --- */
+            --bg-top: #B8E1F7;      /* Голубой верх */
+            --bg-bottom: #F9F7F2;   /* Теплый белый низ */
+            
+            --text-primary: #2C4356;
+            --text-secondary: #6F818D;
+            
+            --hero-card-bg: linear-gradient(135deg, #98D3EF 0%, #76BEDE 100%);
+            --light-card-bg: #FFF9F0;
+            
+            /* Цвета чата (оставляем старые переменные, но с новыми оттенками) */
+            --bot-msg-bg: #FFFFFF;
+            --user-msg-bg: #76BEDE;
+            --user-msg-text: #FFFFFF;
+        }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    html, body { width: 100%; height: 100%; overflow: hidden; }
-    
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      background-color: var(--bg-color);
-      color: var(--text-main);
-      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-      display: flex; flex-direction: column;
-    }
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        
+        html, body { 
+            width: 100%; height: 100%; overflow: hidden; 
+        }
 
-    /* --- ШАПКА --- */
-    header {
-      padding: 0 15px;
-      background: #FFFFFF;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-      z-index: 100;
-      display: none; 
-      align-items: center;
-      height: 50px;
-      flex-shrink: 0;
-      width: 100%;
-    }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            /* Общий фон как на картинке */
+            background: linear-gradient(180deg, var(--bg-top) 0%, var(--bg-bottom) 45%, var(--bg-bottom) 100%);
+            color: var(--text-primary);
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            display: flex; flex-direction: column;
+        }
 
-    #back-btn {
-      background: none; border: none; color: var(--text-main);
-      cursor: pointer; padding: 5px; display: flex; align-items: center;
-    }
-    .header-title { font-size: 16px; font-weight: 600; margin-left: 10px; }
+        /* --- ШАПКА (видна только внутри разделов) --- */
+        header {
+            padding: 0 15px;
+            background: rgba(255,255,255,0.9);
+            backdrop-filter: blur(5px);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.03);
+            z-index: 100;
+            display: none;
+            align-items: center;
+            height: 50px;
+            flex-shrink: 0;
+            width: 100%;
+        }
 
-    /* --- ЭКРАНЫ --- */
-    .screen {
-      flex: 1; 
-      display: none; 
-      flex-direction: column; 
-      width: 100%; 
-      height: 100%;
-      overflow: hidden; 
-      position: relative;
-    }
-    .screen.active { display: flex; animation: fadeIn 0.2s ease; }
-    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        #back-btn {
+            background: none; border: none; color: var(--text-primary);
+            cursor: pointer; padding: 5px; display: flex; align-items: center;
+        }
+        .header-title { font-size: 16px; font-weight: 600; margin-left: 10px; }
 
-    /* --- МЕНЮ --- */
-    #menu-screen { padding: 0; background-color: var(--bg-color); overflow-y: auto; }
+        /* --- ЭКРАНЫ --- */
+        .screen {
+            flex: 1;
+            display: none;
+            flex-direction: column;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            position: relative;
+        }
+        .screen.active { display: flex; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-    .profile-section {
-      background: white; width: 100%; padding: 25px 20px;
-      display: flex; align-items: center; gap: 15px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-bottom: 20px;
-    }
-    .profile-placeholder-img { width: 60px; height: 60px; background-color: #E0E0E0; border-radius: 50%; flex-shrink: 0; }
-    .profile-info h2 { font-size: 18px; font-weight: 700; color: var(--text-main); margin-bottom: 4px; }
-    .profile-info p { font-size: 14px; color: #2ECC71; font-weight: 500; display: flex; align-items: center; gap: 5px; }
+        /* =========================================
+           ДИЗАЙН ГЛАВНОГО МЕНЮ (МЕНЯЕМ ТОЛЬКО CSS/HTML)
+           ========================================= */
+        #menu-screen {
+            padding: 20px 24px;
+            overflow-y: auto;
+            align-items: center; /* Центрируем контент */
+        }
 
-    .menu-list { padding: 0 15px 20px 15px; display: flex; flex-direction: column; gap: 15px; }
-    .menu-card {
-      border-radius: 20px; padding: 24px 20px; display: flex; align-items: center; gap: 16px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.05); cursor: pointer; min-height: 100px;
-    }
-    .menu-card:active { transform: scale(0.98); transition: transform 0.1s; }
-    .menu-content h3 { font-size: 17px; font-weight: 700; margin-bottom: 4px; color: #333333; }
-    .menu-content p { font-size: 13px; font-weight: 400; color: #555555; }
-    .menu-card .icon-circle { width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: rgba(255, 255, 255, 0.4); flex-shrink: 0; }
-    .menu-card .icon-circle span { font-size: 26px; }
+        /* Логотип (Голова) */
+        .brand-container {
+            margin-top: 30px;
+            margin-bottom: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        
+        .logo-icon-wrap {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 15px;
+        }
+        
+        .logo-icon {
+            font-size: 130px;
+            /* Эффект прозрачной головы */
+            color: white;
+            opacity: 0.8;
+            filter: drop-shadow(0 10px 20px rgba(118, 190, 222, 0.4));
+            background: linear-gradient(to bottom, #FFF, rgba(255,255,255,0.2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
 
-    .card-chat { background: var(--card-blue-bg); } .card-chat .icon-circle span { color: #FFFFFF; } .card-chat h3, .card-chat p { color: white !important; }
-    .card-video { background: var(--card-green-bg); } .card-video .icon-circle span { color: #27AE60; }
-    .card-game { background: var(--card-gray-bg); } .card-game .icon-circle { background: #FFFFFF; } .card-game .icon-circle span { color: #5D9CEC; }
-    .card-music { background: #FFFFFF; border: 1px solid #EAEAEA; } .card-music .icon-circle { background: #F5F7FA; } .card-music .icon-circle span { color: #E74C3C; }
+        .app-h1 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+        }
 
-    /* --- ЧАТ --- */
-    #chat-container { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; background: #F0F2F5; }
-    .message { max-width: 80%; padding: 10px 14px; border-radius: 12px; font-size: 15px; line-height: 1.4; position: relative; }
-    .msg-bot { align-self: flex-start; background-color: var(--bot-msg-bg); color: #000; border-top-left-radius: 2px; }
-    .msg-user { align-self: flex-end; background-color: var(--user-msg-bg); color: var(--user-msg-text); border-top-right-radius: 2px; }
-    .typing-indicator { display: none; align-self: flex-start; background: white; padding: 10px 15px; border-radius: 12px; margin-bottom: 10px; }
-    .dot { height: 6px; width: 6px; background-color: #bbb; border-radius: 50%; display: inline-block; animation: bounce 1.4s infinite ease-in-out both; margin: 0 2px; }
-    .dot:nth-child(1) { animation-delay: -0.32s; } .dot:nth-child(2) { animation-delay: -0.16s; }
-    @keyframes bounce { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
-    .input-area { background: white; padding: 10px 15px; display: flex; align-items: center; gap: 10px; border-top: 1px solid #ddd; margin-bottom: env(safe-area-inset-bottom); }
-    input[type="text"] { flex: 1; padding: 12px 15px; border-radius: 20px; border: 1px solid #E0E0E0; font-size: 16px; outline: none; background: #F9FAFB; transition: border 0.2s; }
-    input[type="text"]:focus { border-color: #5D9CEC; background: white; }
-    .btn-circle { width: 44px; height: 44px; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: transform 0.1s, background-color 0.2s; flex-shrink: 0; }
-    .btn-circle:active { transform: scale(0.95); }
-    #sendBtn { background-color: var(--user-msg-bg); color: white; box-shadow: 0 2px 5px rgba(93, 156, 236, 0.3); }
-    #micBtn { background-color: #F0F2F5; color: #5D9CEC; }
-    #micBtn.recording { background-color: #EF5350; color: white; animation: pulse 1.5s infinite; }
-    @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(239, 83, 80, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(239, 83, 80, 0); } 100% { box-shadow: 0 0 0 0 rgba(239, 83, 80, 0); } }
+        .app-desc {
+            font-size: 15px;
+            color: var(--text-secondary);
+            line-height: 1.4;
+            max-width: 280px;
+        }
 
-    /* --- КОНТЕНТ --- */
-    .content-list { padding: 20px; overflow-y: auto; flex: 1; background: #F9FAFB; }
-    .media-item { background: white; padding: 15px; border-radius: 12px; margin-bottom: 10px; display: flex; align-items: center; gap: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-    .media-icon { width: 45px; height: 45px; background: #F0F2F5; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 24px; color: #5D9CEC; }
-    .media-info h3 { font-size: 15px; margin-bottom: 3px; color: #333; }
-    .media-info p { font-size: 12px; color: #888; }
-    .play-btn { margin-left: auto; color: #5D9CEC; }
+        /* Карточки меню */
+        .menu-list {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            padding-bottom: 40px;
+        }
 
-   /* --- ИГРА (ЧАСТИЦЫ - НЕБО) --- */
-    #game-screen {
-      display: none; 
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      /* НОВЫЙ ЦВЕТ: Спокойный небесный градиент */
-      background: radial-gradient(circle at center, #64B5F6 0%, #1976D2 100%);
-      padding: 0;
-      position: relative;
-      overflow: hidden;
-    }
-    #game-screen.active { display: flex; }
+        .menu-card {
+            border-radius: 24px;
+            padding: 22px 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            cursor: pointer;
+            transition: transform 0.1s;
+            position: relative;
+            /* Тонкая рамка для стиля */
+            border: 1px solid rgba(255,255,255,0.6); 
+        }
+        .menu-card:active { transform: scale(0.98); }
 
-    canvas#breathCanvas {
-      position: absolute;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      z-index: 1;
-    }
+        /* HERO CARD (Синяя) */
+        .card-hero {
+            background: var(--hero-card-bg);
+            box-shadow: 0 10px 20px rgba(118, 190, 222, 0.4);
+            border: none;
+            padding: 26px 24px;
+        }
+        .card-hero h3 { color: white; font-size: 19px; font-weight: 700; margin-bottom: 4px; }
+        .card-hero p { color: rgba(255,255,255,0.95); font-size: 14px; }
+        .card-hero .icon-circle {
+            background: rgba(255,255,255,0.25);
+            color: white;
+        }
 
-    .game-ui-overlay {
-      position: relative;
-      z-index: 10;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: flex-end; 
-      height: 100%;
-      width: 100%;
-      padding-bottom: 80px; 
-      pointer-events: none;
-    }
+        /* LIGHT CARD (Бежевая) */
+        .card-light {
+            background: var(--light-card-bg);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+        }
+        .card-light h3 { color: var(--text-primary); font-size: 17px; font-weight: 700; margin-bottom: 4px; }
+        .card-light p { color: var(--text-secondary); font-size: 13px; }
 
-    .breath-text-container {
-      flex: 1; 
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 20px; 
-    }
+        /* Иконки в кружочках */
+        .icon-circle {
+            width: 50px; height: 50px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+        }
+        .icon-circle span { font-size: 26px; }
 
-    .breath-status {
-      font-size: 42px;
-      font-weight: 800;
-      color: white;
-      text-transform: uppercase;
-      letter-spacing: 4px;
-      text-shadow: 0 2px 10px rgba(0,0,0,0.2);
-      margin-bottom: 15px;
-      opacity: 1;
-    }
+        /* Цвета иконок для светлых карточек */
+        .icon-meditation { background: #EFEBE5; color: #C4A48A; }
+        .icon-breath { background: #E6EFEC; color: #8FBCA0; }
+        .icon-journal { background: #EAEBF0; color: #9FA6B5; }
 
-    .breath-timer-text {
-      font-size: 18px;
-      color: rgba(255,255,255,0.9);
-      font-weight: 500;
-      letter-spacing: 1px;
-    }
+        /* --- ОСТАЛЬНЫЕ ЭКРАНЫ (Стили адаптированы под новую палитру) --- */
 
-    .game-controls { 
-      pointer-events: auto;
-      display: flex; 
-      gap: 20px; 
-    }
+        /* ЧАТ */
+        #chat-container { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; background: #F4F6F8; }
+        .message { max-width: 80%; padding: 12px 16px; border-radius: 18px; font-size: 15px; line-height: 1.4; word-wrap: break-word; }
+        .msg-bot { align-self: flex-start; background-color: var(--bot-msg-bg); color: #000; border-bottom-left-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .msg-user { align-self: flex-end; background-color: var(--user-msg-bg); color: var(--user-msg-text); border-bottom-right-radius: 4px; box-shadow: 0 4px 10px rgba(118, 190, 222, 0.3); }
+        
+        .typing-indicator { display: none; align-self: flex-start; background: white; padding: 10px 15px; border-radius: 12px; margin-bottom: 10px; }
+        .dot { height: 6px; width: 6px; background-color: #bbb; border-radius: 50%; display: inline-block; animation: bounce 1.4s infinite ease-in-out both; margin: 0 2px; }
+        .dot:nth-child(1) { animation-delay: -0.32s; } .dot:nth-child(2) { animation-delay: -0.16s; }
+        @keyframes bounce { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
+        
+        .input-area { background: white; padding: 10px 15px; display: flex; align-items: center; gap: 10px; border-top: 1px solid #ddd; padding-bottom: calc(10px + env(safe-area-inset-bottom)); }
+        input[type="text"] { flex: 1; padding: 12px 15px; border-radius: 20px; border: 1px solid #E0E0E0; font-size: 16px; outline: none; background: #F9FAFB; transition: border 0.2s; }
+        input[type="text"]:focus { border-color: #76BEDE; background: white; }
+        .btn-circle { width: 44px; height: 44px; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: transform 0.1s; flex-shrink: 0; }
+        .btn-circle:active { transform: scale(0.95); }
+        #sendBtn { background-color: var(--user-msg-bg); color: white; box-shadow: 0 2px 5px rgba(93, 156, 236, 0.3); }
+        #micBtn { background-color: #F0F2F5; color: #6F818D; }
+        #micBtn.recording { background-color: #EF5350; color: white; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(239, 83, 80, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(239, 83, 80, 0); } 100% { box-shadow: 0 0 0 0 rgba(239, 83, 80, 0); } }
 
-    .btn-game-glass {
-      padding: 18px 40px;
-      border-radius: 50px;
-      border: 1px solid rgba(255,255,255,0.3);
-      font-size: 18px;
-      font-weight: 600;
-      cursor: pointer;
-      display: flex; align-items: center; gap: 10px;
-      /* Стекло для светлого фона */
-      background: rgba(255, 255, 255, 0.2);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      transition: all 0.3s;
-      box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-      color: white;
-    }
+        /* СПИСКИ (МЕДИТАЦИИ) */
+        .content-list { padding: 20px; overflow-y: auto; flex: 1; background: #F9F7F2; }
+        .media-item { background: white; padding: 18px; border-radius: 20px; margin-bottom: 12px; display: flex; align-items: center; gap: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); cursor: pointer; }
+        .media-item:active { transform: scale(0.98); }
+        .media-icon { width: 45px; height: 45px; background: #F0EBE5; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px; color: #C4A48A; }
+        .media-info h3 { font-size: 15px; margin-bottom: 3px; color: #2C4356; font-weight: 600; }
+        .media-info p { font-size: 12px; color: #888; }
+        .play-btn { margin-left: auto; color: #76BEDE; }
 
-    .btn-start-glass:hover { background: rgba(255, 255, 255, 0.3); transform: scale(1.05); }
-    
-    .btn-stop-glass {
-      background: rgba(255, 150, 150, 0.3);
-      border-color: rgba(255, 100, 100, 0.3);
-    }
+        /* ИГРА (ДЫХАНИЕ) */
+        #game-screen {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: radial-gradient(circle at center, #98D3EF 0%, #2980B9 100%);
+            padding: 0;
+            position: relative;
+            overflow: hidden;
+        }
+        #game-screen.active { display: flex; }
 
-    .btn-reset-glass {
-      padding: 18px; border-radius: 50%;
-      background: rgba(255,255,255,0.2);
-      color: white;
-      border: 1px solid rgba(255,255,255,0.3);
-    }
+        canvas#breathCanvas {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 1;
+        }
 
-  </style>
+        .game-ui-overlay {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            height: 100%;
+            width: 100%;
+            padding-bottom: 80px;
+            pointer-events: none;
+        }
+
+        .breath-text-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .breath-status {
+            font-size: 42px; font-weight: 800; color: white;
+            text-transform: uppercase; letter-spacing: 4px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.2); margin-bottom: 15px;
+        }
+
+        .breath-timer-text { font-size: 18px; color: rgba(255,255,255,0.9); font-weight: 500; letter-spacing: 1px; }
+
+        .game-controls { pointer-events: auto; display: flex; gap: 20px; }
+        .btn-game-glass {
+            padding: 18px 40px; border-radius: 50px; border: 1px solid rgba(255,255,255,0.3);
+            font-size: 18px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 10px;
+            background: rgba(255, 255, 255, 0.2); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            color: white; box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .btn-start-glass:hover { background: rgba(255, 255, 255, 0.3); transform: scale(1.05); }
+        .btn-stop-glass { background: rgba(255, 150, 150, 0.3); border-color: rgba(255, 100, 100, 0.3); }
+        .btn-reset-glass { padding: 18px; border-radius: 50%; background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.3); }
+
+    </style>
 </head>
 <body>
 
-  <!-- ШАПКА -->
-  <header id="main-header">
-    <button id="back-btn" onclick="goBack()">
-      <span class="material-icons-round">arrow_back</span>
-      <span class="header-title" id="page-title">Назад</span>
-    </button>
-  </header>
-
-  <!-- ЭКРАН 1: МЕНЮ -->
-  <div id="menu-screen" class="screen active">
-    <div class="profile-section">
-      <div class="profile-placeholder-img"></div>
-      <div class="profile-info">
-        <h2>Анна Иванова</h2>
-        <p>Клинический Психолог • Онлайн</p>
-      </div>
-    </div>
-    <div class="menu-list">
-      <div class="menu-card card-chat" onclick="navigateTo('chat')">
-        <div class="icon-circle"><span class="material-icons-round">chat_bubble_outline</span></div>
-        <div class="menu-content"><h3>Чат с Психологом</h3><p>Поделитесь переживаниями, я здесь</p></div>
-      </div>
-      <div class="menu-card card-video" onclick="navigateTo('video')">
-        <div class="icon-circle"><span class="material-icons-round">spa</span></div>
-        <div class="menu-content"><h3>Медитации</h3><p>Аудио для релаксации</p></div>
-      </div>
-      <div class="menu-card card-game" onclick="navigateTo('game')">
-        <div class="icon-circle"><span class="material-icons-round">air</span></div>
-        <div class="menu-content"><h3>Дыхательные Практики</h3><p>Техники для снижения тревоги</p></div>
-      </div>
-      <div class="menu-card card-music" onclick="navigateTo('music')">
-        <div class="icon-circle"><span class="material-icons-round">favorite_border</span></div>
-        <div class="menu-content"><h3>Дневник Эмоций</h3><p>Отслеживайте свое состояние</p></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ЭКРАН 2: ЧАТ -->
-  <div id="chat-screen" class="screen">
-    <div id="chat-container">
-      <div class="message msg-bot">Привет! Я здесь, чтобы выслушать и поддержать. Как ты себя чувствуешь сейчас? 🌿</div>
-      <div class="typing-indicator" id="typing"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
-    </div>
-    <div class="input-area">
-      <button id="micBtn" class="btn-circle"><span class="material-icons-round">mic</span></button>
-      <input type="text" id="userInput" placeholder="Сообщение..." autocomplete="off">
-      <button id="sendBtn" class="btn-circle"><span class="material-icons-round">send</span></button>
-    </div>
-  </div>
-
-  <!-- ЭКРАН 3: ВИДЕО -->
-  <div id="video-screen" class="screen">
-    <div class="content-list">
-      <div class="media-item">
-        <div class="media-icon"><span class="material-icons-round">spa</span></div>
-        <div class="media-info"><h3>Дыхательная гимнастика</h3><p>5 минут спокойствия</p></div>
-        <span class="material-icons-round play-btn">play_arrow</span>
-      </div>
-      <div class="media-item">
-        <div class="media-icon"><span class="material-icons-round">waves</span></div>
-        <div class="media-info"><h3>Шум моря</h3><p>Визуализация для сна</p></div>
-        <span class="material-icons-round play-btn">play_arrow</span>
-      </div>
-    </div>
-  </div>
-
-  <!-- ЭКРАН 4: ИГРА (PARTICLES / ЧАСТИЦЫ) -->
-  <div id="game-screen" class="screen">
-    <canvas id="breathCanvas"></canvas>
-    
-    <div class="game-ui-overlay">
-      <!-- Текст поднят выше, в отдельный контейнер -->
-      <div class="breath-text-container">
-        <div class="breath-status" id="breathLabel">RELAX</div>
-        <div class="breath-timer-text" id="breathInstruction">Нажми Старт</div>
-      </div>
-
-      <!-- Кнопки прижаты к низу -->
-      <div class="game-controls">
-        <button class="btn-game-glass btn-start-glass" id="breathStartBtn" onclick="toggleBreathing()">
-          <span class="material-icons-round" id="playIcon">play_arrow</span>
-          <span id="playText">Старт</span>
+    <!-- ШАПКА (для внутренних страниц) -->
+    <header id="main-header">
+        <button id="back-btn" onclick="goBack()">
+            <span class="material-icons-round">arrow_back_ios_new</span>
+            <span class="header-title" id="page-title">Назад</span>
         </button>
+    </header>
+
+    <!-- ЭКРАН 1: ГЛАВНОЕ МЕНЮ (НОВЫЙ ДИЗАЙН) -->
+    <div id="menu-screen" class="screen active">
         
-        <button class="btn-game-glass btn-reset-glass" onclick="resetBreathing()">
-          <span class="material-icons-round">refresh</span>
-        </button>
-      </div>
-    </div>
-  </div>
+        <!-- Логотип и заголовок -->
+        <div class="brand-container">
+            <div class="logo-icon-wrap">
+                <span class="material-icons-round logo-icon">psychology</span>
+            </div>
+            <h1 class="app-h1">AI-психолог поддержки</h1>
+            <p class="app-desc">Я рядом. Помогу пережить тревогу и паническую атаку</p>
+        </div>
 
-  <!-- ЭКРАН 5: МУЗЫКА -->
-  <div id="music-screen" class="screen">
-    <div class="content-list">
-      <div class="media-item">
-        <div class="media-icon"><span class="material-icons-round">music_note</span></div>
-        <div class="media-info"><h3>Lo-Fi Relax</h3><p>Для концентрации</p></div>
-        <span class="material-icons-round play-btn">play_arrow</span>
-      </div>
-    </div>
-  </div>
+        <!-- Список карточек -->
+        <div class="menu-list">
+            
+            <!-- Карточка 1: HERO (Синяя) -->
+            <div class="menu-card card-hero" onclick="navigateTo('chat', 'Мне сейчас тревожно')">
+                <div class="icon-circle">
+                    <span class="material-icons-round">air</span>
+                </div>
+                <div class="menu-content">
+                    <h3>Мне сейчас тревожно</h3>
+                    <p>Нажмите, если тяжело прямо сейчас</p>
+                </div>
+            </div>
 
-  <script>
-    // ВНИМАНИЕ: ССЫЛКА НА ТВОЙ DEPLOY
+            <!-- Карточка 2: LIGHT (Медитации) -->
+            <div class="menu-card card-light" onclick="navigateTo('video')">
+                <div class="icon-circle icon-meditation">
+                    <span class="material-icons-round">spa</span>
+                </div>
+                <div class="menu-content">
+                    <h3>Мягкие медитации</h3>
+                    <p>Для заземления и спокойствия</p>
+                </div>
+            </div>
+
+            <!-- Карточка 3: LIGHT (Дыхание) -->
+            <div class="menu-card card-light" onclick="navigateTo('game')">
+                <div class="icon-circle icon-breath">
+                    <span class="material-icons-round">filter_drama</span>
+                </div>
+                <div class="menu-content">
+                    <h3>Дыхание от паники</h3>
+                    <p>Когда накрывает внезапно</p>
+                </div>
+            </div>
+
+            <!-- Карточка 4: LIGHT (Дневник) -->
+            <div class="menu-card card-light" onclick="navigateTo('music')">
+                <div class="icon-circle icon-journal">
+                    <span class="material-icons-round">history_edu</span>
+                </div>
+                <div class="menu-content">
+                    <h3>Дневник состояния</h3>
+                    <p>Запишите свои чувства</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ЭКРАН 2: ЧАТ -->
+    <div id="chat-screen" class="screen">
+        <div id="chat-container">
+            <div class="message msg-bot">Привет! Я здесь, чтобы выслушать. Как ты себя чувствуешь сейчас? 🌿</div>
+            <div class="typing-indicator" id="typing"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+        </div>
+        <div class="input-area">
+            <button id="micBtn" class="btn-circle"><span class="material-icons-round">mic</span></button>
+            <input type="text" id="userInput" placeholder="Сообщение..." autocomplete="off">
+            <button id="sendBtn" class="btn-circle"><span class="material-icons-round">send</span></button>
+        </div>
+    </div>
+
+    <!-- ЭКРАН 3: МЕДИТАЦИИ -->
+    <div id="video-screen" class="screen">
+        <div class="content-list">
+            <div class="media-item">
+                <div class="media-icon"><span class="material-icons-round">spa</span></div>
+                <div class="media-info"><h3>Дыхательная гимнастика</h3><p>5 минут спокойствия</p></div>
+                <span class="material-icons-round play-btn">play_arrow</span>
+            </div>
+            <div class="media-item">
+                <div class="media-icon"><span class="material-icons-round">waves</span></div>
+                <div class="media-info"><h3>Шум моря</h3><p>Визуализация для сна</p></div>
+                <span class="material-icons-round play-btn">play_arrow</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ЭКРАН 4: ИГРА -->
+    <div id="game-screen" class="screen">
+        <canvas id="breathCanvas"></canvas>
+        <div class="game-ui-overlay">
+            <div class="breath-text-container">
+                <div class="breath-status" id="breathLabel">RELAX</div>
+                <div class="breath-timer-text" id="breathInstruction">Нажми Старт</div>
+            </div>
+            <div class="game-controls">
+                <button class="btn-game-glass btn-start-glass" id="breathStartBtn" onclick="toggleBreathing()">
+                    <span class="material-icons-round" id="playIcon">play_arrow</span>
+                    <span id="playText">Старт</span>
+                </button>
+                <button class="btn-game-glass btn-reset-glass" onclick="resetBreathing()">
+                    <span class="material-icons-round">refresh</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ЭКРАН 5: ДНЕВНИК -->
+    <div id="music-screen" class="screen">
+        <div class="content-list">
+            <div class="media-item">
+                <div class="media-icon"><span class="material-icons-round">lock</span></div>
+                <div class="media-info"><h3>Раздел в разработке</h3><p>Скоро появится...</p></div>
+            </div>
+        </div>
+    </div>
+
+<script>
+    // === ЛОГИКА (ОСТАВЛЕНА БЕЗ ИЗМЕНЕНИЙ) ===
+    
+    // КОНФИГУРАЦИЯ ИЗ CSV
     const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzOq4mO0Dgx9PH9AzH8ozKOYcQ0CshNHldt51VyynuR1uJZ8ZW_x71KNhG-4QV6nPF8/exec";
 
     // --- ИНИЦИАЛИЗАЦИЯ ---
@@ -333,26 +423,24 @@
     tg.expand();
     tg.BackButton.onClick(goBack);
 
-    // --- UI ЭЛЕМЕНТЫ ---
+    // Элементы UI
     const screens = {
-      menu: document.getElementById('menu-screen'),
-      chat: document.getElementById('chat-screen'),
-      video: document.getElementById('video-screen'),
-      music: document.getElementById('music-screen'),
-      game: document.getElementById('game-screen')
+        menu: document.getElementById('menu-screen'),
+        chat: document.getElementById('chat-screen'),
+        video: document.getElementById('video-screen'),
+        music: document.getElementById('music-screen'),
+        game: document.getElementById('game-screen')
     };
 
     const header = document.getElementById('main-header');
     const pageTitle = document.getElementById('page-title');
-    
+
     // Элементы игры
     const breathLabel = document.getElementById('breathLabel');
     const breathInstruction = document.getElementById('breathInstruction');
     const playIcon = document.getElementById('playIcon');
     const playText = document.getElementById('playText');
     const breathStartBtn = document.getElementById('breathStartBtn');
-    
-    // Canvas
     const canvas = document.getElementById('breathCanvas');
     const ctx = canvas.getContext('2d');
 
@@ -361,298 +449,368 @@
     const userInput = document.getElementById('userInput');
     const sendBtn = document.getElementById('sendBtn');
     const typingIndicator = document.getElementById('typing');
-    const userId = tg.initDataUnsafe?.user?.id || 'test_user_' + Math.floor(Math.random() * 1000);
+    const userId = tg.initDataUnsafe?.user?.id || 'web_user_' + Math.floor(Math.random() * 1000);
 
     loadChatHistory();
 
     // --- НАВИГАЦИЯ ---
-    function navigateTo(screenName) {
-      Object.values(screens).forEach(el => el.classList.remove('active'));
-      screens[screenName].classList.add('active');
+    function navigateTo(screenName, initialMessage = null) {
+        Object.values(screens).forEach(el => el.classList.remove('active'));
+        screens[screenName].classList.add('active');
 
-      if (screenName === 'menu') {
-        header.style.display = 'none'; tg.BackButton.hide();
-        stopBreathingAnimationLoop();
-      } else {
-        header.style.display = 'flex'; tg.BackButton.show();
-        
-        if (screenName === 'chat') { pageTitle.innerText = 'Чат'; setTimeout(scrollToBottom, 100); }
-        else if (screenName === 'video') pageTitle.innerText = 'Медитации';
-        else if (screenName === 'music') pageTitle.innerText = 'Дневник';
-        else if (screenName === 'game') {
-           pageTitle.innerText = 'Дыхание';
-           resizeCanvas();
-           startBreathingAnimationLoop();
+        if (screenName === 'menu') {
+            header.style.display = 'none'; tg.BackButton.hide();
+            stopBreathingAnimationLoop();
+        } else {
+            header.style.display = 'flex'; tg.BackButton.show();
+
+            if (screenName === 'chat') { 
+                pageTitle.innerText = 'Чат'; 
+                setTimeout(scrollToBottom, 100); 
+                // Опционально: если передано стартовое сообщение, можно его вставить
+                if (initialMessage) {
+                   userInput.value = initialMessage;
+                   // sendMessage(); // Можно раскомментировать, если нужно авто-отправление
+                }
+            }
+            else if (screenName === 'video') pageTitle.innerText = 'Медитации';
+            else if (screenName === 'music') pageTitle.innerText = 'Дневник';
+            else if (screenName === 'game') {
+                pageTitle.innerText = 'Дыхание';
+                resizeCanvas();
+                startBreathingAnimationLoop();
+            }
         }
-      }
     }
 
     function goBack() {
-      if(screens.game.classList.contains('active')) { resetBreathing(); }
-      navigateTo('menu');
+        if(screens.game.classList.contains('active')) { resetBreathing(); }
+        navigateTo('menu');
     }
 
-    // --- ЛОГИКА ИГРЫ (CANVAS PARTICLES) ---
+    // --- ЛОГИКА ИГРЫ (ЧАСТИЦЫ) ---
     let animationId;
     let particles = [];
-    
-    // РАДИУСЫ
-    let baseRadius = 110; 
+    let baseRadius = 110;
     let targetRadius = 110;
     let currentRadius = 110;
-    
-    let breathPhase = 'ready'; 
+
+    let breathPhase = 'ready';
     let breathInterval = null;
     let breathTimer = 0;
     let isBreathing = false;
-    
-    // Тайминги
+
+    // Тайминги дыхания (4-7-8)
     const INHALE_TIME = 4;
     const HOLD_TIME = 7;
     const EXHALE_TIME = 8;
 
     function resizeCanvas() {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-      initParticles();
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        initParticles();
     }
     window.addEventListener('resize', resizeCanvas);
 
     class Particle {
-      constructor() {
-        this.angle = Math.random() * Math.PI * 2;
-        this.distance = baseRadius + Math.random() * 20;
-        this.size = Math.random() * 3 + 1;
-        this.speed = Math.random() * 0.02 + 0.005;
-        // Более светлые частицы для синего фона
-        this.color = `rgba(255, 255, 255, ${Math.random() * 0.5 + 0.3})`;
-        this.wobble = Math.random() * 20;
-      }
-      
-      update(radius, phase) {
-        this.angle += this.speed;
-        let targetDist = radius + Math.sin(Date.now() / 500 + this.wobble) * 10;
-        
-        if (phase === 'inhale') {
-           targetDist += Math.random() * 10;
-           // Ярко-белый/голубой при вдохе
-           this.color = `rgba(255, 255, 255, ${Math.random() * 0.7 + 0.3})`;
-        } else if (phase === 'hold') {
-           targetDist += Math.random() * 2;
-           // Мятный оттенок на задержке
-           this.color = `rgba(200, 255, 240, ${Math.random() * 0.6 + 0.4})`;
-        } else if (phase === 'exhale') {
-           // Мягкий прозрачный белый на выдохе
-           this.color = `rgba(255, 255, 255, ${Math.random() * 0.4 + 0.1})`;
-        } else {
-           this.color = `rgba(255, 255, 255, 0.4)`;
+        constructor() {
+            this.angle = Math.random() * Math.PI * 2;
+            this.distance = baseRadius + Math.random() * 20;
+            this.size = Math.random() * 3 + 1;
+            this.speed = Math.random() * 0.02 + 0.005;
+            this.color = `rgba(255, 255, 255, ${Math.random() * 0.5 + 0.3})`;
+            this.wobble = Math.random() * 20;
         }
 
-        this.distance += (targetDist - this.distance) * 0.05;
+        update(radius, phase) {
+            this.angle += this.speed;
+            let targetDist = radius + Math.sin(Date.now() / 500 + this.wobble) * 10;
 
-        const cx = canvas.width / 2;
-        // ПОДНЯЛИ ЦЕНТР ЧАСТИЦ ВЫШЕ, ЧТОБЫ НЕ НАЕЗЖАТЬ НА КНОПКИ
-        const cy = (canvas.height / 2) - 60; 
-        
-        this.x = cx + Math.cos(this.angle) * this.distance;
-        this.y = cy + Math.sin(this.angle) * this.distance;
-      }
-      
-      draw() {
-        ctx.fillStyle = this.color;
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-        ctx.fill();
-      }
+            if (phase === 'inhale') {
+                targetDist += Math.random() * 10;
+                this.color = `rgba(255, 255, 255, ${Math.random() * 0.7 + 0.3})`;
+            } else if (phase === 'hold') {
+                targetDist += Math.random() * 2;
+                this.color = `rgba(200, 255, 240, ${Math.random() * 0.6 + 0.4})`;
+            } else if (phase === 'exhale') {
+                this.color = `rgba(255, 255, 255, ${Math.random() * 0.4 + 0.1})`;
+            } else {
+                this.color = `rgba(255, 255, 255, 0.4)`;
+            }
+
+            this.distance += (targetDist - this.distance) * 0.05;
+            const cx = canvas.width / 2;
+            const cy = (canvas.height / 2) - 60; // Поднимаем центр выше UI кнопок
+            this.x = cx + Math.cos(this.angle) * this.distance;
+            this.y = cy + Math.sin(this.angle) * this.distance;
+        }
+
+        draw() {
+            ctx.fillStyle = this.color;
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+            ctx.fill();
+        }
     }
 
     function initParticles() {
-      particles = [];
-      for (let i = 0; i < 400; i++) {
-        particles.push(new Particle());
-      }
+        particles = [];
+        // Оптимизация: 200 частиц достаточно для мобильных
+        for (let i = 0; i < 200; i++) {
+            particles.push(new Particle());
+        }
     }
 
     function startBreathingAnimationLoop() {
-      if (!animationId) animate();
+        if (!animationId) animate();
     }
-    
+
     function stopBreathingAnimationLoop() {
-      cancelAnimationFrame(animationId);
-      animationId = null;
+        cancelAnimationFrame(animationId);
+        animationId = null;
     }
 
     function animate() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      currentRadius += (targetRadius - currentRadius) * 0.02;
-      particles.forEach(p => {
-        p.update(currentRadius, breathPhase);
-        p.draw();
-      });
-      animationId = requestAnimationFrame(animate);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        currentRadius += (targetRadius - currentRadius) * 0.02;
+        particles.forEach(p => {
+            p.update(currentRadius, breathPhase);
+            p.draw();
+        });
+        animationId = requestAnimationFrame(animate);
     }
 
     function toggleBreathing() {
-      if (isBreathing) stopBreathing();
-      else startBreathing();
+        if (isBreathing) stopBreathing();
+        else startBreathing();
     }
 
     function startBreathing() {
-      isBreathing = true;
-      playIcon.innerText = 'pause';
-      playText.innerText = 'Пауза';
-      breathStartBtn.classList.add('btn-stop-glass');
-      breathStartBtn.classList.remove('btn-start-glass');
-      
-      breathInterval = setInterval(() => {
-        breathTimer++;
+        isBreathing = true;
+        playIcon.innerText = 'pause';
+        playText.innerText = 'Пауза';
+        breathStartBtn.classList.add('btn-stop-glass');
+        breathStartBtn.classList.remove('btn-start-glass');
+
+        breathInterval = setInterval(() => {
+            breathTimer++;
+            updateGameLogic();
+        }, 1000);
         updateGameLogic();
-      }, 1000);
-      updateGameLogic();
     }
 
     function stopBreathing() {
-      isBreathing = false;
-      clearInterval(breathInterval);
-      breathInterval = null;
-      playIcon.innerText = 'play_arrow';
-      playText.innerText = 'Продолжить';
-      breathStartBtn.classList.remove('btn-stop-glass');
-      breathStartBtn.classList.add('btn-start-glass');
+        isBreathing = false;
+        clearInterval(breathInterval);
+        breathInterval = null;
+        playIcon.innerText = 'play_arrow';
+        playText.innerText = 'Продолжить';
+        breathStartBtn.classList.remove('btn-stop-glass');
+        breathStartBtn.classList.add('btn-start-glass');
     }
 
     function resetBreathing() {
-      stopBreathing();
-      breathTimer = 0;
-      breathPhase = 'ready';
-      targetRadius = 110; 
-      
-      playText.innerText = 'Старт';
-      playIcon.innerText = 'play_arrow';
-      
-      breathLabel.innerText = 'RELAX';
-      breathInstruction.innerText = 'Нажми Старт';
+        stopBreathing();
+        breathTimer = 0;
+        breathPhase = 'ready';
+        targetRadius = 110;
+        playText.innerText = 'Старт';
+        playIcon.innerText = 'play_arrow';
+        breathLabel.innerText = 'RELAX';
+        breathInstruction.innerText = 'Нажми Старт';
     }
 
     function updateGameLogic() {
-      const cycleTime = breathTimer % (INHALE_TIME + HOLD_TIME + EXHALE_TIME);
+        const cycleTime = breathTimer % (INHALE_TIME + HOLD_TIME + EXHALE_TIME);
 
-      if (cycleTime < INHALE_TIME) {
-        breathPhase = 'inhale';
-        targetRadius = 180; 
-        breathLabel.innerText = 'ВДОХ';
-        breathInstruction.innerText = 'Глубокий вдох...';
-      } 
-      else if (cycleTime < INHALE_TIME + HOLD_TIME) {
-        breathPhase = 'hold';
-        targetRadius = 190;
-        breathLabel.innerText = 'ПАУЗА';
-        breathInstruction.innerText = 'Задержи дыхание...';
-      } 
-      else {
-        breathPhase = 'exhale';
-        targetRadius = 110; 
-        breathLabel.innerText = 'ВЫДОХ';
-        breathInstruction.innerText = 'Медленный выдох...';
-      }
-    }
-
-    // --- ЛОГИКА ЧАТА И АУДИО ---
-    function scrollToBottom() { chatContainer.scrollTop = chatContainer.scrollHeight; }
-    function addMessage(text, isUser = false) {
-      const msgDiv = document.createElement('div'); msgDiv.classList.add('message');
-      msgDiv.classList.add(isUser ? 'msg-user' : 'msg-bot'); msgDiv.innerHTML = text.replace(/\n/g, '<br>');
-      chatContainer.insertBefore(msgDiv, typingIndicator); scrollToBottom();
-    }
-    function showTyping(show) { typingIndicator.style.display = show ? 'block' : 'none'; scrollToBottom(); }
-
-    function loadChatHistory() {
-      showTyping(true);
-      fetch(GOOGLE_SCRIPT_URL + '?act=api', {
-        method: 'POST', mode: 'cors', credentials: 'omit', redirect: "follow",
-        body: JSON.stringify({ userId: userId, action: 'load_history' }) 
-      }).then(r => r.json()).then(d => {
-        showTyping(false);
-        if (d.status === 'success' && d.history) {
-          d.history.forEach(i => {
-             const m = document.createElement('div'); m.classList.add('message');
-             m.classList.add(i.role === 'user' ? 'msg-user' : 'msg-bot');
-             m.innerHTML = i.parts[0].text.replace(/\n/g, '<br>');
-             chatContainer.insertBefore(m, typingIndicator);
-          });
-          scrollToBottom();
+        if (cycleTime < INHALE_TIME) {
+            breathPhase = 'inhale';
+            targetRadius = 180;
+            breathLabel.innerText = 'ВДОХ';
+            breathInstruction.innerText = 'Глубокий вдох...';
         }
-      }).catch(e => showTyping(false));
+        else if (cycleTime < INHALE_TIME + HOLD_TIME) {
+            breathPhase = 'hold';
+            targetRadius = 190;
+            breathLabel.innerText = 'ПАУЗА';
+            breathInstruction.innerText = 'Задержи дыхание...';
+        }
+        else {
+            breathPhase = 'exhale';
+            targetRadius = 110;
+            breathLabel.innerText = 'ВЫДОХ';
+            breathInstruction.innerText = 'Медленный выдох...';
+        }
     }
 
-    function sendMessage() {
-      const text = userInput.value.trim(); if (!text) return;
-      addMessage(text, true); userInput.value = ''; sendBtn.disabled = true; showTyping(true);
-      fetch(GOOGLE_SCRIPT_URL + '?act=api', {
-        method: 'POST', mode: 'cors', credentials: 'omit', redirect: "follow",
-        body: JSON.stringify({ text: text, userId: userId, initData: tg.initData })
-      }).then(r => r.json()).then(d => {
-        showTyping(false); sendBtn.disabled = false; userInput.focus();
-        if (d.status === 'success') {
-          addMessage(d.text, false); if(d.audio) playAudioResponse(d.audio);
-        } else addMessage("⚠️ " + d.text, false);
-      }).catch(e => { showTyping(false); sendBtn.disabled = false; addMessage("❌ Ошибка", false); });
+    // --- ЛОГИКА ЧАТА ---
+    function scrollToBottom() { chatContainer.scrollTop = chatContainer.scrollHeight; }
+    
+    function addMessage(text, isUser = false) {
+        const msgDiv = document.createElement('div'); 
+        msgDiv.classList.add('message');
+        msgDiv.classList.add(isUser ? 'msg-user' : 'msg-bot'); 
+        msgDiv.innerHTML = text.replace(/\n/g, '<br>');
+        chatContainer.insertBefore(msgDiv, typingIndicator); 
+        scrollToBottom();
     }
+
+    function showTyping(show) { 
+        typingIndicator.style.display = show ? 'block' : 'none'; 
+        scrollToBottom(); 
+    }
+
+    // Загрузка истории
+    function loadChatHistory() {
+        showTyping(true);
+        fetch(GOOGLE_SCRIPT_URL + '?act=api', {
+            method: 'POST', mode: 'cors', credentials: 'omit', redirect: "follow",
+            body: JSON.stringify({ userId: userId, action: 'load_history' })
+        })
+        .then(r => r.json())
+        .then(d => {
+            showTyping(false);
+            if (d.status === 'success' && d.history) {
+                d.history.forEach(i => {
+                    const m = document.createElement('div'); m.classList.add('message');
+                    m.classList.add(i.role === 'user' ? 'msg-user' : 'msg-bot');
+                    m.innerHTML = i.parts[0].text.replace(/\n/g, '<br>');
+                    chatContainer.insertBefore(m, typingIndicator);
+                });
+                scrollToBottom();
+            }
+        })
+        .catch(e => {
+            console.error(e);
+            showTyping(false);
+        });
+    }
+
+    // Отправка текста
+    function sendMessage() {
+        const text = userInput.value.trim(); 
+        if (!text) return;
+        
+        addMessage(text, true); 
+        userInput.value = ''; 
+        sendBtn.disabled = true; 
+        showTyping(true);
+
+        fetch(GOOGLE_SCRIPT_URL + '?act=api', {
+            method: 'POST', mode: 'cors', credentials: 'omit', redirect: "follow",
+            body: JSON.stringify({ text: text, userId: userId, initData: tg.initData })
+        })
+        .then(r => r.json())
+        .then(d => {
+            showTyping(false); 
+            sendBtn.disabled = false; 
+            userInput.focus();
+            if (d.status === 'success') {
+                addMessage(d.text, false); 
+                // Если есть аудио (TTS), пробуем воспроизвести
+                if(d.audio) playAudioResponse(d.audio);
+            } else {
+                addMessage("⚠️ " + d.text, false);
+            }
+        })
+        .catch(e => { 
+            showTyping(false); 
+            sendBtn.disabled = false; 
+            addMessage("❌ Ошибка соединения", false); 
+        });
+    }
+    
     sendBtn.addEventListener('click', sendMessage);
     userInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendMessage(); });
 
-    // --- ГОЛОС ---
+    // --- ГОЛОСОВОЕ СООБЩЕНИЕ ---
     const micBtn = document.getElementById('micBtn');
     let mediaRecorder, audioChunks = [], isRecording = false, globalStream = null, currentAudio = null;
 
-    micBtn.addEventListener('click', async () => { if (!isRecording) startRecording(); else stopRecording(); });
+    micBtn.addEventListener('click', async () => { 
+        if (!isRecording) startRecording(); else stopRecording(); 
+    });
 
     async function startRecording() {
-      stopCurrentAudio();
-      try {
-        if (!globalStream || !globalStream.active) globalStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        mediaRecorder = new MediaRecorder(globalStream); audioChunks = [];
-        mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
-        mediaRecorder.onstop = sendVoiceMessage;
-        mediaRecorder.start(); isRecording = true;
-        micBtn.classList.add('recording'); micBtn.innerHTML = '<span class="material-icons-round">stop</span>';
-        if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
-        userInput.placeholder = "Запись..."; userInput.disabled = true;
-      } catch (e) { addMessage("⚠️ Нет микрофона", false); globalStream = null; }
+        stopCurrentAudio();
+        try {
+            if (!globalStream || !globalStream.active) {
+                globalStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            }
+            mediaRecorder = new MediaRecorder(globalStream); 
+            audioChunks = [];
+            
+            mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
+            mediaRecorder.onstop = sendVoiceMessage;
+            
+            mediaRecorder.start(); 
+            isRecording = true;
+            micBtn.classList.add('recording'); 
+            micBtn.innerHTML = '<span class="material-icons-round">stop</span>';
+            
+            if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
+            userInput.placeholder = "Запись..."; 
+            userInput.disabled = true;
+        } catch (e) { 
+            console.error(e);
+            addMessage("⚠️ Не удалось получить доступ к микрофону", false); 
+            globalStream = null; 
+        }
     }
 
     function stopRecording() {
-      if (mediaRecorder && isRecording) {
-        mediaRecorder.stop(); isRecording = false;
-        micBtn.classList.remove('recording'); micBtn.innerHTML = '<span class="material-icons-round">mic</span>';
-        userInput.placeholder = "Сообщение..."; userInput.disabled = false;
-      }
+        if (mediaRecorder && isRecording) {
+            mediaRecorder.stop(); 
+            isRecording = false;
+            micBtn.classList.remove('recording'); 
+            micBtn.innerHTML = '<span class="material-icons-round">mic</span>';
+            userInput.placeholder = "Сообщение..."; 
+            userInput.disabled = false;
+        }
     }
 
     function sendVoiceMessage() {
-      const reader = new FileReader(); showTyping(true);
-      reader.readAsDataURL(new Blob(audioChunks, { type: 'audio/webm' }));
-      reader.onloadend = () => {
-        addMessage("🎤 <i>Аудио...</i>", true);
-        fetch(GOOGLE_SCRIPT_URL + '?act=api', {
-          method: 'POST', mode: 'cors', credentials: 'omit', redirect: "follow",
-          body: JSON.stringify({ userId: userId, audio: reader.result, initData: tg.initData })
-        }).then(r => r.json()).then(d => {
-          showTyping(false);
-          if (d.status === 'success') {
-             if(d.recognizedText) addMessage("🗣 " + d.recognizedText, true);
-             addMessage(d.text, false); if(d.audio) playAudioResponse(d.audio);
-          } else addMessage("⚠️ " + d.text, false);
-        }).catch(e => { showTyping(false); addMessage("❌ Ошибка", false); });
-      };
+        const reader = new FileReader(); 
+        showTyping(true);
+        // Создаем blob, GAS ожидает audio/webm для Gemini
+        reader.readAsDataURL(new Blob(audioChunks, { type: 'audio/webm' }));
+        
+        reader.onloadend = () => {
+            addMessage("🎤 <i>Аудио сообщение...</i>", true);
+            
+            fetch(GOOGLE_SCRIPT_URL + '?act=api', {
+                method: 'POST', mode: 'cors', credentials: 'omit', redirect: "follow",
+                body: JSON.stringify({ userId: userId, audio: reader.result, initData: tg.initData })
+            })
+            .then(r => r.json())
+            .then(d => {
+                showTyping(false);
+                if (d.status === 'success') {
+                    if(d.recognizedText) addMessage("🗣 " + d.recognizedText, true);
+                    addMessage(d.text, false); 
+                    if(d.audio) playAudioResponse(d.audio);
+                } else {
+                    addMessage("⚠️ " + d.text, false);
+                }
+            })
+            .catch(e => { 
+                showTyping(false); 
+                addMessage("❌ Ошибка отправки аудио", false); 
+            });
+        };
     }
 
-    function stopCurrentAudio() { if (currentAudio) { currentAudio.pause(); currentAudio = null; } }
-    function playAudioResponse(base64) {
-       stopCurrentAudio(); currentAudio = new Audio("data:audio/mp3;base64," + base64);
-       currentAudio.play().catch(e => console.log(e));
-       currentAudio.onended = () => { currentAudio = null; };
+    function stopCurrentAudio() { 
+        if (currentAudio) { currentAudio.pause(); currentAudio = null; } 
     }
-  </script>
+
+    function playAudioResponse(base64) {
+        stopCurrentAudio(); 
+        // Создаем аудио из Base64 ответа (MP3 от OpenAI)
+        currentAudio = new Audio("data:audio/mp3;base64," + base64);
+        currentAudio.play().catch(e => console.log("Audio autoplay blocked: ", e));
+        currentAudio.onended = () => { currentAudio = null; };
+    }
+</script>
 </body>
 </html>
