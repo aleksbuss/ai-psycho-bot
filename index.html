@@ -459,17 +459,28 @@
         navigateTo('menu');
     }
 
-    // --- ЛОГИКА ДНЕВНИКА (LOCAL STORAGE) ---
+    // --- ЛОГИКА ДНЕВНИКА (ИСПРАВЛЕНА ДАТА) ---
     
     function getTodayString() {
         const d = new Date();
-        // Формат YYYY-MM-DD для ключа хранения
-        return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
+        const year = d.getFullYear();
+        // Добавляем '0' перед месяцем и днем, если они меньше 10
+        // Было: 2023-1-1 (Ошибка) -> Стало: 2023-01-01 (ОК)
+        const month = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
     }
 
     function getFriendlyDate(dateStr) {
-        // Превращаем 2023-10-25 в "25 Октября"
-        const d = new Date(dateStr);
+        // Надежный парсинг: разбиваем строку вручную, чтобы избежать проблем с часовыми поясами
+        const parts = dateStr.split('-');
+        if (parts.length !== 3) return dateStr;
+        
+        const year = parseInt(parts[0]);
+        const month = parseInt(parts[1]) - 1; // Месяцы в JS от 0 до 11
+        const day = parseInt(parts[2]);
+        
+        const d = new Date(year, month, day);
         const options = { day: 'numeric', month: 'long' };
         return d.toLocaleDateString('ru-RU', options);
     }
