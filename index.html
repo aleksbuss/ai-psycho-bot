@@ -25,11 +25,11 @@
             
             --warm-bg: #FFF3E0;
             --warm-accent: #FFB74D;
+            --warm-text: #EF6C00;
 
-            /* ГЕОМЕТРИЯ (Единый стиль) */
-            --radius-card: 24px;       /* Карточки меню */
-            --radius-btn-sq: 18px;     /* Кнопки-иконки (чат, сброс) */
-            --radius-btn-rect: 20px;   /* Большие кнопки (старт) */
+            --radius-card: 24px;
+            --radius-btn-sq: 18px;
+            --radius-btn-rect: 20px;
             
             --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.04);
             --shadow-float: 0 10px 30px rgba(77, 182, 172, 0.15);
@@ -107,15 +107,32 @@
         .wave-graph { width: 100%; height: 50px; margin-top: 8px; opacity: 0.9; }
 
         .bottom-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-        .small-card { background: var(--bg-card); padding: 16px; border-radius: 20px; display: flex; align-items: center; gap: 12px; box-shadow: var(--shadow-card); cursor: pointer; }
+        .small-card { background: var(--bg-card); padding: 16px; border-radius: 20px; display: flex; align-items: center; gap: 12px; box-shadow: var(--shadow-card); cursor: pointer; position: relative; }
         .small-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; }
         .warm-icon { background: var(--warm-bg); color: var(--warm-accent); }
         .grey-icon { background: #ECEFF1; color: var(--icon-default); }
         .small-card h4 { font-size: 14px; font-weight: 600; color: var(--text-header); }
         .small-card span { font-size: 11px; color: var(--text-muted); }
 
+        /* БЕЙДЖИК УВЕДОМЛЕНИЯ */
+        .notification-dot {
+            position: absolute;
+            top: 12px; right: 12px;
+            width: 10px; height: 10px;
+            background-color: #FF7043; /* Мягкий красный */
+            border-radius: 50%;
+            border: 2px solid var(--bg-card);
+            display: none; /* Скрыт по умолчанию */
+            animation: pulse-dot 2s infinite;
+        }
+        @keyframes pulse-dot {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.2); opacity: 0.8; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
         /* =========================================
-           ЧАТ (ИСПРАВЛЕННЫЕ КНОПКИ)
+           ЧАТ
            ========================================= */
         #chat-container { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; }
         .message { max-width: 85%; padding: 14px 18px; border-radius: 20px; font-size: 15px; box-shadow: var(--shadow-card); }
@@ -125,62 +142,71 @@
         .typing-indicator { display: none; align-self: flex-start; background: var(--bg-card); padding: 12px; border-radius: 16px; margin-bottom: 10px; box-shadow: var(--shadow-card); }
         .dot { height: 6px; width: 6px; background-color: #CFD8DC; border-radius: 50%; display: inline-block; animation: bounce 1.4s infinite ease-in-out both; margin: 0 2px; }
         .dot:nth-child(1) { animation-delay: -0.32s; } .dot:nth-child(2) { animation-delay: -0.16s; }
-        @keyframes bounce { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
         
-        /* ПАНЕЛЬ ВВОДА */
-        .input-area { 
-            background: var(--bg-main); 
-            padding: 12px 20px; 
-            display: flex; align-items: center; gap: 12px; 
-            padding-bottom: calc(15px + env(safe-area-inset-bottom)); 
-        }
-        
-        /* Поле ввода - менее круглое, более "карточное" */
-        input[type="text"] { 
-            flex: 1; padding: 16px 20px; 
-            border-radius: 18px; /* Совпадает с кнопками */
-            border: none; 
-            font-size: 16px; outline: none; background: #FFFFFF; 
-            box-shadow: 0 2px 10px rgba(0,0,0,0.03); 
-            color: var(--text-header);
-        }
-        input[type="text"]::placeholder { color: #B0BEC5; }
-
-        /* КНОПКИ ЧАТА - ТЕПЕРЬ КВАДРАТНЫЕ (SQUIRCLE) */
-        .btn-sq { 
-            width: 54px; height: 54px; 
-            border-radius: var(--radius-btn-sq); /* 18px скругление */
-            border: none; 
-            display: flex; align-items: center; justify-content: center; 
-            cursor: pointer; transition: all 0.2s; flex-shrink: 0; 
-        }
+        .input-area { background: var(--bg-main); padding: 12px 20px; display: flex; align-items: center; gap: 12px; padding-bottom: calc(15px + env(safe-area-inset-bottom)); }
+        input[type="text"] { flex: 1; padding: 16px 20px; border-radius: 18px; border: none; font-size: 16px; outline: none; background: #FFFFFF; box-shadow: 0 2px 10px rgba(0,0,0,0.03); color: var(--text-header); }
+        .btn-sq { width: 54px; height: 54px; border-radius: var(--radius-btn-sq); border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; flex-shrink: 0; }
         .btn-sq:active { transform: scale(0.94); }
-        
-        /* Микрофон */
-        #micBtn { 
-            background-color: #FFFFFF; 
-            color: var(--icon-default); 
+        #micBtn { background-color: #FFFFFF; color: var(--icon-default); box-shadow: var(--shadow-card); }
+        #micBtn.recording { background-color: var(--primary-soft); color: var(--primary-main); animation: pulse-mint 2s infinite; border: 1px solid var(--primary-main); }
+        #sendBtn { background: var(--primary-main); color: white; box-shadow: 0 4px 15px rgba(77, 182, 172, 0.3); }
+        @keyframes pulse-mint { 0% { box-shadow: 0 0 0 0 rgba(77, 182, 172, 0.4); } 70% { box-shadow: 0 0 0 8px rgba(77, 182, 172, 0); } 100% { box-shadow: 0 0 0 0 rgba(77, 182, 172, 0); } }
+
+        /* =========================================
+           ДНЕВНИК (NEW STYLES)
+           ========================================= */
+        /* Секция выбора настроения */
+        .mood-selector {
+            display: flex; gap: 15px; margin-bottom: 30px;
+        }
+        .mood-btn {
+            flex: 1;
+            height: 140px;
+            border-radius: var(--radius-card);
+            border: none;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            cursor: pointer; transition: transform 0.1s;
             box-shadow: var(--shadow-card);
         }
-        #micBtn.recording { 
-            background-color: var(--primary-soft); color: var(--primary-main); 
-            animation: pulse-mint 2s infinite; border: 1px solid var(--primary-main);
-        }
+        .mood-btn:active { transform: scale(0.97); }
+        
+        .mood-good { background-color: var(--primary-soft); color: var(--primary-text); }
+        .mood-good span { font-size: 40px; margin-bottom: 10px; color: var(--primary-main); }
+        
+        .mood-bad { background-color: var(--warm-bg); color: var(--warm-text); }
+        .mood-bad span { font-size: 40px; margin-bottom: 10px; color: var(--warm-accent); }
 
-        /* Отправить */
-        #sendBtn { 
-            background: var(--primary-main); 
-            color: white; 
-            box-shadow: 0 4px 15px rgba(77, 182, 172, 0.3);
-        }
+        .mood-btn h3 { font-size: 16px; margin: 0; }
 
-        @keyframes pulse-mint { 
-            0% { box-shadow: 0 0 0 0 rgba(77, 182, 172, 0.4); } 
-            70% { box-shadow: 0 0 0 8px rgba(77, 182, 172, 0); } 
-            100% { box-shadow: 0 0 0 0 rgba(77, 182, 172, 0); } 
+        /* Карточка "Сегодняшний день записан" */
+        .today-summary {
+            background: white; border-radius: var(--radius-card);
+            padding: 24px; text-align: center;
+            margin-bottom: 30px; box-shadow: var(--shadow-card);
+            display: none; /* Скрыто по умолчанию */
         }
+        .today-summary .icon-lg { font-size: 48px; margin-bottom: 10px; display: block; }
+        .today-summary h3 { font-size: 18px; margin-bottom: 5px; }
+        .today-summary p { color: var(--text-muted); font-size: 14px; }
 
-        /* СПИСКИ */
+        /* История */
+        .history-list { display: flex; flex-direction: column; gap: 12px; }
+        .history-item {
+            background: var(--bg-card);
+            padding: 16px 20px;
+            border-radius: 18px;
+            display: flex; align-items: center; justify-content: space-between;
+            box-shadow: var(--shadow-card);
+        }
+        .h-date { font-weight: 600; color: var(--text-header); font-size: 15px; }
+        .h-status { 
+            font-size: 13px; font-weight: 600; 
+            padding: 6px 12px; border-radius: 12px;
+        }
+        .status-good { background: var(--primary-soft); color: var(--primary-text); }
+        .status-bad { background: var(--warm-bg); color: var(--warm-text); }
+
+        /* СПИСКИ И ИГРА */
         .content-list { padding: 24px; overflow-y: auto; flex: 1; }
         .media-item { background: var(--bg-card); padding: 20px; border-radius: var(--radius-card); margin-bottom: 16px; display: flex; align-items: center; gap: 16px; box-shadow: var(--shadow-card); cursor: pointer; }
         .media-icon { width: 44px; height: 44px; background: #ECEFF1; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 24px; color: var(--icon-default); }
@@ -188,43 +214,16 @@
         .media-info p { font-size: 13px; color: var(--text-muted); }
         .play-btn { margin-left: auto; color: var(--primary-main); }
 
-        /* =========================================
-           ИГРА (ИСПРАВЛЕННЫЕ КНОПКИ)
-           ========================================= */
         #game-screen { background: #E0F2F1; }
         #game-screen .breath-status { color: var(--primary-text); text-shadow: none; font-weight: 700; margin-bottom: 8px; }
         #game-screen .breath-timer-text { color: var(--text-body); font-weight: 500; }
-        
-        /* Кнопка СТАРТ - ТЕПЕРЬ ПРЯМОУГОЛЬНАЯ */
-        .btn-game-card {
-            padding: 20px 40px; 
-            border-radius: var(--radius-card); /* Как карточки в меню (24px) */
-            border: none;
-            font-size: 18px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 14px;
-            background: #FFFFFF; 
-            color: var(--primary-text);
-            box-shadow: var(--shadow-float);
-            transition: all 0.2s;
-            min-width: 160px;
-            justify-content: center;
-        }
+        .btn-game-card { padding: 20px 40px; border-radius: var(--radius-card); border: none; font-size: 18px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 14px; background: #FFFFFF; color: var(--primary-text); box-shadow: var(--shadow-float); transition: all 0.2s; min-width: 160px; justify-content: center; }
         .btn-game-card:active { transform: scale(0.96); box-shadow: 0 4px 10px rgba(77, 182, 172, 0.2); }
         .btn-game-card span { font-size: 26px; }
-
-        /* Кнопка СБРОС - МЯГКИЙ КВАДРАТ */
-        .btn-reset-sq {
-            width: 64px; height: 64px; padding: 0;
-            border-radius: 20px; /* Квадрат со скруглением */
-            background: #FFFFFF; 
-            color: var(--text-body); border: none;
-            box-shadow: var(--shadow-float);
-            display: flex; align-items: center; justify-content: center;
-            cursor: pointer; transition: all 0.2s;
-        }
+        .btn-reset-sq { width: 64px; height: 64px; padding: 0; border-radius: 20px; background: #FFFFFF; color: var(--text-body); border: none; box-shadow: var(--shadow-float); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; }
         .btn-reset-sq:active { transform: rotate(45deg) scale(0.92); }
-
         canvas#breathCanvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; opacity: 0.5; }
-        .game-ui-overlay { position: relative; z-index: 10; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; width: 100%; padding-bottom: 60px; pointer-events: none; }
+        .game-ui-overlay { position: relative; z-index: 10; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; width: 100%; padding-bottom: 80px; pointer-events: none; }
         .breath-text-container { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; margin-bottom: 40px; }
         .game-controls { pointer-events: auto; display: flex; gap: 20px; align-items: center; }
 
@@ -284,7 +283,12 @@
 
         <div class="bottom-grid">
             <div class="small-card" onclick="navigateTo('music')">
-                <div class="small-icon warm-icon"><span class="material-icons-round">favorite_border</span></div>
+                <!-- Обертка для бейджика -->
+                <div style="position:relative;">
+                    <div class="small-icon warm-icon"><span class="material-icons-round">favorite_border</span></div>
+                    <!-- БЕЙДЖИК -->
+                    <div id="diaryBadge" class="notification-dot"></div>
+                </div>
                 <div><h4>Дневник</h4><span>Забота о себе</span></div>
             </div>
             <div class="small-card">
@@ -338,12 +342,10 @@
                 <div class="breath-timer-text" id="breathInstruction">Нажми Старт</div>
             </div>
             <div class="game-controls">
-                <!-- Прямоугольная кнопка -->
                 <button class="btn-game-card" id="breathStartBtn" onclick="toggleBreathing()">
                     <span class="material-icons-round" id="playIcon">play_arrow</span>
                     <span id="playText">Старт</span>
                 </button>
-                <!-- Квадратная кнопка -->
                 <button class="btn-reset-sq" onclick="resetBreathing()">
                     <span class="material-icons-round">refresh</span>
                 </button>
@@ -351,13 +353,35 @@
         </div>
     </div>
 
-    <!-- ЭКРАН 5: ДНЕВНИК -->
+    <!-- ЭКРАН 5: ДНЕВНИК (НОВЫЙ UI) -->
     <div id="music-screen" class="screen">
         <div class="content-list">
-            <h2 class="section-title">Ваши записи</h2>
-            <div class="media-item">
-                <div class="media-icon"><span class="material-icons-round">lock</span></div>
-                <div class="media-info"><h3>Личное</h3><p>Нажмите для входа</p></div>
+            
+            <!-- Блок вопроса (если сегодня не заполнено) -->
+            <div id="diary-question-block">
+                <h2 class="section-title" style="margin-top:0; font-size:20px;">Как прошел день?</h2>
+                <div class="mood-selector">
+                    <button class="mood-btn mood-good" onclick="saveMood('good')">
+                        <span class="material-icons-round">sentiment_satisfied_alt</span>
+                        <h3>Хорошо</h3>
+                    </button>
+                    <button class="mood-btn mood-bad" onclick="saveMood('bad')">
+                        <span class="material-icons-round">sentiment_dissatisfied</span>
+                        <h3>Тяжело</h3>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Блок итога (если сегодня заполнено) -->
+            <div id="diary-summary-block" class="today-summary">
+                <span id="summary-icon" class="material-icons-round icon-lg">check_circle</span>
+                <h3 id="summary-title">День записан</h3>
+                <p>Спасибо, что отметили своё состояние.</p>
+            </div>
+
+            <h2 class="section-title">История</h2>
+            <div class="history-list" id="history-container">
+                <!-- Сюда JS добавит элементы -->
             </div>
         </div>
     </div>
@@ -399,8 +423,11 @@
 
     document.querySelector('.greeting-text h1').innerHTML = `Доброе утро,<br>${userName}`;
 
+    // --- ИНИЦИАЛИЗАЦИЯ ДНЕВНИКА ---
+    checkDailyStatus();
     loadChatHistory();
 
+    // Навигация
     function navigateTo(screenName, initialMessage = null) {
         Object.values(screens).forEach(el => el.classList.remove('active'));
         screens[screenName].classList.add('active');
@@ -408,14 +435,19 @@
         if (screenName === 'menu') {
             header.style.display = 'none'; tg.BackButton.hide();
             stopBreathingAnimationLoop();
+            checkDailyStatus(); // Проверяем статус при возврате в меню
         } else {
             header.style.display = 'flex'; tg.BackButton.show();
+            
             if (screenName === 'chat') { 
                 pageTitle.innerText = 'Чат поддержки'; setTimeout(scrollToBottom, 100); 
                 if (initialMessage) userInput.value = initialMessage;
             }
             else if (screenName === 'video') pageTitle.innerText = 'Медитации';
-            else if (screenName === 'music') pageTitle.innerText = 'Дневник';
+            else if (screenName === 'music') {
+                pageTitle.innerText = 'Дневник';
+                renderDiaryScreen(); // Рендерим экран дневника
+            }
             else if (screenName === 'game') {
                 pageTitle.innerText = 'Дыхание'; resizeCanvas(); startBreathingAnimationLoop();
             }
@@ -427,19 +459,111 @@
         navigateTo('menu');
     }
 
-    // --- GAME LOGIC (MINT PARTICLES) ---
-    let animationId;
-    let particles = [];
-    let baseRadius = 110;
-    let targetRadius = 110;
-    let currentRadius = 110;
-    let breathPhase = 'ready';
-    let breathInterval = null;
-    let breathTimer = 0;
-    let isBreathing = false;
-    const INHALE_TIME = 4;
-    const HOLD_TIME = 7;
-    const EXHALE_TIME = 8;
+    // --- ЛОГИКА ДНЕВНИКА (LOCAL STORAGE) ---
+    
+    function getTodayString() {
+        const d = new Date();
+        // Формат YYYY-MM-DD для ключа хранения
+        return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
+    }
+
+    function getFriendlyDate(dateStr) {
+        // Превращаем 2023-10-25 в "25 Октября"
+        const d = new Date(dateStr);
+        const options = { day: 'numeric', month: 'long' };
+        return d.toLocaleDateString('ru-RU', options);
+    }
+
+    // Проверка статуса для бейджика в меню
+    function checkDailyStatus() {
+        const today = getTodayString();
+        const history = JSON.parse(localStorage.getItem('mood_history') || '{}');
+        const badge = document.getElementById('diaryBadge');
+        
+        if (history[today]) {
+            badge.style.display = 'none'; // Уже заполнил
+        } else {
+            badge.style.display = 'block'; // Нужно заполнить!
+        }
+    }
+
+    // Сохранение настроения
+    function saveMood(status) {
+        const today = getTodayString();
+        const history = JSON.parse(localStorage.getItem('mood_history') || '{}');
+        
+        history[today] = status; // 'good' или 'bad'
+        localStorage.setItem('mood_history', JSON.stringify(history));
+        
+        // Вибрация для тактильности
+        if(tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+        
+        // Обновляем UI
+        renderDiaryScreen();
+        checkDailyStatus();
+    }
+
+    // Отрисовка экрана Дневника
+    function renderDiaryScreen() {
+        const today = getTodayString();
+        const history = JSON.parse(localStorage.getItem('mood_history') || '{}');
+        
+        const questionBlock = document.getElementById('diary-question-block');
+        const summaryBlock = document.getElementById('diary-summary-block');
+        const summaryTitle = document.getElementById('summary-title');
+        const summaryIcon = document.getElementById('summary-icon');
+        
+        // 1. Блок "Сегодня"
+        if (history[today]) {
+            questionBlock.style.display = 'none';
+            summaryBlock.style.display = 'block';
+            
+            if (history[today] === 'good') {
+                summaryTitle.innerText = "Хороший день";
+                summaryIcon.innerText = "sentiment_satisfied_alt";
+                summaryIcon.style.color = "var(--primary-main)";
+            } else {
+                summaryTitle.innerText = "Тяжелый день";
+                summaryIcon.innerText = "sentiment_dissatisfied";
+                summaryIcon.style.color = "var(--warm-text)";
+            }
+        } else {
+            questionBlock.style.display = 'block';
+            summaryBlock.style.display = 'none';
+        }
+
+        // 2. История
+        const container = document.getElementById('history-container');
+        container.innerHTML = ''; // Очистка
+        
+        // Сортируем даты от новых к старым
+        const dates = Object.keys(history).sort((a, b) => new Date(b) - new Date(a));
+        
+        if (dates.length === 0) {
+            container.innerHTML = '<div style="text-align:center; color:var(--text-muted); padding:20px;">Пока нет записей</div>';
+        }
+
+        dates.forEach(date => {
+            const status = history[date];
+            const div = document.createElement('div');
+            div.className = 'history-item';
+            
+            const label = status === 'good' ? 'Хорошо' : 'Тяжело';
+            const cssClass = status === 'good' ? 'status-good' : 'status-bad';
+            
+            div.innerHTML = `
+                <span class="h-date">${getFriendlyDate(date)}</span>
+                <span class="h-status ${cssClass}">${label}</span>
+            `;
+            container.appendChild(div);
+        });
+    }
+
+
+    // --- GAME LOGIC ---
+    let animationId; let particles = []; let baseRadius = 110; let targetRadius = 110; let currentRadius = 110;
+    let breathPhase = 'ready'; let breathInterval = null; let breathTimer = 0; let isBreathing = false;
+    const INHALE_TIME = 4; const HOLD_TIME = 7; const EXHALE_TIME = 8;
 
     function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; initParticles(); }
     window.addEventListener('resize', resizeCanvas);
@@ -456,15 +580,9 @@
         update(radius, phase) {
             this.angle += this.speed;
             let targetDist = radius + Math.sin(Date.now() / 500 + this.wobble) * 10;
-            if (phase === 'inhale') {
-                targetDist += Math.random() * 10;
-                this.color = `rgba(77, 182, 172, ${Math.random() * 0.6 + 0.3})`;
-            } else if (phase === 'hold') {
-                targetDist += Math.random() * 2;
-                this.color = `rgba(38, 166, 154, ${Math.random() * 0.5 + 0.3})`;
-            } else if (phase === 'exhale') {
-                this.color = `rgba(77, 182, 172, ${Math.random() * 0.3 + 0.1})`;
-            }
+            if (phase === 'inhale') { targetDist += Math.random() * 10; this.color = `rgba(77, 182, 172, ${Math.random() * 0.6 + 0.3})`; } 
+            else if (phase === 'hold') { targetDist += Math.random() * 2; this.color = `rgba(38, 166, 154, ${Math.random() * 0.5 + 0.3})`; } 
+            else if (phase === 'exhale') { this.color = `rgba(77, 182, 172, ${Math.random() * 0.3 + 0.1})`; }
             this.distance += (targetDist - this.distance) * 0.05;
             const cx = canvas.width / 2; const cy = (canvas.height / 2) - 60;
             this.x = cx + Math.cos(this.angle) * this.distance;
