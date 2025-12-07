@@ -8,40 +8,40 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
     <style>
         :root {
-            /* --- НОВАЯ ПАЛИТРА (SAFETY & CALM) --- */
+            /* --- ПАЛИТРА FRESH MINT (No Purple) --- */
             
             /* ФОН */
-            --bg-main: #F5F7FA;      /* Основа */
-            --bg-card: #FFFFFF;      /* Карточки */
+            --bg-main: #F5F7FA;      
+            --bg-card: #FFFFFF;      
             
             /* ТИПОГРАФИЯ */
-            --text-header: #1F2937;  /* Semibold заголовки */
-            --text-body: #4B5563;    /* Основной текст */
-            --text-muted: #9CA3AF;   /* Вторичный текст */
+            --text-header: #1F2937;  
+            --text-body: #4B5563;    
+            --text-muted: #9CA3AF;   
             
-            /* АКЦЕНТЫ (Лаванда) */
-            --primary-main: #8B7CF6; 
-            --primary-soft: #EDEBFF; /* Фон кнопок */
-            --primary-text: #6B5EEA; /* Текст кнопок */
+            /* ГЛАВНЫЙ АКЦЕНТ (Мята/Teal) */
+            --primary-main: #4DB6AC; /* Основной мятный */
+            --primary-soft: #E0F2F1; /* Светлый фон мятный */
+            --primary-text: #00695C; /* Темный текст на мятном */
             
-            /* ВТОРИЧНЫЕ (Голубой - Дыхание) */
-            --secondary-bg: #E8EEFA; 
-            --secondary-accent: #7FA6FF;
+            /* ВТОРИЧНЫЕ (Голубой - Воздух) */
+            --secondary-bg: #E3F2FD; 
+            --secondary-accent: #64B5F6;
             
-            /* ТЕПЛЫЙ (Розовый - Забота) */
-            --warm-bg: #F6EAEA;
-            --warm-accent: #ECA3A3; /* Немного темнее для иконок */
+            /* ТЕПЛЫЙ (Персиковый - Забота) */
+            --warm-bg: #FFF3E0;
+            --warm-accent: #FFB74D;
 
             /* КАРТОЧКИ И ТЕНИ */
             --radius-card: 24px;
-            --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.04); /* Очень мягкая тень */
+            --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.04);
             
             /* ИКОНКИ */
-            --icon-default: #6B7280;
+            --icon-default: #78909C; /* Серо-голубой */
             
             /* ЧАТ */
             --msg-bot-bg: #FFFFFF;
-            --msg-user-bg: #8B7CF6;
+            --msg-user-bg: #4DB6AC; /* Сообщения теперь мятные */
             --msg-user-text: #FFFFFF;
         }
 
@@ -51,14 +51,14 @@
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             background-color: var(--bg-main);
             color: var(--text-body);
-            line-height: 1.5; /* Воздух в тексте */
+            line-height: 1.5;
             position: fixed; top: 0; left: 0; right: 0; bottom: 0;
             display: flex; flex-direction: column;
         }
 
         h1, h2, h3, h4 {
             color: var(--text-header);
-            font-weight: 600; /* Semibold */
+            font-weight: 600;
             letter-spacing: -0.02em;
         }
 
@@ -90,20 +90,14 @@
         @keyframes fadeUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
 
         /* =========================================
-           ГЛАВНОЕ МЕНЮ (CALM UI)
+           ГЛАВНОЕ МЕНЮ
            ========================================= */
-        #menu-screen {
-            padding: 24px;
-            overflow-y: auto;
-        }
+        #menu-screen { padding: 24px; overflow-y: auto; }
 
         /* Приветствие */
         .greeting-header {
-            margin-top: 10px;
-            margin-bottom: 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            margin-top: 10px; margin-bottom: 30px;
+            display: flex; justify-content: space-between; align-items: center;
         }
         .greeting-text h1 { font-size: 26px; line-height: 1.3; }
         .greeting-text p { font-size: 16px; color: var(--text-muted); margin-top: 4px; }
@@ -113,101 +107,72 @@
             background: var(--primary-soft);
             border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
-            color: var(--primary-text);
+            color: var(--primary-main); /* Мятная иконка */
         }
 
-        /* Заголовки секций */
         .section-title { font-size: 17px; font-weight: 600; margin-bottom: 16px; color: var(--text-header); }
 
         /* Сетка основных действий */
         .main-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
-            margin-bottom: 24px;
+            display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px;
         }
 
         .action-card {
             border-radius: var(--radius-card);
             padding: 20px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
+            display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;
             height: 150px;
-            cursor: pointer;
-            transition: transform 0.1s;
-            /* Стиль кнопок по гайду */
-            background-color: var(--primary-soft);
-            box-shadow: none; /* Плоский стиль для спокойствия */
+            cursor: pointer; transition: transform 0.1s;
+            background-color: var(--primary-soft); /* Мятный фон */
         }
-        .action-card:active { transform: scale(0.97); background-color: #E0DEFA; }
+        .action-card:active { transform: scale(0.97); }
 
-        /* ЧАТ - Основной (Лаванда) */
+        /* ЧАТ - МЯТНЫЙ */
         .card-chat h3 { color: var(--primary-text); }
-        .card-chat .icon-box { color: var(--primary-text); border: 1px solid rgba(107, 94, 234, 0.1); }
+        .card-chat .icon-box { color: var(--primary-main); border: 1px solid rgba(77, 182, 172, 0.2); }
 
-        /* ДЫХАНИЕ - Вторичный (Голубой) */
+        /* ДЫХАНИЕ - ГОЛУБОЙ */
         .card-breath { background-color: var(--secondary-bg); }
-        .card-breath h3 { color: #5A7BBB; }
-        .card-breath .icon-box { color: var(--secondary-accent); border: 1px solid rgba(127, 166, 255, 0.1); }
+        .card-breath h3 { color: #1565C0; }
+        .card-breath .icon-box { color: var(--secondary-accent); border: 1px solid rgba(100, 181, 246, 0.2); }
 
         .icon-box {
-            width: 50px; height: 50px;
-            border-radius: 16px;
-            background: rgba(255,255,255,0.6);
+            width: 50px; height: 50px; border-radius: 16px;
+            background: rgba(255,255,255,0.7);
             display: flex; align-items: center; justify-content: center;
             margin-bottom: 12px;
         }
         .icon-box span { font-size: 26px; }
-
         .action-card h3 { font-size: 15px; font-weight: 600; }
 
         /* Виджет "Волна" */
         .widget-card {
-            background: #F1F3FF; /* Фон под волной по гайду */
-            border-radius: var(--radius-card);
-            padding: 20px;
-            box-shadow: none;
-            margin-bottom: 24px;
-            position: relative;
-            overflow: hidden;
-            cursor: pointer;
+            background: #E0F2F1; /* Очень светлый мятный фон */
+            border-radius: var(--radius-card); padding: 20px;
+            margin-bottom: 24px; position: relative; overflow: hidden; cursor: pointer;
         }
         .widget-header { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
-        .dot-indicator { width: 8px; height: 8px; background: var(--primary-main); border-radius: 50%; opacity: 0.7; }
+        .dot-indicator { width: 8px; height: 8px; background: var(--primary-main); border-radius: 50%; opacity: 0.8; }
         .widget-title { font-size: 14px; color: var(--text-muted); }
         .widget-main-text { font-size: 18px; font-weight: 600; color: var(--text-header); }
         
-        .wave-graph {
-            width: 100%; height: 50px;
-            margin-top: 8px;
-            opacity: 0.9;
-        }
+        .wave-graph { width: 100%; height: 50px; margin-top: 8px; opacity: 0.9; }
 
-        /* Нижний ряд (Теплые карточки) */
-        .bottom-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
-        }
+        /* Нижний ряд */
+        .bottom-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
         .small-card {
-            background: var(--bg-card);
-            padding: 16px;
-            border-radius: 20px;
+            background: var(--bg-card); padding: 16px; border-radius: 20px;
             display: flex; align-items: center; gap: 12px;
-            box-shadow: var(--shadow-card);
-            cursor: pointer;
+            box-shadow: var(--shadow-card); cursor: pointer;
         }
         .small-icon { 
             width: 36px; height: 36px; border-radius: 10px; 
             display: flex; align-items: center; justify-content: center; 
         }
-        /* Дневник - Теплый розовый */
-        .pink-icon { background: var(--warm-bg); color: var(--warm-accent); }
+        /* Дневник - Персиковый */
+        .warm-icon { background: var(--warm-bg); color: var(--warm-accent); }
         /* Планы - Нейтральный */
-        .grey-icon { background: #F3F4F6; color: var(--icon-default); }
+        .grey-icon { background: #ECEFF1; color: var(--icon-default); }
         
         .small-card h4 { font-size: 14px; font-weight: 600; color: var(--text-header); }
         .small-card span { font-size: 11px; color: var(--text-muted); }
@@ -229,11 +194,12 @@
         .msg-user { 
             align-self: flex-end; background-color: var(--msg-user-bg); color: var(--msg-user-text); 
             border-top-right-radius: 4px; 
-            box-shadow: 0 4px 12px rgba(139, 124, 246, 0.25); /* Тень в цвет акцента */
+            /* Мятная тень */
+            box-shadow: 0 4px 12px rgba(77, 182, 172, 0.3); 
         }
         
         .typing-indicator { display: none; align-self: flex-start; background: var(--bg-card); padding: 12px; border-radius: 16px; margin-bottom: 10px; box-shadow: var(--shadow-card); }
-        .dot { height: 6px; width: 6px; background-color: #D1D5DB; border-radius: 50%; display: inline-block; animation: bounce 1.4s infinite ease-in-out both; margin: 0 2px; }
+        .dot { height: 6px; width: 6px; background-color: #CFD8DC; border-radius: 50%; display: inline-block; animation: bounce 1.4s infinite ease-in-out both; margin: 0 2px; }
         .dot:nth-child(1) { animation-delay: -0.32s; } .dot:nth-child(2) { animation-delay: -0.16s; }
         @keyframes bounce { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
         
@@ -257,19 +223,18 @@
         
         #sendBtn { background-color: var(--primary-main); color: white; }
         
-        /* МИКРОФОН: БЕЗ КРАСНОГО! */
         #micBtn { background-color: var(--bg-card); color: var(--icon-default); }
-        /* Активный микрофон: Пульсация лавандовым */
+        /* Активный микрофон: Пульсация мятным */
         #micBtn.recording { 
             background-color: var(--primary-soft); 
             color: var(--primary-main); 
-            animation: pulse-calm 2s infinite; 
+            animation: pulse-mint 2s infinite; 
             border: 1px solid var(--primary-main);
         }
-        @keyframes pulse-calm { 
-            0% { box-shadow: 0 0 0 0 rgba(139, 124, 246, 0.4); } 
-            70% { box-shadow: 0 0 0 8px rgba(139, 124, 246, 0); } 
-            100% { box-shadow: 0 0 0 0 rgba(139, 124, 246, 0); } 
+        @keyframes pulse-mint { 
+            0% { box-shadow: 0 0 0 0 rgba(77, 182, 172, 0.4); } 
+            70% { box-shadow: 0 0 0 8px rgba(77, 182, 172, 0); } 
+            100% { box-shadow: 0 0 0 0 rgba(77, 182, 172, 0); } 
         }
 
         /* СПИСКИ */
@@ -280,7 +245,7 @@
             box-shadow: var(--shadow-card); cursor: pointer; 
         }
         .media-icon { 
-            width: 44px; height: 44px; background: #F3F4F6; border-radius: 14px; 
+            width: 44px; height: 44px; background: #ECEFF1; border-radius: 14px; 
             display: flex; align-items: center; justify-content: center; 
             font-size: 24px; color: var(--icon-default); 
         }
@@ -290,7 +255,7 @@
 
         /* ИГРА (ДЫХАНИЕ) */
         #game-screen {
-            background: var(--secondary-bg); /* Нежно-голубой для дыхания */
+            background: #E0F2F1; /* Мятный фон для дыхания */
         }
         #game-screen .breath-status { color: var(--text-header); text-shadow: none; font-weight: 600; }
         #game-screen .breath-timer-text { color: var(--text-body); }
@@ -323,7 +288,7 @@
         <span class="header-title" id="page-title">Назад</span>
     </header>
 
-    <!-- ЭКРАН 1: ГЛАВНОЕ МЕНЮ (SAFETY UI) -->
+    <!-- ЭКРАН 1: ГЛАВНОЕ МЕНЮ -->
     <div id="menu-screen" class="screen active">
         
         <!-- Приветствие -->
@@ -339,7 +304,7 @@
 
         <!-- Кнопки действий -->
         <div class="main-grid">
-            <!-- Чат: Фиолетовые тона -->
+            <!-- Чат: Мятный -->
             <div class="action-card card-chat" onclick="navigateTo('chat', 'Поговорить')">
                 <div class="icon-box">
                     <span class="material-icons-round">chat_bubble_outline</span>
@@ -347,7 +312,7 @@
                 <h3>Чат поддержки</h3>
             </div>
             
-            <!-- Дыхание: Голубые тона (спокойствие) -->
+            <!-- Дыхание: Голубой -->
             <div class="action-card card-breath" onclick="navigateTo('game')">
                 <div class="icon-box">
                     <span class="material-icons-round">air</span>
@@ -356,7 +321,7 @@
             </div>
         </div>
 
-        <!-- Виджет "Волна" (Плавная синусоида) -->
+        <!-- Виджет "Волна" (Мятная) -->
         <div class="section-title">Состояние</div>
         <div class="widget-card" onclick="navigateTo('video')">
             <div class="widget-header">
@@ -364,24 +329,23 @@
                 <div class="widget-title">Медитации</div>
             </div>
             <div class="widget-main-text">Спокойствие</div>
-            <!-- SVG Волна (Синусоида) -->
+            <!-- SVG Волна (Мятная) -->
             <svg class="wave-graph" viewBox="0 0 300 50" preserveAspectRatio="none">
                 <defs>
                     <linearGradient id="grad1" x1="0%" y1="0%" x2="0%" y2="100%">
-                        <stop offset="0%" style="stop-color:#8B7CF6;stop-opacity:0.6" />
-                        <stop offset="100%" style="stop-color:#8B7CF6;stop-opacity:0" />
+                        <stop offset="0%" style="stop-color:#4DB6AC;stop-opacity:0.6" />
+                        <stop offset="100%" style="stop-color:#4DB6AC;stop-opacity:0" />
                     </linearGradient>
                 </defs>
-                <!-- Плавная кривая -->
                 <path d="M0,25 Q75,5 150,25 T300,25 V50 H0 Z" fill="url(#grad1)" />
-                <path d="M0,25 Q75,5 150,25 T300,25" stroke="#8B7CF6" stroke-width="2" fill="none"/>
+                <path d="M0,25 Q75,5 150,25 T300,25" stroke="#4DB6AC" stroke-width="2" fill="none"/>
             </svg>
         </div>
 
         <!-- Нижний ряд -->
         <div class="bottom-grid">
             <div class="small-card" onclick="navigateTo('music')">
-                <div class="small-icon pink-icon">
+                <div class="small-icon warm-icon">
                     <span class="material-icons-round">favorite_border</span>
                 </div>
                 <div>
@@ -405,7 +369,7 @@
     <!-- ЭКРАН 2: ЧАТ -->
     <div id="chat-screen" class="screen">
         <div id="chat-container">
-            <div class="message msg-bot">Я рядом. Вы можете рассказать мне все, что вас тревожит. Мы справимся. 💜</div>
+            <div class="message msg-bot">Я рядом. Вы можете рассказать мне все, что вас тревожит. Мы справимся. 🌿</div>
             <div class="typing-indicator" id="typing"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
         </div>
         <div class="input-area">
@@ -469,7 +433,7 @@
     </div>
 
 <script>
-    // === ЛОГИКА (БЕЗ ИЗМЕНЕНИЙ) ===
+    // === ЛОГИКА ===
     
     const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzOq4mO0Dgx9PH9AzH8ozKOYcQ0CshNHldt51VyynuR1uJZ8ZW_x71KNhG-4QV6nPF8/exec";
     const tg = window.Telegram.WebApp;
@@ -503,7 +467,6 @@
     const userId = tg.initDataUnsafe?.user?.id || 'web_user_' + Math.floor(Math.random() * 1000);
     const userName = tg.initDataUnsafe?.user?.first_name || 'Друг';
 
-    // Вставляем имя пользователя в приветствие
     document.querySelector('.greeting-text h1').innerHTML = `Доброе утро,<br>${userName}`;
 
     loadChatHistory();
@@ -534,7 +497,7 @@
         navigateTo('menu');
     }
 
-    // --- GAME LOGIC (PARTICLES) ---
+    // --- GAME LOGIC (MINT PARTICLES) ---
     let animationId;
     let particles = [];
     let baseRadius = 110;
@@ -557,8 +520,8 @@
             this.distance = baseRadius + Math.random() * 20;
             this.size = Math.random() * 3 + 1;
             this.speed = Math.random() * 0.02 + 0.005;
-            // Цвет частиц: Голубой акцент для дыхания
-            this.color = `rgba(127, 166, 255, ${Math.random() * 0.4 + 0.1})`; 
+            // Цвет частиц: МЯТНЫЙ
+            this.color = `rgba(77, 182, 172, ${Math.random() * 0.4 + 0.1})`; 
             this.wobble = Math.random() * 20;
         }
         update(radius, phase) {
@@ -566,12 +529,12 @@
             let targetDist = radius + Math.sin(Date.now() / 500 + this.wobble) * 10;
             if (phase === 'inhale') {
                 targetDist += Math.random() * 10;
-                this.color = `rgba(127, 166, 255, ${Math.random() * 0.6 + 0.3})`;
+                this.color = `rgba(77, 182, 172, ${Math.random() * 0.6 + 0.3})`;
             } else if (phase === 'hold') {
                 targetDist += Math.random() * 2;
-                this.color = `rgba(139, 124, 246, ${Math.random() * 0.5 + 0.3})`; // Чуть лавандового на задержке
+                this.color = `rgba(38, 166, 154, ${Math.random() * 0.5 + 0.3})`; // Темнее мята
             } else if (phase === 'exhale') {
-                this.color = `rgba(127, 166, 255, ${Math.random() * 0.3 + 0.1})`;
+                this.color = `rgba(77, 182, 172, ${Math.random() * 0.3 + 0.1})`;
             }
             this.distance += (targetDist - this.distance) * 0.05;
             const cx = canvas.width / 2; const cy = (canvas.height / 2) - 60;
@@ -581,7 +544,7 @@
         draw() { ctx.fillStyle = this.color; ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill(); }
     }
 
-    function initParticles() { particles = []; for (let i = 0; i < 150; i++) particles.push(new Particle()); } // Уменьшил частицы для легкости
+    function initParticles() { particles = []; for (let i = 0; i < 150; i++) particles.push(new Particle()); }
     function startBreathingAnimationLoop() { if (!animationId) animate(); }
     function stopBreathingAnimationLoop() { cancelAnimationFrame(animationId); animationId = null; }
     function animate() {
