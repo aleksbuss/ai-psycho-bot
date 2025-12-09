@@ -9,99 +9,106 @@
     <style>
         :root {
             /* --- ПАЛИТРА FRESH MINT --- */
-            --bg-main: #F5F7FA;      
-            --bg-card: #FFFFFF;      
-            
-            --text-header: #1F2937;  
-            --text-body: #4B5563;    
-            --text-muted: #9CA3AF;   
-            
-            --primary-main: #4DB6AC; 
-            --primary-soft: #E0F2F1; 
-            --primary-text: #00695C; 
-            
-            --secondary-bg: #E3F2FD; 
-            --secondary-accent: #64B5F6;
-            
-            --warm-bg: #FFF3E0;
-            --warm-accent: #FFB74D;
-            --warm-text: #EF6C00;
-
-            --radius-card: 24px;
-            --radius-btn-sq: 18px;
-            
+            --bg-main: #F5F7FA; --bg-card: #FFFFFF;
+            --text-header: #1F2937; --text-body: #4B5563; --text-muted: #9CA3AF;
+            --primary-main: #4DB6AC; --primary-soft: #E0F2F1; --primary-text: #00695C;
+            --secondary-bg: #E3F2FD; --secondary-accent: #64B5F6;
+            --warm-bg: #FFF3E0; --warm-accent: #FFB74D; --warm-text: #EF6C00;
+            --radius-card: 24px; --radius-btn-sq: 18px;
             --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.04);
             --shadow-float: 0 10px 30px rgba(77, 182, 172, 0.15);
             --shadow-sos: 0 4px 15px rgba(255, 183, 77, 0.3);
-            
             --icon-default: #90A4AE;
-            
-            --msg-bot-bg: #FFFFFF;
-            --msg-user-bg: #4DB6AC;
-            --msg-user-text: #FFFFFF;
+            --msg-bot-bg: #FFFFFF; --msg-user-bg: #4DB6AC; --msg-user-text: #FFFFFF;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
         
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background-color: var(--bg-main);
-            color: var(--text-body);
-            line-height: 1.5;
-            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-            display: flex; flex-direction: column;
+            background-color: var(--bg-main); color: var(--text-body); line-height: 1.5;
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0; display: flex; flex-direction: column;
         }
 
         h1, h2, h3, h4 { color: var(--text-header); font-weight: 600; letter-spacing: -0.02em; }
 
-        /* --- ШАПКА --- */
-        header {
-            padding: 0 20px; background: transparent; z-index: 100;
-            display: none; align-items: center; height: 60px; flex-shrink: 0; width: 100%;
+        /* --- АНИМАЦИИ SVG (НОВОЕ) --- */
+        
+        /* 1. Глаза (Моргание) */
+        @keyframes blink {
+            0%, 90%, 100% { transform: scaleY(1); }
+            95% { transform: scaleY(0.1); }
         }
-        #back-btn {
-            background: var(--bg-card); border: none; color: var(--text-header);
-            width: 44px; height: 44px; border-radius: 16px;
-            box-shadow: var(--shadow-card);
-            cursor: pointer; display: flex; align-items: center; justify-content: center;
-        }
-        .header-title { font-size: 18px; font-weight: 600; margin-left: 15px; color: var(--text-header); }
+        .anim-eye { transform-origin: center; animation: blink 4s infinite; }
 
-        /* --- ЭКРАНЫ --- */
+        /* 2. Рука (Покачивание) */
+        @keyframes handWave {
+            0%, 100% { transform: rotate(-5deg); }
+            50% { transform: rotate(5deg); }
+        }
+        .anim-hand { transform-origin: bottom center; animation: handWave 3s ease-in-out infinite; }
+
+        /* 3. Звук (Волны) */
+        @keyframes soundFlow {
+            0% { opacity: 0; transform: translateX(-5px); }
+            50% { opacity: 1; transform: translateX(0); }
+            100% { opacity: 0; transform: translateX(5px); }
+        }
+        .sound-line-1 { animation: soundFlow 1.5s infinite 0s; }
+        .sound-line-2 { animation: soundFlow 1.5s infinite 0.3s; }
+        .sound-line-3 { animation: soundFlow 1.5s infinite 0.6s; }
+
+        /* 4. Запах (Пар) */
+        @keyframes scentRise {
+            0% { transform: translateY(0) scaleX(1); opacity: 0.6; }
+            100% { transform: translateY(-15px) scaleX(1.2); opacity: 0; }
+        }
+        .scent-line { animation: scentRise 2.5s infinite linear; }
+        .scent-delay { animation-delay: 1.2s; }
+
+        /* 5. Вкус (Пульсация конфеты) */
+        @keyframes candyPulse {
+            0%, 100% { transform: scale(1) rotate(0deg); }
+            50% { transform: scale(1.1) rotate(5deg); }
+        }
+        .anim-candy { transform-origin: center; animation: candyPulse 3s ease-in-out infinite; }
+
+
+        /* --- ОБЩИЕ АНИМАЦИИ ИНТЕРФЕЙСА --- */
+        @keyframes waveMove { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+        @keyframes msgSlideUp { from { opacity: 0; transform: translateY(20px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
+        .msg-enter { animation: msgSlideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
+        
+        /* Эквалайзер */
+        .equalizer { display: flex; align-items: flex-end; gap: 2px; height: 16px; width: 16px; }
+        .eq-bar { width: 4px; background-color: var(--primary-main); border-radius: 2px; animation: eqBounce 0.5s infinite ease-in-out alternate; }
+        .eq-bar:nth-child(1) { height: 60%; animation-delay: 0s; } .eq-bar:nth-child(2) { height: 100%; animation-delay: 0.2s; } .eq-bar:nth-child(3) { height: 80%; animation-delay: 0.4s; }
+        @keyframes eqBounce { 0% { height: 30%; } 100% { height: 100%; } }
+
+        /* Морфинг Дневника */
+        .fade-out-scale { animation: fadeOutScale 0.3s ease-in forwards; }
+        .fade-in-scale { animation: fadeInScale 0.4s ease-out forwards; }
+        @keyframes fadeOutScale { to { opacity: 0; transform: scale(0.9); } }
+        @keyframes fadeInScale { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+
+        /* --- UI COMPONENTS --- */
+        header { padding: 0 20px; background: transparent; z-index: 100; display: none; align-items: center; height: 60px; flex-shrink: 0; width: 100%; }
+        #back-btn { background: var(--bg-card); border: none; color: var(--text-header); width: 44px; height: 44px; border-radius: 16px; box-shadow: var(--shadow-card); cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .header-title { font-size: 18px; font-weight: 600; margin-left: 15px; color: var(--text-header); }
         .screen { flex: 1; display: none; flex-direction: column; width: 100%; height: 100%; overflow: hidden; position: relative; }
         .screen.active { display: flex; animation: fadeUp 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
         @keyframes fadeUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* =========================================
-           ГЛАВНОЕ МЕНЮ
-           ========================================= */
+        /* MENU */
         #menu-screen { padding: 24px; overflow-y: auto; }
-        
         .greeting-header { margin-top: 10px; margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center; }
         .greeting-text h1 { font-size: 26px; line-height: 1.3; }
         .greeting-text p { font-size: 16px; color: var(--text-muted); margin-top: 4px; }
-        
-        /* КНОПКА SOS */
-        .sos-btn-header {
-            width: 54px; height: 54px;
-            border-radius: 18px; 
-            background-color: var(--warm-bg);
-            display: flex; align-items: center; justify-content: center;
-            color: var(--warm-text); font-weight: 800; font-size: 15px; letter-spacing: 0.5px;
-            box-shadow: 0 4px 15px rgba(255, 183, 77, 0.25);
-            cursor: pointer; transition: transform 0.1s, box-shadow 0.2s; border: none;
-        }
+        .sos-btn-header { width: 54px; height: 54px; border-radius: 18px; background-color: var(--warm-bg); display: flex; align-items: center; justify-content: center; color: var(--warm-text); font-weight: 800; font-size: 15px; letter-spacing: 0.5px; box-shadow: 0 4px 15px rgba(255, 183, 77, 0.25); cursor: pointer; transition: transform 0.1s, box-shadow 0.2s; border: none; }
         .sos-btn-header:active { transform: scale(0.95); box-shadow: 0 2px 8px rgba(255, 183, 77, 0.2); }
-
         .section-title { font-size: 17px; font-weight: 600; margin-bottom: 16px; color: var(--text-header); }
-        
         .main-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
-        .action-card {
-            border-radius: var(--radius-card); padding: 20px;
-            display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;
-            height: 150px; cursor: pointer; transition: transform 0.1s;
-            background-color: var(--primary-soft);
-        }
+        .action-card { border-radius: var(--radius-card); padding: 20px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; height: 150px; cursor: pointer; transition: transform 0.1s; background-color: var(--primary-soft); }
         .action-card:active { transform: scale(0.97); }
         .card-chat h3 { color: var(--primary-text); }
         .card-chat .icon-box { color: var(--primary-main); border: 1px solid rgba(77, 182, 172, 0.2); }
@@ -111,14 +118,13 @@
         .icon-box { width: 50px; height: 50px; border-radius: 16px; background: rgba(255,255,255,0.7); display: flex; align-items: center; justify-content: center; margin-bottom: 12px; }
         .icon-box span { font-size: 26px; }
         .action-card h3 { font-size: 15px; font-weight: 600; }
-
         .widget-card { background: #E0F2F1; border-radius: var(--radius-card); padding: 20px; margin-bottom: 24px; position: relative; overflow: hidden; cursor: pointer; }
         .widget-header { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
         .dot-indicator { width: 8px; height: 8px; background: var(--primary-main); border-radius: 50%; opacity: 0.8; }
         .widget-title { font-size: 14px; color: var(--text-muted); }
         .widget-main-text { font-size: 18px; font-weight: 600; color: var(--text-header); }
-        .wave-graph { width: 100%; height: 50px; margin-top: 8px; opacity: 0.9; }
-
+        .wave-container { width: 100%; height: 50px; margin-top: 8px; overflow: hidden; position: relative; }
+        .wave-graph { width: 200%; height: 100%; opacity: 0.9; animation: waveMove 8s linear infinite; }
         .bottom-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
         .small-card { background: var(--bg-card); padding: 16px; border-radius: 20px; display: flex; align-items: center; gap: 12px; box-shadow: var(--shadow-card); cursor: pointer; position: relative; }
         .small-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; }
@@ -126,129 +132,38 @@
         .grey-icon { background: #ECEFF1; color: var(--icon-default); }
         .small-card h4 { font-size: 14px; font-weight: 600; color: var(--text-header); }
         .small-card span { font-size: 11px; color: var(--text-muted); }
-
-        .notification-dot {
-            position: absolute; top: 12px; right: 12px; width: 10px; height: 10px;
-            background-color: #FF7043; border-radius: 50%; border: 2px solid var(--bg-card);
-            display: none; animation: pulse-dot 2s infinite;
-        }
+        .notification-dot { position: absolute; top: 12px; right: 12px; width: 10px; height: 10px; background-color: #FF7043; border-radius: 50%; border: 2px solid var(--bg-card); display: none; animation: pulse-dot 2s infinite; }
         @keyframes pulse-dot { 0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.2); opacity: 0.8; } 100% { transform: scale(1); opacity: 1; } }
 
-        /* =========================================
-           ЭКРАН SOS (ANIMATION LOGIC REWORKED)
-           ========================================= */
-        #sos-screen { 
-            background-color: var(--warm-bg); 
-            justify-content: center; 
-        }
+        /* SOS SCREEN */
+        #sos-screen { background-color: var(--warm-bg); justify-content: center; }
+        .sos-dynamic-container { padding: 24px; display: flex; flex-direction: column; align-items: center; width: 100%; height: 100%; justify-content: center; }
+        .sos-dynamic-card { background: #FFFFFF; padding: 40px 24px; border-radius: 32px; box-shadow: 0 10px 40px rgba(255, 183, 77, 0.15); width: 100%; text-align: center; display: flex; flex-direction: column; align-items: center; opacity: 0; transform: translateY(20px); }
+        .anim-enter { animation: sosCardEnter 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; }
+        @keyframes sosCardEnter { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .anim-exit { animation: sosCardExit 0.5s ease-in forwards; }
+        @keyframes sosCardExit { to { opacity: 0; transform: translateX(-100%); } }
+        .sos-group-1, .sos-group-2, .sos-group-3 { opacity: 0; }
+        .fade-in-up { animation: sosContentFadeIn 0.5s ease-out forwards; }
+        @keyframes sosContentFadeIn { from { opacity: 0; transform: scale(0.95) translateY(10px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+        .delay-1 { animation-delay: 0.2s; } .delay-2 { animation-delay: 0.3s; } .delay-3 { animation-delay: 0.4s; }
+        .sos-number { font-size: 80px; font-weight: 800; color: var(--primary-main); line-height: 1; margin-bottom: 10px; }
         
-        .sos-dynamic-container { 
-            padding: 24px; 
-            display: flex; flex-direction: column; align-items: center; 
-            width: 100%; height: 100%;
-            justify-content: center;
+        /* КОНТЕЙНЕР ДЛЯ SVG ИЛЛЮСТРАЦИИ */
+        .sos-illustration-container {
+            width: 120px; height: 120px; margin-bottom: 25px;
+            display: flex; align-items: center; justify-content: center;
         }
+        .sos-svg { width: 100%; height: 100%; stroke: var(--warm-text); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 
-        /* КАРТОЧКА */
-        .sos-dynamic-card {
-            background: #FFFFFF;
-            padding: 40px 24px;
-            border-radius: 32px;
-            box-shadow: 0 10px 40px rgba(255, 183, 77, 0.15);
-            width: 100%;
-            text-align: center;
-            display: flex; flex-direction: column; align-items: center;
-            /* Начальное состояние скрыто, чтобы анимация сработала при запуске */
-            opacity: 0; 
-            transform: translateY(20px);
-        }
-
-        /* КЛАССЫ АНИМАЦИИ КАРТОЧКИ */
-        .anim-enter {
-            animation: sosCardEnter 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
-        }
-        @keyframes sosCardEnter {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .anim-exit {
-            animation: sosCardExit 0.5s ease-in forwards;
-        }
-        @keyframes sosCardExit {
-            to { opacity: 0; transform: translateX(-100%); }
-        }
-
-        /* КОНТЕНТ (ГРУППЫ) */
-        /* По умолчанию скрыты для каскада */
-        .sos-group-1, .sos-group-2, .sos-group-3 {
-            opacity: 0;
-        }
-
-        /* АНИМАЦИЯ ПОЯВЛЕНИЯ КОНТЕНТА */
-        .fade-in-up {
-            animation: sosContentFadeIn 0.5s ease-out forwards;
-        }
-        @keyframes sosContentFadeIn {
-            from { opacity: 0; transform: scale(0.95) translateY(10px); }
-            to { opacity: 1; transform: scale(1) translateY(0); }
-        }
-
-        /* ЗАДЕРЖКИ КАСКАДА */
-        .delay-1 { animation-delay: 0.2s; } /* Иконка + Цифра */
-        .delay-2 { animation-delay: 0.3s; } /* Текст */
-        .delay-3 { animation-delay: 0.4s; } /* Кнопка */
-
-        /* ЭЛЕМЕНТЫ */
-        .sos-number {
-            font-size: 80px; font-weight: 800;
-            color: var(--primary-main);
-            line-height: 1; margin-bottom: 5px;
-        }
-
-        .sos-icon-large {
-            font-size: 70px; color: var(--warm-accent);
-            margin-bottom: 25px;
-        }
-
-        /* ДЫХАНИЕ (IDLE ANIMATION) для Группы 1 */
-        .anim-breathe {
-            animation: sosBreathe 5s ease-in-out infinite;
-        }
-        @keyframes sosBreathe {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.03); }
-        }
-
-        .sos-instruction {
-            font-size: 20px; color: var(--text-header); font-weight: 700;
-            margin-bottom: 8px;
-        }
-        
-        .sos-subtext {
-            font-size: 16px; color: var(--text-body);
-            margin-bottom: 30px;
-        }
-
-        .sos-next-btn {
-            width: 100%; padding: 18px; border-radius: 24px; border: none;
-            background: var(--primary-main); color: white; font-size: 17px; font-weight: 700;
-            cursor: pointer; box-shadow: 0 8px 20px rgba(77, 182, 172, 0.3);
-            transition: transform 0.1s;
-        }
+        .sos-instruction { font-size: 20px; color: var(--text-header); font-weight: 700; margin-bottom: 8px; }
+        .sos-subtext { font-size: 16px; color: var(--text-body); margin-bottom: 30px; }
+        .sos-next-btn { width: 100%; padding: 18px; border-radius: 24px; border: none; background: var(--primary-main); color: white; font-size: 17px; font-weight: 700; cursor: pointer; box-shadow: 0 8px 20px rgba(77, 182, 172, 0.3); transition: transform 0.1s; }
         .sos-next-btn:active { transform: scale(0.97) !important; }
-
-        /* ФИНИШ */
-        .sos-finish-container { 
-            text-align: center; display: none; width: 100%;
-            flex-direction: column; align-items: center;
-            animation: sosCardEnter 0.6s ease-out;
-        }
+        .sos-finish-container { text-align: center; display: none; width: 100%; flex-direction: column; align-items: center; animation: sosCardEnter 0.6s ease-out; }
         .sos-finish-icon { font-size: 90px; color: var(--primary-main); margin-bottom: 20px; }
 
-        /* =========================================
-           ЧАТ
-           ========================================= */
+        /* CHAT */
         #chat-container { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; }
         .message { max-width: 85%; padding: 14px 18px; border-radius: 20px; font-size: 15px; box-shadow: var(--shadow-card); }
         .msg-bot { align-self: flex-start; background-color: var(--msg-bot-bg); color: var(--text-body); border-top-left-radius: 4px; }
@@ -256,7 +171,6 @@
         .typing-indicator { display: none; align-self: flex-start; background: var(--bg-card); padding: 12px; border-radius: 16px; margin-bottom: 10px; box-shadow: var(--shadow-card); }
         .dot { height: 6px; width: 6px; background-color: #CFD8DC; border-radius: 50%; display: inline-block; animation: bounce 1.4s infinite ease-in-out both; margin: 0 2px; }
         .dot:nth-child(1) { animation-delay: -0.32s; } .dot:nth-child(2) { animation-delay: -0.16s; }
-        
         .input-area { background: var(--bg-main); padding: 12px 20px; display: flex; align-items: center; gap: 12px; padding-bottom: calc(15px + env(safe-area-inset-bottom)); }
         input[type="text"] { flex: 1; padding: 16px 20px; border-radius: 18px; border: none; font-size: 16px; outline: none; background: #FFFFFF; box-shadow: 0 2px 10px rgba(0,0,0,0.03); color: var(--text-header); }
         .btn-sq { width: 54px; height: 54px; border-radius: var(--radius-btn-sq); border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; flex-shrink: 0; }
@@ -265,9 +179,7 @@
         #micBtn.recording { background-color: var(--primary-soft); color: var(--primary-main); animation: pulse-mint 2s infinite; border: 1px solid var(--primary-main); }
         #sendBtn { background: var(--primary-main); color: white; box-shadow: 0 4px 15px rgba(77, 182, 172, 0.3); }
 
-        /* =========================================
-           ДНЕВНИК
-           ========================================= */
+        /* DIARY */
         .mood-selector { display: flex; gap: 15px; margin-bottom: 30px; }
         .mood-btn { flex: 1; height: 140px; border-radius: var(--radius-card); border: none; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; transition: transform 0.1s; box-shadow: var(--shadow-card); }
         .mood-btn:active { transform: scale(0.97); }
@@ -287,14 +199,14 @@
         .status-good { background: var(--primary-soft); color: var(--primary-text); }
         .status-bad { background: var(--warm-bg); color: var(--warm-text); }
 
-        /* СПИСКИ И ИГРА */
+        /* LISTS & GAME */
         .content-list { padding: 24px; overflow-y: auto; flex: 1; }
-        .media-item { background: var(--bg-card); padding: 20px; border-radius: var(--radius-card); margin-bottom: 16px; display: flex; align-items: center; gap: 16px; box-shadow: var(--shadow-card); cursor: pointer; }
+        .media-item { background: var(--bg-card); padding: 20px; border-radius: var(--radius-card); margin-bottom: 16px; display: flex; align-items: center; gap: 16px; box-shadow: var(--shadow-card); cursor: pointer; transition: transform 0.1s; }
+        .media-item:active { transform: scale(0.98); }
         .media-icon { width: 44px; height: 44px; background: #ECEFF1; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 24px; color: var(--icon-default); }
         .media-info h3 { font-size: 16px; margin-bottom: 4px; color: var(--text-header); }
         .media-info p { font-size: 13px; color: var(--text-muted); }
-        .play-btn { margin-left: auto; color: var(--primary-main); }
-
+        .play-btn-container { margin-left: auto; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; color: var(--primary-main); }
         #game-screen { background: #E0F2F1; }
         #game-screen .breath-status { color: var(--primary-text); text-shadow: none; font-weight: 700; margin-bottom: 8px; }
         #game-screen .breath-timer-text { color: var(--text-body); font-weight: 500; }
@@ -327,7 +239,6 @@
                 <h1>Доброе утро,<br>User</h1>
                 <p>Что поддержит вас сегодня?</p>
             </div>
-            <!-- КНОПКА SOS -->
             <button class="sos-btn-header" onclick="navigateTo('sos')">SOS</button>
         </div>
 
@@ -349,16 +260,18 @@
                 <div class="widget-title">Медитации</div>
             </div>
             <div class="widget-main-text">Спокойствие</div>
-            <svg class="wave-graph" viewBox="0 0 300 50" preserveAspectRatio="none">
-                <defs>
-                    <linearGradient id="grad1" x1="0%" y1="0%" x2="0%" y2="100%">
-                        <stop offset="0%" style="stop-color:#4DB6AC;stop-opacity:0.6" />
-                        <stop offset="100%" style="stop-color:#4DB6AC;stop-opacity:0" />
-                    </linearGradient>
-                </defs>
-                <path d="M0,25 Q75,5 150,25 T300,25 V50 H0 Z" fill="url(#grad1)" />
-                <path d="M0,25 Q75,5 150,25 T300,25" stroke="#4DB6AC" stroke-width="2" fill="none"/>
-            </svg>
+            <div class="wave-container">
+                <svg class="wave-graph" viewBox="0 0 600 50" preserveAspectRatio="none">
+                    <defs>
+                        <linearGradient id="grad1" x1="0%" y1="0%" x2="0%" y2="100%">
+                            <stop offset="0%" style="stop-color:#4DB6AC;stop-opacity:0.6" />
+                            <stop offset="100%" style="stop-color:#4DB6AC;stop-opacity:0" />
+                        </linearGradient>
+                    </defs>
+                    <path d="M0,25 Q75,5 150,25 T300,25 T450,25 T600,25 V50 H0 Z" fill="url(#grad1)" />
+                    <path d="M0,25 Q75,5 150,25 T300,25 T450,25 T600,25" stroke="#4DB6AC" stroke-width="2" fill="none"/>
+                </svg>
+            </div>
         </div>
 
         <div class="bottom-grid">
@@ -389,20 +302,10 @@
         </div>
     </div>
 
-    <!-- ЭКРАН SOS (ДИНАМИЧЕСКИЙ) -->
+    <!-- ЭКРАН SOS (ДИНАМИЧЕСКИЙ С SVG) -->
     <div id="sos-screen" class="screen">
         <div class="sos-dynamic-container">
-            
-            <!-- Динамическая карточка (в ней создается контент через JS) -->
-            <div id="sos-card-wrapper" class="sos-dynamic-card">
-                <!-- Сюда инжектится:
-                     .sos-group-1 (цифра/иконка)
-                     .sos-group-2 (текст)
-                     .sos-group-3 (кнопка)
-                -->
-            </div>
-
-            <!-- Финишный экран (скрыт) -->
+            <div id="sos-card-wrapper" class="sos-dynamic-card"></div>
             <div id="sos-finish-area" class="sos-finish-container">
                 <span class="material-icons-round sos-finish-icon">check_circle</span>
                 <h2 class="section-title" style="text-align: center; margin-bottom:10px;">Отлично!</h2>
@@ -414,7 +317,6 @@
                     <button class="sos-next-btn" onclick="navigateTo('game')">Дыхание</button>
                 </div>
             </div>
-
         </div>
     </div>
 
@@ -422,20 +324,20 @@
     <div id="video-screen" class="screen">
         <div class="content-list">
             <h2 class="section-title" style="margin-top:0;">Практики покоя</h2>
-            <div class="media-item">
+            <div class="media-item" onclick="playMockAudio(this)">
                 <div class="media-icon"><span class="material-icons-round">self_improvement</span></div>
                 <div class="media-info"><h3>Осознанное дыхание</h3><p>5 минут</p></div>
-                <span class="material-icons-round play-btn">play_arrow</span>
+                <div class="play-btn-container"><span class="material-icons-round">play_arrow</span></div>
             </div>
-            <div class="media-item">
+            <div class="media-item" onclick="playMockAudio(this)">
                 <div class="media-icon"><span class="material-icons-round">bedtime</span></div>
                 <div class="media-info"><h3>Перед сном</h3><p>10 минут</p></div>
-                <span class="material-icons-round play-btn">play_arrow</span>
+                <div class="play-btn-container"><span class="material-icons-round">play_arrow</span></div>
             </div>
-            <div class="media-item">
+            <div class="media-item" onclick="playMockAudio(this)">
                 <div class="media-icon"><span class="material-icons-round">forest</span></div>
                 <div class="media-info"><h3>Звуки природы</h3><p>Релакс</p></div>
-                <span class="material-icons-round play-btn">play_arrow</span>
+                <div class="play-btn-container"><span class="material-icons-round">play_arrow</span></div>
             </div>
         </div>
     </div>
@@ -549,7 +451,7 @@
             else if (screenName === 'game') { pageTitle.innerText = 'Дыхание'; resizeCanvas(); startBreathingAnimationLoop(); }
             else if (screenName === 'sos') { 
                 pageTitle.innerText = 'Заземление'; 
-                resetSos(); // Сброс при входе
+                resetSos(); 
             }
         }
     }
@@ -559,24 +461,45 @@
         navigateTo('menu');
     }
 
-    // --- ЛОГИКА SOS (НОВАЯ АНИМАЦИЯ) ---
+    // --- ЛОГИКА SOS (SVG ICONS) ---
     const sosSteps = [
-        { num: 5, icon: 'visibility', title: 'Найди глазами', text: '5 вещей одного цвета' },
-        { num: 4, icon: 'touch_app', title: 'Почувствуй', text: '4 ощущения на коже' },
-        { num: 3, icon: 'hearing', title: 'Услышь', text: '3 любых звука вокруг' },
-        { num: 2, icon: 'filter_drama', title: 'Почувствуй', text: '2 запаха' },
-        { num: 1, icon: 'local_cafe', title: 'Ощути', text: '1 вкус (вода или конфета)' }
+        { num: 5, title: 'Найди глазами', text: '5 вещей одного цвета' },
+        { num: 4, title: 'Почувствуй', text: '4 ощущения на коже' },
+        { num: 3, title: 'Услышь', text: '3 любых звука вокруг' },
+        { num: 2, title: 'Почувствуй', text: '2 запаха' },
+        { num: 1, title: 'Ощути', text: '1 вкус (вода или конфета)' }
     ];
     let currentSosIndex = 0;
+
+    function getSosSvg(stepNum) {
+        // SVG ИЛЛЮСТРАЦИИ
+        switch(stepNum) {
+            case 5: // ГЛАЗА
+                return `<svg class="sos-svg anim-eye" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>`;
+            case 4: // РУКА
+                return `<svg class="sos-svg anim-hand" viewBox="0 0 24 24"><path d="M21.99 13.06l-1.92-6.52c-.22-.76-.89-1.28-1.68-1.28H18V4c0-1.1-.9-2-2-2s-2 .9-2 2v8.94l-.3-.02-.1-.01c-.8 0-1.55.23-2.21.62L11 11.23V4c0-1.1-.9-2-2-2S7 2.9 7 4v10.5c0 2.21 1.79 4 4 4s4-1.79 4-4V5c0-.55.45-1 1-1s1 .45 1 1v9.5c0 .35.18.68.49.86.3.19.68.2.98.02.31-.18.49-.52.49-.88V6.52c0-.13.11-.24.23-.24.08 0 .15.04.19.11l2.43 8.26c.2.68.83 1.15 1.54 1.15.88 0 1.6-.72 1.6-1.6 0-.05-.01-.1-.01-.14z"/></svg>`;
+            case 3: // УХО
+                return `<svg class="sos-svg" viewBox="0 0 24 24">
+                    <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
+                    <path class="sound-line-1" d="M16 11l2-3" stroke-width="2" stroke-linecap="round"/><path class="sound-line-2" d="M18 13l3-2" stroke-width="2" stroke-linecap="round"/><path class="sound-line-3" d="M17 15l2 1" stroke-width="2" stroke-linecap="round"/>
+                </svg>`; // (Используем ноту как символ звука)
+            case 2: // НОС (Запах - цветок)
+                return `<svg class="sos-svg" viewBox="0 0 24 24">
+                    <path d="M12 22c4.97 0 9-4.03 9-9-4.97 0-9-4.03-9-9-4.97 0-9 4.03-9 9 0 4.97 4.03 9 9 9z" fill="none" stroke="currentColor"/>
+                    <path d="M12 13c.88 0 1.61.59 1.88 1.4.16.48.59.83 1.12.83.67 0 1.18-.55 1.18-1.22 0-1.57-2.18-2-2.18-4.01 0-1.12.85-2.03 1.94-2.18C15.42 7.73 15 7.42 15 7c0-.55.45-1 1-1s1 .45 1 1c0 .42-.42.73-1.06.82-1.63.22-2.94 1.64-2.94 3.36 0 1.42 1.68 1.93 1.68 2.83 0 .16-.16.22-.18.22-.05 0-.12-.04-.15-.14-.26-1.07-1.24-1.87-2.35-1.87s-2.09.79-2.35 1.87c-.03.1-.1.14-.15.14-.02 0-.18-.06-.18-.22 0-.9 1.68-1.41 1.68-2.83 0-1.72-1.31-3.14-2.94-3.36C8.42 7.73 8 7.42 8 7c0-.55.45-1 1-1s1 .45 1 1c0 .42-.42.73-.94.82C10.15 7.97 11 8.88 11 10c0 2.01-2.18 2.44-2.18 4.01 0 .67.51 1.22 1.18 1.22.53 0 .96-.35 1.12-.83.27-.81 1-1.4 1.88-1.4z"/>
+                    <path class="scent-line" d="M12 6V2"/>
+                </svg>`;
+            case 1: // ВКУС (Конфета)
+                return `<svg class="sos-svg anim-candy" viewBox="0 0 24 24"><path d="M18 10.5c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5zm-6-2.25c-2.07 0-3.75 1.68-3.75 3.75s1.68 3.75 3.75 3.75 3.75-1.68 3.75-3.75-1.68-3.75-3.75-3.75zm0 6c-1.24 0-2.25-1.01-2.25-2.25S10.76 9.75 12 9.75 14.25 10.76 14.25 12 13.24 14.25 12 14.25zM6 10.5c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5z"/></svg>`;
+        }
+    }
 
     function resetSos() {
         currentSosIndex = 0;
         document.getElementById('sos-finish-area').style.display = 'none';
         const card = document.getElementById('sos-card-wrapper');
         card.style.display = 'flex';
-        // Убираем все классы анимации чтобы сбросить
         card.className = 'sos-dynamic-card';
-        // Запускаем первый шаг
         renderSosStep(true);
     }
 
@@ -584,19 +507,16 @@
         const step = sosSteps[currentSosIndex];
         const card = document.getElementById('sos-card-wrapper');
         
-        // 1. Очищаем классы анимации выхода
         card.classList.remove('anim-exit');
-        
-        // 2. Добавляем классы входа
-        // void offsetWidth триггерит перезапуск анимации
         void card.offsetWidth; 
         card.classList.add('anim-enter');
 
-        // 3. Формируем HTML с группами для каскадной анимации
         card.innerHTML = `
             <div class="sos-group-1 fade-in-up delay-1 anim-breathe">
                 <div class="sos-number">${step.num}</div>
-                <div class="material-icons-round sos-icon-large">${step.icon}</div>
+                <div class="sos-illustration-container">
+                    ${getSosSvg(step.num)}
+                </div>
             </div>
             <div class="sos-group-2 fade-in-up delay-2">
                 <div class="sos-instruction">${step.title}</div>
@@ -609,36 +529,20 @@
     }
 
     function animateSosExit() {
-        // Вибрация при нажатии
         if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
-
         const card = document.getElementById('sos-card-wrapper');
-        // Убираем класс входа, добавляем выход
         card.classList.remove('anim-enter');
         card.classList.add('anim-exit');
-
-        // Ждем пока анимация выхода (0.5s) закончится
         setTimeout(() => {
-            if (currentSosIndex < sosSteps.length - 1) {
-                currentSosIndex++;
-                renderSosStep();
-            } else {
-                // Финиш
-                card.style.display = 'none';
-                const finishArea = document.getElementById('sos-finish-area');
-                finishArea.style.display = 'flex';
-                if(tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
-            }
-        }, 450); // Чуть меньше длительности анимации для плавности
+            if (currentSosIndex < sosSteps.length - 1) { currentSosIndex++; renderSosStep(); } 
+            else { card.style.display = 'none'; document.getElementById('sos-finish-area').style.display = 'flex'; if(tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success'); }
+        }, 450);
     }
-
 
     // --- ЛОГИКА ДНЕВНИКА ---
     function getTodayString() {
         const d = new Date();
-        const year = d.getFullYear();
-        const month = String(d.getMonth() + 1).padStart(2, '0');
-        const day = String(d.getDate()).padStart(2, '0');
+        const year = d.getFullYear(); const month = String(d.getMonth() + 1).padStart(2, '0'); const day = String(d.getDate()).padStart(2, '0');
         return `${year}-${month}-${day}`;
     }
     function getFriendlyDate(dateStr) {
@@ -646,8 +550,7 @@
         if (parts.length !== 3) return dateStr;
         const year = parseInt(parts[0]); const month = parseInt(parts[1]) - 1; const day = parseInt(parts[2]);
         const d = new Date(year, month, day);
-        const options = { day: 'numeric', month: 'long' };
-        return d.toLocaleDateString('ru-RU', options);
+        return d.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long' });
     }
     function checkDailyStatus() {
         const today = getTodayString();
@@ -661,26 +564,25 @@
         history[today] = status;
         localStorage.setItem('mood_history', JSON.stringify(history));
         if(tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
-        renderDiaryScreen(); checkDailyStatus();
+        const questionBlock = document.getElementById('diary-question-block');
+        questionBlock.classList.add('fade-out-scale');
+        setTimeout(() => { renderDiaryScreen(true); checkDailyStatus(); }, 300);
     }
-    function renderDiaryScreen() {
+    function renderDiaryScreen(animateEntry = false) {
         const today = getTodayString();
         const history = JSON.parse(localStorage.getItem('mood_history') || '{}');
         const questionBlock = document.getElementById('diary-question-block');
         const summaryBlock = document.getElementById('diary-summary-block');
         const summaryTitle = document.getElementById('summary-title');
         const summaryIcon = document.getElementById('summary-icon');
-        
+        questionBlock.classList.remove('fade-out-scale');
+        summaryBlock.classList.remove('fade-in-scale');
         if (history[today]) {
             questionBlock.style.display = 'none'; summaryBlock.style.display = 'block';
-            if (history[today] === 'good') {
-                summaryTitle.innerText = "Хороший день"; summaryIcon.innerText = "sentiment_satisfied_alt"; summaryIcon.style.color = "var(--primary-main)";
-            } else {
-                summaryTitle.innerText = "Тяжелый день"; summaryIcon.innerText = "sentiment_dissatisfied"; summaryIcon.style.color = "var(--warm-text)";
-            }
-        } else {
-            questionBlock.style.display = 'block'; summaryBlock.style.display = 'none';
-        }
+            if(animateEntry) summaryBlock.classList.add('fade-in-scale');
+            if (history[today] === 'good') { summaryTitle.innerText = "Хороший день"; summaryIcon.innerText = "sentiment_satisfied_alt"; summaryIcon.style.color = "var(--primary-main)"; } 
+            else { summaryTitle.innerText = "Тяжелый день"; summaryIcon.innerText = "sentiment_dissatisfied"; summaryIcon.style.color = "var(--warm-text)"; }
+        } else { questionBlock.style.display = 'block'; summaryBlock.style.display = 'none'; }
         const container = document.getElementById('history-container'); container.innerHTML = '';
         const dates = Object.keys(history).sort((a, b) => new Date(b) - new Date(a));
         if (dates.length === 0) container.innerHTML = '<div style="text-align:center; color:var(--text-muted); padding:20px;">Пока нет записей</div>';
@@ -691,6 +593,14 @@
             div.innerHTML = `<span class="h-date">${getFriendlyDate(date)}</span><span class="h-status ${cssClass}">${label}</span>`;
             container.appendChild(div);
         });
+    }
+
+    // --- AUDIO VISUALIZER (MOCK) ---
+    function playMockAudio(element) {
+        document.querySelectorAll('.play-btn-container').forEach(el => { el.innerHTML = '<span class="material-icons-round">play_arrow</span>'; });
+        const container = element.querySelector('.play-btn-container');
+        container.innerHTML = `<div class="equalizer"><div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div></div>`;
+        if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
     }
 
     // --- GAME LOGIC ---
@@ -749,7 +659,9 @@
     function scrollToBottom() { chatContainer.scrollTop = chatContainer.scrollHeight; }
     function addMessage(text, isUser = false) {
         const msgDiv = document.createElement('div'); msgDiv.classList.add('message');
-        msgDiv.classList.add(isUser ? 'msg-user' : 'msg-bot'); msgDiv.innerHTML = text.replace(/\n/g, '<br>');
+        if(isUser) msgDiv.classList.add('msg-user'); else msgDiv.classList.add('msg-bot');
+        msgDiv.classList.add('msg-enter');
+        msgDiv.innerHTML = text.replace(/\n/g, '<br>');
         chatContainer.insertBefore(msgDiv, typingIndicator); scrollToBottom();
     }
     function showTyping(show) { typingIndicator.style.display = show ? 'block' : 'none'; scrollToBottom(); }
