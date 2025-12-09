@@ -135,11 +135,11 @@
         @keyframes pulse-dot { 0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.2); opacity: 0.8; } 100% { transform: scale(1); opacity: 1; } }
 
         /* =========================================
-           ЭКРАН SOS (ДИНАМИЧЕСКИЙ)
+           ЭКРАН SOS (ANIMATION LOGIC REWORKED)
            ========================================= */
         #sos-screen { 
-            background-color: var(--warm-bg); /* Теплый фон для успокоения */
-            justify-content: center; /* Центрируем контент */
+            background-color: var(--warm-bg); 
+            justify-content: center; 
         }
         
         .sos-dynamic-container { 
@@ -149,55 +149,102 @@
             justify-content: center;
         }
 
+        /* КАРТОЧКА */
         .sos-dynamic-card {
             background: #FFFFFF;
-            padding: 30px 24px;
+            padding: 40px 24px;
             border-radius: 32px;
             box-shadow: 0 10px 40px rgba(255, 183, 77, 0.15);
             width: 100%;
             text-align: center;
-            margin-bottom: 30px;
             display: flex; flex-direction: column; align-items: center;
-            transition: all 0.3s ease;
+            /* Начальное состояние скрыто, чтобы анимация сработала при запуске */
+            opacity: 0; 
+            transform: translateY(20px);
         }
 
-        /* Анимация смены контента */
-        .fade-in-text { animation: fadeInText 0.5s ease-out; }
-        @keyframes fadeInText { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        /* КЛАССЫ АНИМАЦИИ КАРТОЧКИ */
+        .anim-enter {
+            animation: sosCardEnter 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+        }
+        @keyframes sosCardEnter {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
 
+        .anim-exit {
+            animation: sosCardExit 0.5s ease-in forwards;
+        }
+        @keyframes sosCardExit {
+            to { opacity: 0; transform: translateX(-100%); }
+        }
+
+        /* КОНТЕНТ (ГРУППЫ) */
+        /* По умолчанию скрыты для каскада */
+        .sos-group-1, .sos-group-2, .sos-group-3 {
+            opacity: 0;
+        }
+
+        /* АНИМАЦИЯ ПОЯВЛЕНИЯ КОНТЕНТА */
+        .fade-in-up {
+            animation: sosContentFadeIn 0.5s ease-out forwards;
+        }
+        @keyframes sosContentFadeIn {
+            from { opacity: 0; transform: scale(0.95) translateY(10px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        /* ЗАДЕРЖКИ КАСКАДА */
+        .delay-1 { animation-delay: 0.2s; } /* Иконка + Цифра */
+        .delay-2 { animation-delay: 0.3s; } /* Текст */
+        .delay-3 { animation-delay: 0.4s; } /* Кнопка */
+
+        /* ЭЛЕМЕНТЫ */
         .sos-number {
-            font-size: 72px; font-weight: 800;
-            color: var(--primary-main); /* Мятная цифра */
-            line-height: 1; margin-bottom: 10px;
+            font-size: 80px; font-weight: 800;
+            color: var(--primary-main);
+            line-height: 1; margin-bottom: 5px;
         }
 
         .sos-icon-large {
-            font-size: 64px; color: var(--warm-accent); /* Оранжевая иконка */
-            margin-bottom: 20px;
-            animation: breatheIcon 3s infinite ease-in-out;
+            font-size: 70px; color: var(--warm-accent);
+            margin-bottom: 25px;
         }
-        @keyframes breatheIcon { 0%, 100% { transform: scale(1); opacity: 0.9; } 50% { transform: scale(1.1); opacity: 1; } }
+
+        /* ДЫХАНИЕ (IDLE ANIMATION) для Группы 1 */
+        .anim-breathe {
+            animation: sosBreathe 5s ease-in-out infinite;
+        }
+        @keyframes sosBreathe {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+        }
 
         .sos-instruction {
-            font-size: 18px; color: var(--text-header); font-weight: 700;
+            font-size: 20px; color: var(--text-header); font-weight: 700;
             margin-bottom: 8px;
         }
         
         .sos-subtext {
-            font-size: 15px; color: var(--text-body);
-            margin-bottom: 5px;
+            font-size: 16px; color: var(--text-body);
+            margin-bottom: 30px;
         }
 
         .sos-next-btn {
             width: 100%; padding: 18px; border-radius: 24px; border: none;
             background: var(--primary-main); color: white; font-size: 17px; font-weight: 700;
             cursor: pointer; box-shadow: 0 8px 20px rgba(77, 182, 172, 0.3);
-            transition: all 0.2s;
+            transition: transform 0.1s;
         }
-        .sos-next-btn:active { transform: scale(0.96); }
+        .sos-next-btn:active { transform: scale(0.97) !important; }
 
-        .sos-finish-container { text-align: center; display: none; }
-        .sos-finish-icon { font-size: 80px; color: var(--primary-main); margin-bottom: 20px; }
+        /* ФИНИШ */
+        .sos-finish-container { 
+            text-align: center; display: none; width: 100%;
+            flex-direction: column; align-items: center;
+            animation: sosCardEnter 0.6s ease-out;
+        }
+        .sos-finish-icon { font-size: 90px; color: var(--primary-main); margin-bottom: 20px; }
 
         /* =========================================
            ЧАТ
@@ -346,15 +393,14 @@
     <div id="sos-screen" class="screen">
         <div class="sos-dynamic-container">
             
-            <!-- Динамическая карточка -->
-            <div id="sos-content-area" class="sos-dynamic-card">
-                <!-- Контент меняется JS -->
+            <!-- Динамическая карточка (в ней создается контент через JS) -->
+            <div id="sos-card-wrapper" class="sos-dynamic-card">
+                <!-- Сюда инжектится:
+                     .sos-group-1 (цифра/иконка)
+                     .sos-group-2 (текст)
+                     .sos-group-3 (кнопка)
+                -->
             </div>
-
-            <!-- Кнопка действия -->
-            <button id="sos-next-btn" class="sos-next-btn" onclick="nextSosStep()">
-                Я нашел
-            </button>
 
             <!-- Финишный экран (скрыт) -->
             <div id="sos-finish-area" class="sos-finish-container">
@@ -364,7 +410,7 @@
                     Вы заземлились. Хотите подышать или вернуться в меню?
                 </p>
                 <div style="display:flex; gap:15px; width:100%;">
-                    <button class="sos-next-btn" style="background:white; color:var(--text-body);" onclick="goBack()">В меню</button>
+                    <button class="sos-next-btn" style="background:white; color:var(--text-body); box-shadow:var(--shadow-card);" onclick="goBack()">В меню</button>
                     <button class="sos-next-btn" onclick="navigateTo('game')">Дыхание</button>
                 </div>
             </div>
@@ -513,7 +559,7 @@
         navigateTo('menu');
     }
 
-    // --- ЛОГИКА SOS (ДИНАМИКА) ---
+    // --- ЛОГИКА SOS (НОВАЯ АНИМАЦИЯ) ---
     const sosSteps = [
         { num: 5, icon: 'visibility', title: 'Найди глазами', text: '5 вещей одного цвета' },
         { num: 4, icon: 'touch_app', title: 'Почувствуй', text: '4 ощущения на коже' },
@@ -526,41 +572,64 @@
     function resetSos() {
         currentSosIndex = 0;
         document.getElementById('sos-finish-area').style.display = 'none';
-        document.getElementById('sos-content-area').style.display = 'flex';
-        document.getElementById('sos-next-btn').style.display = 'block';
-        renderSosStep();
+        const card = document.getElementById('sos-card-wrapper');
+        card.style.display = 'flex';
+        // Убираем все классы анимации чтобы сбросить
+        card.className = 'sos-dynamic-card';
+        // Запускаем первый шаг
+        renderSosStep(true);
     }
 
-    function renderSosStep() {
+    function renderSosStep(isFirst = false) {
         const step = sosSteps[currentSosIndex];
-        const card = document.getElementById('sos-content-area');
+        const card = document.getElementById('sos-card-wrapper');
         
-        // Анимация перезагрузки контента
-        card.classList.remove('fade-in-text');
-        void card.offsetWidth; // Триггер рефлоу
-        card.classList.add('fade-in-text');
+        // 1. Очищаем классы анимации выхода
+        card.classList.remove('anim-exit');
+        
+        // 2. Добавляем классы входа
+        // void offsetWidth триггерит перезапуск анимации
+        void card.offsetWidth; 
+        card.classList.add('anim-enter');
 
+        // 3. Формируем HTML с группами для каскадной анимации
         card.innerHTML = `
-            <div class="sos-number">${step.num}</div>
-            <div class="material-icons-round sos-icon-large">${step.icon}</div>
-            <div class="sos-instruction">${step.title}</div>
-            <div class="sos-subtext">${step.text}</div>
+            <div class="sos-group-1 fade-in-up delay-1 anim-breathe">
+                <div class="sos-number">${step.num}</div>
+                <div class="material-icons-round sos-icon-large">${step.icon}</div>
+            </div>
+            <div class="sos-group-2 fade-in-up delay-2">
+                <div class="sos-instruction">${step.title}</div>
+                <div class="sos-subtext">${step.text}</div>
+            </div>
+            <div class="sos-group-3 fade-in-up delay-3" style="width:100%">
+                <button class="sos-next-btn" onclick="animateSosExit()">Я нашел</button>
+            </div>
         `;
     }
 
-    function nextSosStep() {
-        if (currentSosIndex < sosSteps.length - 1) {
-            currentSosIndex++;
-            renderSosStep();
-            // Вибрация
-            if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
-        } else {
-            // Финиш
-            document.getElementById('sos-content-area').style.display = 'none';
-            document.getElementById('sos-next-btn').style.display = 'none';
-            document.getElementById('sos-finish-area').style.display = 'block';
-            if(tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
-        }
+    function animateSosExit() {
+        // Вибрация при нажатии
+        if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
+
+        const card = document.getElementById('sos-card-wrapper');
+        // Убираем класс входа, добавляем выход
+        card.classList.remove('anim-enter');
+        card.classList.add('anim-exit');
+
+        // Ждем пока анимация выхода (0.5s) закончится
+        setTimeout(() => {
+            if (currentSosIndex < sosSteps.length - 1) {
+                currentSosIndex++;
+                renderSosStep();
+            } else {
+                // Финиш
+                card.style.display = 'none';
+                const finishArea = document.getElementById('sos-finish-area');
+                finishArea.style.display = 'flex';
+                if(tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+            }
+        }, 450); // Чуть меньше длительности анимации для плавности
     }
 
 
