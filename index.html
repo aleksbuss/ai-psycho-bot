@@ -23,7 +23,6 @@
             --secondary-bg: #E3F2FD; 
             --secondary-accent: #64B5F6;
             
-            /* ТЕПЛЫЙ (Для SOS и Дневника) */
             --warm-bg: #FFF3E0;
             --warm-accent: #FFB74D;
             --warm-text: #EF6C00;
@@ -33,6 +32,7 @@
             
             --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.04);
             --shadow-float: 0 10px 30px rgba(77, 182, 172, 0.15);
+            --shadow-sos: 0 4px 15px rgba(255, 183, 77, 0.3);
             
             --icon-default: #90A4AE;
             
@@ -81,31 +81,17 @@
         .greeting-text h1 { font-size: 26px; line-height: 1.3; }
         .greeting-text p { font-size: 16px; color: var(--text-muted); margin-top: 4px; }
         
-        /* КНОПКА SOS (ОБНОВЛЕННЫЙ ДИЗАЙН) */
+        /* КНОПКА SOS */
         .sos-btn-header {
             width: 54px; height: 54px;
-            /* Форма мягкого квадрата (Squircle), как у других кнопок */
             border-radius: 18px; 
             background-color: var(--warm-bg);
-            
             display: flex; align-items: center; justify-content: center;
-            
-            color: var(--warm-text);
-            font-weight: 800;
-            font-size: 15px;
-            letter-spacing: 0.5px;
-            
-            /* Цветная мягкая тень */
+            color: var(--warm-text); font-weight: 800; font-size: 15px; letter-spacing: 0.5px;
             box-shadow: 0 4px 15px rgba(255, 183, 77, 0.25);
-            
-            cursor: pointer;
-            transition: transform 0.1s, box-shadow 0.2s;
-            border: none;
+            cursor: pointer; transition: transform 0.1s, box-shadow 0.2s; border: none;
         }
-        .sos-btn-header:active { 
-            transform: scale(0.95); 
-            box-shadow: 0 2px 8px rgba(255, 183, 77, 0.2);
-        }
+        .sos-btn-header:active { transform: scale(0.95); box-shadow: 0 2px 8px rgba(255, 183, 77, 0.2); }
 
         .section-title { font-size: 17px; font-weight: 600; margin-bottom: 16px; color: var(--text-header); }
         
@@ -149,35 +135,69 @@
         @keyframes pulse-dot { 0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.2); opacity: 0.8; } 100% { transform: scale(1); opacity: 1; } }
 
         /* =========================================
-           ЭКРАН SOS
+           ЭКРАН SOS (ДИНАМИЧЕСКИЙ)
            ========================================= */
-        #sos-screen { background-color: var(--warm-bg); }
-        
-        .sos-container { padding: 24px; overflow-y: auto; flex: 1; display: flex; flex-direction: column; gap: 20px; }
-        
-        .sos-card {
-            background: #FFFFFF;
-            padding: 24px;
-            border-radius: var(--radius-card);
-            box-shadow: var(--shadow-card);
+        #sos-screen { 
+            background-color: var(--warm-bg); /* Теплый фон для успокоения */
+            justify-content: center; /* Центрируем контент */
         }
         
-        .sos-card h3 { color: var(--text-header); font-size: 20px; margin-bottom: 15px; }
-        .sos-step { display: flex; gap: 15px; margin-bottom: 15px; align-items: flex-start; }
-        .step-num { 
-            width: 32px; height: 32px; background: var(--primary-soft); color: var(--primary-main); 
-            border-radius: 50%; display: flex; align-items: center; justify-content: center; 
-            font-weight: bold; flex-shrink: 0;
+        .sos-dynamic-container { 
+            padding: 24px; 
+            display: flex; flex-direction: column; align-items: center; 
+            width: 100%; height: 100%;
+            justify-content: center;
         }
-        .step-text { font-size: 15px; color: var(--text-body); line-height: 1.4; }
-        .step-text strong { display: block; color: var(--text-header); margin-bottom: 2px; }
 
-        .sos-action-btn {
-            width: 100%; padding: 18px; border-radius: 20px; border: none;
-            background: var(--primary-main); color: white; font-size: 16px; font-weight: 700;
-            cursor: pointer; box-shadow: 0 4px 15px rgba(77, 182, 172, 0.3);
-            display: flex; align-items: center; justify-content: center; gap: 10px;
+        .sos-dynamic-card {
+            background: #FFFFFF;
+            padding: 30px 24px;
+            border-radius: 32px;
+            box-shadow: 0 10px 40px rgba(255, 183, 77, 0.15);
+            width: 100%;
+            text-align: center;
+            margin-bottom: 30px;
+            display: flex; flex-direction: column; align-items: center;
+            transition: all 0.3s ease;
         }
+
+        /* Анимация смены контента */
+        .fade-in-text { animation: fadeInText 0.5s ease-out; }
+        @keyframes fadeInText { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .sos-number {
+            font-size: 72px; font-weight: 800;
+            color: var(--primary-main); /* Мятная цифра */
+            line-height: 1; margin-bottom: 10px;
+        }
+
+        .sos-icon-large {
+            font-size: 64px; color: var(--warm-accent); /* Оранжевая иконка */
+            margin-bottom: 20px;
+            animation: breatheIcon 3s infinite ease-in-out;
+        }
+        @keyframes breatheIcon { 0%, 100% { transform: scale(1); opacity: 0.9; } 50% { transform: scale(1.1); opacity: 1; } }
+
+        .sos-instruction {
+            font-size: 18px; color: var(--text-header); font-weight: 700;
+            margin-bottom: 8px;
+        }
+        
+        .sos-subtext {
+            font-size: 15px; color: var(--text-body);
+            margin-bottom: 5px;
+        }
+
+        .sos-next-btn {
+            width: 100%; padding: 18px; border-radius: 24px; border: none;
+            background: var(--primary-main); color: white; font-size: 17px; font-weight: 700;
+            cursor: pointer; box-shadow: 0 8px 20px rgba(77, 182, 172, 0.3);
+            transition: all 0.2s;
+        }
+        .sos-next-btn:active { transform: scale(0.96); }
+
+        .sos-finish-container { text-align: center; display: none; }
+        .sos-finish-icon { font-size: 80px; color: var(--primary-main); margin-bottom: 20px; }
 
         /* =========================================
            ЧАТ
@@ -322,24 +342,33 @@
         </div>
     </div>
 
-    <!-- ЭКРАН SOS -->
+    <!-- ЭКРАН SOS (ДИНАМИЧЕСКИЙ) -->
     <div id="sos-screen" class="screen">
-        <div class="sos-container">
-            <h2 class="section-title">Скорая помощь</h2>
+        <div class="sos-dynamic-container">
             
-            <div class="sos-card">
-                <h3>Заземление 5-4-3-2-1</h3>
-                <div class="sos-step"><div class="step-num">5</div><div class="step-text"><strong>Найди глазами</strong>5 вещей одного цвета</div></div>
-                <div class="sos-step"><div class="step-num">4</div><div class="step-text"><strong>Почувствуй</strong>4 ощущения на коже</div></div>
-                <div class="sos-step"><div class="step-num">3</div><div class="step-text"><strong>Услышь</strong>3 любых звука</div></div>
-                <div class="sos-step"><div class="step-num">2</div><div class="step-text"><strong>Почувствуй</strong>2 запаха</div></div>
-                <div class="sos-step"><div class="step-num">1</div><div class="step-text"><strong>Ощути</strong>1 вкус (вода или конфетка)</div></div>
+            <!-- Динамическая карточка -->
+            <div id="sos-content-area" class="sos-dynamic-card">
+                <!-- Контент меняется JS -->
             </div>
 
-            <button class="sos-action-btn" onclick="navigateTo('game')">
-                <span class="material-icons-round">air</span>
-                Дышать вместе
+            <!-- Кнопка действия -->
+            <button id="sos-next-btn" class="sos-next-btn" onclick="nextSosStep()">
+                Я нашел
             </button>
+
+            <!-- Финишный экран (скрыт) -->
+            <div id="sos-finish-area" class="sos-finish-container">
+                <span class="material-icons-round sos-finish-icon">check_circle</span>
+                <h2 class="section-title" style="text-align: center; margin-bottom:10px;">Отлично!</h2>
+                <p style="text-align:center; color:var(--text-body); margin-bottom:30px;">
+                    Вы заземлились. Хотите подышать или вернуться в меню?
+                </p>
+                <div style="display:flex; gap:15px; width:100%;">
+                    <button class="sos-next-btn" style="background:white; color:var(--text-body);" onclick="goBack()">В меню</button>
+                    <button class="sos-next-btn" onclick="navigateTo('game')">Дыхание</button>
+                </div>
+            </div>
+
         </div>
     </div>
 
@@ -472,7 +501,10 @@
             else if (screenName === 'video') pageTitle.innerText = 'Медитации';
             else if (screenName === 'music') { pageTitle.innerText = 'Дневник'; renderDiaryScreen(); }
             else if (screenName === 'game') { pageTitle.innerText = 'Дыхание'; resizeCanvas(); startBreathingAnimationLoop(); }
-            else if (screenName === 'sos') { pageTitle.innerText = 'Экстренная помощь'; }
+            else if (screenName === 'sos') { 
+                pageTitle.innerText = 'Заземление'; 
+                resetSos(); // Сброс при входе
+            }
         }
     }
 
@@ -480,6 +512,57 @@
         if(screens.game.classList.contains('active')) { resetBreathing(); }
         navigateTo('menu');
     }
+
+    // --- ЛОГИКА SOS (ДИНАМИКА) ---
+    const sosSteps = [
+        { num: 5, icon: 'visibility', title: 'Найди глазами', text: '5 вещей одного цвета' },
+        { num: 4, icon: 'touch_app', title: 'Почувствуй', text: '4 ощущения на коже' },
+        { num: 3, icon: 'hearing', title: 'Услышь', text: '3 любых звука вокруг' },
+        { num: 2, icon: 'filter_drama', title: 'Почувствуй', text: '2 запаха' },
+        { num: 1, icon: 'local_cafe', title: 'Ощути', text: '1 вкус (вода или конфета)' }
+    ];
+    let currentSosIndex = 0;
+
+    function resetSos() {
+        currentSosIndex = 0;
+        document.getElementById('sos-finish-area').style.display = 'none';
+        document.getElementById('sos-content-area').style.display = 'flex';
+        document.getElementById('sos-next-btn').style.display = 'block';
+        renderSosStep();
+    }
+
+    function renderSosStep() {
+        const step = sosSteps[currentSosIndex];
+        const card = document.getElementById('sos-content-area');
+        
+        // Анимация перезагрузки контента
+        card.classList.remove('fade-in-text');
+        void card.offsetWidth; // Триггер рефлоу
+        card.classList.add('fade-in-text');
+
+        card.innerHTML = `
+            <div class="sos-number">${step.num}</div>
+            <div class="material-icons-round sos-icon-large">${step.icon}</div>
+            <div class="sos-instruction">${step.title}</div>
+            <div class="sos-subtext">${step.text}</div>
+        `;
+    }
+
+    function nextSosStep() {
+        if (currentSosIndex < sosSteps.length - 1) {
+            currentSosIndex++;
+            renderSosStep();
+            // Вибрация
+            if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
+        } else {
+            // Финиш
+            document.getElementById('sos-content-area').style.display = 'none';
+            document.getElementById('sos-next-btn').style.display = 'none';
+            document.getElementById('sos-finish-area').style.display = 'block';
+            if(tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+        }
+    }
+
 
     // --- ЛОГИКА ДНЕВНИКА ---
     function getTodayString() {
