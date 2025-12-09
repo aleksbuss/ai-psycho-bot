@@ -23,16 +23,17 @@
             --secondary-bg: #E3F2FD; 
             --secondary-accent: #64B5F6;
             
+            /* ТЕПЛЫЙ (Для SOS и Дневника) */
             --warm-bg: #FFF3E0;
             --warm-accent: #FFB74D;
             --warm-text: #EF6C00;
 
             --radius-card: 24px;
             --radius-btn-sq: 18px;
-            --radius-btn-rect: 20px;
             
             --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.04);
             --shadow-float: 0 10px 30px rgba(77, 182, 172, 0.15);
+            --shadow-sos: 0 4px 15px rgba(255, 183, 77, 0.3); /* Тень для SOS */
             
             --icon-default: #90A4AE;
             
@@ -76,10 +77,27 @@
            ГЛАВНОЕ МЕНЮ
            ========================================= */
         #menu-screen { padding: 24px; overflow-y: auto; }
+        
         .greeting-header { margin-top: 10px; margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center; }
         .greeting-text h1 { font-size: 26px; line-height: 1.3; }
         .greeting-text p { font-size: 16px; color: var(--text-muted); margin-top: 4px; }
-        .avatar-circle { width: 52px; height: 52px; background: var(--primary-soft); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--primary-main); }
+        
+        /* КНОПКА SOS (Вместо аватарки) */
+        .sos-btn-header {
+            width: 52px; height: 52px;
+            background: var(--warm-bg);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            color: var(--warm-text);
+            font-weight: 800;
+            font-size: 16px;
+            box-shadow: var(--shadow-sos);
+            cursor: pointer;
+            transition: transform 0.1s;
+            border: 2px solid #FFE0B2;
+        }
+        .sos-btn-header:active { transform: scale(0.95); }
+
         .section-title { font-size: 17px; font-weight: 600; margin-bottom: 16px; color: var(--text-header); }
         
         .main-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
@@ -114,21 +132,42 @@
         .small-card h4 { font-size: 14px; font-weight: 600; color: var(--text-header); }
         .small-card span { font-size: 11px; color: var(--text-muted); }
 
-        /* БЕЙДЖИК УВЕДОМЛЕНИЯ */
         .notification-dot {
-            position: absolute;
-            top: 12px; right: 12px;
-            width: 10px; height: 10px;
-            background-color: #FF7043; /* Мягкий красный */
-            border-radius: 50%;
-            border: 2px solid var(--bg-card);
-            display: none; /* Скрыт по умолчанию */
-            animation: pulse-dot 2s infinite;
+            position: absolute; top: 12px; right: 12px; width: 10px; height: 10px;
+            background-color: #FF7043; border-radius: 50%; border: 2px solid var(--bg-card);
+            display: none; animation: pulse-dot 2s infinite;
         }
-        @keyframes pulse-dot {
-            0% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.2); opacity: 0.8; }
-            100% { transform: scale(1); opacity: 1; }
+        @keyframes pulse-dot { 0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.2); opacity: 0.8; } 100% { transform: scale(1); opacity: 1; } }
+
+        /* =========================================
+           ЭКРАН SOS (НОВЫЙ)
+           ========================================= */
+        #sos-screen { background-color: var(--warm-bg); } /* Теплый фон */
+        
+        .sos-container { padding: 24px; overflow-y: auto; flex: 1; display: flex; flex-direction: column; gap: 20px; }
+        
+        .sos-card {
+            background: #FFFFFF;
+            padding: 24px;
+            border-radius: var(--radius-card);
+            box-shadow: var(--shadow-card);
+        }
+        
+        .sos-card h3 { color: var(--text-header); font-size: 20px; margin-bottom: 15px; }
+        .sos-step { display: flex; gap: 15px; margin-bottom: 15px; align-items: flex-start; }
+        .step-num { 
+            width: 32px; height: 32px; background: var(--primary-soft); color: var(--primary-main); 
+            border-radius: 50%; display: flex; align-items: center; justify-content: center; 
+            font-weight: bold; flex-shrink: 0;
+        }
+        .step-text { font-size: 15px; color: var(--text-body); line-height: 1.4; }
+        .step-text strong { display: block; color: var(--text-header); margin-bottom: 2px; }
+
+        .sos-action-btn {
+            width: 100%; padding: 18px; border-radius: 20px; border: none;
+            background: var(--primary-main); color: white; font-size: 16px; font-weight: 700;
+            cursor: pointer; box-shadow: 0 4px 15px rgba(77, 182, 172, 0.3);
+            display: flex; align-items: center; justify-content: center; gap: 10px;
         }
 
         /* =========================================
@@ -138,7 +177,6 @@
         .message { max-width: 85%; padding: 14px 18px; border-radius: 20px; font-size: 15px; box-shadow: var(--shadow-card); }
         .msg-bot { align-self: flex-start; background-color: var(--msg-bot-bg); color: var(--text-body); border-top-left-radius: 4px; }
         .msg-user { align-self: flex-end; background-color: var(--msg-user-bg); color: var(--msg-user-text); border-top-right-radius: 4px; box-shadow: 0 4px 12px rgba(77, 182, 172, 0.3); }
-        
         .typing-indicator { display: none; align-self: flex-start; background: var(--bg-card); padding: 12px; border-radius: 16px; margin-bottom: 10px; box-shadow: var(--shadow-card); }
         .dot { height: 6px; width: 6px; background-color: #CFD8DC; border-radius: 50%; display: inline-block; animation: bounce 1.4s infinite ease-in-out both; margin: 0 2px; }
         .dot:nth-child(1) { animation-delay: -0.32s; } .dot:nth-child(2) { animation-delay: -0.16s; }
@@ -150,59 +188,26 @@
         #micBtn { background-color: #FFFFFF; color: var(--icon-default); box-shadow: var(--shadow-card); }
         #micBtn.recording { background-color: var(--primary-soft); color: var(--primary-main); animation: pulse-mint 2s infinite; border: 1px solid var(--primary-main); }
         #sendBtn { background: var(--primary-main); color: white; box-shadow: 0 4px 15px rgba(77, 182, 172, 0.3); }
-        @keyframes pulse-mint { 0% { box-shadow: 0 0 0 0 rgba(77, 182, 172, 0.4); } 70% { box-shadow: 0 0 0 8px rgba(77, 182, 172, 0); } 100% { box-shadow: 0 0 0 0 rgba(77, 182, 172, 0); } }
 
         /* =========================================
-           ДНЕВНИК (NEW STYLES)
+           ДНЕВНИК
            ========================================= */
-        /* Секция выбора настроения */
-        .mood-selector {
-            display: flex; gap: 15px; margin-bottom: 30px;
-        }
-        .mood-btn {
-            flex: 1;
-            height: 140px;
-            border-radius: var(--radius-card);
-            border: none;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            cursor: pointer; transition: transform 0.1s;
-            box-shadow: var(--shadow-card);
-        }
+        .mood-selector { display: flex; gap: 15px; margin-bottom: 30px; }
+        .mood-btn { flex: 1; height: 140px; border-radius: var(--radius-card); border: none; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; transition: transform 0.1s; box-shadow: var(--shadow-card); }
         .mood-btn:active { transform: scale(0.97); }
-        
         .mood-good { background-color: var(--primary-soft); color: var(--primary-text); }
         .mood-good span { font-size: 40px; margin-bottom: 10px; color: var(--primary-main); }
-        
         .mood-bad { background-color: var(--warm-bg); color: var(--warm-text); }
         .mood-bad span { font-size: 40px; margin-bottom: 10px; color: var(--warm-accent); }
-
         .mood-btn h3 { font-size: 16px; margin: 0; }
-
-        /* Карточка "Сегодняшний день записан" */
-        .today-summary {
-            background: white; border-radius: var(--radius-card);
-            padding: 24px; text-align: center;
-            margin-bottom: 30px; box-shadow: var(--shadow-card);
-            display: none; /* Скрыто по умолчанию */
-        }
+        .today-summary { background: white; border-radius: var(--radius-card); padding: 24px; text-align: center; margin-bottom: 30px; box-shadow: var(--shadow-card); display: none; }
         .today-summary .icon-lg { font-size: 48px; margin-bottom: 10px; display: block; }
         .today-summary h3 { font-size: 18px; margin-bottom: 5px; }
         .today-summary p { color: var(--text-muted); font-size: 14px; }
-
-        /* История */
         .history-list { display: flex; flex-direction: column; gap: 12px; }
-        .history-item {
-            background: var(--bg-card);
-            padding: 16px 20px;
-            border-radius: 18px;
-            display: flex; align-items: center; justify-content: space-between;
-            box-shadow: var(--shadow-card);
-        }
+        .history-item { background: var(--bg-card); padding: 16px 20px; border-radius: 18px; display: flex; align-items: center; justify-content: space-between; box-shadow: var(--shadow-card); }
         .h-date { font-weight: 600; color: var(--text-header); font-size: 15px; }
-        .h-status { 
-            font-size: 13px; font-weight: 600; 
-            padding: 6px 12px; border-radius: 12px;
-        }
+        .h-status { font-size: 13px; font-weight: 600; padding: 6px 12px; border-radius: 12px; }
         .status-good { background: var(--primary-soft); color: var(--primary-text); }
         .status-bad { background: var(--warm-bg); color: var(--warm-text); }
 
@@ -246,9 +251,8 @@
                 <h1>Доброе утро,<br>User</h1>
                 <p>Что поддержит вас сегодня?</p>
             </div>
-            <div class="avatar-circle">
-                <span class="material-icons-round">person</span>
-            </div>
+            <!-- КНОПКА SOS -->
+            <div class="sos-btn-header" onclick="navigateTo('sos')">SOS</div>
         </div>
 
         <div class="main-grid">
@@ -283,10 +287,8 @@
 
         <div class="bottom-grid">
             <div class="small-card" onclick="navigateTo('music')">
-                <!-- Обертка для бейджика -->
                 <div style="position:relative;">
                     <div class="small-icon warm-icon"><span class="material-icons-round">favorite_border</span></div>
-                    <!-- БЕЙДЖИК -->
                     <div id="diaryBadge" class="notification-dot"></div>
                 </div>
                 <div><h4>Дневник</h4><span>Забота о себе</span></div>
@@ -308,6 +310,27 @@
             <button id="micBtn" class="btn-sq"><span class="material-icons-round">mic</span></button>
             <input type="text" id="userInput" placeholder="Сообщение..." autocomplete="off">
             <button id="sendBtn" class="btn-sq"><span class="material-icons-round">arrow_upward</span></button>
+        </div>
+    </div>
+
+    <!-- ЭКРАН SOS (НОВЫЙ) -->
+    <div id="sos-screen" class="screen">
+        <div class="sos-container">
+            <h2 class="section-title">Скорая помощь</h2>
+            
+            <div class="sos-card">
+                <h3>Заземление 5-4-3-2-1</h3>
+                <div class="sos-step"><div class="step-num">5</div><div class="step-text"><strong>Найди глазами</strong>5 вещей одного цвета</div></div>
+                <div class="sos-step"><div class="step-num">4</div><div class="step-text"><strong>Почувствуй</strong>4 ощущения на коже</div></div>
+                <div class="sos-step"><div class="step-num">3</div><div class="step-text"><strong>Услышь</strong>3 любых звука</div></div>
+                <div class="sos-step"><div class="step-num">2</div><div class="step-text"><strong>Почувствуй</strong>2 запаха</div></div>
+                <div class="sos-step"><div class="step-num">1</div><div class="step-text"><strong>Ощути</strong>1 вкус (вода или конфетка)</div></div>
+            </div>
+
+            <button class="sos-action-btn" onclick="navigateTo('game')">
+                <span class="material-icons-round">air</span>
+                Дышать вместе
+            </button>
         </div>
     </div>
 
@@ -353,11 +376,9 @@
         </div>
     </div>
 
-    <!-- ЭКРАН 5: ДНЕВНИК (НОВЫЙ UI) -->
+    <!-- ЭКРАН 5: ДНЕВНИК -->
     <div id="music-screen" class="screen">
         <div class="content-list">
-            
-            <!-- Блок вопроса (если сегодня не заполнено) -->
             <div id="diary-question-block">
                 <h2 class="section-title" style="margin-top:0; font-size:20px;">Как прошел день?</h2>
                 <div class="mood-selector">
@@ -371,18 +392,13 @@
                     </button>
                 </div>
             </div>
-
-            <!-- Блок итога (если сегодня заполнено) -->
             <div id="diary-summary-block" class="today-summary">
                 <span id="summary-icon" class="material-icons-round icon-lg">check_circle</span>
                 <h3 id="summary-title">День записан</h3>
                 <p>Спасибо, что отметили своё состояние.</p>
             </div>
-
             <h2 class="section-title">История</h2>
-            <div class="history-list" id="history-container">
-                <!-- Сюда JS добавит элементы -->
-            </div>
+            <div class="history-list" id="history-container"></div>
         </div>
     </div>
 
@@ -399,7 +415,8 @@
         chat: document.getElementById('chat-screen'),
         video: document.getElementById('video-screen'),
         music: document.getElementById('music-screen'),
-        game: document.getElementById('game-screen')
+        game: document.getElementById('game-screen'),
+        sos: document.getElementById('sos-screen')
     };
 
     const header = document.getElementById('main-header');
@@ -423,7 +440,7 @@
 
     document.querySelector('.greeting-text h1').innerHTML = `Доброе утро,<br>${userName}`;
 
-    // --- ИНИЦИАЛИЗАЦИЯ ДНЕВНИКА ---
+    // --- ИНИЦИАЛИЗАЦИЯ ---
     checkDailyStatus();
     loadChatHistory();
 
@@ -435,7 +452,7 @@
         if (screenName === 'menu') {
             header.style.display = 'none'; tg.BackButton.hide();
             stopBreathingAnimationLoop();
-            checkDailyStatus(); // Проверяем статус при возврате в меню
+            checkDailyStatus();
         } else {
             header.style.display = 'flex'; tg.BackButton.show();
             
@@ -444,13 +461,9 @@
                 if (initialMessage) userInput.value = initialMessage;
             }
             else if (screenName === 'video') pageTitle.innerText = 'Медитации';
-            else if (screenName === 'music') {
-                pageTitle.innerText = 'Дневник';
-                renderDiaryScreen(); // Рендерим экран дневника
-            }
-            else if (screenName === 'game') {
-                pageTitle.innerText = 'Дыхание'; resizeCanvas(); startBreathingAnimationLoop();
-            }
+            else if (screenName === 'music') { pageTitle.innerText = 'Дневник'; renderDiaryScreen(); }
+            else if (screenName === 'game') { pageTitle.innerText = 'Дыхание'; resizeCanvas(); startBreathingAnimationLoop(); }
+            else if (screenName === 'sos') { pageTitle.innerText = 'Экстренная помощь'; }
         }
     }
 
@@ -459,155 +472,94 @@
         navigateTo('menu');
     }
 
-    // --- ЛОГИКА ДНЕВНИКА (ИСПРАВЛЕНА ДАТА) ---
-    
+    // --- ЛОГИКА ДНЕВНИКА ---
     function getTodayString() {
         const d = new Date();
         const year = d.getFullYear();
-        // Добавляем '0' перед месяцем и днем, если они меньше 10
-        // Было: 2023-1-1 (Ошибка) -> Стало: 2023-01-01 (ОК)
         const month = String(d.getMonth() + 1).padStart(2, '0');
         const day = String(d.getDate()).padStart(2, '0');
         return `${year}-${month}-${day}`;
     }
-
     function getFriendlyDate(dateStr) {
-        // Надежный парсинг: разбиваем строку вручную, чтобы избежать проблем с часовыми поясами
         const parts = dateStr.split('-');
         if (parts.length !== 3) return dateStr;
-        
-        const year = parseInt(parts[0]);
-        const month = parseInt(parts[1]) - 1; // Месяцы в JS от 0 до 11
-        const day = parseInt(parts[2]);
-        
+        const year = parseInt(parts[0]); const month = parseInt(parts[1]) - 1; const day = parseInt(parts[2]);
         const d = new Date(year, month, day);
         const options = { day: 'numeric', month: 'long' };
         return d.toLocaleDateString('ru-RU', options);
     }
-
-    // Проверка статуса для бейджика в меню
     function checkDailyStatus() {
         const today = getTodayString();
         const history = JSON.parse(localStorage.getItem('mood_history') || '{}');
         const badge = document.getElementById('diaryBadge');
-        
-        if (history[today]) {
-            badge.style.display = 'none'; // Уже заполнил
-        } else {
-            badge.style.display = 'block'; // Нужно заполнить!
-        }
+        if (history[today]) badge.style.display = 'none'; else badge.style.display = 'block';
     }
-
-    // Сохранение настроения
     function saveMood(status) {
         const today = getTodayString();
         const history = JSON.parse(localStorage.getItem('mood_history') || '{}');
-        
-        history[today] = status; // 'good' или 'bad'
+        history[today] = status;
         localStorage.setItem('mood_history', JSON.stringify(history));
-        
-        // Вибрация для тактильности
         if(tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
-        
-        // Обновляем UI
-        renderDiaryScreen();
-        checkDailyStatus();
+        renderDiaryScreen(); checkDailyStatus();
     }
-
-    // Отрисовка экрана Дневника
     function renderDiaryScreen() {
         const today = getTodayString();
         const history = JSON.parse(localStorage.getItem('mood_history') || '{}');
-        
         const questionBlock = document.getElementById('diary-question-block');
         const summaryBlock = document.getElementById('diary-summary-block');
         const summaryTitle = document.getElementById('summary-title');
         const summaryIcon = document.getElementById('summary-icon');
         
-        // 1. Блок "Сегодня"
         if (history[today]) {
-            questionBlock.style.display = 'none';
-            summaryBlock.style.display = 'block';
-            
+            questionBlock.style.display = 'none'; summaryBlock.style.display = 'block';
             if (history[today] === 'good') {
-                summaryTitle.innerText = "Хороший день";
-                summaryIcon.innerText = "sentiment_satisfied_alt";
-                summaryIcon.style.color = "var(--primary-main)";
+                summaryTitle.innerText = "Хороший день"; summaryIcon.innerText = "sentiment_satisfied_alt"; summaryIcon.style.color = "var(--primary-main)";
             } else {
-                summaryTitle.innerText = "Тяжелый день";
-                summaryIcon.innerText = "sentiment_dissatisfied";
-                summaryIcon.style.color = "var(--warm-text)";
+                summaryTitle.innerText = "Тяжелый день"; summaryIcon.innerText = "sentiment_dissatisfied"; summaryIcon.style.color = "var(--warm-text)";
             }
         } else {
-            questionBlock.style.display = 'block';
-            summaryBlock.style.display = 'none';
+            questionBlock.style.display = 'block'; summaryBlock.style.display = 'none';
         }
-
-        // 2. История
-        const container = document.getElementById('history-container');
-        container.innerHTML = ''; // Очистка
-        
-        // Сортируем даты от новых к старым
+        const container = document.getElementById('history-container'); container.innerHTML = '';
         const dates = Object.keys(history).sort((a, b) => new Date(b) - new Date(a));
-        
-        if (dates.length === 0) {
-            container.innerHTML = '<div style="text-align:center; color:var(--text-muted); padding:20px;">Пока нет записей</div>';
-        }
-
+        if (dates.length === 0) container.innerHTML = '<div style="text-align:center; color:var(--text-muted); padding:20px;">Пока нет записей</div>';
         dates.forEach(date => {
-            const status = history[date];
-            const div = document.createElement('div');
-            div.className = 'history-item';
-            
+            const status = history[date]; const div = document.createElement('div'); div.className = 'history-item';
             const label = status === 'good' ? 'Хорошо' : 'Тяжело';
             const cssClass = status === 'good' ? 'status-good' : 'status-bad';
-            
-            div.innerHTML = `
-                <span class="h-date">${getFriendlyDate(date)}</span>
-                <span class="h-status ${cssClass}">${label}</span>
-            `;
+            div.innerHTML = `<span class="h-date">${getFriendlyDate(date)}</span><span class="h-status ${cssClass}">${label}</span>`;
             container.appendChild(div);
         });
     }
-
 
     // --- GAME LOGIC ---
     let animationId; let particles = []; let baseRadius = 110; let targetRadius = 110; let currentRadius = 110;
     let breathPhase = 'ready'; let breathInterval = null; let breathTimer = 0; let isBreathing = false;
     const INHALE_TIME = 4; const HOLD_TIME = 7; const EXHALE_TIME = 8;
-
     function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; initParticles(); }
     window.addEventListener('resize', resizeCanvas);
-
     class Particle {
         constructor() {
-            this.angle = Math.random() * Math.PI * 2;
-            this.distance = baseRadius + Math.random() * 20;
-            this.size = Math.random() * 3 + 1;
-            this.speed = Math.random() * 0.02 + 0.005;
-            this.color = `rgba(77, 182, 172, ${Math.random() * 0.4 + 0.1})`; 
-            this.wobble = Math.random() * 20;
+            this.angle = Math.random() * Math.PI * 2; this.distance = baseRadius + Math.random() * 20;
+            this.size = Math.random() * 3 + 1; this.speed = Math.random() * 0.02 + 0.005;
+            this.color = `rgba(77, 182, 172, ${Math.random() * 0.4 + 0.1})`; this.wobble = Math.random() * 20;
         }
         update(radius, phase) {
-            this.angle += this.speed;
-            let targetDist = radius + Math.sin(Date.now() / 500 + this.wobble) * 10;
+            this.angle += this.speed; let targetDist = radius + Math.sin(Date.now() / 500 + this.wobble) * 10;
             if (phase === 'inhale') { targetDist += Math.random() * 10; this.color = `rgba(77, 182, 172, ${Math.random() * 0.6 + 0.3})`; } 
             else if (phase === 'hold') { targetDist += Math.random() * 2; this.color = `rgba(38, 166, 154, ${Math.random() * 0.5 + 0.3})`; } 
             else if (phase === 'exhale') { this.color = `rgba(77, 182, 172, ${Math.random() * 0.3 + 0.1})`; }
             this.distance += (targetDist - this.distance) * 0.05;
             const cx = canvas.width / 2; const cy = (canvas.height / 2) - 60;
-            this.x = cx + Math.cos(this.angle) * this.distance;
-            this.y = cy + Math.sin(this.angle) * this.distance;
+            this.x = cx + Math.cos(this.angle) * this.distance; this.y = cy + Math.sin(this.angle) * this.distance;
         }
         draw() { ctx.fillStyle = this.color; ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill(); }
     }
-
     function initParticles() { particles = []; for (let i = 0; i < 150; i++) particles.push(new Particle()); }
     function startBreathingAnimationLoop() { if (!animationId) animate(); }
     function stopBreathingAnimationLoop() { cancelAnimationFrame(animationId); animationId = null; }
     function animate() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        currentRadius += (targetRadius - currentRadius) * 0.02;
+        ctx.clearRect(0, 0, canvas.width, canvas.height); currentRadius += (targetRadius - currentRadius) * 0.02;
         particles.forEach(p => { p.update(currentRadius, breathPhase); p.draw(); });
         animationId = requestAnimationFrame(animate);
     }
@@ -632,7 +584,7 @@
         else { breathPhase = 'exhale'; targetRadius = 110; breathLabel.innerText = 'ВЫДОХ'; breathInstruction.innerText = 'Медленный выдох...'; }
     }
 
-    // --- CHAT LOGIC ---
+    // --- CHAT & VOICE ---
     function scrollToBottom() { chatContainer.scrollTop = chatContainer.scrollHeight; }
     function addMessage(text, isUser = false) {
         const msgDiv = document.createElement('div'); msgDiv.classList.add('message');
@@ -673,8 +625,6 @@
     }
     sendBtn.addEventListener('click', sendMessage);
     userInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendMessage(); });
-
-    // --- VOICE LOGIC ---
     const micBtn = document.getElementById('micBtn');
     let mediaRecorder, audioChunks = [], isRecording = false, globalStream = null, currentAudio = null;
     micBtn.addEventListener('click', async () => { if (!isRecording) startRecording(); else stopRecording(); });
