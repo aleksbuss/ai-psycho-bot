@@ -20,11 +20,12 @@
             --primary-soft: #E0F2F1; 
             --primary-text: #00695C; 
             
-            /* ГОЛУБОЙ */
+            /* ГОЛУБОЙ (Для Дыхания) */
             --secondary-bg: #E3F2FD; 
             --secondary-accent: #64B5F6;
             --secondary-text: #1565C0;
             
+            /* ТЕПЛЫЙ (Для SOS) */
             --warm-bg: #FFF3E0;
             --warm-accent: #FFB74D;
             --warm-text: #EF6C00;
@@ -164,8 +165,15 @@
         .typing-indicator { display: none; align-self: flex-start; background: var(--bg-card); padding: 12px; border-radius: 16px; margin-bottom: 10px; box-shadow: var(--shadow-card); }
         .dot { height: 6px; width: 6px; background-color: #CFD8DC; border-radius: 50%; display: inline-block; animation: bounce 1.4s infinite ease-in-out both; margin: 0 2px; }
         .dot:nth-child(1) { animation-delay: -0.32s; } .dot:nth-child(2) { animation-delay: -0.16s; }
+        
         .input-area { width: 100%; background: var(--bg-main); padding: 10px 16px; display: flex; align-items: center; justify-content: center; gap: 12px; padding-bottom: calc(15px + env(safe-area-inset-bottom)); box-sizing: border-box; }
-        input[type="text"] { flex: 1; min-width: 0; padding: 0 20px; height: 54px; border-radius: 18px; border: none; font-size: 16px; outline: none; background: #FFFFFF; box-shadow: 0 2px 10px rgba(0,0,0,0.03); color: var(--text-header); box-sizing: border-box; }
+        
+        input[type="text"] { 
+            flex: 1; min-width: 0; padding: 0 20px; height: 54px; 
+            border-radius: 18px; border: none; font-size: 16px; outline: none; background: #FFFFFF; 
+            box-shadow: 0 2px 10px rgba(0,0,0,0.03); color: var(--text-header); box-sizing: border-box; 
+        }
+        
         .btn-sq { width: 54px; height: 54px; border-radius: var(--radius-btn-sq); border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; flex-shrink: 0; }
         .btn-sq:active { transform: scale(0.94); }
         #micBtn { background-color: #FFFFFF; color: var(--icon-default); box-shadow: var(--shadow-card); }
@@ -201,13 +209,31 @@
         .media-info p { font-size: 13px; color: var(--text-muted); }
         .play-btn-container { margin-left: auto; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; color: var(--primary-main); }
         
-        #game-screen { background: var(--primary-soft); } 
+        #game-screen { background: var(--primary-soft); } /* МЯТНЫЙ ФОН */
         #game-screen .breath-status { color: var(--text-header); text-shadow: none; font-weight: 700; margin-bottom: 8px; }
         #game-screen .breath-timer-text { color: var(--text-muted); font-weight: 500; }
-        .btn-game-card { padding: 20px 40px; border-radius: var(--radius-card); border: none; font-size: 18px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 14px; background: var(--secondary-bg); color: var(--secondary-text); box-shadow: var(--shadow-float-blue); transition: all 0.2s; min-width: 160px; justify-content: center; }
+        
+        /* ГОЛУБЫЕ КНОПКИ */
+        .btn-game-card { 
+            padding: 20px 40px; border-radius: var(--radius-card); border: none; 
+            font-size: 18px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 14px; 
+            
+            background: var(--secondary-bg); /* Нежно-голубой */
+            color: var(--secondary-text);    /* Синий текст */
+            box-shadow: var(--shadow-float-blue); 
+            
+            transition: all 0.2s; min-width: 160px; justify-content: center; 
+        }
         .btn-game-card:active { transform: scale(0.96); box-shadow: 0 4px 10px rgba(100, 181, 246, 0.2); }
         .btn-game-card span { font-size: 26px; }
-        .btn-reset-sq { width: 64px; height: 64px; padding: 0; border-radius: 20px; background: var(--secondary-bg); color: var(--secondary-text); border: none; box-shadow: var(--shadow-float-blue); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; }
+        
+        .btn-reset-sq { 
+            width: 64px; height: 64px; padding: 0; border-radius: 20px; 
+            background: var(--secondary-bg); /* Нежно-голубой */
+            color: var(--secondary-text);    /* Синяя иконка */
+            border: none; box-shadow: var(--shadow-float-blue); 
+            display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; 
+        }
         .btn-reset-sq:active { transform: rotate(45deg) scale(0.92); }
         
         canvas#breathCanvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; opacity: 0.6; }
@@ -215,9 +241,9 @@
         .breath-text-container { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; margin-bottom: 40px; }
         .game-controls { pointer-events: auto; display: flex; gap: 20px; align-items: center; }
 
-        /* BALLOON GAME SCREEN (MINT BG) */
+        /* BALLOON GAME SCREEN */
         #balloon-game-screen {
-            background-color: var(--primary-soft); /* МЯТНЫЙ ФОН */
+            background-color: var(--primary-soft);
             position: relative;
             overflow: hidden;
         }
@@ -520,8 +546,16 @@
     function saveMood(s) { const h = JSON.parse(localStorage.getItem('mood_history') || '{}'); h[getTodayString()] = s; localStorage.setItem('mood_history', JSON.stringify(h)); if(tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success'); document.getElementById('diary-question-block').classList.add('fade-out-scale'); setTimeout(() => { renderDiaryScreen(true); checkDailyStatus(); }, 300); }
     function renderDiaryScreen(anim) { const t = getTodayString(), h = JSON.parse(localStorage.getItem('mood_history') || '{}'), q = document.getElementById('diary-question-block'), s = document.getElementById('diary-summary-block'); q.classList.remove('fade-out-scale'); s.classList.remove('fade-in-scale'); if(h[t]) { q.style.display='none'; s.style.display='block'; if(anim) s.classList.add('fade-in-scale'); document.getElementById('summary-title').innerText = h[t]==='good'?'Хороший день':'Тяжелый день'; document.getElementById('summary-icon').innerText = h[t]==='good'?'sentiment_satisfied_alt':'sentiment_dissatisfied'; document.getElementById('summary-icon').style.color = h[t]==='good'?'var(--primary-main)':'var(--warm-text)'; } else { q.style.display='block'; s.style.display='none'; } const c = document.getElementById('history-container'); c.innerHTML=''; Object.keys(h).sort((a,b)=>new Date(b)-new Date(a)).forEach(d=>{ const div=document.createElement('div'); div.className='history-item'; div.innerHTML=`<span class="h-date">${d}</span><span class="h-status ${h[d]==='good'?'status-good':'status-bad'}">${h[d]==='good'?'Хорошо':'Тяжело'}</span>`; c.appendChild(div); }); }
 
+    // --- CHAT LOGIC ---
+    function scrollToBottom() { chatContainer.scrollTop = chatContainer.scrollHeight; }
+    function addMessage(text, isUser = false) { const msgDiv = document.createElement('div'); msgDiv.classList.add('message'); if(isUser) msgDiv.classList.add('msg-user'); else msgDiv.classList.add('msg-bot'); msgDiv.classList.add('msg-enter'); msgDiv.innerHTML = text.replace(/\n/g, '<br>'); chatContainer.insertBefore(msgDiv, typingIndicator); scrollToBottom(); }
+    function showTyping(show) { typingIndicator.style.display = show ? 'block' : 'none'; scrollToBottom(); }
+    function loadChatHistory() { showTyping(true); fetch(GOOGLE_SCRIPT_URL + '?act=api', { method: 'POST', body: JSON.stringify({ userId: userId, action: 'load_history' }) }).then(r => r.json()).then(d => { showTyping(false); if (d.status === 'success') d.history.forEach(i => addMessage(i.parts[0].text, i.role === 'user')); }).catch(e => showTyping(false)); }
+    function sendMessage() { const text = userInput.value.trim(); if (!text) return; addMessage(text, true); userInput.value = ''; sendBtn.disabled = true; showTyping(true); userInput.blur(); fetch(GOOGLE_SCRIPT_URL + '?act=api', { method: 'POST', body: JSON.stringify({ text: text, userId: userId }) }).then(r => r.json()).then(d => { showTyping(false); sendBtn.disabled = false; if (d.status === 'success') { addMessage(d.text, false); if(d.audio) playAudioResponse(d.audio); } }).catch(e => { showTyping(false); sendBtn.disabled = false; }); }
+    sendBtn.addEventListener('click', sendMessage); userInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); sendMessage(); } });
+
     // --- BALLOON GAME LOGIC ---
-    let balloonCanvas, bCtx, balloons = [], confetti = [], balloonLoopId, score = 0, gameStartTime = 0;
+    let balloonCanvas, bCtx, balloons = [], confetti = [], balloonLoopId, score = 0;
     
     function initBalloonGame() {
         balloonCanvas = document.getElementById('balloon-game-canvas');
@@ -530,148 +564,16 @@
         window.addEventListener('resize', resizeBalloonCanvas);
         balloonCanvas.addEventListener('touchstart', handleBalloonTap);
         balloonCanvas.addEventListener('mousedown', handleBalloonTap);
-        score = 0; 
-        gameStartTime = Date.now(); // Start timer
-        document.getElementById('balloon-score').innerText = score;
+        score = 0; document.getElementById('balloon-score').innerText = score;
         balloons = []; confetti = [];
         startBalloonLoop();
     }
-    
-    function stopBalloonGame() { 
-        cancelAnimationFrame(balloonLoopId); 
-        window.removeEventListener('resize', resizeBalloonCanvas); 
-    }
-    
-    function resizeBalloonCanvas() { 
-        balloonCanvas.width = window.innerWidth; 
-        balloonCanvas.height = window.innerHeight; 
-    }
-
-    // SILHOUETTE BALLOON CLASS
-    class Balloon {
-        constructor() {
-            this.radiusX = 35; // Oval shape width
-            this.radiusY = 42; // Oval shape height
-            this.x = Math.random() * (balloonCanvas.width - this.radiusX * 2) + this.radiusX;
-            this.y = balloonCanvas.height + this.radiusY;
-            
-            // Speed logic: Base + increase every 30s
-            const elapsedSecs = (Date.now() - gameStartTime) / 1000;
-            const speedMultiplier = 1 + (elapsedSecs / 30) * 0.5; // +50% speed every 30s
-            
-            this.speed = (Math.random() * 2 + 2) * speedMultiplier;
-            this.wobble = Math.random() * Math.PI * 2;
-            this.wobbleSpeed = Math.random() * 0.05 + 0.02;
-            
-            // Type logic: 30% are Targets (Blue-Beige), 70% are Ghosts (White)
-            this.isTarget = Math.random() < 0.3; 
-        }
-        
-        update() {
-            this.y -= this.speed;
-            this.x += Math.sin(this.wobble) * 1.5;
-            this.wobble += this.wobbleSpeed;
-        }
-        
-        draw() {
-            bCtx.save();
-            bCtx.translate(this.x, this.y);
-            bCtx.rotate(Math.sin(this.wobble) * 0.1); // Slight rotation
-            
-            // String (Wavy line)
-            bCtx.beginPath();
-            bCtx.moveTo(0, this.radiusY);
-            bCtx.bezierCurveTo(5, this.radiusY + 20, -5, this.radiusY + 40, 0, this.radiusY + 60);
-            bCtx.strokeStyle = 'rgba(0,0,0,0.15)';
-            bCtx.lineWidth = 2;
-            bCtx.stroke();
-
-            // Balloon Body
-            bCtx.beginPath();
-            bCtx.ellipse(0, 0, this.radiusX, this.radiusY, 0, 0, Math.PI * 2);
-            
-            if (this.isTarget) {
-                // Gradient for target
-                const grad = bCtx.createLinearGradient(-this.radiusX, -this.radiusY, this.radiusX, this.radiusY);
-                grad.addColorStop(0, '#64B5F6'); // Blue
-                grad.addColorStop(1, '#FFF3E0'); // Beige
-                bCtx.fillStyle = grad;
-            } else {
-                // Ghost balloon (White)
-                bCtx.fillStyle = 'rgba(255, 255, 255, 0.9)';
-            }
-            bCtx.fill();
-            
-            // Knot (Triangle at bottom)
-            bCtx.beginPath();
-            bCtx.moveTo(-5, this.radiusY - 2);
-            bCtx.lineTo(5, this.radiusY - 2);
-            bCtx.lineTo(0, this.radiusY + 8);
-            bCtx.fill();
-
-            // Highlight (Curved Shine)
-            bCtx.beginPath();
-            bCtx.ellipse(-12, -12, 8, 16, Math.PI / 4, 0, Math.PI * 2);
-            bCtx.fillStyle = 'rgba(255,255,255,0.4)';
-            bCtx.fill();
-
-            bCtx.restore();
-        }
-    }
-
+    function stopBalloonGame() { cancelAnimationFrame(balloonLoopId); window.removeEventListener('resize', resizeBalloonCanvas); }
+    function resizeBalloonCanvas() { balloonCanvas.width = window.innerWidth; balloonCanvas.height = window.innerHeight; }
+    class Balloon { constructor() { this.radius = 35; this.x = Math.random() * (balloonCanvas.width - this.radius * 2) + this.radius; this.y = balloonCanvas.height + this.radius; this.speed = Math.random() * 2 + 3; this.wobble = Math.random() * Math.PI * 2; this.color = 'white'; } update() { this.y -= this.speed; this.x += Math.sin(this.wobble) * 1; this.wobble += 0.05; } draw() { bCtx.beginPath(); bCtx.arc(this.x, this.y, this.radius, 0, Math.PI * 2); bCtx.fillStyle = this.color; bCtx.fill(); bCtx.beginPath(); bCtx.arc(this.x - 10, this.y - 10, 5, 0, Math.PI * 2); bCtx.fillStyle = 'rgba(255,255,255,0.8)'; bCtx.fill(); bCtx.beginPath(); bCtx.moveTo(this.x, this.y + this.radius); bCtx.quadraticCurveTo(this.x + Math.sin(this.wobble)*10, this.y + this.radius + 20, this.x, this.y + this.radius + 40); bCtx.strokeStyle = 'rgba(0,0,0,0.2)'; bCtx.stroke(); } }
     class ConfettiParticle { constructor(x, y) { this.x = x; this.y = y; this.angle = Math.random() * Math.PI * 2; this.velocity = Math.random() * 5 + 2; this.size = Math.random() * 5 + 2; this.color = ['#FFD700', '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4'][Math.floor(Math.random() * 5)]; this.life = 1.0; } update() { this.x += Math.cos(this.angle) * this.velocity; this.y += Math.sin(this.angle) * this.velocity; this.life -= 0.03; } draw() { bCtx.globalAlpha = this.life; bCtx.fillStyle = this.color; bCtx.fillRect(this.x, this.y, this.size, this.size); bCtx.globalAlpha = 1.0; } }
-    
-    function handleBalloonTap(e) {
-        e.preventDefault();
-        const rect = balloonCanvas.getBoundingClientRect();
-        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-        const x = clientX - rect.left;
-        const y = clientY - rect.top;
-
-        for (let i = balloons.length - 1; i >= 0; i--) {
-            const b = balloons[i];
-            // Simple distance check (approximate for oval)
-            const dist = Math.sqrt((x - b.x)**2 + (y - b.y)**2);
-            
-            if (dist < b.radiusY + 10) { // Hitbox
-                if (b.isTarget) {
-                    // Pop only targets
-                    for(let k=0; k<15; k++) confetti.push(new ConfettiParticle(b.x, b.y));
-                    balloons.splice(i, 1);
-                    score++;
-                    document.getElementById('balloon-score').innerText = score;
-                    if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
-                } else {
-                    // Wobbly effect for ghosts (optional, currently just ignore)
-                }
-                return; // Only pop one per tap
-            }
-        }
-    }
-
-    function startBalloonLoop() {
-        bCtx.clearRect(0, 0, balloonCanvas.width, balloonCanvas.height);
-
-        // Spawn balloons (Variable rate based on score/time could be added)
-        if (Math.random() < 0.025) { 
-            balloons.push(new Balloon());
-        }
-
-        balloons.forEach((b, i) => {
-            b.update();
-            b.draw();
-            if (b.y + b.radiusY + 60 < 0) balloons.splice(i, 1);
-        });
-
-        confetti.forEach((c, i) => {
-            c.update();
-            c.draw();
-            if (c.life <= 0) confetti.splice(i, 1);
-        });
-
-        balloonLoopId = requestAnimationFrame(startBalloonLoop);
-    }
+    function handleBalloonTap(e) { e.preventDefault(); const rect = balloonCanvas.getBoundingClientRect(); const clientX = e.touches ? e.touches[0].clientX : e.clientX; const clientY = e.touches ? e.touches[0].clientY : e.clientY; const x = clientX - rect.left; const y = clientY - rect.top; for (let i = balloons.length - 1; i >= 0; i--) { const b = balloons[i]; const dist = Math.sqrt((x - b.x)**2 + (y - b.y)**2); if (dist < b.radius + 15) { for(let k=0; k<15; k++) confetti.push(new ConfettiParticle(b.x, b.y)); balloons.splice(i, 1); score++; document.getElementById('balloon-score').innerText = score; if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light'); return; } } }
+    function startBalloonLoop() { bCtx.clearRect(0, 0, balloonCanvas.width, balloonCanvas.height); if (Math.random() < 0.03) balloons.push(new Balloon()); balloons.forEach((b, i) => { b.update(); b.draw(); if (b.y + b.radius < 0) balloons.splice(i, 1); }); confetti.forEach((c, i) => { c.update(); c.draw(); if (c.life <= 0) confetti.splice(i, 1); }); balloonLoopId = requestAnimationFrame(startBalloonLoop); }
 
     // --- BREATHING GAME (FIXED) ---
     // ISOLATED VARIABLES
