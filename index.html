@@ -20,6 +20,7 @@
             --primary-soft: #E0F2F1; 
             --primary-text: #00695C; 
             
+            /* ГОЛУБОЙ */
             --secondary-bg: #E3F2FD; 
             --secondary-accent: #64B5F6;
             --secondary-text: #1565C0;
@@ -127,10 +128,7 @@
         .small-card { background: var(--bg-card); padding: 16px; border-radius: 20px; display: flex; align-items: center; gap: 12px; box-shadow: var(--shadow-card); cursor: pointer; position: relative; }
         .small-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; }
         .warm-icon { background: var(--warm-bg); color: var(--warm-accent); }
-        
-        /* Иконка для игры (Мятная) */
         .mint-icon { background: var(--primary-soft); color: var(--primary-main); }
-        
         .small-card h4 { font-size: 14px; font-weight: 600; color: var(--text-header); }
         .small-card span { font-size: 11px; color: var(--text-muted); }
         .notification-dot { position: absolute; top: 12px; right: 12px; width: 10px; height: 10px; background-color: #FF7043; border-radius: 50%; border: 2px solid var(--bg-card); display: none; animation: pulse-dot 2s infinite; }
@@ -194,7 +192,7 @@
         .status-good { background: var(--primary-soft); color: var(--primary-text); }
         .status-bad { background: var(--warm-bg); color: var(--warm-text); }
 
-        /* LISTS & GAME (BREATHING SCREEN) */
+        /* LISTS */
         .content-list { padding: 24px; overflow-y: auto; flex: 1; }
         .media-item { background: var(--bg-card); padding: 20px; border-radius: var(--radius-card); margin-bottom: 16px; display: flex; align-items: center; gap: 16px; box-shadow: var(--shadow-card); cursor: pointer; transition: transform 0.1s; }
         .media-item:active { transform: scale(0.98); }
@@ -203,25 +201,14 @@
         .media-info p { font-size: 13px; color: var(--text-muted); }
         .play-btn-container { margin-left: auto; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; color: var(--primary-main); }
         
-        #game-screen { background: var(--primary-soft); } 
+        /* BREATHING GAME SCREEN */
+        #game-screen { background: var(--primary-soft); } /* МЯТНЫЙ ФОН */
         #game-screen .breath-status { color: var(--text-header); text-shadow: none; font-weight: 700; margin-bottom: 8px; }
         #game-screen .breath-timer-text { color: var(--text-muted); font-weight: 500; }
-        
-        .btn-game-card { 
-            padding: 20px 40px; border-radius: var(--radius-card); border: none; 
-            font-size: 18px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 14px; 
-            background: var(--secondary-bg); color: var(--secondary-text); 
-            box-shadow: var(--shadow-float-blue); transition: all 0.2s; min-width: 160px; justify-content: center; 
-        }
+        .btn-game-card { padding: 20px 40px; border-radius: var(--radius-card); border: none; font-size: 18px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 14px; background: var(--secondary-bg); color: var(--secondary-text); box-shadow: var(--shadow-float-blue); transition: all 0.2s; min-width: 160px; justify-content: center; }
         .btn-game-card:active { transform: scale(0.96); box-shadow: 0 4px 10px rgba(100, 181, 246, 0.2); }
         .btn-game-card span { font-size: 26px; }
-        
-        .btn-reset-sq { 
-            width: 64px; height: 64px; padding: 0; border-radius: 20px; 
-            background: var(--secondary-bg); color: var(--secondary-text); 
-            border: none; box-shadow: var(--shadow-float-blue); 
-            display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; 
-        }
+        .btn-reset-sq { width: 64px; height: 64px; padding: 0; border-radius: 20px; background: var(--secondary-bg); color: var(--secondary-text); border: none; box-shadow: var(--shadow-float-blue); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; }
         .btn-reset-sq:active { transform: rotate(45deg) scale(0.92); }
         
         canvas#breathCanvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; opacity: 0.6; }
@@ -229,9 +216,9 @@
         .breath-text-container { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; margin-bottom: 40px; }
         .game-controls { pointer-events: auto; display: flex; gap: 20px; align-items: center; }
 
-        /* --- BALLOON GAME SCREEN --- */
+        /* BALLOON GAME SCREEN */
         #balloon-game-screen {
-            background-color: var(--primary-soft); /* Mint background */
+            background-color: var(--primary-soft);
             position: relative;
             overflow: hidden;
         }
@@ -243,14 +230,13 @@
             position: absolute; top: 0; left: 0; width: 100%;
             padding: 20px; z-index: 10;
             display: flex; justify-content: space-between; align-items: center;
-            pointer-events: none; /* Let clicks pass through */
+            pointer-events: none;
         }
         .score-box {
             background: white; padding: 8px 16px; border-radius: 16px;
             box-shadow: var(--shadow-card);
             font-weight: 700; color: var(--primary-text); font-size: 18px;
         }
-        /* Make back button clickable */
         .game-ui-header #back-btn-game { pointer-events: auto; }
 
     </style>
@@ -315,7 +301,6 @@
                 </div>
                 <div><h4>Дневник</h4><span>Забота о себе</span></div>
             </div>
-            <!-- ИЗМЕНЕНО НА ИГРУ -->
             <div class="small-card" onclick="navigateTo('balloons')">
                 <div class="small-icon mint-icon"><span class="material-icons-round">sports_esports</span></div>
                 <div><h4>Игра</h4><span>Лопай шарики</span></div>
@@ -425,8 +410,8 @@
     <!-- ЭКРАН 6: ИГРА (ШАРИКИ) -->
     <div id="balloon-game-screen" class="screen">
         <div class="game-ui-header">
-            <button id="back-btn-game" onclick="goBack()" style="background:white; border:none; border-radius:12px; width:40px; height:40px; box-shadow:var(--shadow-card); display:flex; align-items:center; justify-content:center;">
-                <span class="material-icons-round" style="color:var(--text-header);">arrow_back</span>
+            <button id="back-btn-game" onclick="goBack()" style="background:var(--primary-main); border:none; border-radius:14px; width:44px; height:44px; box-shadow:var(--shadow-card); display:flex; align-items:center; justify-content:center;">
+                <span class="material-icons-round" style="color:white;">arrow_back</span>
             </button>
             <div class="score-box" id="balloon-score">0</div>
         </div>
@@ -434,8 +419,6 @@
     </div>
 
 <script>
-    // === ЛОГИКА ===
-    
     const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzOq4mO0Dgx9PH9AzH8ozKOYcQ0CshNHldt51VyynuR1uJZ8ZW_x71KNhG-4QV6nPF8/exec";
     const tg = window.Telegram.WebApp;
     tg.expand();
@@ -460,8 +443,8 @@
     const playIcon = document.getElementById('playIcon');
     const playText = document.getElementById('playText');
     const breathStartBtn = document.getElementById('breathStartBtn');
-    const canvas = document.getElementById('breathCanvas');
-    const ctx = canvas.getContext('2d');
+    const breathCanvas = document.getElementById('breathCanvas'); // Исправлено имя
+    const ctx = breathCanvas.getContext('2d');
 
     const chatContainer = document.getElementById('chat-container');
     const userInput = document.getElementById('userInput');
@@ -482,10 +465,9 @@
         if (screenName === 'menu') {
             header.style.display = 'none'; tg.BackButton.hide();
             stopBreathingAnimationLoop();
-            stopBalloonGame(); // Остановить игру если вышли
+            stopBalloonGame(); 
             checkDailyStatus();
         } else {
-            // Для игры в шарики скрываем стандартный хедер, там свой
             if(screenName === 'balloons') {
                 header.style.display = 'none';
                 initBalloonGame();
@@ -499,7 +481,7 @@
             }
             else if (screenName === 'video') pageTitle.innerText = 'Медитации';
             else if (screenName === 'music') { pageTitle.innerText = 'Дневник'; renderDiaryScreen(); }
-            else if (screenName === 'game') { pageTitle.innerText = 'Дыхание'; resizeCanvas(); startBreathingAnimationLoop(); }
+            else if (screenName === 'game') { pageTitle.innerText = 'Дыхание'; resizeBreathCanvas(); startBreathingAnimationLoop(); }
             else if (screenName === 'sos') { pageTitle.innerText = 'Заземление'; resetSos(); }
         }
     }
@@ -509,7 +491,6 @@
         navigateTo('menu');
     }
 
-    // ... (SOS, DIARY, CHAT LOGIC - NO CHANGES) ...
     // --- ЛОГИКА SOS ---
     const sosSteps = [
         { num: 5, title: 'Найди глазами', text: '5 вещей одного цвета' },
@@ -538,15 +519,7 @@
     function saveMood(s) { const h = JSON.parse(localStorage.getItem('mood_history') || '{}'); h[getTodayString()] = s; localStorage.setItem('mood_history', JSON.stringify(h)); if(tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success'); document.getElementById('diary-question-block').classList.add('fade-out-scale'); setTimeout(() => { renderDiaryScreen(true); checkDailyStatus(); }, 300); }
     function renderDiaryScreen(anim) { const t = getTodayString(), h = JSON.parse(localStorage.getItem('mood_history') || '{}'), q = document.getElementById('diary-question-block'), s = document.getElementById('diary-summary-block'); q.classList.remove('fade-out-scale'); s.classList.remove('fade-in-scale'); if(h[t]) { q.style.display='none'; s.style.display='block'; if(anim) s.classList.add('fade-in-scale'); document.getElementById('summary-title').innerText = h[t]==='good'?'Хороший день':'Тяжелый день'; document.getElementById('summary-icon').innerText = h[t]==='good'?'sentiment_satisfied_alt':'sentiment_dissatisfied'; document.getElementById('summary-icon').style.color = h[t]==='good'?'var(--primary-main)':'var(--warm-text)'; } else { q.style.display='block'; s.style.display='none'; } const c = document.getElementById('history-container'); c.innerHTML=''; Object.keys(h).sort((a,b)=>new Date(b)-new Date(a)).forEach(d=>{ const div=document.createElement('div'); div.className='history-item'; div.innerHTML=`<span class="h-date">${d}</span><span class="h-status ${h[d]==='good'?'status-good':'status-bad'}">${h[d]==='good'?'Хорошо':'Тяжело'}</span>`; c.appendChild(div); }); }
 
-    // --- CHAT LOGIC ---
-    function scrollToBottom() { chatContainer.scrollTop = chatContainer.scrollHeight; }
-    function addMessage(text, isUser = false) { const msgDiv = document.createElement('div'); msgDiv.classList.add('message'); if(isUser) msgDiv.classList.add('msg-user'); else msgDiv.classList.add('msg-bot'); msgDiv.classList.add('msg-enter'); msgDiv.innerHTML = text.replace(/\n/g, '<br>'); chatContainer.insertBefore(msgDiv, typingIndicator); scrollToBottom(); }
-    function showTyping(show) { typingIndicator.style.display = show ? 'block' : 'none'; scrollToBottom(); }
-    function loadChatHistory() { showTyping(true); fetch(GOOGLE_SCRIPT_URL + '?act=api', { method: 'POST', body: JSON.stringify({ userId: userId, action: 'load_history' }) }).then(r => r.json()).then(d => { showTyping(false); if (d.status === 'success') d.history.forEach(i => addMessage(i.parts[0].text, i.role === 'user')); }).catch(e => showTyping(false)); }
-    function sendMessage() { const text = userInput.value.trim(); if (!text) return; addMessage(text, true); userInput.value = ''; sendBtn.disabled = true; showTyping(true); userInput.blur(); fetch(GOOGLE_SCRIPT_URL + '?act=api', { method: 'POST', body: JSON.stringify({ text: text, userId: userId }) }).then(r => r.json()).then(d => { showTyping(false); sendBtn.disabled = false; if (d.status === 'success') { addMessage(d.text, false); if(d.audio) playAudioResponse(d.audio); } }).catch(e => { showTyping(false); sendBtn.disabled = false; }); }
-    sendBtn.addEventListener('click', sendMessage); userInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); sendMessage(); } });
-
-    // --- BALLOON GAME LOGIC (NEW) ---
+    // --- BALLOON GAME LOGIC ---
     let balloonCanvas, bCtx, balloons = [], confetti = [], balloonLoopId, score = 0;
     
     function initBalloonGame() {
@@ -554,193 +527,39 @@
         bCtx = balloonCanvas.getContext('2d');
         resizeBalloonCanvas();
         window.addEventListener('resize', resizeBalloonCanvas);
-        
-        // Touch/Click handler
         balloonCanvas.addEventListener('touchstart', handleBalloonTap);
         balloonCanvas.addEventListener('mousedown', handleBalloonTap);
-        
-        score = 0;
-        document.getElementById('balloon-score').innerText = score;
-        balloons = [];
-        confetti = [];
+        score = 0; document.getElementById('balloon-score').innerText = score;
+        balloons = []; confetti = [];
         startBalloonLoop();
     }
+    function stopBalloonGame() { cancelAnimationFrame(balloonLoopId); window.removeEventListener('resize', resizeBalloonCanvas); }
+    function resizeBalloonCanvas() { balloonCanvas.width = window.innerWidth; balloonCanvas.height = window.innerHeight; }
+    class Balloon { constructor() { this.radius = 35; this.x = Math.random() * (balloonCanvas.width - this.radius * 2) + this.radius; this.y = balloonCanvas.height + this.radius; this.speed = Math.random() * 2 + 3; this.wobble = Math.random() * Math.PI * 2; this.color = 'white'; } update() { this.y -= this.speed; this.x += Math.sin(this.wobble) * 1; this.wobble += 0.05; } draw() { bCtx.beginPath(); bCtx.arc(this.x, this.y, this.radius, 0, Math.PI * 2); bCtx.fillStyle = this.color; bCtx.fill(); bCtx.beginPath(); bCtx.arc(this.x - 10, this.y - 10, 5, 0, Math.PI * 2); bCtx.fillStyle = 'rgba(255,255,255,0.8)'; bCtx.fill(); bCtx.beginPath(); bCtx.moveTo(this.x, this.y + this.radius); bCtx.quadraticCurveTo(this.x + Math.sin(this.wobble)*10, this.y + this.radius + 20, this.x, this.y + this.radius + 40); bCtx.strokeStyle = 'rgba(0,0,0,0.2)'; bCtx.stroke(); } }
+    class ConfettiParticle { constructor(x, y) { this.x = x; this.y = y; this.angle = Math.random() * Math.PI * 2; this.velocity = Math.random() * 5 + 2; this.size = Math.random() * 5 + 2; this.color = ['#FFD700', '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4'][Math.floor(Math.random() * 5)]; this.life = 1.0; } update() { this.x += Math.cos(this.angle) * this.velocity; this.y += Math.sin(this.angle) * this.velocity; this.life -= 0.03; } draw() { bCtx.globalAlpha = this.life; bCtx.fillStyle = this.color; bCtx.fillRect(this.x, this.y, this.size, this.size); bCtx.globalAlpha = 1.0; } }
+    function handleBalloonTap(e) { e.preventDefault(); const rect = balloonCanvas.getBoundingClientRect(); const clientX = e.touches ? e.touches[0].clientX : e.clientX; const clientY = e.touches ? e.touches[0].clientY : e.clientY; const x = clientX - rect.left; const y = clientY - rect.top; for (let i = balloons.length - 1; i >= 0; i--) { const b = balloons[i]; const dist = Math.sqrt((x - b.x)**2 + (y - b.y)**2); if (dist < b.radius + 15) { for(let k=0; k<15; k++) confetti.push(new ConfettiParticle(b.x, b.y)); balloons.splice(i, 1); score++; document.getElementById('balloon-score').innerText = score; if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light'); return; } } }
+    function startBalloonLoop() { bCtx.clearRect(0, 0, balloonCanvas.width, balloonCanvas.height); if (Math.random() < 0.03) balloons.push(new Balloon()); balloons.forEach((b, i) => { b.update(); b.draw(); if (b.y + b.radius < 0) balloons.splice(i, 1); }); confetti.forEach((c, i) => { c.update(); c.draw(); if (c.life <= 0) confetti.splice(i, 1); }); balloonLoopId = requestAnimationFrame(startBalloonLoop); }
 
-    function stopBalloonGame() {
-        cancelAnimationFrame(balloonLoopId);
-        window.removeEventListener('resize', resizeBalloonCanvas);
-    }
-
-    function resizeBalloonCanvas() {
-        balloonCanvas.width = window.innerWidth;
-        balloonCanvas.height = window.innerHeight;
-    }
-
-    class Balloon {
-        constructor() {
-            this.radius = 35;
-            this.x = Math.random() * (balloonCanvas.width - this.radius * 2) + this.radius;
-            this.y = balloonCanvas.height + this.radius;
-            this.speed = Math.random() * 2 + 3; // Fast speed 3-5
-            this.wobble = Math.random() * Math.PI * 2;
-            this.color = 'white'; // White balloon
-        }
-        update() {
-            this.y -= this.speed;
-            this.x += Math.sin(this.wobble) * 1; // Gentle wobble
-            this.wobble += 0.05;
-        }
-        draw() {
-            bCtx.beginPath();
-            bCtx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-            bCtx.fillStyle = this.color;
-            bCtx.fill();
-            // Shine
-            bCtx.beginPath();
-            bCtx.arc(this.x - 10, this.y - 10, 5, 0, Math.PI * 2);
-            bCtx.fillStyle = 'rgba(255,255,255,0.8)';
-            bCtx.fill();
-            // String
-            bCtx.beginPath();
-            bCtx.moveTo(this.x, this.y + this.radius);
-            bCtx.quadraticCurveTo(this.x + Math.sin(this.wobble)*10, this.y + this.radius + 20, this.x, this.y + this.radius + 40);
-            bCtx.strokeStyle = 'rgba(0,0,0,0.2)';
-            bCtx.stroke();
-        }
-    }
-
-    class ConfettiParticle {
-        constructor(x, y) {
-            this.x = x; this.y = y;
-            this.angle = Math.random() * Math.PI * 2;
-            this.velocity = Math.random() * 5 + 2;
-            this.size = Math.random() * 5 + 2;
-            this.color = ['#FFD700', '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4'][Math.floor(Math.random() * 5)];
-            this.life = 1.0;
-        }
-        update() {
-            this.x += Math.cos(this.angle) * this.velocity;
-            this.y += Math.sin(this.angle) * this.velocity;
-            this.life -= 0.03;
-        }
-        draw() {
-            bCtx.globalAlpha = this.life;
-            bCtx.fillStyle = this.color;
-            bCtx.fillRect(this.x, this.y, this.size, this.size);
-            bCtx.globalAlpha = 1.0;
-        }
-    }
-
-    function handleBalloonTap(e) {
-        e.preventDefault();
-        const rect = balloonCanvas.getBoundingClientRect();
-        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-        const x = clientX - rect.left;
-        const y = clientY - rect.top;
-
-        for (let i = balloons.length - 1; i >= 0; i--) {
-            const b = balloons[i];
-            const dist = Math.sqrt((x - b.x)**2 + (y - b.y)**2);
-            if (dist < b.radius + 15) { // Hit!
-                // Spawn confetti
-                for(let k=0; k<15; k++) confetti.push(new ConfettiParticle(b.x, b.y));
-                
-                // Remove balloon
-                balloons.splice(i, 1);
-                
-                // Update score
-                score++;
-                document.getElementById('balloon-score').innerText = score;
-                if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
-                return;
-            }
-        }
-    }
-
-    function startBalloonLoop() {
-        bCtx.clearRect(0, 0, balloonCanvas.width, balloonCanvas.height);
-
-        // Spawn balloons
-        if (Math.random() < 0.03) { // 3% chance per frame
-            balloons.push(new Balloon());
-        }
-
-        // Update & Draw Balloons
-        balloons.forEach((b, index) => {
-            b.update();
-            b.draw();
-            if (b.y + b.radius < 0) balloons.splice(index, 1); // Remove if off screen
-        });
-
-        // Update & Draw Confetti
-        confetti.forEach((c, index) => {
-            c.update();
-            c.draw();
-            if (c.life <= 0) confetti.splice(index, 1);
-        });
-
-        balloonLoopId = requestAnimationFrame(startBalloonLoop);
-    }
-
-    // --- BREATHING GAME (FIXED COLORS) ---
-    function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; initParticles(); }
-    window.addEventListener('resize', resizeCanvas);
-    class BreathParticle {
-        constructor() {
-            this.angle = Math.random() * Math.PI * 2; this.distance = baseRadius + Math.random() * 20;
-            this.size = Math.random() * 3 + 1; this.speed = Math.random() * 0.02 + 0.005;
-            // ГОЛУБЫЕ ЧАСТИЦЫ
-            this.color = `rgba(100, 181, 246, ${Math.random() * 0.4 + 0.1})`; 
-            this.wobble = Math.random() * 20;
-        }
-        update(radius, phase) {
-            this.angle += this.speed; let targetDist = radius + Math.sin(Date.now() / 500 + this.wobble) * 10;
-            if (phase === 'inhale') { targetDist += Math.random() * 10; this.color = `rgba(100, 181, 246, ${Math.random() * 0.6 + 0.3})`; } 
-            else if (phase === 'hold') { targetDist += Math.random() * 2; this.color = `rgba(21, 101, 192, ${Math.random() * 0.5 + 0.3})`; } 
-            else if (phase === 'exhale') { this.color = `rgba(100, 181, 246, ${Math.random() * 0.3 + 0.1})`; }
-            this.distance += (targetDist - this.distance) * 0.05;
-            const cx = canvas.width / 2; const cy = (canvas.height / 2) - 60;
-            this.x = cx + Math.cos(this.angle) * this.distance; this.y = cy + Math.sin(this.angle) * this.distance;
-        }
-        draw() { ctx.fillStyle = this.color; ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill(); }
-    }
-    function initParticles() { particles = []; for (let i = 0; i < 150; i++) particles.push(new BreathParticle()); }
+    // --- BREATHING GAME (FIXED) ---
+    let animationId; let particles = []; let baseRadius = 110; let targetRadius = 110; let currentRadius = 110;
+    let breathPhase = 'ready'; let breathInterval = null; let breathTimer = 0; let isBreathing = false;
+    const INHALE_TIME = 4; const HOLD_TIME = 7; const EXHALE_TIME = 8;
+    function resizeBreathCanvas() { breathCanvas.width = window.innerWidth; breathCanvas.height = window.innerHeight; initBreathParticles(); }
+    window.addEventListener('resize', resizeBreathCanvas);
+    class BreathParticle { constructor() { this.angle = Math.random() * Math.PI * 2; this.distance = baseRadius + Math.random() * 20; this.size = Math.random() * 3 + 1; this.speed = Math.random() * 0.02 + 0.005; this.color = `rgba(100, 181, 246, ${Math.random() * 0.4 + 0.1})`; this.wobble = Math.random() * 20; } update(radius, phase) { this.angle += this.speed; let targetDist = radius + Math.sin(Date.now() / 500 + this.wobble) * 10; if (phase === 'inhale') { targetDist += Math.random() * 10; this.color = `rgba(100, 181, 246, ${Math.random() * 0.6 + 0.3})`; } else if (phase === 'hold') { targetDist += Math.random() * 2; this.color = `rgba(21, 101, 192, ${Math.random() * 0.5 + 0.3})`; } else if (phase === 'exhale') { this.color = `rgba(100, 181, 246, ${Math.random() * 0.3 + 0.1})`; } this.distance += (targetDist - this.distance) * 0.05; const cx = breathCanvas.width / 2; const cy = (breathCanvas.height / 2) - 60; this.x = cx + Math.cos(this.angle) * this.distance; this.y = cy + Math.sin(this.angle) * this.distance; } draw() { ctx.fillStyle = this.color; ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill(); } }
+    function initBreathParticles() { particles = []; for (let i = 0; i < 150; i++) particles.push(new BreathParticle()); }
     function startBreathingAnimationLoop() { if (!animationId) animate(); }
     function stopBreathingAnimationLoop() { cancelAnimationFrame(animationId); animationId = null; }
-    function animate() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height); currentRadius += (targetRadius - currentRadius) * 0.02;
-        particles.forEach(p => { p.update(currentRadius, breathPhase); p.draw(); });
-        animationId = requestAnimationFrame(animate);
-    }
+    function animate() { ctx.clearRect(0, 0, breathCanvas.width, breathCanvas.height); currentRadius += (targetRadius - currentRadius) * 0.02; particles.forEach(p => { p.update(currentRadius, breathPhase); p.draw(); }); animationId = requestAnimationFrame(animate); }
     function toggleBreathing() { if (isBreathing) stopBreathing(); else startBreathing(); }
-    function startBreathing() {
-        isBreathing = true; playIcon.innerText = 'pause'; playText.innerText = 'Пауза';
-        breathInterval = setInterval(() => { breathTimer++; updateGameLogic(); }, 1000); updateGameLogic();
-    }
-    function stopBreathing() {
-        isBreathing = false; clearInterval(breathInterval); breathInterval = null;
-        playIcon.innerText = 'play_arrow'; playText.innerText = 'Продолжить';
-    }
-    function resetBreathing() {
-        stopBreathing(); breathTimer = 0; breathPhase = 'ready'; targetRadius = 110;
-        playText.innerText = 'Старт'; playIcon.innerText = 'play_arrow';
-        breathLabel.innerText = 'ДЫШИМ'; breathInstruction.innerText = 'Нажми Старт';
-    }
-    function updateGameLogic() {
-        const cycleTime = breathTimer % (INHALE_TIME + HOLD_TIME + EXHALE_TIME);
-        if (cycleTime < INHALE_TIME) { breathPhase = 'inhale'; targetRadius = 180; breathLabel.innerText = 'ВДОХ'; breathInstruction.innerText = 'Спокойный вдох...'; }
-        else if (cycleTime < INHALE_TIME + HOLD_TIME) { breathPhase = 'hold'; targetRadius = 190; breathLabel.innerText = 'ПАУЗА'; breathInstruction.innerText = 'Задержите...'; }
-        else { breathPhase = 'exhale'; targetRadius = 110; breathLabel.innerText = 'ВЫДОХ'; breathInstruction.innerText = 'Медленный выдох...'; }
-    }
-    // --- AUDIO VISUALIZER (MOCK) ---
-    function playMockAudio(element) {
-        document.querySelectorAll('.play-btn-container').forEach(el => { el.innerHTML = '<span class="material-icons-round">play_arrow</span>'; });
-        const container = element.querySelector('.play-btn-container'); container.innerHTML = `<div class="equalizer"><div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div></div>`;
-        if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
-    }
-    // --- VOICE LOGIC ---
-    function sendVoiceMessage() { /* ... */ } // (Keeping short for space)
+    function startBreathing() { isBreathing = true; playIcon.innerText = 'pause'; playText.innerText = 'Пауза'; breathInterval = setInterval(() => { breathTimer++; updateGameLogic(); }, 1000); updateGameLogic(); }
+    function stopBreathing() { isBreathing = false; clearInterval(breathInterval); breathInterval = null; playIcon.innerText = 'play_arrow'; playText.innerText = 'Продолжить'; }
+    function resetBreathing() { stopBreathing(); breathTimer = 0; breathPhase = 'ready'; targetRadius = 110; playText.innerText = 'Старт'; playIcon.innerText = 'play_arrow'; breathLabel.innerText = 'ДЫШИМ'; breathInstruction.innerText = 'Нажми Старт'; }
+    function updateGameLogic() { const cycleTime = breathTimer % (INHALE_TIME + HOLD_TIME + EXHALE_TIME); if (cycleTime < INHALE_TIME) { breathPhase = 'inhale'; targetRadius = 180; breathLabel.innerText = 'ВДОХ'; breathInstruction.innerText = 'Спокойный вдох...'; } else if (cycleTime < INHALE_TIME + HOLD_TIME) { breathPhase = 'hold'; targetRadius = 190; breathLabel.innerText = 'ПАУЗА'; breathInstruction.innerText = 'Задержите...'; } else { breathPhase = 'exhale'; targetRadius = 110; breathLabel.innerText = 'ВЫДОХ'; breathInstruction.innerText = 'Медленный выдох...'; } }
+
+    // --- OTHER ---
+    function playMockAudio(element) { document.querySelectorAll('.play-btn-container').forEach(el => { el.innerHTML = '<span class="material-icons-round">play_arrow</span>'; }); const container = element.querySelector('.play-btn-container'); container.innerHTML = `<div class="equalizer"><div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div></div>`; if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light'); }
+    function sendVoiceMessage() { /* ... */ } 
     function playAudioResponse(base64) { /* ... */ }
 </script>
 </body>
