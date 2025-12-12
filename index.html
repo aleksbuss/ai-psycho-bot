@@ -526,22 +526,44 @@
         // 1. Увеличение скорости каждые 30 сек на 20%
         const elapsedSeconds = (Date.now() - gameStartTime) / 1000;
         const level = Math.floor(elapsedSeconds / 30);
-        const speedMultiplier = 1 + (level * 0.2); // +20% за уровень
+        const speedMultiplier = 1 + (level * 0.2); 
 
         // 2. Спавн шариков (шанс ~2%)
         if (Math.random() < 0.02) {
-            // Решаем тип: 20% - цель (target), 80% - пустышка (dummy)
             const type = Math.random() < 0.2 ? 'target' : 'dummy';
-            const radius = 35; // Размер как на картинке
+            const radius = 35;
             balloons.push({
                 x: Math.random() * (ballCanvas.width - radius*2) + radius,
                 y: ballCanvas.height + 50,
                 r: radius,
-                baseSpeed: Math.random() * 2 + 2, // Базовая скорость
+                baseSpeed: Math.random() * 2 + 2,
                 wobble: Math.random() * Math.PI * 2,
                 type: type
             });
         }
+        
+        // 3. Отрисовка и обновление (ИСПОЛЬЗУЕМ ОБРАТНЫЙ ЦИКЛ)
+        // Мы идем с конца массива к началу. Это гарантирует, что при удалении
+        // элементы не "перепрыгивают" и удаляются корректно.
+        for (let i = balloons.length - 1; i >= 0; i--) {
+            let b = balloons[i];
+
+            // Двигаем
+            b.y -= b.baseSpeed * speedMultiplier;
+            b.x += Math.sin(b.wobble) * 0.5; 
+            b.wobble += 0.05;
+
+            // Рисуем
+            drawBalloon(bCtx, b);
+
+            // Удаляем, если улетел (ТЕПЕРЬ РАБОТАЕТ КОРРЕКТНО)
+            if (b.y < -100) {
+                balloons.splice(i, 1);
+            }
+        }
+        
+        bLoopId = requestAnimationFrame(runBalloonLoop);
+    }
         
         // 3. Отрисовка
         balloons.forEach((b,i) => {
