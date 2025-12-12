@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Mental Health AI</title>
+    <title>AI Психолог</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
     <style>
@@ -20,12 +20,10 @@
             --primary-soft: #E0F2F1; 
             --primary-text: #00695C; 
             
-            /* ГОЛУБОЙ (Для Дыхания) */
             --secondary-bg: #E3F2FD; 
             --secondary-accent: #64B5F6;
             --secondary-text: #1565C0;
             
-            /* ТЕПЛЫЙ (Для SOS) */
             --warm-bg: #FFF3E0;
             --warm-accent: #FFB74D;
             --warm-text: #EF6C00;
@@ -34,7 +32,6 @@
             --radius-btn-sq: 18px;
             
             --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.04);
-            --shadow-float: 0 10px 30px rgba(77, 182, 172, 0.15);
             --shadow-float-blue: 0 10px 30px rgba(100, 181, 246, 0.25);
             
             --icon-default: #90A4AE;
@@ -55,220 +52,112 @@
             display: flex; flex-direction: column;
         }
 
-        h1, h2, h3, h4 { color: var(--text-header); font-weight: 600; letter-spacing: -0.02em; }
-
-        /* --- АНИМАЦИИ --- */
+        /* АНИМАЦИИ */
         @keyframes blink { 0%, 90%, 100% { transform: scaleY(1); } 95% { transform: scaleY(0.1); } }
         .anim-eye { transform-origin: center; animation: blink 4s infinite; }
-        @keyframes handWave { 0%, 100% { transform: rotate(-5deg); } 50% { transform: rotate(5deg); } }
-        .anim-hand { transform-origin: bottom center; animation: handWave 3s ease-in-out infinite; }
-        @keyframes soundFlow { 0% { opacity: 0; transform: translateX(-5px); } 50% { opacity: 1; transform: translateX(0); } 100% { opacity: 0; transform: translateX(5px); } }
-        .sound-line-1 { animation: soundFlow 1.5s infinite 0s; } .sound-line-2 { animation: soundFlow 1.5s infinite 0.3s; } .sound-line-3 { animation: soundFlow 1.5s infinite 0.6s; }
-        @keyframes scentRise { 0% { transform: translateY(0) scaleX(1); opacity: 0.6; } 100% { transform: translateY(-15px) scaleX(1.2); opacity: 0; } }
-        .scent-line { animation: scentRise 2.5s infinite linear; }
-        @keyframes candyPulse { 0%, 100% { transform: scale(1) rotate(0deg); } 50% { transform: scale(1.1) rotate(5deg); } }
-        .anim-candy { transform-origin: center; animation: candyPulse 3s ease-in-out infinite; }
-
-        @keyframes waveMove { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+        
+        @keyframes pulse-mint { 0% { box-shadow: 0 0 0 0 rgba(77, 182, 172, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(77, 182, 172, 0); } 100% { box-shadow: 0 0 0 0 rgba(77, 182, 172, 0); } }
+        
         @keyframes msgSlideUp { from { opacity: 0; transform: translateY(20px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
         .msg-enter { animation: msgSlideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
         
-        .equalizer { display: flex; align-items: flex-end; gap: 2px; height: 16px; width: 16px; }
-        .eq-bar { width: 4px; background-color: var(--primary-main); border-radius: 2px; animation: eqBounce 0.5s infinite ease-in-out alternate; }
-        .eq-bar:nth-child(1) { height: 60%; animation-delay: 0s; } .eq-bar:nth-child(2) { height: 100%; animation-delay: 0.2s; } .eq-bar:nth-child(3) { height: 80%; animation-delay: 0.4s; }
-        @keyframes eqBounce { 0% { height: 30%; } 100% { height: 100%; } }
-
-        .fade-out-scale { animation: fadeOutScale 0.3s ease-in forwards; }
-        .fade-in-scale { animation: fadeInScale 0.4s ease-out forwards; }
-        @keyframes fadeOutScale { to { opacity: 0; transform: scale(0.9); } }
-        @keyframes fadeInScale { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
-
-        /* --- UI COMPONENTS --- */
+        /* UI ЭЛЕМЕНТЫ */
         header { padding: 0 20px; background: transparent; z-index: 100; display: none; align-items: center; height: 60px; flex-shrink: 0; width: 100%; }
         
         #back-btn { 
-            background: var(--primary-main); 
-            border: none; color: white; width: 44px; height: 44px; border-radius: 14px; 
-            box-shadow: 0 4px 15px rgba(77, 182, 172, 0.4); 
-            cursor: pointer; display: flex; align-items: center; justify-content: center; 
-            transition: transform 0.1s;
+            background: var(--primary-main); border: none; color: white; width: 44px; height: 44px; border-radius: 14px; 
+            box-shadow: 0 4px 15px rgba(77, 182, 172, 0.4); cursor: pointer; display: flex; align-items: center; justify-content: center; 
         }
         #back-btn:active { transform: scale(0.95); }
-
         .header-title { font-size: 18px; font-weight: 600; margin-left: 15px; color: var(--text-header); }
+
         .screen { flex: 1; display: none; flex-direction: column; width: 100%; height: 100%; overflow: hidden; position: relative; }
         .screen.active { display: flex; animation: fadeUp 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
         @keyframes fadeUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
 
+        /* МЕНЮ */
         #menu-screen { padding: 24px; overflow-y: auto; }
         .greeting-header { margin-top: 10px; margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center; }
-        .greeting-text h1 { font-size: 26px; line-height: 1.3; }
+        .greeting-text h1 { font-size: 26px; line-height: 1.3; color: var(--text-header); font-weight: 700; }
         .greeting-text p { font-size: 16px; color: var(--text-muted); margin-top: 4px; }
-        .sos-btn-header { width: 54px; height: 54px; border-radius: 18px; background-color: var(--warm-bg); display: flex; align-items: center; justify-content: center; color: var(--warm-text); font-weight: 800; font-size: 15px; letter-spacing: 0.5px; box-shadow: 0 4px 15px rgba(255, 183, 77, 0.25); cursor: pointer; transition: transform 0.1s, box-shadow 0.2s; border: none; }
-        .sos-btn-header:active { transform: scale(0.95); box-shadow: 0 2px 8px rgba(255, 183, 77, 0.2); }
-        .section-title { font-size: 17px; font-weight: 600; margin-bottom: 16px; color: var(--text-header); }
+        .sos-btn-header { width: 54px; height: 54px; border-radius: 18px; background-color: var(--warm-bg); display: flex; align-items: center; justify-content: center; color: var(--warm-text); font-weight: 800; font-size: 15px; border: none; box-shadow: 0 4px 15px rgba(255, 183, 77, 0.25); cursor: pointer; }
+        .sos-btn-header:active { transform: scale(0.95); }
+
         .main-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
         .action-card { border-radius: var(--radius-card); padding: 20px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; height: 150px; cursor: pointer; transition: transform 0.1s; background-color: var(--primary-soft); }
         .action-card:active { transform: scale(0.97); }
-        .card-chat h3 { color: var(--primary-text); }
-        .card-chat .icon-box { color: var(--primary-main); border: 1px solid rgba(77, 182, 172, 0.2); }
+        .card-chat h3 { color: var(--primary-text); font-size: 15px; font-weight: 600; }
+        .card-chat .icon-box { color: var(--primary-main); width: 50px; height: 50px; border-radius: 16px; background: rgba(255,255,255,0.7); display: flex; align-items: center; justify-content: center; margin-bottom: 12px; }
         .card-breath { background-color: var(--secondary-bg); }
-        .card-breath h3 { color: #1565C0; }
-        .card-breath .icon-box { color: var(--secondary-accent); border: 1px solid rgba(100, 181, 246, 0.2); }
-        .icon-box { width: 50px; height: 50px; border-radius: 16px; background: rgba(255,255,255,0.7); display: flex; align-items: center; justify-content: center; margin-bottom: 12px; }
-        .icon-box span { font-size: 26px; }
-        .action-card h3 { font-size: 15px; font-weight: 600; }
-        .widget-card { background: #E0F2F1; border-radius: var(--radius-card); padding: 20px; margin-bottom: 24px; position: relative; overflow: hidden; cursor: pointer; }
-        .widget-header { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
-        .dot-indicator { width: 8px; height: 8px; background: var(--primary-main); border-radius: 50%; opacity: 0.8; }
-        .widget-title { font-size: 14px; color: var(--text-muted); }
+        .card-breath h3 { color: #1565C0; font-size: 15px; font-weight: 600; }
+        .card-breath .icon-box { color: var(--secondary-accent); width: 50px; height: 50px; border-radius: 16px; background: rgba(255,255,255,0.7); display: flex; align-items: center; justify-content: center; margin-bottom: 12px; }
+
+        .widget-card { background: #E0F2F1; border-radius: var(--radius-card); padding: 20px; margin-bottom: 24px; overflow: hidden; position: relative; cursor: pointer; }
         .widget-main-text { font-size: 18px; font-weight: 600; color: var(--text-header); }
-        .wave-container { width: 100%; height: 50px; margin-top: 8px; overflow: hidden; position: relative; }
-        .wave-graph { width: 200%; height: 100%; opacity: 0.9; animation: waveMove 8s linear infinite; }
+        
         .bottom-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-        .small-card { background: var(--bg-card); padding: 16px; border-radius: 20px; display: flex; align-items: center; gap: 12px; box-shadow: var(--shadow-card); cursor: pointer; position: relative; }
+        .small-card { background: var(--bg-card); padding: 16px; border-radius: 20px; display: flex; align-items: center; gap: 12px; box-shadow: var(--shadow-card); cursor: pointer; }
         .small-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; }
         .warm-icon { background: var(--warm-bg); color: var(--warm-accent); }
         .mint-icon { background: var(--primary-soft); color: var(--primary-main); }
         .small-card h4 { font-size: 14px; font-weight: 600; color: var(--text-header); }
         .small-card span { font-size: 11px; color: var(--text-muted); }
-        .notification-dot { position: absolute; top: 12px; right: 12px; width: 10px; height: 10px; background-color: #FF7043; border-radius: 50%; border: 2px solid var(--bg-card); display: none; animation: pulse-dot 2s infinite; }
-        @keyframes pulse-dot { 0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.2); opacity: 0.8; } 100% { transform: scale(1); opacity: 1; } }
 
-        /* SOS SCREEN */
-        #sos-screen { background-color: var(--primary-soft); justify-content: center; }
-        .sos-dynamic-container { padding: 24px; display: flex; flex-direction: column; align-items: center; width: 100%; height: 100%; justify-content: center; }
-        .sos-dynamic-card { background: #FFF3E0; padding: 40px 24px; border-radius: 32px; box-shadow: 0 10px 40px rgba(77, 182, 172, 0.1); width: 100%; text-align: center; display: flex; flex-direction: column; align-items: center; opacity: 0; transform: translateY(20px); }
-        .anim-enter { animation: sosCardEnter 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; }
-        @keyframes sosCardEnter { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        .anim-exit { animation: sosCardExit 0.5s ease-in forwards; }
-        @keyframes sosCardExit { to { opacity: 0; transform: translateX(-100%); } }
-        .sos-group-1, .sos-group-2, .sos-group-3 { opacity: 0; }
-        .fade-in-up { animation: sosContentFadeIn 0.5s ease-out forwards; }
-        @keyframes sosContentFadeIn { from { opacity: 0; transform: scale(0.95) translateY(10px); } to { opacity: 1; transform: scale(1) translateY(0); } }
-        .delay-1 { animation-delay: 0.2s; } .delay-2 { animation-delay: 0.3s; } .delay-3 { animation-delay: 0.4s; }
-        .sos-number { font-size: 80px; font-weight: 800; color: var(--secondary-text); line-height: 1; margin-bottom: 10px; }
-        .sos-illustration-container { width: 120px; height: 120px; margin-bottom: 25px; display: flex; align-items: center; justify-content: center; }
-        .sos-svg { width: 100%; height: 100%; stroke: var(--secondary-text); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-        .sos-instruction { font-size: 20px; color: var(--text-header); font-weight: 700; margin-bottom: 8px; }
-        .sos-subtext { font-size: 16px; color: var(--text-body); margin-bottom: 30px; }
-        .sos-next-btn { width: 100%; padding: 18px; border-radius: 24px; border: none; background: var(--primary-main); color: white; font-size: 17px; font-weight: 700; cursor: pointer; box-shadow: 0 8px 20px rgba(77, 182, 172, 0.3); transition: transform 0.1s; }
-        .sos-next-btn:active { transform: scale(0.97) !important; }
-        .sos-finish-container { text-align: center; display: none; width: 100%; flex-direction: column; align-items: center; animation: sosCardEnter 0.6s ease-out; }
-        .sos-finish-icon { font-size: 90px; color: var(--primary-main); margin-bottom: 20px; }
-
-        /* CHAT */
-        #chat-container { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; }
-        .message { max-width: 85%; padding: 14px 18px; border-radius: 20px; font-size: 15px; box-shadow: var(--shadow-card); }
+        /* ЧАТ */
+        #chat-container { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; scroll-behavior: smooth; }
+        .message { max-width: 85%; padding: 14px 18px; border-radius: 20px; font-size: 15px; box-shadow: var(--shadow-card); position: relative; }
         .msg-bot { align-self: flex-start; background-color: var(--msg-bot-bg); color: var(--text-body); border-top-left-radius: 4px; }
-        .msg-user { align-self: flex-end; background-color: var(--msg-user-bg); color: var(--msg-user-text); border-top-right-radius: 4px; box-shadow: 0 4px 12px rgba(77, 182, 172, 0.3); }
+        .msg-user { align-self: flex-end; background-color: var(--msg-user-bg); color: var(--msg-user-text); border-top-right-radius: 4px; }
+        
         .typing-indicator { display: none; align-self: flex-start; background: var(--bg-card); padding: 12px; border-radius: 16px; margin-bottom: 10px; box-shadow: var(--shadow-card); }
         .dot { height: 6px; width: 6px; background-color: #CFD8DC; border-radius: 50%; display: inline-block; animation: bounce 1.4s infinite ease-in-out both; margin: 0 2px; }
         .dot:nth-child(1) { animation-delay: -0.32s; } .dot:nth-child(2) { animation-delay: -0.16s; }
-        
+        @keyframes bounce { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
+
         .input-area { width: 100%; background: var(--bg-main); padding: 10px 16px; display: flex; align-items: center; justify-content: center; gap: 12px; padding-bottom: calc(15px + env(safe-area-inset-bottom)); box-sizing: border-box; }
-        
-        input[type="text"] { 
-            flex: 1; min-width: 0; padding: 0 20px; height: 54px; 
-            border-radius: 18px; border: none; font-size: 16px; outline: none; background: #FFFFFF; 
-            box-shadow: 0 2px 10px rgba(0,0,0,0.03); color: var(--text-header); box-sizing: border-box; 
-        }
-        
+        input[type="text"] { flex: 1; height: 54px; border-radius: 18px; border: none; padding: 0 20px; font-size: 16px; outline: none; background: #FFFFFF; box-shadow: 0 2px 10px rgba(0,0,0,0.03); }
         .btn-sq { width: 54px; height: 54px; border-radius: var(--radius-btn-sq); border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; flex-shrink: 0; }
-        .btn-sq:active { transform: scale(0.94); }
         #micBtn { background-color: #FFFFFF; color: var(--icon-default); box-shadow: var(--shadow-card); }
-        #micBtn.recording { background-color: var(--primary-soft); color: var(--primary-main); animation: pulse-mint 2s infinite; border: 1px solid var(--primary-main); }
+        #micBtn.recording { background-color: var(--primary-soft); color: var(--primary-main); animation: pulse-mint 1.5s infinite; border: 1px solid var(--primary-main); }
         #sendBtn { background: var(--primary-main); color: white; box-shadow: 0 4px 15px rgba(77, 182, 172, 0.3); }
 
-        /* DIARY */
-        .mood-selector { display: flex; gap: 15px; margin-bottom: 30px; }
-        .mood-btn { flex: 1; height: 140px; border-radius: var(--radius-card); border: none; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; transition: transform 0.1s; box-shadow: var(--shadow-card); }
-        .mood-btn:active { transform: scale(0.97); }
-        .mood-good { background-color: var(--primary-soft); color: var(--primary-text); }
-        .mood-good span { font-size: 40px; margin-bottom: 10px; color: var(--primary-main); }
-        .mood-bad { background-color: var(--warm-bg); color: var(--warm-text); }
-        .mood-bad span { font-size: 40px; margin-bottom: 10px; color: var(--warm-accent); }
-        .mood-btn h3 { font-size: 16px; margin: 0; }
-        .today-summary { background: white; border-radius: var(--radius-card); padding: 24px; text-align: center; margin-bottom: 30px; box-shadow: var(--shadow-card); display: none; }
-        .today-summary .icon-lg { font-size: 48px; margin-bottom: 10px; display: block; }
-        .today-summary h3 { font-size: 18px; margin-bottom: 5px; }
-        .today-summary p { color: var(--text-muted); font-size: 14px; }
-        .history-list { display: flex; flex-direction: column; gap: 12px; }
-        .history-item { background: var(--bg-card); padding: 16px 20px; border-radius: 18px; display: flex; align-items: center; justify-content: space-between; box-shadow: var(--shadow-card); }
-        .h-date { font-weight: 600; color: var(--text-header); font-size: 15px; }
-        .h-status { font-size: 13px; font-weight: 600; padding: 6px 12px; border-radius: 12px; }
-        .status-good { background: var(--primary-soft); color: var(--primary-text); }
-        .status-bad { background: var(--warm-bg); color: var(--warm-text); }
-
-        /* LISTS & GAME (BREATHING SCREEN) */
-        .content-list { padding: 24px; overflow-y: auto; flex: 1; }
-        .media-item { background: var(--bg-card); padding: 20px; border-radius: var(--radius-card); margin-bottom: 16px; display: flex; align-items: center; gap: 16px; box-shadow: var(--shadow-card); cursor: pointer; transition: transform 0.1s; }
-        .media-item:active { transform: scale(0.98); }
-        .media-icon { width: 44px; height: 44px; background: #ECEFF1; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 24px; color: var(--icon-default); }
-        .media-info h3 { font-size: 16px; margin-bottom: 4px; color: var(--text-header); }
-        .media-info p { font-size: 13px; color: var(--text-muted); }
-        .play-btn-container { margin-left: auto; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; color: var(--primary-main); }
-        
-        #game-screen { background: var(--primary-soft); } /* МЯТНЫЙ ФОН */
-        #game-screen .breath-status { color: var(--text-header); text-shadow: none; font-weight: 700; margin-bottom: 8px; }
-        #game-screen .breath-timer-text { color: var(--text-muted); font-weight: 500; }
-        
-        /* ГОЛУБЫЕ КНОПКИ */
-        .btn-game-card { 
-            padding: 20px 40px; border-radius: var(--radius-card); border: none; 
-            font-size: 18px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 14px; 
-            
-            background: var(--secondary-bg); /* Нежно-голубой */
-            color: var(--secondary-text);    /* Синий текст */
-            box-shadow: var(--shadow-float-blue); 
-            
-            transition: all 0.2s; min-width: 160px; justify-content: center; 
-        }
-        .btn-game-card:active { transform: scale(0.96); box-shadow: 0 4px 10px rgba(100, 181, 246, 0.2); }
-        .btn-game-card span { font-size: 26px; }
-        
-        .btn-reset-sq { 
-            width: 64px; height: 64px; padding: 0; border-radius: 20px; 
-            background: var(--secondary-bg); /* Нежно-голубой */
-            color: var(--secondary-text);    /* Синяя иконка */
-            border: none; box-shadow: var(--shadow-float-blue); 
-            display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; 
-        }
-        .btn-reset-sq:active { transform: rotate(45deg) scale(0.92); }
-        
+        /* ИГРА ДЫХАНИЕ */
+        #game-screen { background: var(--primary-soft); }
         canvas#breathCanvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; opacity: 0.6; }
         .game-ui-overlay { position: relative; z-index: 10; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; width: 100%; padding-bottom: 80px; pointer-events: none; }
         .breath-text-container { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; margin-bottom: 40px; }
-        .game-controls { pointer-events: auto; display: flex; gap: 20px; align-items: center; }
+        .breath-status { font-size: 32px; font-weight: 800; color: var(--text-header); margin-bottom: 8px; }
+        .breath-timer-text { font-size: 18px; color: var(--text-muted); }
+        .game-controls { pointer-events: auto; display: flex; gap: 20px; }
+        .btn-game-card { padding: 20px 40px; border-radius: var(--radius-card); border: none; font-size: 18px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 14px; background: var(--secondary-bg); color: var(--secondary-text); box-shadow: var(--shadow-float-blue); }
+        .btn-reset-sq { width: 64px; height: 64px; border-radius: 20px; background: var(--secondary-bg); color: var(--secondary-text); border: none; box-shadow: var(--shadow-float-blue); display: flex; align-items: center; justify-content: center; cursor: pointer; }
 
-        /* BALLOON GAME SCREEN */
-        #balloon-game-screen {
-            background-color: var(--primary-soft);
-            position: relative;
-            overflow: hidden;
-        }
-        #balloon-game-canvas {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 1;
-        }
-        .game-ui-header {
-            position: absolute; top: 0; left: 0; width: 100%;
-            padding: 20px; z-index: 10;
-            display: flex; justify-content: space-between; align-items: center;
-            pointer-events: none;
-        }
-        .score-box {
-            background: white; padding: 8px 16px; border-radius: 16px;
-            box-shadow: var(--shadow-card);
-            font-weight: 700; color: var(--primary-text); font-size: 18px;
-        }
-        .game-ui-header #back-btn-game { pointer-events: auto; }
+        /* SOS */
+        #sos-screen { background-color: var(--primary-soft); justify-content: center; }
+        .sos-dynamic-container { padding: 24px; display: flex; flex-direction: column; align-items: center; width: 100%; height: 100%; justify-content: center; }
+        .sos-dynamic-card { background: #FFF3E0; padding: 40px 24px; border-radius: 32px; box-shadow: 0 10px 40px rgba(77, 182, 172, 0.1); width: 100%; text-align: center; display: flex; flex-direction: column; align-items: center; }
+        .sos-number { font-size: 80px; font-weight: 800; color: var(--secondary-text); line-height: 1; margin-bottom: 10px; }
+        .sos-svg { width: 120px; height: 120px; stroke: var(--secondary-text); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; margin-bottom: 25px; }
+        .sos-instruction { font-size: 20px; font-weight: 700; margin-bottom: 8px; color: var(--text-header); }
+        .sos-next-btn { width: 100%; padding: 18px; border-radius: 24px; border: none; background: var(--primary-main); color: white; font-size: 17px; font-weight: 700; cursor: pointer; margin-top: auto; }
 
+        /* ШАРИКИ */
+        #balloon-game-screen { background-color: var(--primary-soft); position: relative; overflow: hidden; }
+        .game-ui-header { position: absolute; top: 0; left: 0; width: 100%; padding: 20px; z-index: 10; display: flex; justify-content: space-between; align-items: center; pointer-events: none; }
+        .score-box { background: white; padding: 8px 16px; border-radius: 16px; box-shadow: var(--shadow-card); font-weight: 700; color: var(--primary-text); font-size: 18px; }
+        #back-btn-game { pointer-events: auto; background: var(--primary-main); border: none; border-radius: 14px; width: 44px; height: 44px; box-shadow: var(--shadow-card); display: flex; align-items: center; justify-content: center; color: white; }
+
+        /* ДНЕВНИК */
+        .mood-selector { display: flex; gap: 15px; margin-bottom: 30px; }
+        .mood-btn { flex: 1; height: 140px; border-radius: var(--radius-card); border: none; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; box-shadow: var(--shadow-card); }
+        .mood-good { background-color: var(--primary-soft); color: var(--primary-text); }
+        .mood-bad { background-color: var(--warm-bg); color: var(--warm-text); }
+        .history-item { background: var(--bg-card); padding: 16px 20px; border-radius: 18px; display: flex; align-items: center; justify-content: space-between; box-shadow: var(--shadow-card); margin-bottom: 12px; }
     </style>
 </head>
 <body>
 
-    <!-- ШАПКА -->
+    <!-- ШАПКА (Общая для подстраниц) -->
     <header id="main-header">
         <button id="back-btn" onclick="goBack()">
             <span class="material-icons-round">arrow_back</span>
@@ -276,11 +165,11 @@
         <span class="header-title" id="page-title">Назад</span>
     </header>
 
-    <!-- ЭКРАН 1: ГЛАВНОЕ МЕНЮ -->
+    <!-- 1. ГЛАВНОЕ МЕНЮ -->
     <div id="menu-screen" class="screen active">
         <div class="greeting-header">
             <div class="greeting-text">
-                <h1>Доброе утро,<br>User</h1>
+                <h1>Доброе утро,<br><span id="userNameDisplay">User</span></h1>
                 <p>Что поддержит вас сегодня?</p>
             </div>
             <button class="sos-btn-header" onclick="navigateTo('sos')">SOS</button>
@@ -297,33 +186,14 @@
             </div>
         </div>
 
-        <div class="section-title">Состояние</div>
         <div class="widget-card" onclick="navigateTo('video')">
-            <div class="widget-header">
-                <div class="dot-indicator"></div>
-                <div class="widget-title">Медитации</div>
-            </div>
-            <div class="widget-main-text">Спокойствие</div>
-            <div class="wave-container">
-                <svg class="wave-graph" viewBox="0 0 600 50" preserveAspectRatio="none">
-                    <defs>
-                        <linearGradient id="grad1" x1="0%" y1="0%" x2="0%" y2="100%">
-                            <stop offset="0%" style="stop-color:#4DB6AC;stop-opacity:0.6" />
-                            <stop offset="100%" style="stop-color:#4DB6AC;stop-opacity:0" />
-                        </linearGradient>
-                    </defs>
-                    <path d="M0,25 Q75,5 150,25 T300,25 T450,25 T600,25 V50 H0 Z" fill="url(#grad1)" />
-                    <path d="M0,25 Q75,5 150,25 T300,25 T450,25 T600,25" stroke="#4DB6AC" stroke-width="2" fill="none"/>
-                </svg>
-            </div>
+            <div class="widget-main-text" style="margin-bottom: 5px;">Медитации</div>
+            <div style="font-size: 14px; color: var(--text-muted);">Библиотека покоя</div>
         </div>
 
         <div class="bottom-grid">
             <div class="small-card" onclick="navigateTo('music')">
-                <div style="position:relative;">
-                    <div class="small-icon warm-icon"><span class="material-icons-round">favorite_border</span></div>
-                    <div id="diaryBadge" class="notification-dot"></div>
-                </div>
+                <div class="small-icon warm-icon"><span class="material-icons-round">favorite_border</span></div>
                 <div><h4>Дневник</h4><span>Забота о себе</span></div>
             </div>
             <div class="small-card" onclick="navigateTo('balloons')">
@@ -333,60 +203,46 @@
         </div>
     </div>
 
-    <!-- ЭКРАН 2: ЧАТ -->
+    <!-- 2. ЧАТ (С ГОЛОСОМ) -->
     <div id="chat-screen" class="screen">
         <div id="chat-container">
-            <div class="message msg-bot">Я рядом. Вы можете рассказать мне все, что вас тревожит. Мы справимся. 🌿</div>
+            <div class="message msg-bot msg-enter">Я рядом. Вы можете рассказать мне все, что вас тревожит, или записать голосовое сообщение. 🌿</div>
             <div class="typing-indicator" id="typing"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
         </div>
         <div class="input-area">
             <button id="micBtn" class="btn-sq"><span class="material-icons-round">mic</span></button>
-            <input type="text" id="userInput" placeholder="Поговорить..." autocomplete="off">
+            <input type="text" id="userInput" placeholder="Сообщение..." autocomplete="off">
             <button id="sendBtn" class="btn-sq"><span class="material-icons-round">arrow_upward</span></button>
         </div>
     </div>
 
-    <!-- ЭКРАН SOS -->
+    <!-- 3. SOS (ЗАЗЕМЛЕНИЕ) -->
     <div id="sos-screen" class="screen">
         <div class="sos-dynamic-container">
-            <div id="sos-card-wrapper" class="sos-dynamic-card"></div>
-            <div id="sos-finish-area" class="sos-finish-container">
-                <span class="material-icons-round sos-finish-icon">check_circle</span>
-                <h2 class="section-title" style="text-align: center; margin-bottom:10px;">Отлично!</h2>
-                <p style="text-align:center; color:var(--text-body); margin-bottom:30px;">
-                    Вы заземлились. Хотите подышать или вернуться в меню?
-                </p>
-                <div style="display:flex; gap:15px; width:100%;">
-                    <button class="sos-next-btn" style="background:white; color:var(--text-body); box-shadow:var(--shadow-card);" onclick="goBack()">В меню</button>
-                    <button class="sos-next-btn" onclick="navigateTo('game')">Дыхание</button>
-                </div>
+            <div id="sos-card-wrapper" class="sos-dynamic-card">
+                <!-- Контент генерируется JS -->
+            </div>
+            <div id="sos-finish-area" style="display:none; flex-direction:column; align-items:center; width:100%; text-align:center;">
+                <span class="material-icons-round" style="font-size:80px; color:var(--primary-main); margin-bottom:20px;">check_circle</span>
+                <h2 style="margin-bottom:10px;">Отлично!</h2>
+                <p style="margin-bottom:30px; color:var(--text-body);">Вы заземлились. Вернуться?</p>
+                <button class="sos-next-btn" onclick="goBack()">В меню</button>
             </div>
         </div>
     </div>
 
-    <!-- ЭКРАН 3: МЕДИТАЦИИ -->
+    <!-- 4. МЕДИТАЦИИ (Заглушка) -->
     <div id="video-screen" class="screen">
-        <div class="content-list">
-            <h2 class="section-title" style="margin-top:0;">Практики покоя</h2>
-            <div class="media-item" onclick="playMockAudio(this)">
-                <div class="media-icon"><span class="material-icons-round">self_improvement</span></div>
-                <div class="media-info"><h3>Осознанное дыхание</h3><p>5 минут</p></div>
-                <div class="play-btn-container"><span class="material-icons-round">play_arrow</span></div>
-            </div>
-            <div class="media-item" onclick="playMockAudio(this)">
-                <div class="media-icon"><span class="material-icons-round">bedtime</span></div>
-                <div class="media-info"><h3>Перед сном</h3><p>10 минут</p></div>
-                <div class="play-btn-container"><span class="material-icons-round">play_arrow</span></div>
-            </div>
-            <div class="media-item" onclick="playMockAudio(this)">
-                <div class="media-icon"><span class="material-icons-round">forest</span></div>
-                <div class="media-info"><h3>Звуки природы</h3><p>Релакс</p></div>
-                <div class="play-btn-container"><span class="material-icons-round">play_arrow</span></div>
+        <div style="padding:24px;">
+            <h2 style="margin-bottom:20px;">Практики</h2>
+            <div class="small-card" style="margin-bottom:15px;" onclick="alert('Скоро будет доступно!')">
+                <div class="small-icon mint-icon"><span class="material-icons-round">self_improvement</span></div>
+                <div><h4>Осознанность</h4><span>5 минут</span></div>
             </div>
         </div>
     </div>
 
-    <!-- ЭКРАН 4: ДЫХАНИЕ -->
+    <!-- 5. ДЫХАНИЕ (CANVAS) -->
     <div id="game-screen" class="screen">
         <canvas id="breathCanvas"></canvas>
         <div class="game-ui-overlay">
@@ -406,49 +262,41 @@
         </div>
     </div>
 
-    <!-- ЭКРАН 5: ДНЕВНИК -->
+    <!-- 6. ДНЕВНИК -->
     <div id="music-screen" class="screen">
-        <div class="content-list">
-            <div id="diary-question-block">
-                <h2 class="section-title" style="margin-top:0; font-size:20px;">Как прошел день?</h2>
+        <div style="padding:24px; overflow-y:auto;">
+            <div id="diary-input-block">
+                <h2 style="margin-bottom:20px;">Как прошел день?</h2>
                 <div class="mood-selector">
-                    <button class="mood-btn mood-good" onclick="saveMood('good')">
-                        <span class="material-icons-round">sentiment_satisfied_alt</span>
-                        <h3>Хорошо</h3>
-                    </button>
-                    <button class="mood-btn mood-bad" onclick="saveMood('bad')">
-                        <span class="material-icons-round">sentiment_dissatisfied</span>
-                        <h3>Тяжело</h3>
-                    </button>
+                    <button class="mood-btn mood-good" onclick="saveMood('good')"><span class="material-icons-round" style="font-size:40px; margin-bottom:10px;">sentiment_satisfied_alt</span><h3>Хорошо</h3></button>
+                    <button class="mood-btn mood-bad" onclick="saveMood('bad')"><span class="material-icons-round" style="font-size:40px; margin-bottom:10px;">sentiment_dissatisfied</span><h3>Тяжело</h3></button>
                 </div>
             </div>
-            <div id="diary-summary-block" class="today-summary">
-                <span id="summary-icon" class="material-icons-round icon-lg">check_circle</span>
-                <h3 id="summary-title">День записан</h3>
-                <p>Спасибо, что отметили своё состояние.</p>
-            </div>
-            <h2 class="section-title">История</h2>
-            <div class="history-list" id="history-container"></div>
+            <h2 style="margin-bottom:15px; margin-top:30px;">История</h2>
+            <div id="history-container"></div>
         </div>
     </div>
 
-    <!-- ЭКРАН 6: ИГРА (ШАРИКИ) -->
+    <!-- 7. ИГРА ШАРИКИ -->
     <div id="balloon-game-screen" class="screen">
         <div class="game-ui-header">
-            <button id="back-btn-game" onclick="goBack()" style="background:var(--primary-main); border:none; border-radius:14px; width:44px; height:44px; box-shadow:var(--shadow-card); display:flex; align-items:center; justify-content:center;">
-                <span class="material-icons-round" style="color:white;">arrow_back</span>
-            </button>
+            <button id="back-btn-game" onclick="goBack()"><span class="material-icons-round">arrow_back</span></button>
             <div class="score-box" id="balloon-score">0</div>
         </div>
         <canvas id="balloon-game-canvas"></canvas>
     </div>
 
 <script>
+    // --- КОНФИГУРАЦИЯ ---
     const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzOq4mO0Dgx9PH9AzH8ozKOYcQ0CshNHldt51VyynuR1uJZ8ZW_x71KNhG-4QV6nPF8/exec";
     const tg = window.Telegram.WebApp;
-    tg.expand();
-    tg.BackButton.onClick(goBack);
+    tg.expand(); // Разворачиваем на весь экран
 
+    const userId = tg.initDataUnsafe?.user?.id || 'test_user_' + Math.floor(Math.random()*1000);
+    const userName = tg.initDataUnsafe?.user?.first_name || 'Друг';
+    document.getElementById('userNameDisplay').innerText = userName;
+
+    // --- НАВИГАЦИЯ ---
     const screens = {
         menu: document.getElementById('menu-screen'),
         chat: document.getElementById('chat-screen'),
@@ -462,262 +310,416 @@
     const header = document.getElementById('main-header');
     const pageTitle = document.getElementById('page-title');
 
-    // Элементы игры Дыхание
-    const breathLabel = document.getElementById('breathLabel');
-    const breathInstruction = document.getElementById('breathInstruction');
-    const playIcon = document.getElementById('playIcon');
-    const playText = document.getElementById('playText');
-    const breathStartBtn = document.getElementById('breathStartBtn');
-    
-    // ИЗОЛИРОВАННЫЙ КОНТЕКСТ ДЛЯ ДЫХАНИЯ
-    const breathCanvas = document.getElementById('breathCanvas'); 
-    const breathCtx = breathCanvas.getContext('2d'); 
-
-    const chatContainer = document.getElementById('chat-container');
-    const userInput = document.getElementById('userInput');
-    const sendBtn = document.getElementById('sendBtn');
-    const typingIndicator = document.getElementById('typing');
-    const userId = tg.initDataUnsafe?.user?.id || 'web_user_' + Math.floor(Math.random() * 1000);
-    const userName = tg.initDataUnsafe?.user?.first_name || 'Друг';
-
-    document.querySelector('.greeting-text h1').innerHTML = `Доброе утро,<br>${userName}`;
-
-    checkDailyStatus();
-    loadChatHistory();
-
-    function navigateTo(screenName, initialMessage = null) {
+    function navigateTo(screenName) {
+        // Скрываем все экраны
         Object.values(screens).forEach(el => el.classList.remove('active'));
+        
+        // Останавливаем активности других экранов
+        stopBalloonGame();
+        stopBreathingAnimationLoop();
+        resetSos();
+
+        // Показываем нужный
         screens[screenName].classList.add('active');
 
+        // Логика шапки и кнопки назад
         if (screenName === 'menu') {
-            header.style.display = 'none'; tg.BackButton.hide();
-            stopBreathingAnimationLoop();
-            stopBalloonGame(); 
-            checkDailyStatus();
+            header.style.display = 'none';
+            tg.BackButton.hide();
+        } else if (screenName === 'balloons') {
+            header.style.display = 'none'; // У игры своя шапка
+            initBalloonGame();
         } else {
-            if(screenName === 'balloons') {
-                header.style.display = 'none';
-                initBalloonGame();
-            } else {
-                header.style.display = 'flex'; tg.BackButton.show();
-            }
-            
-            if (screenName === 'chat') { 
-                pageTitle.innerText = 'Чат поддержки'; setTimeout(scrollToBottom, 100); 
-                if (initialMessage && initialMessage !== 'Поговорить') userInput.value = initialMessage;
-            }
-            else if (screenName === 'video') pageTitle.innerText = 'Медитации';
-            else if (screenName === 'music') { pageTitle.innerText = 'Дневник'; renderDiaryScreen(); }
-            else if (screenName === 'game') { pageTitle.innerText = 'Дыхание'; resizeBreathCanvas(); startBreathingAnimationLoop(); }
-            else if (screenName === 'sos') { pageTitle.innerText = 'Заземление'; resetSos(); }
+            header.style.display = 'flex';
+            tg.BackButton.show();
+            tg.BackButton.onClick(goBack);
         }
+
+        // Названия в шапке
+        const titles = {
+            chat: 'Чат', video: 'Медитации', music: 'Дневник', 
+            game: 'Дыхание', sos: 'Заземление'
+        };
+        if(titles[screenName]) pageTitle.innerText = titles[screenName];
+        
+        // Спец. инициализация
+        if (screenName === 'chat') { setTimeout(scrollToBottom, 200); }
+        if (screenName === 'game') { resizeBreathCanvas(); startBreathingAnimationLoop(); }
+        if (screenName === 'music') { renderDiary(); }
+        if (screenName === 'sos') { startSos(); }
     }
 
     function goBack() {
-        if(screens.game.classList.contains('active')) { resetBreathing(); }
+        if (screens.game.classList.contains('active')) resetBreathing();
         navigateTo('menu');
     }
 
-    // --- ЛОГИКА SOS ---
-    const sosSteps = [
-        { num: 5, title: 'Найди глазами', text: '5 вещей одного цвета' },
-        { num: 4, title: 'Почувствуй', text: '4 ощущения на коже' },
-        { num: 3, title: 'Услышь', text: '3 любых звука вокруг' },
-        { num: 2, title: 'Почувствуй', text: '2 запаха' },
-        { num: 1, title: 'Ощути', text: '1 вкус (вода или конфета)' }
-    ];
-    let currentSosIndex = 0;
-    function getSosSvg(stepNum) {
-        switch(stepNum) {
-            case 5: return `<svg class="sos-svg anim-eye" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>`;
-            case 4: return `<svg class="sos-svg anim-hand" viewBox="0 0 24 24"><path d="M21.99 13.06l-1.92-6.52c-.22-.76-.89-1.28-1.68-1.28H18V4c0-1.1-.9-2-2-2s-2 .9-2 2v8.94l-.3-.02-.1-.01c-.8 0-1.55.23-2.21.62L11 11.23V4c0-1.1-.9-2-2-2S7 2.9 7 4v10.5c0 2.21 1.79 4 4 4s4-1.79 4-4V5c0-.55.45-1 1-1s1 .45 1 1v9.5c0 .35.18.68.49.86.3.19.68.2.98.02.31-.18.49-.52.49-.88V6.52c0-.13.11-.24.23-.24.08 0 .15.04.19.11l2.43 8.26c.2.68.83 1.15 1.54 1.15.88 0 1.6-.72 1.6-1.6 0-.05-.01-.1-.01-.14z"/></svg>`;
-            case 3: return `<svg class="sos-svg" viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/><path class="sound-line-1" d="M16 11l2-3" stroke-width="2" stroke-linecap="round"/><path class="sound-line-2" d="M18 13l3-2" stroke-width="2" stroke-linecap="round"/><path class="sound-line-3" d="M17 15l2 1" stroke-width="2" stroke-linecap="round"/></svg>`;
-            case 2: return `<svg class="sos-svg" viewBox="0 0 24 24"><path d="M12 22c4.97 0 9-4.03 9-9-4.97 0-9-4.03-9-9-4.97 0-9 4.03-9 9 0 4.97 4.03 9 9 9z" fill="none" stroke="currentColor"/><path d="M12 13c.88 0 1.61.59 1.88 1.4.16.48.59.83 1.12.83.67 0 1.18-.55 1.18-1.22 0-1.57-2.18-2-2.18-4.01 0-1.12.85-2.03 1.94-2.18C15.42 7.73 15 7.42 15 7c0-.55.45-1 1-1s1 .45 1 1c0 .42-.42.73-1.06.82-1.63.22-2.94 1.64-2.94 3.36 0 1.42 1.68 1.93 1.68 2.83 0 .16-.16.22-.18.22-.05 0-.12-.04-.15-.14-.26-1.07-1.24-1.87-2.35-1.87s-2.09.79-2.35 1.87c-.03.1-.1.14-.15.14-.02 0-.18-.06-.18-.22 0-.9 1.68-1.41 1.68-2.83 0-1.72-1.31-3.14-2.94-3.36C8.42 7.73 8 7.42 8 7c0-.55.45-1 1-1s1 .45 1 1c0 .42-.42.73-.94.82C10.15 7.97 11 8.88 11 10c0 2.01-2.18 2.44-2.18 4.01 0 .67.51 1.22 1.18 1.22.53 0 .96-.35 1.12-.83.27-.81 1-1.4 1.88-1.4z"/><path class="scent-line" d="M12 6V2"/></svg>`;
-            case 1: return `<svg class="sos-svg anim-candy" viewBox="0 0 24 24"><path d="M18 10.5c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5zm-6-2.25c-2.07 0-3.75 1.68-3.75 3.75s1.68 3.75 3.75 3.75 3.75-1.68 3.75-3.75-1.68-3.75-3.75-3.75zm0 6c-1.24 0-2.25-1.01-2.25-2.25S10.76 9.75 12 9.75 14.25 10.76 14.25 12 13.24 14.25 12 14.25zM6 10.5c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5z"/></svg>`;
+    // --- ЧАТ И ГОЛОСОВЫЕ ---
+    const chatContainer = document.getElementById('chat-container');
+    const userInput = document.getElementById('userInput');
+    const sendBtn = document.getElementById('sendBtn');
+    const micBtn = document.getElementById('micBtn');
+    const typingIndicator = document.getElementById('typing');
+
+    let mediaRecorder = null;
+    let audioChunks = [];
+    let isRecording = false;
+
+    // Инициализация истории
+    loadChatHistory();
+
+    function scrollToBottom() { chatContainer.scrollTop = chatContainer.scrollHeight; }
+
+    function addMessage(text, isUser) {
+        const div = document.createElement('div');
+        div.className = `message ${isUser ? 'msg-user' : 'msg-bot'} msg-enter`;
+        div.innerHTML = text; // Разрешаем HTML для форматирования
+        chatContainer.insertBefore(div, typingIndicator);
+        scrollToBottom();
+    }
+
+    function showTyping(show) { 
+        typingIndicator.style.display = show ? 'block' : 'none'; 
+        scrollToBottom();
+    }
+
+    // 1. Отправка текста
+    function sendMessage() {
+        const text = userInput.value.trim();
+        if (!text) return;
+        
+        addMessage(text, true);
+        userInput.value = '';
+        sendBtn.disabled = true;
+        showTyping(true);
+
+        fetch(GOOGLE_SCRIPT_URL + '?act=api', {
+            method: 'POST',
+            body: JSON.stringify({ text: text, userId: userId })
+        })
+        .then(r => r.json())
+        .then(handleResponse)
+        .catch(handleError);
+    }
+
+    // 2. Логика микрофона (Toggle)
+    async function toggleRecording() {
+        if (!isRecording) {
+            // СТАРТ
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                mediaRecorder = new MediaRecorder(stream);
+                audioChunks = [];
+                mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
+                mediaRecorder.onstop = async () => {
+                    const blob = new Blob(audioChunks, { type: 'audio/webm' }); // Telegram любит WebM
+                    const base64 = await blobToBase64(blob);
+                    sendVoiceRequest(base64);
+                };
+                mediaRecorder.start();
+                isRecording = true;
+                micBtn.classList.add('recording');
+                if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
+            } catch (e) {
+                alert("Нет доступа к микрофону. Проверьте настройки.");
+            }
+        } else {
+            // СТОП
+            if (mediaRecorder) {
+                mediaRecorder.stop();
+                mediaRecorder.stream.getTracks().forEach(t => t.stop());
+            }
+            isRecording = false;
+            micBtn.classList.remove('recording');
+            if(tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
         }
     }
-    function resetSos() { currentSosIndex = 0; document.getElementById('sos-finish-area').style.display = 'none'; const card = document.getElementById('sos-card-wrapper'); card.style.display = 'flex'; card.className = 'sos-dynamic-card'; renderSosStep(true); }
-    function renderSosStep(isFirst = false) { const step = sosSteps[currentSosIndex]; const card = document.getElementById('sos-card-wrapper'); card.classList.remove('anim-exit'); void card.offsetWidth; card.classList.add('anim-enter'); card.innerHTML = `<div class="sos-group-1 fade-in-up delay-1 anim-breathe"><div class="sos-number">${step.num}</div><div class="sos-illustration-container">${getSosSvg(step.num)}</div></div><div class="sos-group-2 fade-in-up delay-2"><div class="sos-instruction">${step.title}</div><div class="sos-subtext">${step.text}</div></div><div class="sos-group-3 fade-in-up delay-3" style="width:100%"><button class="sos-next-btn" onclick="animateSosExit()">Я нашел</button></div>`; }
-    function animateSosExit() { if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('medium'); const card = document.getElementById('sos-card-wrapper'); card.classList.remove('anim-enter'); card.classList.add('anim-exit'); setTimeout(() => { if (currentSosIndex < sosSteps.length - 1) { currentSosIndex++; renderSosStep(); } else { card.style.display = 'none'; document.getElementById('sos-finish-area').style.display = 'flex'; if(tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success'); } }, 450); }
 
-    // --- DIARY LOGIC ---
-    function getTodayString() { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
-    function checkDailyStatus() { const h = JSON.parse(localStorage.getItem('mood_history') || '{}'); document.getElementById('diaryBadge').style.display = h[getTodayString()] ? 'none' : 'block'; }
-    function saveMood(s) { const h = JSON.parse(localStorage.getItem('mood_history') || '{}'); h[getTodayString()] = s; localStorage.setItem('mood_history', JSON.stringify(h)); if(tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success'); document.getElementById('diary-question-block').classList.add('fade-out-scale'); setTimeout(() => { renderDiaryScreen(true); checkDailyStatus(); }, 300); }
-    function renderDiaryScreen(anim) { const t = getTodayString(), h = JSON.parse(localStorage.getItem('mood_history') || '{}'), q = document.getElementById('diary-question-block'), s = document.getElementById('diary-summary-block'); q.classList.remove('fade-out-scale'); s.classList.remove('fade-in-scale'); if(h[t]) { q.style.display='none'; s.style.display='block'; if(anim) s.classList.add('fade-in-scale'); document.getElementById('summary-title').innerText = h[t]==='good'?'Хороший день':'Тяжелый день'; document.getElementById('summary-icon').innerText = h[t]==='good'?'sentiment_satisfied_alt':'sentiment_dissatisfied'; document.getElementById('summary-icon').style.color = h[t]==='good'?'var(--primary-main)':'var(--warm-text)'; } else { q.style.display='block'; s.style.display='none'; } const c = document.getElementById('history-container'); c.innerHTML=''; Object.keys(h).sort((a,b)=>new Date(b)-new Date(a)).forEach(d=>{ const div=document.createElement('div'); div.className='history-item'; div.innerHTML=`<span class="h-date">${d}</span><span class="h-status ${h[d]==='good'?'status-good':'status-bad'}">${h[d]==='good'?'Хорошо':'Тяжело'}</span>`; c.appendChild(div); }); }
+    // 3. Отправка голоса
+    function sendVoiceRequest(base64Audio) {
+        addMessage("🎤 <i>Отправка аудио...</i>", true);
+        showTyping(true);
+        sendBtn.disabled = true;
+        micBtn.disabled = true;
 
-    // --- CHAT LOGIC ---
-    function scrollToBottom() { chatContainer.scrollTop = chatContainer.scrollHeight; }
-    function addMessage(text, isUser = false) { const msgDiv = document.createElement('div'); msgDiv.classList.add('message'); if(isUser) msgDiv.classList.add('msg-user'); else msgDiv.classList.add('msg-bot'); msgDiv.classList.add('msg-enter'); msgDiv.innerHTML = text.replace(/\n/g, '<br>'); chatContainer.insertBefore(msgDiv, typingIndicator); scrollToBottom(); }
-    function showTyping(show) { typingIndicator.style.display = show ? 'block' : 'none'; scrollToBottom(); }
-    function loadChatHistory() { showTyping(true); fetch(GOOGLE_SCRIPT_URL + '?act=api', { method: 'POST', body: JSON.stringify({ userId: userId, action: 'load_history' }) }).then(r => r.json()).then(d => { showTyping(false); if (d.status === 'success') d.history.forEach(i => addMessage(i.parts[0].text, i.role === 'user')); }).catch(e => showTyping(false)); }
-    function sendMessage() { const text = userInput.value.trim(); if (!text) return; addMessage(text, true); userInput.value = ''; sendBtn.disabled = true; showTyping(true); userInput.blur(); fetch(GOOGLE_SCRIPT_URL + '?act=api', { method: 'POST', body: JSON.stringify({ text: text, userId: userId }) }).then(r => r.json()).then(d => { showTyping(false); sendBtn.disabled = false; if (d.status === 'success') { addMessage(d.text, false); if(d.audio) playAudioResponse(d.audio); } }).catch(e => { showTyping(false); sendBtn.disabled = false; }); }
-    sendBtn.addEventListener('click', sendMessage); userInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); sendMessage(); } });
+        fetch(GOOGLE_SCRIPT_URL + '?act=api', {
+            method: 'POST',
+            body: JSON.stringify({ audio: base64Audio, userId: userId, text: '' })
+        })
+        .then(r => r.json())
+        .then(handleResponse)
+        .catch(handleError);
+    }
 
-    // --- BALLOON GAME LOGIC ---
-    let balloonCanvas, bCtx, balloons = [], confetti = [], balloonLoopId, score = 0;
+    // Обработка ответа от сервера
+    function handleResponse(data) {
+        showTyping(false);
+        sendBtn.disabled = false;
+        micBtn.disabled = false;
+
+        if (data.status === 'success') {
+            addMessage(data.text, false);
+            if (data.audio) playAudioResponse(data.audio);
+        } else {
+            addMessage("⚠️ Ошибка: " + data.text, false);
+        }
+    }
+
+    function handleError(e) {
+        showTyping(false);
+        sendBtn.disabled = false;
+        micBtn.disabled = false;
+        console.error(e);
+        addMessage("⚠️ Ошибка сети", false);
+    }
+
+    function loadChatHistory() {
+        fetch(GOOGLE_SCRIPT_URL + '?act=api', {
+            method: 'POST', body: JSON.stringify({ userId: userId, action: 'load_history' })
+        })
+        .then(r => r.json())
+        .then(d => {
+            if (d.status === 'success') {
+                d.history.forEach(msg => {
+                    // Пропускаем системные промпты, если они случайно попали
+                    if (msg.role !== 'system') addMessage(msg.parts[0].text, msg.role === 'user');
+                });
+            }
+        });
+    }
+
+    // --- АУДИО ПЛЕЕР (ИСПРАВЛЕННЫЙ) ---
+    function playAudioResponse(base64) {
+        if (!base64) return;
+        try {
+            const audio = new Audio("data:audio/mp3;base64," + base64);
+            
+            // Иконка динамика к последнему сообщению
+            const msgs = document.querySelectorAll('.msg-bot');
+            const lastMsg = msgs[msgs.length - 1];
+            let icon = null;
+
+            if (lastMsg) {
+                icon = document.createElement('span');
+                icon.className = 'material-icons-round';
+                icon.innerText = 'volume_up';
+                icon.style.cssText = "margin-left:8px; vertical-align:middle; color:#4DB6AC; font-size:20px;";
+                // Анимация пульсации
+                icon.animate([{opacity:0.5, transform:'scale(0.9)'}, {opacity:1, transform:'scale(1.1)'}, {opacity:0.5, transform:'scale(0.9)'}], {duration:1000, iterations:Infinity});
+                lastMsg.appendChild(icon);
+            }
+
+            audio.play().catch(e => console.log("Autoplay blocked"));
+            audio.onended = () => { if(icon) icon.remove(); };
+        } catch (e) { console.error(e); }
+    }
+
+    function blobToBase64(blob) {
+        return new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.onloadend = () => resolve(reader.result);
+            reader.readAsDataURL(blob);
+        });
+    }
+
+    // Привязка событий чата
+    sendBtn.addEventListener('click', sendMessage);
+    micBtn.addEventListener('click', toggleRecording);
+    userInput.addEventListener('keydown', (e) => { if(e.key==='Enter') sendMessage(); });
+
+    // --- ИГРА ДЫХАНИЕ (Canvas) ---
+    const breathCanvas = document.getElementById('breathCanvas');
+    const breathCtx = breathCanvas.getContext('2d');
+    const breathLabel = document.getElementById('breathLabel');
+    const breathInstr = document.getElementById('breathInstruction');
+    const playIcon = document.getElementById('playIcon');
+    const playText = document.getElementById('playText');
+    
+    let breathAnimId, breathParticles = [], isBreathing = false, breathTimer = 0, breathInterval;
+    let currentR = 110, targetR = 110;
+    
+    class Particle {
+        constructor() {
+            this.angle = Math.random() * Math.PI * 2;
+            this.r = 110 + Math.random() * 20;
+            this.size = Math.random() * 3 + 1;
+            this.speed = Math.random() * 0.02 + 0.005;
+            this.color = `rgba(100, 181, 246, ${Math.random()*0.5})`;
+        }
+        update(radius) {
+            this.angle += this.speed;
+            let targetDist = radius + Math.sin(Date.now()/500)*10;
+            this.r += (targetDist - this.r) * 0.05;
+            this.x = breathCanvas.width/2 + Math.cos(this.angle)*this.r;
+            this.y = (breathCanvas.height/2 - 60) + Math.sin(this.angle)*this.r;
+        }
+        draw() {
+            breathCtx.fillStyle = this.color;
+            breathCtx.beginPath(); breathCtx.arc(this.x, this.y, this.size, 0, Math.PI*2); breathCtx.fill();
+        }
+    }
+
+    function resizeBreathCanvas() {
+        breathCanvas.width = window.innerWidth; breathCanvas.height = window.innerHeight;
+        breathParticles = Array.from({length:150}, () => new Particle());
+    }
+    
+    function startBreathingAnimationLoop() {
+        if(!breathAnimId) animateBreath();
+    }
+    function stopBreathingAnimationLoop() {
+        cancelAnimationFrame(breathAnimId); breathAnimId = null;
+    }
+    function animateBreath() {
+        breathCtx.clearRect(0,0,breathCanvas.width, breathCanvas.height);
+        currentR += (targetR - currentR) * 0.02;
+        breathParticles.forEach(p => { p.update(currentR); p.draw(); });
+        breathAnimId = requestAnimationFrame(animateBreath);
+    }
+    
+    function toggleBreathing() {
+        if (isBreathing) {
+            clearInterval(breathInterval); isBreathing = false;
+            playIcon.innerText = 'play_arrow'; playText.innerText = 'Продолжить';
+        } else {
+            isBreathing = true;
+            playIcon.innerText = 'pause'; playText.innerText = 'Пауза';
+            breathInterval = setInterval(() => {
+                breathTimer++;
+                const t = breathTimer % 19; // 4+7+8
+                if (t < 4) { targetR = 180; breathLabel.innerText = "ВДОХ"; breathInstr.innerText = "Глубокий вдох носом"; }
+                else if (t < 11) { targetR = 190; breathLabel.innerText = "ПАУЗА"; breathInstr.innerText = "Задержите дыхание"; }
+                else { targetR = 110; breathLabel.innerText = "ВЫДОХ"; breathInstr.innerText = "Медленный выдох ртом"; }
+            }, 1000);
+        }
+    }
+    function resetBreathing() {
+        clearInterval(breathInterval); isBreathing = false; breathTimer = 0; targetR = 110;
+        playIcon.innerText = 'play_arrow'; playText.innerText = 'Старт';
+        breathLabel.innerText = 'ДЫШИМ'; breathInstr.innerText = 'Нажми Старт';
+    }
+
+    // --- SOS (Заземление) ---
+    const sosSteps = [
+        { n: 5, t: 'Найди 5 вещей', d: 'Посмотри вокруг и назови 5 предметов одного цвета.', svg: '<path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>' },
+        { n: 4, t: 'Почувствуй 4 вещи', d: 'Ткань одежды, стол, свои руки...', svg: '<path d="M21.99 13.06l-1.92-6.52c-.22-.76-.89-1.28-1.68-1.28H18V4c0-1.1-.9-2-2-2s-2 .9-2 2v8.94l-.3-.02-.1-.01c-.8 0-1.55.23-2.21.62L11 11.23V4c0-1.1-.9-2-2-2S7 2.9 7 4v10.5c0 2.21 1.79 4 4 4s4-1.79 4-4V5c0-.55.45-1 1-1s1 .45 1 1v9.5c0 .35.18.68.49.86.3.19.68.2.98.02.31-.18.49-.52.49-.88V6.52c0-.13.11-.24.23-.24.08 0 .15.04.19.11l2.43 8.26c.2.68.83 1.15 1.54 1.15.88 0 1.6-.72 1.6-1.6 0-.05-.01-.1-.01-.14z"/>' },
+        { n: 3, t: 'Услышь 3 звука', d: 'Шум улицы, компьютер, свое дыхание.', svg: '<path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>' },
+        { n: 2, t: 'Почувствуй 2 запаха', d: 'Или вспомни любимые ароматы.', svg: '<path d="M12 22c4.97 0 9-4.03 9-9-4.97 0-9-4.03-9-9-4.97 0-9 4.03-9 9 0 4.97 4.03 9 9 9z" fill="none" stroke="currentColor"/><path d="M12 13c.88 0 1.61.59 1.88 1.4.16.48.59.83 1.12.83.67 0 1.18-.55 1.18-1.22 0-1.57-2.18-2-2.18-4.01 0-1.12.85-2.03 1.94-2.18C15.42 7.73 15 7.42 15 7c0-.55.45-1 1-1s1 .45 1 1c0 .42-.42.73-1.06.82-1.63.22-2.94 1.64-2.94 3.36 0 1.42 1.68 1.93 1.68 2.83 0 .16-.16.22-.18.22-.05 0-.12-.04-.15-.14-.26-1.07-1.24-1.87-2.35-1.87s-2.09.79-2.35 1.87c-.03.1-.1.14-.15.14-.02 0-.18-.06-.18-.22 0-.9 1.68-1.41 1.68-2.83 0-1.72-1.31-3.14-2.94-3.36C8.42 7.73 8 7.42 8 7c0-.55.45-1 1-1s1 .45 1 1c0 .42-.42.73-.94.82C10.15 7.97 11 8.88 11 10c0 2.01-2.18 2.44-2.18 4.01 0 .67.51 1.22 1.18 1.22.53 0 .96-.35 1.12-.83.27-.81 1-1.4 1.88-1.4z"/>' },
+        { n: 1, t: 'Почувствуй 1 вкус', d: 'Выпей воды или съешь конфету.', svg: '<path d="M18 10.5c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5zm-6-2.25c-2.07 0-3.75 1.68-3.75 3.75s1.68 3.75 3.75 3.75 3.75-1.68 3.75-3.75-1.68-3.75-3.75-3.75zm0 6c-1.24 0-2.25-1.01-2.25-2.25S10.76 9.75 12 9.75 14.25 10.76 14.25 12 13.24 14.25 12 14.25zM6 10.5c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5z"/>' }
+    ];
+    let sosIdx = 0;
+    
+    function resetSos() {
+        sosIdx = 0;
+        document.getElementById('sos-card-wrapper').style.display = 'flex';
+        document.getElementById('sos-finish-area').style.display = 'none';
+    }
+    function startSos() { renderSosStep(); }
+    function renderSosStep() {
+        const s = sosSteps[sosIdx];
+        const card = document.getElementById('sos-card-wrapper');
+        card.innerHTML = `
+            <div class="sos-number">${s.n}</div>
+            <svg class="sos-svg anim-eye" viewBox="0 0 24 24">${s.svg}</svg>
+            <div class="sos-instruction">${s.t}</div>
+            <p style="color:var(--text-body); margin-bottom:30px;">${s.d}</p>
+            <button class="sos-next-btn" onclick="nextSos()">Готово</button>
+        `;
+    }
+    function nextSos() {
+        if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
+        if (sosIdx < sosSteps.length - 1) { sosIdx++; renderSosStep(); }
+        else {
+            document.getElementById('sos-card-wrapper').style.display = 'none';
+            document.getElementById('sos-finish-area').style.display = 'flex';
+            if(tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+        }
+    }
+
+    // --- ДНЕВНИК ---
+    function saveMood(mood) {
+        const hist = JSON.parse(localStorage.getItem('mood_history') || '{}');
+        const date = new Date().toLocaleDateString();
+        hist[date] = mood;
+        localStorage.setItem('mood_history', JSON.stringify(hist));
+        if(tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+        renderDiary();
+    }
+    function renderDiary() {
+        const hist = JSON.parse(localStorage.getItem('mood_history') || '{}');
+        const date = new Date().toLocaleDateString();
+        const container = document.getElementById('history-container');
+        container.innerHTML = '';
+        
+        // Если сегодня уже отметили - скрываем ввод
+        if(hist[date]) document.getElementById('diary-input-block').style.display = 'none';
+        else document.getElementById('diary-input-block').style.display = 'block';
+
+        Object.keys(hist).reverse().forEach(d => {
+            const m = hist[d];
+            const div = document.createElement('div');
+            div.className = 'history-item';
+            div.innerHTML = `
+                <span style="font-weight:600; color:var(--text-header);">${d}</span>
+                <span style="padding:4px 10px; border-radius:8px; font-size:13px; font-weight:600; background:${m==='good'?'var(--primary-soft)':'var(--warm-bg)'}; color:${m==='good'?'var(--primary-text)':'var(--warm-text)'};">
+                    ${m==='good'?'Хорошо':'Тяжело'}
+                </span>
+            `;
+            container.appendChild(div);
+        });
+    }
+
+    // --- ШАРИКИ (ИГРА) ---
+    const ballCanvas = document.getElementById('balloon-game-canvas');
+    const bCtx = ballCanvas.getContext('2d');
+    let balloons = [], bLoopId, bScore = 0;
     
     function initBalloonGame() {
-        balloonCanvas = document.getElementById('balloon-game-canvas');
-        bCtx = balloonCanvas.getContext('2d');
-        resizeBalloonCanvas();
-        window.addEventListener('resize', resizeBalloonCanvas);
-        balloonCanvas.addEventListener('touchstart', handleBalloonTap);
-        balloonCanvas.addEventListener('mousedown', handleBalloonTap);
-        score = 0; document.getElementById('balloon-score').innerText = score;
-        balloons = []; confetti = [];
-        startBalloonLoop();
+        ballCanvas.width = window.innerWidth; ballCanvas.height = window.innerHeight;
+        balloons = []; bScore = 0; document.getElementById('balloon-score').innerText = 0;
+        ballCanvas.addEventListener('touchstart', popBalloon);
+        ballCanvas.addEventListener('mousedown', popBalloon);
+        runBalloonLoop();
     }
-    function stopBalloonGame() { cancelAnimationFrame(balloonLoopId); window.removeEventListener('resize', resizeBalloonCanvas); }
-    function resizeBalloonCanvas() { balloonCanvas.width = window.innerWidth; balloonCanvas.height = window.innerHeight; }
-    class Balloon { constructor() { this.radius = 35; this.x = Math.random() * (balloonCanvas.width - this.radius * 2) + this.radius; this.y = balloonCanvas.height + this.radius; this.speed = Math.random() * 2 + 3; this.wobble = Math.random() * Math.PI * 2; this.color = 'white'; } update() { this.y -= this.speed; this.x += Math.sin(this.wobble) * 1; this.wobble += 0.05; } draw() { bCtx.beginPath(); bCtx.arc(this.x, this.y, this.radius, 0, Math.PI * 2); bCtx.fillStyle = this.color; bCtx.fill(); bCtx.beginPath(); bCtx.arc(this.x - 10, this.y - 10, 5, 0, Math.PI * 2); bCtx.fillStyle = 'rgba(255,255,255,0.8)'; bCtx.fill(); bCtx.beginPath(); bCtx.moveTo(this.x, this.y + this.radius); bCtx.quadraticCurveTo(this.x + Math.sin(this.wobble)*10, this.y + this.radius + 20, this.x, this.y + this.radius + 40); bCtx.strokeStyle = 'rgba(0,0,0,0.2)'; bCtx.stroke(); } }
-    class ConfettiParticle { constructor(x, y) { this.x = x; this.y = y; this.angle = Math.random() * Math.PI * 2; this.velocity = Math.random() * 5 + 2; this.size = Math.random() * 5 + 2; this.color = ['#FFD700', '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4'][Math.floor(Math.random() * 5)]; this.life = 1.0; } update() { this.x += Math.cos(this.angle) * this.velocity; this.y += Math.sin(this.angle) * this.velocity; this.life -= 0.03; } draw() { bCtx.globalAlpha = this.life; bCtx.fillStyle = this.color; bCtx.fillRect(this.x, this.y, this.size, this.size); bCtx.globalAlpha = 1.0; } }
-    function handleBalloonTap(e) { e.preventDefault(); const rect = balloonCanvas.getBoundingClientRect(); const clientX = e.touches ? e.touches[0].clientX : e.clientX; const clientY = e.touches ? e.touches[0].clientY : e.clientY; const x = clientX - rect.left; const y = clientY - rect.top; for (let i = balloons.length - 1; i >= 0; i--) { const b = balloons[i]; const dist = Math.sqrt((x - b.x)**2 + (y - b.y)**2); if (dist < b.radius + 15) { for(let k=0; k<15; k++) confetti.push(new ConfettiParticle(b.x, b.y)); balloons.splice(i, 1); score++; document.getElementById('balloon-score').innerText = score; if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light'); return; } } }
-    function startBalloonLoop() { bCtx.clearRect(0, 0, balloonCanvas.width, balloonCanvas.height); if (Math.random() < 0.03) balloons.push(new Balloon()); balloons.forEach((b, i) => { b.update(); b.draw(); if (b.y + b.radius < 0) balloons.splice(i, 1); }); confetti.forEach((c, i) => { c.update(); c.draw(); if (c.life <= 0) confetti.splice(i, 1); }); balloonLoopId = requestAnimationFrame(startBalloonLoop); }
-
-    // --- BREATHING GAME (FIXED) ---
-    // ISOLATED VARIABLES
-    let breathAnimId; 
-    let breathParticles = []; 
-    let breathPhase = 'ready'; 
-    let breathInterval = null; 
-    let breathTimer = 0; 
-    let isBreathing = false;
-    let currentRadius = 110;
-    let targetRadius = 110;
-    let baseRadius = 110;
-
-    const INHALE_TIME = 4; const HOLD_TIME = 7; const EXHALE_TIME = 8;
-
-    function resizeBreathCanvas() { 
-        breathCanvas.width = window.innerWidth; 
-        breathCanvas.height = window.innerHeight; 
-        initBreathParticles(); 
+    function stopBalloonGame() {
+        cancelAnimationFrame(bLoopId); bLoopId = null;
+        ballCanvas.removeEventListener('touchstart', popBalloon);
+        ballCanvas.removeEventListener('mousedown', popBalloon);
     }
-    window.addEventListener('resize', resizeBreathCanvas);
-
-    class BreathParticle { 
-        constructor() { 
-            this.angle = Math.random() * Math.PI * 2; 
-            this.distance = baseRadius + Math.random() * 20; 
-            this.size = Math.random() * 3 + 1; 
-            this.speed = Math.random() * 0.02 + 0.005; 
-            this.color = `rgba(100, 181, 246, ${Math.random() * 0.4 + 0.1})`; 
-            this.wobble = Math.random() * 20; 
-        } 
-        update(radius, phase) { 
-            this.angle += this.speed; 
-            let targetDist = radius + Math.sin(Date.now() / 500 + this.wobble) * 10; 
-            if (phase === 'inhale') { targetDist += Math.random() * 10; this.color = `rgba(100, 181, 246, ${Math.random() * 0.6 + 0.3})`; } 
-            else if (phase === 'hold') { targetDist += Math.random() * 2; this.color = `rgba(21, 101, 192, ${Math.random() * 0.5 + 0.3})`; } 
-            else if (phase === 'exhale') { this.color = `rgba(100, 181, 246, ${Math.random() * 0.3 + 0.1})`; } 
-            this.distance += (targetDist - this.distance) * 0.05; 
-            const cx = breathCanvas.width / 2; 
-            const cy = (breathCanvas.height / 2) - 60; 
-            this.x = cx + Math.cos(this.angle) * this.distance; 
-            this.y = cy + Math.sin(this.angle) * this.distance; 
-        } 
-        draw() { 
-            breathCtx.fillStyle = this.color; 
-            breathCtx.beginPath(); 
-            breathCtx.arc(this.x, this.y, this.size, 0, Math.PI * 2); 
-            breathCtx.fill(); 
-        } 
-    }
-
-    function initBreathParticles() { 
-        breathParticles = []; 
-        for (let i = 0; i < 150; i++) breathParticles.push(new BreathParticle()); 
-    }
-
-    function startBreathingAnimationLoop() { 
-        if (!breathAnimId) animateBreath(); 
-    }
-
-    function stopBreathingAnimationLoop() { 
-        cancelAnimationFrame(breathAnimId); 
-        breathAnimId = null; 
-    }
-
-    function animateBreath() { 
-        breathCtx.clearRect(0, 0, breathCanvas.width, breathCanvas.height); 
-        currentRadius += (targetRadius - currentRadius) * 0.02; 
-        breathParticles.forEach(p => { 
-            p.update(currentRadius, breathPhase); 
-            p.draw(); 
-        }); 
-        breathAnimId = requestAnimationFrame(animateBreath); 
-    }
-
-    function toggleBreathing() { if (isBreathing) stopBreathing(); else startBreathing(); }
-    function startBreathing() { isBreathing = true; playIcon.innerText = 'pause'; playText.innerText = 'Пауза'; breathInterval = setInterval(() => { breathTimer++; updateGameLogic(); }, 1000); updateGameLogic(); }
-    function stopBreathing() { isBreathing = false; clearInterval(breathInterval); breathInterval = null; playIcon.innerText = 'play_arrow'; playText.innerText = 'Продолжить'; }
-    function resetBreathing() { stopBreathing(); breathTimer = 0; breathPhase = 'ready'; targetRadius = 110; playText.innerText = 'Старт'; playIcon.innerText = 'play_arrow'; breathLabel.innerText = 'ДЫШИМ'; breathInstruction.innerText = 'Нажми Старт'; }
-    function updateGameLogic() { const cycleTime = breathTimer % (INHALE_TIME + HOLD_TIME + EXHALE_TIME); if (cycleTime < INHALE_TIME) { breathPhase = 'inhale'; targetRadius = 180; breathLabel.innerText = 'ВДОХ'; breathInstruction.innerText = 'Спокойный вдох...'; } else if (cycleTime < INHALE_TIME + HOLD_TIME) { breathPhase = 'hold'; targetRadius = 190; breathLabel.innerText = 'ПАУЗА'; breathInstruction.innerText = 'Задержите...'; } else { breathPhase = 'exhale'; targetRadius = 110; breathLabel.innerText = 'ВЫДОХ'; breathInstruction.innerText = 'Медленный выдох...'; } }
-
-    // --- OTHER ---
-    function playMockAudio(element) { document.querySelectorAll('.play-btn-container').forEach(el => { el.innerHTML = '<span class="material-icons-round">play_arrow</span>'; }); const container = element.querySelector('.play-btn-container'); container.innerHTML = `<div class="equalizer"><div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div></div>`; if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light'); }
-    function sendVoiceMessage() { /* ... */ } 
-    // --- ФУНКЦИЯ ВОСПРОИЗВЕДЕНИЯ АУДИО ---
-function playAudioResponse(base64) {
-    if (!base64) return;
-
-    try {
-        // 1. Формируем источник аудио для браузера
-        // OpenAI TTS возвращает mp3. Добавляем заголовок data URI.
-        const audioSrc = "data:audio/mp3;base64," + base64;
-        const audio = new Audio(audioSrc);
-
-        // 2. Визуальная магия: добавим пульсирующую иконку к последнему сообщению бота
-        // Ищем последнее сообщение бота в чате
-        const messages = document.querySelectorAll('.msg-bot');
-        const lastMsg = messages[messages.length - 1];
-        let indicator = null;
-
-        if (lastMsg) {
-            // Создаем контейнер для иконки
-            indicator = document.createElement('span');
-            indicator.className = 'material-icons-round';
-            // Стили прямо здесь, чтобы не лезть в CSS
-            indicator.style.marginLeft = '10px';
-            indicator.style.verticalAlign = 'middle';
-            indicator.style.fontSize = '20px';
-            indicator.style.color = '#4DB6AC'; // Цвет мяты (var(--primary-main))
-            indicator.innerText = 'volume_up';
-            
-            // Добавляем простую анимацию пульсации
-            indicator.animate([
-                { opacity: 0.5, transform: 'scale(0.9)' },
-                { opacity: 1, transform: 'scale(1.1)' },
-                { opacity: 0.5, transform: 'scale(0.9)' }
-            ], {
-                duration: 1500,
-                iterations: Infinity
-            });
-
-            lastMsg.appendChild(indicator);
-        }
-
-        // 3. Запускаем воспроизведение
-        audio.play().catch(e => {
-            console.error("Автозапуск аудио заблокирован браузером:", e);
-            if (indicator) indicator.innerText = 'volume_off'; // Меняем иконку, если ошибка
+    function runBalloonLoop() {
+        bCtx.clearRect(0,0,ballCanvas.width,ballCanvas.height);
+        if(Math.random()<0.03) balloons.push({
+            x: Math.random()*(ballCanvas.width-60)+30, y: ballCanvas.height+40,
+            r: 30, spd: Math.random()*2+2, col: `hsl(${Math.random()*360},70%,60%)`
         });
-
-        // 4. Уборка после окончания
-        audio.onended = function() {
-            if (indicator && indicator.parentNode) {
-                // Плавное исчезновение иконки
-                indicator.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 300 }).onfinish = () => {
-                    if (indicator.parentNode) indicator.parentNode.removeChild(indicator);
-                };
-            }
-        };
-
-    } catch (err) {
-        console.error("Ошибка в playAudioResponse:", err);
+        
+        balloons.forEach((b,i) => {
+            b.y -= b.spd;
+            bCtx.beginPath(); bCtx.arc(b.x,b.y,b.r,0,Math.PI*2); bCtx.fillStyle=b.col; bCtx.fill();
+            // Блик
+            bCtx.beginPath(); bCtx.arc(b.x-10,b.y-10,5,0,Math.PI*2); bCtx.fillStyle='rgba(255,255,255,0.5)'; bCtx.fill();
+            // Веревка
+            bCtx.beginPath(); bCtx.moveTo(b.x,b.y+b.r); bCtx.lineTo(b.x,b.y+b.r+30); bCtx.stroke();
+            if(b.y < -50) balloons.splice(i,1);
+        });
+        bLoopId = requestAnimationFrame(runBalloonLoop);
     }
-}
+    function popBalloon(e) {
+        e.preventDefault();
+        const rect = ballCanvas.getBoundingClientRect();
+        const tx = (e.touches?e.touches[0].clientX:e.clientX) - rect.left;
+        const ty = (e.touches?e.touches[0].clientY:e.clientY) - rect.top;
+        
+        balloons.forEach((b,i) => {
+            const dist = Math.sqrt((tx-b.x)**2 + (ty-b.y)**2);
+            if(dist < b.r + 10) {
+                balloons.splice(i,1); bScore++; 
+                document.getElementById('balloon-score').innerText = bScore;
+                if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
+            }
+        });
+    }
+
 </script>
 </body>
 </html>
