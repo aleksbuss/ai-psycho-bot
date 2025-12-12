@@ -658,7 +658,66 @@
     // --- OTHER ---
     function playMockAudio(element) { document.querySelectorAll('.play-btn-container').forEach(el => { el.innerHTML = '<span class="material-icons-round">play_arrow</span>'; }); const container = element.querySelector('.play-btn-container'); container.innerHTML = `<div class="equalizer"><div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div></div>`; if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light'); }
     function sendVoiceMessage() { /* ... */ } 
-    function playAudioResponse(base64) { /* ... */ }
+    // --- ФУНКЦИЯ ВОСПРОИЗВЕДЕНИЯ АУДИО ---
+function playAudioResponse(base64) {
+    if (!base64) return;
+
+    try {
+        // 1. Формируем источник аудио для браузера
+        // OpenAI TTS возвращает mp3. Добавляем заголовок data URI.
+        const audioSrc = "data:audio/mp3;base64," + base64;
+        const audio = new Audio(audioSrc);
+
+        // 2. Визуальная магия: добавим пульсирующую иконку к последнему сообщению бота
+        // Ищем последнее сообщение бота в чате
+        const messages = document.querySelectorAll('.msg-bot');
+        const lastMsg = messages[messages.length - 1];
+        let indicator = null;
+
+        if (lastMsg) {
+            // Создаем контейнер для иконки
+            indicator = document.createElement('span');
+            indicator.className = 'material-icons-round';
+            // Стили прямо здесь, чтобы не лезть в CSS
+            indicator.style.marginLeft = '10px';
+            indicator.style.verticalAlign = 'middle';
+            indicator.style.fontSize = '20px';
+            indicator.style.color = '#4DB6AC'; // Цвет мяты (var(--primary-main))
+            indicator.innerText = 'volume_up';
+            
+            // Добавляем простую анимацию пульсации
+            indicator.animate([
+                { opacity: 0.5, transform: 'scale(0.9)' },
+                { opacity: 1, transform: 'scale(1.1)' },
+                { opacity: 0.5, transform: 'scale(0.9)' }
+            ], {
+                duration: 1500,
+                iterations: Infinity
+            });
+
+            lastMsg.appendChild(indicator);
+        }
+
+        // 3. Запускаем воспроизведение
+        audio.play().catch(e => {
+            console.error("Автозапуск аудио заблокирован браузером:", e);
+            if (indicator) indicator.innerText = 'volume_off'; // Меняем иконку, если ошибка
+        });
+
+        // 4. Уборка после окончания
+        audio.onended = function() {
+            if (indicator && indicator.parentNode) {
+                // Плавное исчезновение иконки
+                indicator.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 300 }).onfinish = () => {
+                    if (indicator.parentNode) indicator.parentNode.removeChild(indicator);
+                };
+            }
+        };
+
+    } catch (err) {
+        console.error("Ошибка в playAudioResponse:", err);
+    }
+}
 </script>
 </body>
 </html>
