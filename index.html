@@ -334,7 +334,7 @@
 
     function navigateTo(screenName) {
         Object.values(screens).forEach(el => el.classList.remove('active'));
-        stopBalloonGame(); // Обязательно останавливаем игру!
+        stopBalloonGame();
         stopBreathingAnimationLoop();
         resetSos();
         screens[screenName].classList.add('active');
@@ -499,11 +499,11 @@
     function saveMood(mood) { const h = JSON.parse(localStorage.getItem('mood_history')||'{}'); h[new Date().toLocaleDateString()] = mood; localStorage.setItem('mood_history', JSON.stringify(h)); if(tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success'); renderDiary(); }
     function renderDiary() { const h = JSON.parse(localStorage.getItem('mood_history')||'{}'), d = new Date().toLocaleDateString(), c = document.getElementById('history-container'); c.innerHTML=''; if(h[d]) document.getElementById('diary-input-block').style.display='none'; else document.getElementById('diary-input-block').style.display='block'; Object.keys(h).reverse().forEach(k => { const m = h[k]; c.innerHTML += `<div class="history-item"><span style="font-weight:600; color:var(--text-header);">${k}</span><span style="padding:4px 10px; border-radius:8px; font-size:13px; font-weight:600; background:${m==='good'?'var(--primary-soft)':'var(--warm-bg)'}; color:${m==='good'?'var(--primary-text)':'var(--warm-text)'};">${m==='good'?'Хорошо':'Тяжело'}</span></div>`; }); }
 
-    // --- ИГРА ШАРИКИ (ФИНАЛЬНАЯ ОПТИМИЗАЦИЯ) ---
+    // --- ИГРА ШАРИКИ (ФИНАЛЬНАЯ - OBJECT POOL) ---
     const ballCanvas = document.getElementById('balloon-game-canvas');
     const bCtx = ballCanvas.getContext('2d');
     
-    // КЭШИРОВАНИЕ (ВАЖНО!)
+    // 1. КЭШИРУЕМ СПРАЙТЫ
     const cachedTarget = document.createElement('canvas');
     const cachedDummy = document.createElement('canvas');
     const balloonSize = 80; 
@@ -529,70 +529,82 @@
     preDrawBalloon(cachedTarget.getContext('2d'), 'target');
     preDrawBalloon(cachedDummy.getContext('2d'), 'dummy');
 
-    let balloons = [], bLoopId, bScore = 0;
+    // 2. ОБЪЕКТНЫЙ ПУЛ (НИКАКИХ NEW и SPLICE!)
+    const MAX_BALLOONS = 50;
+    const pool = new Array(MAX_BALLOONS).fill(null).map(() => ({
+        active: false,
+        x: 0, y: 0,
+        baseSpeed: 0,
+        wobble: 0,
+        type: 'dummy'
+    }));
+
+    let bLoopId, bScore = 0;
     let gameStartTime = 0;
-    let isGameRunning = false; // Kill switch
+    let isGameRunning = false;
 
     function initBalloonGame() {
         ballCanvas.width = window.innerWidth; ballCanvas.height = window.innerHeight;
-        balloons = []; bScore = 0; document.getElementById('balloon-score').innerText = 0;
+        // Сбрасываем пул
+        pool.forEach(b => b.active = false);
+        bScore = 0; document.getElementById('balloon-score').innerText = 0;
+        
         ballCanvas.addEventListener('touchstart', popBalloon); ballCanvas.addEventListener('mousedown', popBalloon);
         gameStartTime = Date.now();
-        isGameRunning = true; // Запускаем флаг
+        isGameRunning = true;
         requestAnimationFrame(runBalloonLoop);
     }
 
     function stopBalloonGame() {
-        isGameRunning = false; // ОСТАНАВЛИВАЕМ
+        isGameRunning = false;
         ballCanvas.removeEventListener('touchstart', popBalloon); ballCanvas.removeEventListener('mousedown', popBalloon);
     }
 
-    // --- ЛИМИТЕР FPS (40 кадров/сек) ---
-    let lastTime = 0;
-    const fpsInterval = 1000 / 40; // 25ms на кадр
+    function spawnBalloon() {
+        // Ищем первый неактивный шарик
+        const b = pool.find(p => !p.active);
+        if (!b) return; // Пул полон, пропускаем
 
-    function runBalloonLoop(timestamp) {
-        if (!isGameRunning) return; // Если игра остановлена, выходим СРАЗУ
-
-        requestAnimationFrame(runBalloonLoop);
-
-        // Проверяем время (дросселирование)
-        const elapsed = timestamp - lastTime;
-        if (elapsed < fpsInterval) return;
-        lastTime = timestamp - (elapsed % fpsInterval);
-
-        bCtx.clearRect(0,0,ballCanvas.width,ballCanvas.height);
+        const type = Math.random() < 0.2 ? 'target' : 'dummy';
+        const radius = 35;
         
-        // Лимит количества
-        if (balloons.length > 40) balloons.shift();
+        b.active = true;
+        b.x = Math.random() * (ballCanvas.width - 70) + 35;
+        b.y = ballCanvas.height + 50;
+        b.baseSpeed = Math.random() * 2 + 2;
+        b.wobble = Math.random() * Math.PI * 2;
+        b.type = type;
+    }
 
+    function runBalloonLoop() {
+        if (!isGameRunning) return;
+
+        bCtx.clearRect(0, 0, ballCanvas.width, ballCanvas.height);
+        
         const elapsedSeconds = (Date.now() - gameStartTime) / 1000;
         const level = Math.floor(elapsedSeconds / 30);
         const speedMultiplier = 1 + (level * 0.2); 
 
+        // Спавн (Шанс ~2%)
         if (Math.random() < 0.02) {
-            const type = Math.random() < 0.2 ? 'target' : 'dummy';
-            balloons.push({
-                x: Math.random() * (ballCanvas.width - 70) + 35, 
-                y: ballCanvas.height + 50,
-                baseSpeed: Math.random() * 2 + 2,
-                wobble: Math.random() * Math.PI * 2,
-                type: type
-            });
+            spawnBalloon();
         }
         
-        for (let i = balloons.length - 1; i >= 0; i--) {
-            let b = balloons[i];
+        // Рендер активных
+        for (let i = 0; i < MAX_BALLOONS; i++) {
+            const b = pool[i];
+            if (!b.active) continue;
+
             b.y -= b.baseSpeed * speedMultiplier;
             b.x += Math.sin(b.wobble) * 0.5; b.wobble += 0.05;
 
-            // PIXEL SNAPPING (Битовый сдвиг | 0 округляет до целого мгновенно)
-            // Это отключает суб-пиксельное сглаживание
             const img = b.type === 'target' ? cachedTarget : cachedDummy;
-            bCtx.drawImage(img, (b.x - 40) | 0, (b.y - 40) | 0);
+            bCtx.drawImage(img, (b.x - 40) | 0, (b.y - 40) | 0); // Pixel Snapping
 
-            if (b.y < -150) balloons.splice(i, 1);
+            if (b.y < -150) b.active = false; // "Удаляем" (возвращаем в пул)
         }
+        
+        requestAnimationFrame(runBalloonLoop);
     }
 
     function popBalloon(e) {
@@ -601,16 +613,19 @@
         const tx = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
         const ty = (e.touches ? e.touches[0].clientY : e.clientY) - rect.top;
         
-        for (let i = balloons.length - 1; i >= 0; i--) {
-            const b = balloons[i];
+        for (let i = 0; i < MAX_BALLOONS; i++) {
+            const b = pool[i];
+            if (!b.active) continue;
+
             const dist = Math.sqrt((tx - b.x)**2 + (ty - b.y)**2);
             if (dist < 45) { 
                 if (b.type === 'target') {
-                    balloons.splice(i, 1); bScore++;
+                    b.active = false; // "Лопаем"
+                    bScore++;
                     document.getElementById('balloon-score').innerText = bScore;
                     if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
                 }
-                break;
+                break; // Обработали клик
             }
         }
     }
