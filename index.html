@@ -151,7 +151,14 @@
         .sos-next-btn { width: 100%; padding: 18px; border-radius: 24px; border: none; background: var(--primary-main); color: white; font-size: 17px; font-weight: 700; cursor: pointer; margin-top: auto; }
 
         /* ШАРИКИ */
-        #balloon-game-screen { background-color: var(--primary-soft); position: relative; overflow: hidden; }
+        #balloon-game-screen { 
+            background-color: var(--primary-soft); 
+            position: relative; 
+            overflow: hidden; 
+            /* Force GPU Acceleration для всего экрана игры */
+            transform: translate3d(0, 0, 0); 
+            -webkit-transform: translate3d(0, 0, 0);
+        }
         .game-ui-header { position: absolute; top: 0; left: 0; width: 100%; padding: 20px; z-index: 10; display: flex; justify-content: space-between; align-items: center; pointer-events: none; }
         .score-box { background: white; padding: 8px 16px; border-radius: 16px; box-shadow: var(--shadow-card); font-weight: 700; color: var(--primary-text); font-size: 18px; }
         #back-btn-game { pointer-events: auto; background: var(--primary-main); border: none; border-radius: 14px; width: 44px; height: 44px; box-shadow: var(--shadow-card); display: flex; align-items: center; justify-content: center; color: white; }
@@ -499,7 +506,7 @@
     function saveMood(mood) { const h = JSON.parse(localStorage.getItem('mood_history')||'{}'); h[new Date().toLocaleDateString()] = mood; localStorage.setItem('mood_history', JSON.stringify(h)); if(tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success'); renderDiary(); }
     function renderDiary() { const h = JSON.parse(localStorage.getItem('mood_history')||'{}'), d = new Date().toLocaleDateString(), c = document.getElementById('history-container'); c.innerHTML=''; if(h[d]) document.getElementById('diary-input-block').style.display='none'; else document.getElementById('diary-input-block').style.display='block'; Object.keys(h).reverse().forEach(k => { const m = h[k]; c.innerHTML += `<div class="history-item"><span style="font-weight:600; color:var(--text-header);">${k}</span><span style="padding:4px 10px; border-radius:8px; font-size:13px; font-weight:600; background:${m==='good'?'var(--primary-soft)':'var(--warm-bg)'}; color:${m==='good'?'var(--primary-text)':'var(--warm-text)'};">${m==='good'?'Хорошо':'Тяжело'}</span></div>`; }); }
 
-    // --- ИГРА ШАРИКИ (ФИНАЛЬНАЯ - OBJECT POOL) ---
+    // --- ИГРА ШАРИКИ (ФИНАЛЬНАЯ - DELTA TIME) ---
     const ballCanvas = document.getElementById('balloon-game-canvas');
     const bCtx = ballCanvas.getContext('2d');
     
@@ -512,24 +519,20 @@
 
     function preDrawBalloon(ctx, type) {
         const cx = balloonSize/2; const cy = balloonSize/2; const r = 35;
-        // Веревочка
         ctx.beginPath(); ctx.moveTo(cx, cy+r); ctx.bezierCurveTo(cx+10, cy+r+20, cx-10, cy+r+40, cx, cy+r+60);
         ctx.strokeStyle = 'rgba(0,0,0,0.15)'; ctx.lineWidth = 2; ctx.stroke();
-        // Тело
         if (type === 'target') {
             let g = ctx.createLinearGradient(cx, cy-r, cx, cy+r); g.addColorStop(0, '#81D4FA'); g.addColorStop(1, '#FFF59D'); ctx.fillStyle = g;
         } else { ctx.fillStyle = '#CFD8DC'; }
         ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI*2); ctx.fill();
-        // Узелок
         ctx.beginPath(); ctx.moveTo(cx, cy+r-2); ctx.lineTo(cx-6, cy+r+8); ctx.lineTo(cx+6, cy+r+8); ctx.fill();
-        // Блик
         ctx.beginPath(); ctx.arc(cx, cy, r-10, -0.2*Math.PI, 0.1*Math.PI); 
         ctx.strokeStyle = 'rgba(255,255,255,0.6)'; ctx.lineWidth = 3; ctx.lineCap = 'round'; ctx.stroke();
     }
     preDrawBalloon(cachedTarget.getContext('2d'), 'target');
     preDrawBalloon(cachedDummy.getContext('2d'), 'dummy');
 
-    // 2. ОБЪЕКТНЫЙ ПУЛ (НИКАКИХ NEW и SPLICE!)
+    // 2. ОБЪЕКТНЫЙ ПУЛ
     const MAX_BALLOONS = 50;
     const pool = new Array(MAX_BALLOONS).fill(null).map(() => ({
         active: false,
@@ -542,15 +545,16 @@
     let bLoopId, bScore = 0;
     let gameStartTime = 0;
     let isGameRunning = false;
+    let lastFrameTime = 0; // Для Delta Time
 
     function initBalloonGame() {
         ballCanvas.width = window.innerWidth; ballCanvas.height = window.innerHeight;
-        // Сбрасываем пул
         pool.forEach(b => b.active = false);
         bScore = 0; document.getElementById('balloon-score').innerText = 0;
         
         ballCanvas.addEventListener('touchstart', popBalloon); ballCanvas.addEventListener('mousedown', popBalloon);
         gameStartTime = Date.now();
+        lastFrameTime = performance.now();
         isGameRunning = true;
         requestAnimationFrame(runBalloonLoop);
     }
@@ -561,12 +565,10 @@
     }
 
     function spawnBalloon() {
-        // Ищем первый неактивный шарик
         const b = pool.find(p => !p.active);
-        if (!b) return; // Пул полон, пропускаем
+        if (!b) return; 
 
         const type = Math.random() < 0.2 ? 'target' : 'dummy';
-        const radius = 35;
         
         b.active = true;
         b.x = Math.random() * (ballCanvas.width - 70) + 35;
@@ -576,8 +578,18 @@
         b.type = type;
     }
 
-    function runBalloonLoop() {
+    function runBalloonLoop(timestamp) {
         if (!isGameRunning) return;
+
+        // --- DELTA TIME LOGIC ---
+        const dt = (timestamp - lastFrameTime) / 1000; // Прошедшее время в секундах
+        lastFrameTime = timestamp;
+
+        // Если вкладка была неактивна, dt будет огромным -> пропускаем кадр
+        if (dt > 0.1) {
+            requestAnimationFrame(runBalloonLoop);
+            return;
+        }
 
         bCtx.clearRect(0, 0, ballCanvas.width, ballCanvas.height);
         
@@ -585,8 +597,8 @@
         const level = Math.floor(elapsedSeconds / 30);
         const speedMultiplier = 1 + (level * 0.2); 
 
-        // Спавн (Шанс ~2%)
-        if (Math.random() < 0.02) {
+        // Спавн с учетом Delta Time (чтобы не спавнило кучу при лагах)
+        if (Math.random() < 0.02 * (dt * 60)) { 
             spawnBalloon();
         }
         
@@ -595,13 +607,18 @@
             const b = pool[i];
             if (!b.active) continue;
 
-            b.y -= b.baseSpeed * speedMultiplier;
-            b.x += Math.sin(b.wobble) * 0.5; b.wobble += 0.05;
+            // Движение умножаем на Delta Time. 
+            // 60 - это база (при 60 FPS dt=0.016, 60*0.016=1)
+            const moveStep = b.baseSpeed * speedMultiplier * (dt * 60);
+            
+            b.y -= moveStep;
+            b.x += Math.sin(b.wobble) * 0.5 * (dt * 60); 
+            b.wobble += 0.05 * (dt * 60);
 
             const img = b.type === 'target' ? cachedTarget : cachedDummy;
-            bCtx.drawImage(img, (b.x - 40) | 0, (b.y - 40) | 0); // Pixel Snapping
+            bCtx.drawImage(img, (b.x - 40) | 0, (b.y - 40) | 0); 
 
-            if (b.y < -150) b.active = false; // "Удаляем" (возвращаем в пул)
+            if (b.y < -150) b.active = false;
         }
         
         requestAnimationFrame(runBalloonLoop);
@@ -620,12 +637,12 @@
             const dist = Math.sqrt((tx - b.x)**2 + (ty - b.y)**2);
             if (dist < 45) { 
                 if (b.type === 'target') {
-                    b.active = false; // "Лопаем"
+                    b.active = false; 
                     bScore++;
                     document.getElementById('balloon-score').innerText = bScore;
                     if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
                 }
-                break; // Обработали клик
+                break; 
             }
         }
     }
