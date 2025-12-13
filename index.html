@@ -64,6 +64,16 @@
         /* ВОЛНА (СИНУС) */
         @keyframes waveMove { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 
+        /* ТРЮК №1: НЕВИДИМЫЙ ВРАЩАТЕЛЬ ДЛЯ GPU */
+        /* Этот элемент заставляет браузер держать композитор слоев активным */
+        #gpu-activator {
+            position: absolute; top: 0; left: 0; width: 1px; height: 1px;
+            opacity: 0.01; pointer-events: none; z-index: -1;
+            animation: force-gpu 1s infinite linear;
+            will-change: transform;
+        }
+        @keyframes force-gpu { from { transform: rotate(0deg) translateZ(0); } to { transform: rotate(360deg) translateZ(0); } }
+
         /* UI ЭЛЕМЕНТЫ */
         header { padding: 0 20px; background: transparent; z-index: 100; display: none; align-items: center; height: 60px; flex-shrink: 0; width: 100%; }
         
@@ -155,9 +165,8 @@
             background-color: var(--primary-soft); 
             position: relative; 
             overflow: hidden; 
-            /* Force GPU Acceleration для всего экрана игры */
-            transform: translate3d(0, 0, 0); 
-            -webkit-transform: translate3d(0, 0, 0);
+            /* ТРЮК №2: 3D TRANSFORM DLA LAYERING */
+            transform: translate3d(0,0,0);
         }
         .game-ui-header { position: absolute; top: 0; left: 0; width: 100%; padding: 20px; z-index: 10; display: flex; justify-content: space-between; align-items: center; pointer-events: none; }
         .score-box { background: white; padding: 8px 16px; border-radius: 16px; box-shadow: var(--shadow-card); font-weight: 700; color: var(--primary-text); font-size: 18px; }
@@ -180,6 +189,9 @@
         </button>
         <span class="header-title" id="page-title">Назад</span>
     </header>
+
+    <!-- ТРЮК №1 ВСТАВКА (НЕВИДИМКА) -->
+    <div id="gpu-activator"></div>
 
     <!-- 1. ГЛАВНОЕ МЕНЮ -->
     <div id="menu-screen" class="screen active">
@@ -496,7 +508,7 @@
     function resetBreathing() { clearInterval(breathInterval); isBreathing = false; breathTimer = 0; targetR = 110; playIcon.innerText = 'play_arrow'; playText.innerText = 'Старт'; breathLabel.innerText = 'ДЫШИМ'; breathInstr.innerText = 'Нажми Старт'; }
 
     // --- SOS ---
-    const sosSteps = [ { n: 5, t: 'Найди 5 вещей', d: 'Посмотри вокруг и назови 5 предметов одного цвета.', svg: '<path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>' }, { n: 4, t: 'Почувствуй 4 вещи', d: 'Ткань одежды, стол, свои руки...', svg: '<path d="M21.99 13.06l-1.92-6.52c-.22-.76-.89-1.28-1.68-1.28H18V4c0-1.1-.9-2-2-2s-2 .9-2 2v8.94l-.3-.02-.1-.01c-.8 0-1.55.23-2.21.62L11 11.23V4c0-1.1-.9-2-2-2S7 2.9 7 4v10.5c0 2.21 1.79 4 4 4s4-1.79 4-4V5c0-.55.45-1 1-1s1 .45 1 1v9.5c0 .35.18.68.49.86.3.19.68.2.98.02.31-.18.49-.52.49-.88V6.52c0-.13.11-.24.23-.24.08 0 .15.04.19.11l2.43 8.26c.2.68.83 1.15 1.54 1.15.88 0 1.6-.72 1.6-1.6 0-.05-.01-.1-.01-.14z"/>' }, { n: 3, t: 'Услышь 3 звука', d: 'Шум улицы, компьютер, свое дыхание.', svg: '<path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>' }, { n: 2, t: 'Почувствуй 2 запаха', d: 'Или вспомни любимые ароматы.', svg: '<path d="M12 22c4.97 0 9-4.03 9-9-4.97 0-9-4.03-9-9-4.97 0-9 4.03-9 9 0 4.97 4.03 9 9 9z" fill="none" stroke="currentColor"/><path d="M12 13c.88 0 1.61.59 1.88 1.4.16.48.59.83 1.12.83.67 0 1.18-.55 1.18-1.22 0-1.57-2.18-2-2.18-4.01 0-1.12.85-2.03 1.94-2.18C15.42 7.73 15 7.42 15 7c0-.55.45-1 1-1s1 .45 1 1c0 .42-.42.73-1.06.82-1.63.22-2.94 1.64-2.94 3.36 0 1.42 1.68 1.93 1.68 2.83 0 .16-.16.22-.18.22-.05 0-.12-.04-.15-.14-.26-1.07-1.24-1.87-2.35-1.87s-2.09.79-2.35 1.87c-.03.1-.1.14-.15.14-.02 0-.18-.06-.18-.22 0-.9 1.68-1.41 1.68-2.83 0-1.72-1.31-3.14-2.94-3.36C8.42 7.73 8 7.42 8 7c0-.55.45-1 1-1s1 .45 1 1c0 .42-.42.73-.94.82C10.15 7.97 11 8.88 11 10c0 2.01-2.18 2.44-2.18 4.01 0 .67.51 1.22 1.18 1.22.53 0 .96-.35 1.12-.83.27-.81 1-1.4 1.88-1.4z"/>' }, { n: 1, t: 'Почувствуй 1 вкус', d: 'Выпей воды или съешь конфету.', svg: '<path d="M18 10.5c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-.67-1.5-1.5-1.5zm-6-2.25c-2.07 0-3.75 1.68-3.75 3.75s1.68 3.75 3.75 3.75 3.75-1.68 3.75-3.75-1.68-3.75-3.75-3.75zm0 6c-1.24 0-2.25-1.01-2.25-2.25S10.76 9.75 12 9.75 14.25 10.76 14.25 12 13.24 14.25 12 14.25zM6 10.5c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5z"/>' } ];
+    const sosSteps = [ { n: 5, t: 'Найди 5 вещей', d: 'Посмотри вокруг и назови 5 предметов одного цвета.', svg: '<path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>' }, { n: 4, t: 'Почувствуй 4 вещи', d: 'Ткань одежды, стол, свои руки...', svg: '<path d="M21.99 13.06l-1.92-6.52c-.22-.76-.89-1.28-1.68-1.28H18V4c0-1.1-.9-2-2-2s-2 .9-2 2v8.94l-.3-.02-.1-.01c-.8 0-1.55.23-2.21.62L11 11.23V4c0-1.1-.9-2-2-2S7 2.9 7 4v10.5c0 2.21 1.79 4 4 4s4-1.79 4-4V5c0-.55.45-1 1-1s1 .45 1 1v9.5c0 .35.18.68.49.86.3.19.68.2.98.02.31-.18.49-.52.49-.88V6.52c0-.13.11-.24.23-.24.08 0 .15.04.19.11l2.43 8.26c.2.68.83 1.15 1.54 1.15.88 0 1.6-.72 1.6-1.6 0-.05-.01-.1-.01-.14z"/>' }, { n: 3, t: 'Услышь 3 звука', d: 'Шум улицы, компьютер, свое дыхание.', svg: '<path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>' }, { n: 2, t: 'Почувствуй 2 запаха', d: 'Или вспомни любимые ароматы.', svg: '<path d="M12 22c4.97 0 9-4.03 9-9-4.97 0-9-4.03-9-9-4.97 0-9 4.03-9 9 0 4.97 4.03 9 9 9z" fill="none" stroke="currentColor"/><path d="M12 13c.88 0 1.61.59 1.88 1.4.16.48.59.83 1.12.83.67 0 1.18-.55 1.18-1.22 0-1.57-2.18-2-2.18-4.01 0-1.12.85-2.03 1.94-2.18C15.42 7.73 15 7.42 15 7c0-.55.45-1 1-1s1 .45 1 1c0 .42-.42.73-1.06.82-1.63.22-2.94 1.64-2.94 3.36 0 1.42 1.68 1.93 1.68 2.83 0 .16-.16.22-.18.22-.05 0-.12-.04-.15-.14-.26-1.07-1.24-1.87-2.35-1.87s-2.09.79-2.35 1.87c-.03.1-.1.14-.15.14-.02 0-.18-.06-.18-.22 0-.9 1.68-1.41 1.68-2.83 0-1.72-1.31-3.14-2.94-3.36C8.42 7.73 8 7.42 8 7c0-.55.45-1 1-1s1 .45 1 1c0 .42-.42.73-.94.82C10.15 7.97 11 8.88 11 10c0 2.01-2.18 2.44-2.18 4.01 0 .67.51 1.22 1.18 1.22.53 0 .96-.35 1.12-.83.27-.81 1-1.4 1.88-1.4z"/>' }, { n: 1, t: 'Почувствуй 1 вкус', d: 'Выпей воды или съешь конфету.', svg: '<path d="M18 10.5c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5zm-6-2.25c-2.07 0-3.75 1.68-3.75 3.75s1.68 3.75 3.75 3.75 3.75-1.68 3.75-3.75-1.68-3.75-3.75-3.75zm0 6c-1.24 0-2.25-1.01-2.25-2.25S10.76 9.75 12 9.75 14.25 10.76 14.25 12 13.24 14.25 12 14.25zM6 10.5c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5z"/>' } ];
     let sosIdx = 0;
     function resetSos() { sosIdx = 0; document.getElementById('sos-card-wrapper').style.display = 'flex'; document.getElementById('sos-finish-area').style.display = 'none'; }
     function startSos() { renderSosStep(); }
@@ -506,18 +518,24 @@
     function saveMood(mood) { const h = JSON.parse(localStorage.getItem('mood_history')||'{}'); h[new Date().toLocaleDateString()] = mood; localStorage.setItem('mood_history', JSON.stringify(h)); if(tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success'); renderDiary(); }
     function renderDiary() { const h = JSON.parse(localStorage.getItem('mood_history')||'{}'), d = new Date().toLocaleDateString(), c = document.getElementById('history-container'); c.innerHTML=''; if(h[d]) document.getElementById('diary-input-block').style.display='none'; else document.getElementById('diary-input-block').style.display='block'; Object.keys(h).reverse().forEach(k => { const m = h[k]; c.innerHTML += `<div class="history-item"><span style="font-weight:600; color:var(--text-header);">${k}</span><span style="padding:4px 10px; border-radius:8px; font-size:13px; font-weight:600; background:${m==='good'?'var(--primary-soft)':'var(--warm-bg)'}; color:${m==='good'?'var(--primary-text)':'var(--warm-text)'};">${m==='good'?'Хорошо':'Тяжело'}</span></div>`; }); }
 
-    // --- ИГРА ШАРИКИ (ФИНАЛЬНАЯ - DELTA TIME) ---
+    // --- ИГРА ШАРИКИ (ФИНАЛЬНАЯ - DELTA TIME + HACKS) ---
     const ballCanvas = document.getElementById('balloon-game-canvas');
     const bCtx = ballCanvas.getContext('2d');
     
-    // 1. КЭШИРУЕМ СПРАЙТЫ
+    // ТРЮК №2: ОГРАНИЧЕНИЕ ПЛОТНОСТИ ПИКСЕЛЕЙ (DPR CAP)
+    // Это снижает нагрузку на видеокарту в 4 раза на Retina экранах
+    const dpr = Math.min(window.devicePixelRatio || 1, 1.5); 
+
     const cachedTarget = document.createElement('canvas');
     const cachedDummy = document.createElement('canvas');
     const balloonSize = 80; 
-    cachedTarget.width = balloonSize; cachedTarget.height = balloonSize + 60;
-    cachedDummy.width = balloonSize; cachedDummy.height = balloonSize + 60;
+    
+    // Кэш тоже рисуем с учетом DPR, чтобы было четко, но не перегружено
+    cachedTarget.width = balloonSize * dpr; cachedTarget.height = (balloonSize + 60) * dpr;
+    cachedDummy.width = balloonSize * dpr; cachedDummy.height = (balloonSize + 60) * dpr;
 
     function preDrawBalloon(ctx, type) {
+        ctx.scale(dpr, dpr); // Масштабируем контекст кэша
         const cx = balloonSize/2; const cy = balloonSize/2; const r = 35;
         ctx.beginPath(); ctx.moveTo(cx, cy+r); ctx.bezierCurveTo(cx+10, cy+r+20, cx-10, cy+r+40, cx, cy+r+60);
         ctx.strokeStyle = 'rgba(0,0,0,0.15)'; ctx.lineWidth = 2; ctx.stroke();
@@ -528,11 +546,12 @@
         ctx.beginPath(); ctx.moveTo(cx, cy+r-2); ctx.lineTo(cx-6, cy+r+8); ctx.lineTo(cx+6, cy+r+8); ctx.fill();
         ctx.beginPath(); ctx.arc(cx, cy, r-10, -0.2*Math.PI, 0.1*Math.PI); 
         ctx.strokeStyle = 'rgba(255,255,255,0.6)'; ctx.lineWidth = 3; ctx.lineCap = 'round'; ctx.stroke();
+        ctx.setTransform(1, 0, 0, 1, 0, 0); // Сброс трансформации
     }
     preDrawBalloon(cachedTarget.getContext('2d'), 'target');
     preDrawBalloon(cachedDummy.getContext('2d'), 'dummy');
 
-    // 2. ОБЪЕКТНЫЙ ПУЛ
+    // ОБЪЕКТНЫЙ ПУЛ
     const MAX_BALLOONS = 50;
     const pool = new Array(MAX_BALLOONS).fill(null).map(() => ({
         active: false,
@@ -545,10 +564,15 @@
     let bLoopId, bScore = 0;
     let gameStartTime = 0;
     let isGameRunning = false;
-    let lastFrameTime = 0; // Для Delta Time
+    let lastFrameTime = 0;
 
     function initBalloonGame() {
-        ballCanvas.width = window.innerWidth; ballCanvas.height = window.innerHeight;
+        // Устанавливаем физический размер канваса с учетом ограничения
+        ballCanvas.width = window.innerWidth * dpr;
+        ballCanvas.height = window.innerHeight * dpr;
+        // Масштабируем главный контекст один раз
+        bCtx.scale(dpr, dpr);
+
         pool.forEach(b => b.active = false);
         bScore = 0; document.getElementById('balloon-score').innerText = 0;
         
@@ -569,10 +593,9 @@
         if (!b) return; 
 
         const type = Math.random() < 0.2 ? 'target' : 'dummy';
-        
         b.active = true;
-        b.x = Math.random() * (ballCanvas.width - 70) + 35;
-        b.y = ballCanvas.height + 50;
+        b.x = Math.random() * (window.innerWidth - 70) + 35;
+        b.y = window.innerHeight + 50;
         b.baseSpeed = Math.random() * 2 + 2;
         b.wobble = Math.random() * Math.PI * 2;
         b.type = type;
@@ -581,34 +604,34 @@
     function runBalloonLoop(timestamp) {
         if (!isGameRunning) return;
 
-        // --- DELTA TIME LOGIC ---
-        const dt = (timestamp - lastFrameTime) / 1000; // Прошедшее время в секундах
+        // --- DELTA TIME + LAG CAP ---
+        // Вычисляем, сколько времени прошло с прошлого кадра
+        let dt = (timestamp - lastFrameTime) / 1000;
         lastFrameTime = timestamp;
 
-        // Если вкладка была неактивна, dt будет огромным -> пропускаем кадр
-        if (dt > 0.1) {
-            requestAnimationFrame(runBalloonLoop);
-            return;
-        }
+        // Если телефон "заснул" и dt стал огромным (например, 0.5 сек), 
+        // ограничиваем его до 0.1, чтобы шарики не телепортировались
+        if (dt > 0.1) dt = 0.1; 
 
-        bCtx.clearRect(0, 0, ballCanvas.width, ballCanvas.height);
+        // Чистим экран (с учетом масштаба)
+        bCtx.clearRect(0, 0, window.innerWidth, window.innerHeight);
         
         const elapsedSeconds = (Date.now() - gameStartTime) / 1000;
         const level = Math.floor(elapsedSeconds / 30);
         const speedMultiplier = 1 + (level * 0.2); 
 
-        // Спавн с учетом Delta Time (чтобы не спавнило кучу при лагах)
+        // Спавн привязан к реальному времени (dt), а не к FPS
         if (Math.random() < 0.02 * (dt * 60)) { 
             spawnBalloon();
         }
         
-        // Рендер активных
         for (let i = 0; i < MAX_BALLOONS; i++) {
             const b = pool[i];
             if (!b.active) continue;
 
-            // Движение умножаем на Delta Time. 
-            // 60 - это база (при 60 FPS dt=0.016, 60*0.016=1)
+            // Движение: Скорость * Множитель * DeltaTime * 60 (база)
+            // Это гарантирует, что скорость (пикселей в секунду) будет одинаковой
+            // и при 60 FPS, и при 15 FPS
             const moveStep = b.baseSpeed * speedMultiplier * (dt * 60);
             
             b.y -= moveStep;
@@ -616,7 +639,10 @@
             b.wobble += 0.05 * (dt * 60);
 
             const img = b.type === 'target' ? cachedTarget : cachedDummy;
-            bCtx.drawImage(img, (b.x - 40) | 0, (b.y - 40) | 0); 
+            
+            // Рисуем картинку. Размеры в drawImage НЕ умножаем на dpr, 
+            // так как контекст (bCtx) уже отмасштабирован через scale()
+            bCtx.drawImage(img, 0, 0, img.width, img.height, (b.x - 40)|0, (b.y - 40)|0, 80, 140);
 
             if (b.y < -150) b.active = false;
         }
@@ -627,6 +653,7 @@
     function popBalloon(e) {
         e.preventDefault();
         const rect = ballCanvas.getBoundingClientRect();
+        // clientX/Y - это CSS пиксели, нам это и нужно
         const tx = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
         const ty = (e.touches ? e.touches[0].clientY : e.clientY) - rect.top;
         
