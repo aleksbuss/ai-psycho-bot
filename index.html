@@ -180,7 +180,7 @@
         .score-label { font-size: 16px; color: var(--text-muted); margin-bottom: 30px; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
         .new-record-badge { background: var(--warm-bg); color: var(--warm-text); padding: 6px 12px; border-radius: 8px; font-weight: 700; font-size: 14px; margin-bottom: 10px; display: inline-block; }
 
-        /* --- ОБНОВЛЕННЫЕ ЦВЕТА ДНЕВНИКА --- */
+        /* ДНЕВНИК */
         .chart-container { 
             background: white; border-radius: 24px; padding: 20px; margin-bottom: 20px; box-shadow: var(--shadow-card); 
             height: 200px; position: relative; display: flex; align-items: center; justify-content: center;
@@ -204,12 +204,12 @@
         .mood-item .material-icons-round { font-size: 32px; margin-bottom: 6px; }
         .mood-item span { font-size: 10px; font-weight: 600; color: var(--text-muted); text-align: center; line-height: 1.2; }
         
-        /* НОВАЯ ПАЛИТРА НАСТРОЕНИЙ (От Мятного до Бежевого) */
-        .mood-5 { color: #4DB6AC; } /* Отлично - Мятный (Primary Main) */
-        .mood-4 { color: #80CBC4; } /* Хорошо - Светло-мятный */
-        .mood-3 { color: #64B5F6; } /* Норм - Светло-голубой (Secondary Accent) */
-        .mood-2 { color: #FFE082; } /* Так себе - Светло-бежевый */
-        .mood-1 { color: #FFB74D; } /* Плохо - Бежевый/Оранжевый (Warm Accent) */
+        /* ПАЛИТРА НАСТРОЕНИЙ */
+        .mood-5 { color: #4DB6AC; } 
+        .mood-4 { color: #80CBC4; } 
+        .mood-3 { color: #64B5F6; } 
+        .mood-2 { color: #FFE082; } 
+        .mood-1 { color: #FFB74D; } 
 
         .history-list { display: flex; flex-direction: column; gap: 10px; }
     </style>
@@ -227,379 +227,120 @@
     <!-- ТРЮК №1 ВСТАВКА (НЕВИДИМКА) -->
     <div id="gpu-activator"></div>
 
-    <!-- 1. ГЛАВНОЕ МЕНЮ -->
+    <!-- SCREENS -->
     <div id="menu-screen" class="screen active">
         <div class="greeting-header">
-            <div class="greeting-text">
-                <h1>Доброе утро,<br><span id="userNameDisplay">User</span></h1>
-                <p>Что поддержит вас сегодня?</p>
-            </div>
+            <div class="greeting-text"><h1>Доброе утро,<br><span id="userNameDisplay">User</span></h1><p>Что поддержит вас сегодня?</p></div>
             <button class="sos-btn-header" onclick="navigateTo('sos')">SOS</button>
         </div>
-
         <div class="main-grid">
-            <div class="action-card card-chat" onclick="navigateTo('chat')">
-                <div class="icon-box"><span class="material-icons-round">chat_bubble_outline</span></div>
-                <h3>Чат поддержки</h3>
-            </div>
-            <div class="action-card card-breath" onclick="navigateTo('game')">
-                <div class="icon-box"><span class="material-icons-round">air</span></div>
-                <h3>Дыхание</h3>
-            </div>
+            <div class="action-card card-chat" onclick="navigateTo('chat')"><div class="icon-box"><span class="material-icons-round">chat_bubble_outline</span></div><h3>Чат поддержки</h3></div>
+            <div class="action-card card-breath" onclick="navigateTo('game')"><div class="icon-box"><span class="material-icons-round">air</span></div><h3>Дыхание</h3></div>
         </div>
-
         <div class="widget-card" onclick="navigateTo('video')">
-            <div class="widget-header">
-                <div class="dot-indicator"></div>
-                <div class="widget-title">Медитации</div>
-            </div>
-            <div class="widget-main-text">Спокойствие</div>
-            <div class="wave-container">
-                <svg class="wave-graph" viewBox="0 0 600 50" preserveAspectRatio="none">
-                    <defs>
-                        <linearGradient id="grad1" x1="0%" y1="0%" x2="0%" y2="100%">
-                            <stop offset="0%" style="stop-color:#4DB6AC;stop-opacity:0.6" />
-                            <stop offset="100%" style="stop-color:#4DB6AC;stop-opacity:0" />
-                        </linearGradient>
-                    </defs>
-                    <path d="M0,25 Q75,5 150,25 T300,25 T450,25 T600,25 V50 H0 Z" fill="url(#grad1)" />
-                    <path d="M0,25 Q75,5 150,25 T300,25 T450,25 T600,25" stroke="#4DB6AC" stroke-width="2" fill="none"/>
-                </svg>
-            </div>
+            <div class="widget-header"><div class="dot-indicator"></div><div style="font-size:14px;color:var(--text-muted)">Медитации</div></div>
+            <div style="font-size:18px;font-weight:600;color:var(--text-header)">Спокойствие</div>
+            <div class="wave-container"><svg class="wave-graph" viewBox="0 0 600 50" preserveAspectRatio="none"><defs><linearGradient id="grad1" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" style="stop-color:#4DB6AC;stop-opacity:0.6"/><stop offset="100%" style="stop-color:#4DB6AC;stop-opacity:0"/></linearGradient></defs><path d="M0,25 Q75,5 150,25 T300,25 T450,25 T600,25 V50 H0 Z" fill="url(#grad1)"/><path d="M0,25 Q75,5 150,25 T300,25 T450,25 T600,25" stroke="#4DB6AC" stroke-width="2" fill="none"/></svg></div>
         </div>
-
         <div class="bottom-grid">
-            <div class="small-card" onclick="navigateTo('music')">
-                <div class="small-icon warm-icon"><span class="material-icons-round">favorite_border</span></div>
-                <div><h4>Дневник</h4><span>Забота о себе</span></div>
-            </div>
-            <div class="small-card" onclick="navigateTo('balloons')">
-                <div class="small-icon mint-icon"><span class="material-icons-round">sports_esports</span></div>
-                <div><h4>Игра</h4><span>Лопай шарики</span></div>
-            </div>
+            <div class="small-card" onclick="navigateTo('music')"><div class="small-icon warm-icon"><span class="material-icons-round">favorite_border</span></div><div><h4>Дневник</h4><span>Забота о себе</span></div></div>
+            <div class="small-card" onclick="navigateTo('balloons')"><div class="small-icon mint-icon"><span class="material-icons-round">sports_esports</span></div><div><h4>Игра</h4><span>Лопай шарики</span></div></div>
         </div>
     </div>
 
-    <!-- 2. ЧАТ -->
     <div id="chat-screen" class="screen">
-        <div id="chat-container">
-            <div class="message msg-bot msg-enter">Я рядом. Вы можете рассказать мне все, что вас тревожит, или записать голосовое сообщение. 🌿</div>
-            <div class="typing-indicator" id="typing"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
-        </div>
-        <div class="input-area">
-            <button id="micBtn" class="btn-sq"><span class="material-icons-round">mic</span></button>
-            <input type="text" id="userInput" placeholder="Сообщение..." autocomplete="off">
-            <button id="sendBtn" class="btn-sq"><span class="material-icons-round">arrow_upward</span></button>
-        </div>
+        <div id="chat-container"><div class="message msg-bot msg-enter">Я рядом. Вы можете рассказать мне все, что вас тревожит. 🌿</div><div class="typing-indicator" id="typing"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></div>
+        <div class="input-area"><button id="micBtn" class="btn-sq"><span class="material-icons-round">mic</span></button><input type="text" id="userInput" placeholder="Сообщение..."><button id="sendBtn" class="btn-sq"><span class="material-icons-round">arrow_upward</span></button></div>
     </div>
 
-    <!-- 3. SOS -->
-    <div id="sos-screen" class="screen">
-        <div class="sos-dynamic-container">
-            <div id="sos-card-wrapper" class="sos-dynamic-card"></div>
-            <div id="sos-finish-area" style="display:none; flex-direction:column; align-items:center; width:100%; text-align:center;">
-                <span class="material-icons-round" style="font-size:80px; color:var(--primary-main); margin-bottom:20px;">check_circle</span>
-                <h2 style="margin-bottom:10px;">Отлично!</h2>
-                <p style="margin-bottom:30px; color:var(--text-body);">Вы заземлились. Вернуться?</p>
-                <button class="sos-next-btn" onclick="goBack()">В меню</button>
-            </div>
-        </div>
-    </div>
+    <div id="sos-screen" class="screen"><div class="sos-dynamic-container"><div id="sos-card-wrapper" class="sos-dynamic-card"></div><div id="sos-finish-area" style="display:none;flex-direction:column;align-items:center;width:100%;text-align:center;"><span class="material-icons-round" style="font-size:80px;color:var(--primary-main);margin-bottom:20px;">check_circle</span><h2>Отлично!</h2><p>Вы заземлились. Вернуться?</p><button class="sos-next-btn" onclick="goBack()">В меню</button></div></div></div>
+    <div id="video-screen" class="screen"><div style="padding:24px;"><h2>Практики</h2><div class="small-card" onclick="alert('Скоро!')"><div class="small-icon mint-icon"><span class="material-icons-round">self_improvement</span></div><div><h4>Осознанность</h4><span>5 минут</span></div></div></div></div>
+    
+    <div id="game-screen" class="screen"><canvas id="breathCanvas"></canvas><div class="game-ui-overlay"><div class="breath-text-container"><div class="breath-status" id="breathLabel">ДЫШИМ</div><div class="breath-timer-text" id="breathInstruction">Нажми Старт</div></div><div class="game-controls"><button class="btn-game-card" id="breathStartBtn" onclick="toggleBreathing()"><span class="material-icons-round" id="playIcon">play_arrow</span><span id="playText">Старт</span></button><button class="btn-reset-sq" onclick="resetBreathing()"><span class="material-icons-round">refresh</span></button></div></div></div>
 
-    <!-- 4. МЕДИТАЦИИ -->
-    <div id="video-screen" class="screen">
-        <div style="padding:24px;">
-            <h2 style="margin-bottom:20px;">Практики</h2>
-            <div class="small-card" style="margin-bottom:15px;" onclick="alert('Скоро будет доступно!')">
-                <div class="small-icon mint-icon"><span class="material-icons-round">self_improvement</span></div>
-                <div><h4>Осознанность</h4><span>5 минут</span></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- 5. ДЫХАНИЕ -->
-    <div id="game-screen" class="screen">
-        <canvas id="breathCanvas"></canvas>
-        <div class="game-ui-overlay">
-            <div class="breath-text-container">
-                <div class="breath-status" id="breathLabel">ДЫШИМ</div>
-                <div class="breath-timer-text" id="breathInstruction">Нажми Старт</div>
-            </div>
-            <div class="game-controls">
-                <button class="btn-game-card" id="breathStartBtn" onclick="toggleBreathing()">
-                    <span class="material-icons-round" id="playIcon">play_arrow</span>
-                    <span id="playText">Старт</span>
-                </button>
-                <button class="btn-reset-sq" onclick="resetBreathing()">
-                    <span class="material-icons-round">refresh</span>
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- 6. ДНЕВНИК (ЦВЕТА ИСПРАВЛЕНЫ) -->
     <div id="music-screen" class="screen">
         <div style="padding:24px; overflow-y:auto;">
-            <!-- ГРАФИК -->
             <div class="chart-container">
                 <canvas id="moodChart"></canvas>
                 <div id="empty-chart-msg" style="position:absolute; color:var(--text-muted); font-size:14px; text-align:center; display:none;">
                     Нет данных<br>Отметьте состояние
                 </div>
             </div>
-
-            <!-- СТАТИСТИКА -->
             <div class="stats-container" id="stats-container"></div>
-
-            <!-- ВЫБОР НАСТРОЕНИЯ -->
             <h2 style="margin-bottom:15px; font-size:18px;">Как вы сейчас?</h2>
             <div class="mood-grid">
-                <div class="mood-item" onclick="saveMood(5)">
-                    <span class="material-icons-round mood-5">sentiment_very_satisfied</span>
-                    <span>Отлично</span>
-                </div>
-                <div class="mood-item" onclick="saveMood(4)">
-                    <span class="material-icons-round mood-4">sentiment_satisfied_alt</span>
-                    <span>Хорошо</span>
-                </div>
-                <div class="mood-item" onclick="saveMood(3)">
-                    <span class="material-icons-round mood-3">sentiment_neutral</span>
-                    <span>Норм</span>
-                </div>
-                <div class="mood-item" onclick="saveMood(2)">
-                    <span class="material-icons-round mood-2">sentiment_dissatisfied</span>
-                    <span>Так себе</span>
-                </div>
-                <div class="mood-item" onclick="saveMood(1)">
-                    <span class="material-icons-round mood-1">sentiment_very_dissatisfied</span>
-                    <span>Плохо</span>
-                </div>
+                <div class="mood-item" onclick="saveMood(5)"><span class="material-icons-round mood-5">sentiment_very_satisfied</span><span>Отлично</span></div>
+                <div class="mood-item" onclick="saveMood(4)"><span class="material-icons-round mood-4">sentiment_satisfied_alt</span><span>Хорошо</span></div>
+                <div class="mood-item" onclick="saveMood(3)"><span class="material-icons-round mood-3">sentiment_neutral</span><span>Норм</span></div>
+                <div class="mood-item" onclick="saveMood(2)"><span class="material-icons-round mood-2">sentiment_dissatisfied</span><span>Так себе</span></div>
+                <div class="mood-item" onclick="saveMood(1)"><span class="material-icons-round mood-1">sentiment_very_dissatisfied</span><span>Плохо</span></div>
             </div>
-
             <h2 style="margin-bottom:15px; font-size:18px;">История</h2>
             <div id="history-container" class="history-list"></div>
         </div>
     </div>
 
-    <!-- 7. ИГРА ШАРИКИ -->
     <div id="balloon-game-screen" class="screen">
-        <div class="game-ui-header">
-            <button id="back-btn-game" onclick="goBack()"><span class="material-icons-round">arrow_back</span></button>
-            <div id="game-timer">02:00</div>
-            <div class="score-box" id="balloon-score">0</div>
-        </div>
+        <div class="game-ui-header"><button id="back-btn-game" onclick="goBack()"><span class="material-icons-round">arrow_back</span></button><div id="game-timer">02:00</div><div class="score-box" id="balloon-score">0</div></div>
         <canvas id="balloon-game-canvas"></canvas>
-        
-        <!-- МОДАЛКА GAME OVER -->
-        <div id="game-over-modal" class="game-modal">
-            <div id="record-badge" class="new-record-badge" style="display:none">🏆 НОВЫЙ РЕКОРД!</div>
-            <span id="game-icon" class="material-icons-round cup-icon" style="display:none">emoji_events</span>
-            <div class="score-big" id="final-score">0</div>
-            <div class="score-label">Шариков</div>
-            
-            <div style="width:100%; max-width:280px; display:flex; gap:12px; flex-direction:column;">
-                <button class="sos-next-btn" onclick="initBalloonGame()">Играть снова</button>
-                <button class="sos-next-btn" style="background:white; color:var(--text-body); box-shadow:var(--shadow-card);" onclick="goBack()">В меню</button>
-            </div>
-        </div>
+        <div id="game-over-modal" class="game-modal"><div id="record-badge" class="new-record-badge" style="display:none">🏆 НОВЫЙ РЕКОРД!</div><span id="game-icon" class="material-icons-round cup-icon" style="display:none">emoji_events</span><div class="score-big" id="final-score">0</div><div class="score-label">Шариков</div><div style="width:100%;max-width:280px;display:flex;gap:12px;flex-direction:column;"><button class="sos-next-btn" onclick="initBalloonGame()">Играть снова</button><button class="sos-next-btn" style="background:white;color:var(--text-body);box-shadow:var(--shadow-card);" onclick="goBack()">В меню</button></div></div>
     </div>
 
 <script>
-    // --- КОНФИГУРАЦИЯ ---
-    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzOq4mO0Dgx9PH9AzH8ozKOYcQ0CshNHldt51VyynuR1uJZ8ZW_x71KNhG-4QV6nPF8/exec";
-    const tg = window.Telegram.WebApp;
-    tg.expand();
+    const GOOGLE_SCRIPT_URL="https://script.google.com/macros/s/AKfycbzOq4mO0Dgx9PH9AzH8ozKOYcQ0CshNHldt51VyynuR1uJZ8ZW_x71KNhG-4QV6nPF8/exec";
+    const tg=window.Telegram.WebApp; tg.expand();
+    const userId=tg.initDataUnsafe?.user?.id||'test_'+Math.floor(Math.random()*1000);
+    const userName=tg.initDataUnsafe?.user?.first_name||'Друг';
+    document.getElementById('userNameDisplay').innerText=userName;
 
-    const userId = tg.initDataUnsafe?.user?.id || 'test_user_' + Math.floor(Math.random()*1000);
-    const userName = tg.initDataUnsafe?.user?.first_name || 'Друг';
-    document.getElementById('userNameDisplay').innerText = userName;
+    const screens={menu:document.getElementById('menu-screen'),chat:document.getElementById('chat-screen'),video:document.getElementById('video-screen'),music:document.getElementById('music-screen'),game:document.getElementById('game-screen'),sos:document.getElementById('sos-screen'),balloons:document.getElementById('balloon-game-screen')};
+    const header=document.getElementById('main-header');
+    const pageTitle=document.getElementById('page-title');
 
-    // --- НАВИГАЦИЯ ---
-    const screens = {
-        menu: document.getElementById('menu-screen'),
-        chat: document.getElementById('chat-screen'),
-        video: document.getElementById('video-screen'),
-        music: document.getElementById('music-screen'),
-        game: document.getElementById('game-screen'),
-        sos: document.getElementById('sos-screen'),
-        balloons: document.getElementById('balloon-game-screen')
-    };
+    function navigateTo(n){Object.values(screens).forEach(e=>e.classList.remove('active'));stopBalloonGame();stopBreathingAnimationLoop();resetSos();screens[n].classList.add('active');if(n==='menu'){header.style.display='none';tg.BackButton.hide()}else if(n==='balloons'){header.style.display='none';initBalloonGame()}else{header.style.display='flex';tg.BackButton.show();tg.BackButton.onClick(goBack)}const t={chat:'Чат',video:'Медитации',music:'Дневник',game:'Дыхание',sos:'Заземление'};if(t[n])pageTitle.innerText=t[n];if(n==='chat')setTimeout(scrollToBottom,200);if(n==='game'){resizeBreathCanvas();startBreathingAnimationLoop()}if(n==='music')renderDiary();if(n==='sos')startSos()}
+    function goBack(){if(screens.game.classList.contains('active'))resetBreathing();navigateTo('menu')}
 
-    const header = document.getElementById('main-header');
-    const pageTitle = document.getElementById('page-title');
-
-    function navigateTo(screenName) {
-        Object.values(screens).forEach(el => el.classList.remove('active'));
-        stopBalloonGame();
-        stopBreathingAnimationLoop();
-        resetSos();
-        screens[screenName].classList.add('active');
-
-        if (screenName === 'menu') {
-            header.style.display = 'none'; tg.BackButton.hide();
-        } else if (screenName === 'balloons') {
-            header.style.display = 'none'; initBalloonGame();
-        } else {
-            header.style.display = 'flex'; tg.BackButton.show(); tg.BackButton.onClick(goBack);
-        }
-
-        const titles = { chat: 'Чат', video: 'Медитации', music: 'Дневник', game: 'Дыхание', sos: 'Заземление' };
-        if(titles[screenName]) pageTitle.innerText = titles[screenName];
-        
-        if (screenName === 'chat') { setTimeout(scrollToBottom, 200); }
-        if (screenName === 'game') { resizeBreathCanvas(); startBreathingAnimationLoop(); }
-        if (screenName === 'music') { renderDiary(); }
-        if (screenName === 'sos') { startSos(); }
-    }
-
-    function goBack() {
-        if (screens.game.classList.contains('active')) resetBreathing();
-        navigateTo('menu');
-    }
-
-    // --- ЧАТ ---
-    const chatContainer = document.getElementById('chat-container');
-    const userInput = document.getElementById('userInput');
-    const sendBtn = document.getElementById('sendBtn');
-    const micBtn = document.getElementById('micBtn');
-    const typingIndicator = document.getElementById('typing');
-    let mediaRecorder = null; let audioChunks = []; let isRecording = false;
-
+    // CHAT & AUDIO
+    const chatContainer=document.getElementById('chat-container'),userInput=document.getElementById('userInput'),sendBtn=document.getElementById('sendBtn'),micBtn=document.getElementById('micBtn'),typingIndicator=document.getElementById('typing');
+    let mediaRecorder=null,audioChunks=[],isRecording=false;
     loadChatHistory();
-    function scrollToBottom() { chatContainer.scrollTop = chatContainer.scrollHeight; }
-    function addMessage(text, isUser) {
-        const div = document.createElement('div');
-        div.className = `message ${isUser ? 'msg-user' : 'msg-bot'} msg-enter`;
-        div.innerHTML = text;
-        chatContainer.insertBefore(div, typingIndicator);
-        scrollToBottom();
-    }
-    function showTyping(show) { typingIndicator.style.display = show ? 'block' : 'none'; scrollToBottom(); }
+    function scrollToBottom(){chatContainer.scrollTop=chatContainer.scrollHeight}
+    function addMessage(t,u){const d=document.createElement('div');d.className=`message ${u?'msg-user':'msg-bot'} msg-enter`;d.innerHTML=t;chatContainer.insertBefore(d,typingIndicator);scrollToBottom()}
+    function showTyping(s){typingIndicator.style.display=s?'block':'none';scrollToBottom()}
+    function sendMessage(){const t=userInput.value.trim();if(!t)return;addMessage(t,true);userInput.value='';sendBtn.disabled=true;showTyping(true);fetch(GOOGLE_SCRIPT_URL+'?act=api',{method:'POST',body:JSON.stringify({text:t,userId:userId})}).then(r=>r.json()).then(handleResponse).catch(handleError)}
+    async function toggleRecording(){if(!isRecording){try{const s=await navigator.mediaDevices.getUserMedia({audio:true});mediaRecorder=new MediaRecorder(s);audioChunks=[];mediaRecorder.ondataavailable=e=>audioChunks.push(e.data);mediaRecorder.onstop=async()=>{const b=new Blob(audioChunks,{type:'audio/webm'});const z=await blobToBase64(b);sendVoiceRequest(z)};mediaRecorder.start();isRecording=true;micBtn.classList.add('recording');if(tg.HapticFeedback)tg.HapticFeedback.impactOccurred('medium')}catch(e){alert("Нет микрофона")}}else{if(mediaRecorder){mediaRecorder.stop();mediaRecorder.stream.getTracks().forEach(t=>t.stop())}isRecording=false;micBtn.classList.remove('recording');if(tg.HapticFeedback)tg.HapticFeedback.notificationOccurred('success')}}
+    function sendVoiceRequest(z){addMessage("🎤 <i>Аудио...</i>",true);showTyping(true);sendBtn.disabled=true;micBtn.disabled=true;fetch(GOOGLE_SCRIPT_URL+'?act=api',{method:'POST',body:JSON.stringify({audio:z,userId:userId,text:''})}).then(r=>r.json()).then(handleResponse).catch(handleError)}
+    function handleResponse(d){showTyping(false);sendBtn.disabled=false;micBtn.disabled=false;if(d.status==='success'){addMessage(d.text,false);if(d.audio)playAudioResponse(d.audio)}else{addMessage("⚠️ "+d.text,false)}}
+    function handleError(){showTyping(false);sendBtn.disabled=false;micBtn.disabled=false;addMessage("⚠️ Ошибка сети",false)}
+    function loadChatHistory(){fetch(GOOGLE_SCRIPT_URL+'?act=api',{method:'POST',body:JSON.stringify({userId:userId,action:'load_history'})}).then(r=>r.json()).then(d=>{if(d.status==='success')d.history.forEach(m=>{if(m.role!=='system')addMessage(m.parts[0].text,m.role==='user')})})}
+    function playAudioResponse(z){if(!z)return;try{const a=new Audio("data:audio/mp3;base64,"+z);const m=document.querySelectorAll('.msg-bot');const l=m[m.length-1];let i=null;if(l){i=document.createElement('span');i.className='material-icons-round';i.innerText='volume_up';i.style.cssText="margin-left:8px;vertical-align:middle;color:#4DB6AC;font-size:20px;";i.animate([{opacity:0.5},{opacity:1},{opacity:0.5}],{duration:1000,iterations:Infinity});l.appendChild(i)}a.play().catch(e=>{});a.onended=()=>{if(i)i.remove()}}catch(e){}}
+    function blobToBase64(b){return new Promise(r=>{const z=new FileReader();z.onloadend=()=>r(z.result);z.readAsDataURL(b)})}
+    sendBtn.addEventListener('click',sendMessage);micBtn.addEventListener('click',toggleRecording);userInput.addEventListener('keydown',e=>{if(e.key==='Enter')sendMessage()});
 
-    function sendMessage() {
-        const text = userInput.value.trim();
-        if (!text) return;
-        addMessage(text, true); userInput.value = ''; sendBtn.disabled = true; showTyping(true);
-        fetch(GOOGLE_SCRIPT_URL + '?act=api', { method: 'POST', body: JSON.stringify({ text: text, userId: userId }) })
-        .then(r => r.json()).then(handleResponse).catch(handleError);
-    }
-
-    async function toggleRecording() {
-        if (!isRecording) {
-            try {
-                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                mediaRecorder = new MediaRecorder(stream);
-                audioChunks = [];
-                mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
-                mediaRecorder.onstop = async () => {
-                    const blob = new Blob(audioChunks, { type: 'audio/webm' });
-                    const base64 = await blobToBase64(blob);
-                    sendVoiceRequest(base64);
-                };
-                mediaRecorder.start(); isRecording = true; micBtn.classList.add('recording');
-                if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
-            } catch (e) { alert("Нет доступа к микрофону."); }
-        } else {
-            if (mediaRecorder) { mediaRecorder.stop(); mediaRecorder.stream.getTracks().forEach(t => t.stop()); }
-            isRecording = false; micBtn.classList.remove('recording');
-            if(tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
-        }
-    }
-
-    function sendVoiceRequest(base64Audio) {
-        addMessage("🎤 <i>Отправка аудио...</i>", true);
-        showTyping(true); sendBtn.disabled = true; micBtn.disabled = true;
-        fetch(GOOGLE_SCRIPT_URL + '?act=api', { method: 'POST', body: JSON.stringify({ audio: base64Audio, userId: userId, text: '' }) })
-        .then(r => r.json()).then(handleResponse).catch(handleError);
-    }
-
-    function handleResponse(data) {
-        showTyping(false); sendBtn.disabled = false; micBtn.disabled = false;
-        if (data.status === 'success') {
-            addMessage(data.text, false);
-            if (data.audio) playAudioResponse(data.audio);
-        } else { addMessage("⚠️ Ошибка: " + data.text, false); }
-    }
-    function handleError(e) { showTyping(false); sendBtn.disabled = false; micBtn.disabled = false; addMessage("⚠️ Ошибка сети", false); }
-
-    function loadChatHistory() {
-        fetch(GOOGLE_SCRIPT_URL + '?act=api', { method: 'POST', body: JSON.stringify({ userId: userId, action: 'load_history' }) })
-        .then(r => r.json()).then(d => {
-            if (d.status === 'success') d.history.forEach(msg => { if (msg.role !== 'system') addMessage(msg.parts[0].text, msg.role === 'user'); });
-        });
-    }
-
-    function playAudioResponse(base64) {
-        if (!base64) return;
-        try {
-            const audio = new Audio("data:audio/mp3;base64," + base64);
-            const msgs = document.querySelectorAll('.msg-bot');
-            const lastMsg = msgs[msgs.length - 1];
-            let icon = null;
-            if (lastMsg) {
-                icon = document.createElement('span'); icon.className = 'material-icons-round'; icon.innerText = 'volume_up';
-                icon.style.cssText = "margin-left:8px; vertical-align:middle; color:#4DB6AC; font-size:20px;";
-                icon.animate([{opacity:0.5, transform:'scale(0.9)'}, {opacity:1, transform:'scale(1.1)'}, {opacity:0.5, transform:'scale(0.9)'}], {duration:1000, iterations:Infinity});
-                lastMsg.appendChild(icon);
-            }
-            audio.play().catch(e => console.log("Autoplay blocked"));
-            audio.onended = () => { if(icon) icon.remove(); };
-        } catch (e) {}
-    }
-
-    function blobToBase64(blob) {
-        return new Promise((resolve) => {
-            const reader = new FileReader();
-            reader.onloadend = () => resolve(reader.result);
-            reader.readAsDataURL(blob);
-        });
-    }
-
-    sendBtn.addEventListener('click', sendMessage);
-    micBtn.addEventListener('click', toggleRecording);
-    userInput.addEventListener('keydown', (e) => { if(e.key==='Enter') sendMessage(); });
-
-    // --- ИГРА ДЫХАНИЕ ---
-    const breathCanvas = document.getElementById('breathCanvas'); const breathCtx = breathCanvas.getContext('2d');
-    const breathLabel = document.getElementById('breathLabel'); const breathInstr = document.getElementById('breathInstruction');
-    const playIcon = document.getElementById('playIcon'); const playText = document.getElementById('playText');
-    let breathAnimId, breathParticles = [], isBreathing = false, breathTimer = 0, breathInterval;
-    let currentR = 110, targetR = 110;
+    // SOS & BREATH
+    const sosSteps=[{n:5,t:'5 вещей',d:'Одного цвета',svg:'<path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>'},{n:4,t:'4 ощущения',d:'На коже',svg:'<path d="M21.99 13.06l-1.92-6.52c-.22-.76-.89-1.28-1.68-1.28H18V4c0-1.1-.9-2-2-2s-2 .9-2 2v8.94l-.3-.02-.1-.01c-.8 0-1.55.23-2.21.62L11 11.23V4c0-1.1-.9-2-2-2S7 2.9 7 4v10.5c0 2.21 1.79 4 4 4s4-1.79 4-4V5c0-.55.45-1 1-1s1 .45 1 1v9.5c0 .35.18.68.49.86.3.19.68.2.98.02.31-.18.49-.52.49-.88V6.52c0-.13.11-.24.23-.24.08 0 .15.04.19.11l2.43 8.26c.2.68.83 1.15 1.54 1.15.88 0 1.6-.72 1.6-1.6 0-.05-.01-.1-.01-.14z"/>'},{n:3,t:'3 звука',d:'Вокруг',svg:'<path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>'},{n:2,t:'2 запаха',d:'Или воспоминания',svg:'<path d="M12 22c4.97 0 9-4.03 9-9-4.97 0-9-4.03-9-9-4.97 0-9 4.03-9 9 0 4.97 4.03 9 9 9z" fill="none" stroke="currentColor"/><path d="M12 13c.88 0 1.61.59 1.88 1.4.16.48.59.83 1.12.83.67 0 1.18-.55 1.18-1.22 0-1.57-2.18-2-2.18-4.01 0-1.12.85-2.03 1.94-2.18C15.42 7.73 15 7.42 15 7c0-.55.45-1 1-1s1 .45 1 1c0 .42-.42.73-1.06.82-1.63.22-2.94 1.64-2.94 3.36 0 1.42 1.68 1.93 1.68 2.83 0 .16-.16.22-.18.22-.05 0-.12-.04-.15-.14-.26-1.07-1.24-1.87-2.35-1.87s-2.09.79-2.35 1.87c-.03.1-.1.14-.15.14-.02 0-.18-.06-.18-.22 0-.9 1.68-1.41 1.68-2.83 0-1.72-1.31-3.14-2.94-3.36C8.42 7.73 8 7.42 8 7c0-.55.45-1 1-1s1 .45 1 1c0 .42-.42.73-.94.82C10.15 7.97 11 8.88 11 10c0 2.01-2.18 2.44-2.18 4.01 0 .67.51 1.22 1.18 1.22.53 0 .96-.35 1.12-.83.27-.81 1-1.4 1.88-1.4z"/>'},{n:1,t:'1 вкус',d:'Вода или конфета',svg:'<path d="M18 10.5c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5zm-6-2.25c-2.07 0-3.75 1.68-3.75 3.75s1.68 3.75 3.75 3.75 3.75-1.68 3.75-3.75-1.68-3.75-3.75-3.75zm0 6c-1.24 0-2.25-1.01-2.25-2.25S10.76 9.75 12 9.75 14.25 10.76 14.25 12 13.24 14.25 12 14.25zM6 10.5c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5z"/>'}];
+    let sosIdx=0;
+    function resetSos(){sosIdx=0;document.getElementById('sos-card-wrapper').style.display='flex';document.getElementById('sos-finish-area').style.display='none'}
+    function startSos(){renderSosStep()}
+    function renderSosStep(){const s=sosSteps[sosIdx];document.getElementById('sos-card-wrapper').innerHTML=`<div class="sos-number">${s.n}</div><svg class="sos-svg anim-eye" viewBox="0 0 24 24">${s.svg}</svg><div class="sos-instruction">${s.t}</div><p style="color:var(--text-body);margin-bottom:30px">${s.d}</p><button class="sos-next-btn" onclick="nextSos()">Готово</button>`}
+    function nextSos(){if(tg.HapticFeedback)tg.HapticFeedback.impactOccurred('light');if(sosIdx<sosSteps.length-1){sosIdx++;renderSosStep()}else{document.getElementById('sos-card-wrapper').style.display='none';document.getElementById('sos-finish-area').style.display='flex';if(tg.HapticFeedback)tg.HapticFeedback.notificationOccurred('success')}}
     
-    class Particle {
-        constructor() { this.angle = Math.random() * Math.PI * 2; this.r = 110 + Math.random() * 20; this.size = Math.random() * 3 + 1; this.speed = Math.random() * 0.02 + 0.005; this.color = `rgba(100, 181, 246, ${Math.random()*0.5})`; }
-        update(radius) { this.angle += this.speed; let targetDist = radius + Math.sin(Date.now()/500)*10; this.r += (targetDist - this.r) * 0.05; this.x = breathCanvas.width/2 + Math.cos(this.angle)*this.r; this.y = (breathCanvas.height/2 - 60) + Math.sin(this.angle)*this.r; }
-        draw() { breathCtx.fillStyle = this.color; breathCtx.beginPath(); breathCtx.arc(this.x, this.y, this.size, 0, Math.PI*2); breathCtx.fill(); }
-    }
-    function resizeBreathCanvas() { breathCanvas.width = window.innerWidth; breathCanvas.height = window.innerHeight; breathParticles = Array.from({length:150}, () => new Particle()); }
-    function startBreathingAnimationLoop() { if(!breathAnimId) animateBreath(); }
-    function stopBreathingAnimationLoop() { cancelAnimationFrame(breathAnimId); breathAnimId = null; }
-    function animateBreath() { breathCtx.clearRect(0,0,breathCanvas.width, breathCanvas.height); currentR += (targetR - currentR) * 0.02; breathParticles.forEach(p => { p.update(currentR); p.draw(); }); breathAnimId = requestAnimationFrame(animateBreath); }
-    function toggleBreathing() {
-        if (isBreathing) { clearInterval(breathInterval); isBreathing = false; playIcon.innerText = 'play_arrow'; playText.innerText = 'Продолжить'; }
-        else {
-            isBreathing = true; playIcon.innerText = 'pause'; playText.innerText = 'Пауза';
-            breathInterval = setInterval(() => { breathTimer++; const t = breathTimer % 19; if (t < 4) { targetR = 180; breathLabel.innerText = "ВДОХ"; breathInstr.innerText = "Глубокий вдох носом"; } else if (t < 11) { targetR = 190; breathLabel.innerText = "ПАУЗА"; breathInstr.innerText = "Задержите дыхание"; } else { targetR = 110; breathLabel.innerText = "ВЫДОХ"; breathInstr.innerText = "Медленный выдох ртом"; } }, 1000);
-        }
-    }
-    function resetBreathing() { clearInterval(breathInterval); isBreathing = false; breathTimer = 0; targetR = 110; playIcon.innerText = 'play_arrow'; playText.innerText = 'Старт'; breathLabel.innerText = 'ДЫШИМ'; breathInstr.innerText = 'Нажми Старт'; }
-
-    // --- SOS ---
-    const sosSteps = [ { n: 5, t: 'Найди 5 вещей', d: 'Посмотри вокруг и назови 5 предметов одного цвета.', svg: '<path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>' }, { n: 4, t: 'Почувствуй 4 вещи', d: 'Ткань одежды, стол, свои руки...', svg: '<path d="M21.99 13.06l-1.92-6.52c-.22-.76-.89-1.28-1.68-1.28H18V4c0-1.1-.9-2-2-2s-2 .9-2 2v8.94l-.3-.02-.1-.01c-.8 0-1.55.23-2.21.62L11 11.23V4c0-1.1-.9-2-2-2S7 2.9 7 4v10.5c0 2.21 1.79 4 4 4s4-1.79 4-4V5c0-.55.45-1 1-1s1 .45 1 1v9.5c0 .35.18.68.49.86.3.19.68.2.98.02.31-.18.49-.52.49-.88V6.52c0-.13.11-.24.23-.24.08 0 .15.04.19.11l2.43 8.26c.2.68.83 1.15 1.54 1.15.88 0 1.6-.72 1.6-1.6 0-.05-.01-.1-.01-.14z"/>' }, { n: 3, t: 'Услышь 3 звука', d: 'Шум улицы, компьютер, свое дыхание.', svg: '<path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>' }, { n: 2, t: 'Почувствуй 2 запаха', d: 'Или вспомни любимые ароматы.', svg: '<path d="M12 22c4.97 0 9-4.03 9-9-4.97 0-9-4.03-9-9-4.97 0-9 4.03-9 9 0 4.97 4.03 9 9 9z" fill="none" stroke="currentColor"/><path d="M12 13c.88 0 1.61.59 1.88 1.4.16.48.59.83 1.12.83.67 0 1.18-.55 1.18-1.22 0-1.57-2.18-2-2.18-4.01 0-1.12.85-2.03 1.94-2.18C15.42 7.73 15 7.42 15 7c0-.55.45-1 1-1s1 .45 1 1c0 .42-.42.73-1.06.82-1.63.22-2.94 1.64-2.94 3.36 0 1.42 1.68 1.93 1.68 2.83 0 .16-.16.22-.18.22-.05 0-.12-.04-.15-.14-.26-1.07-1.24-1.87-2.35-1.87s-2.09.79-2.35 1.87c-.03.1-.1.14-.15.14-.02 0-.18-.06-.18-.22 0-.9 1.68-1.41 1.68-2.83 0-1.72-1.31-3.14-2.94-3.36C8.42 7.73 8 7.42 8 7c0-.55.45-1 1-1s1 .45 1 1c0 .42-.42.73-.94.82C10.15 7.97 11 8.88 11 10c0 2.01-2.18 2.44-2.18 4.01 0 .67.51 1.22 1.18 1.22.53 0 .96-.35 1.12-.83.27-.81 1-1.4 1.88-1.4z"/>' }, { n: 1, t: 'Почувствуй 1 вкус', d: 'Выпей воды или съешь конфету.', svg: '<path d="M18 10.5c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5zm-6-2.25c-2.07 0-3.75 1.68-3.75 3.75s1.68 3.75 3.75 3.75 3.75-1.68 3.75-3.75-1.68-3.75-3.75-3.75zm0 6c-1.24 0-2.25-1.01-2.25-2.25S10.76 9.75 12 9.75 14.25 10.76 14.25 12 13.24 14.25 12 14.25zM6 10.5c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5z"/>' } ];
-    let sosIdx = 0;
-    function resetSos() { sosIdx = 0; document.getElementById('sos-card-wrapper').style.display = 'flex'; document.getElementById('sos-finish-area').style.display = 'none'; }
-    function startSos() { renderSosStep(); }
-    function renderSosStep() { const s = sosSteps[sosIdx]; document.getElementById('sos-card-wrapper').innerHTML = `<div class="sos-number">${s.n}</div><svg class="sos-svg anim-eye" viewBox="0 0 24 24">${s.svg}</svg><div class="sos-instruction">${s.t}</div><p style="color:var(--text-body); margin-bottom:30px;">${s.d}</p><button class="sos-next-btn" onclick="nextSos()">Готово</button>`; }
-    function nextSos() { if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light'); if (sosIdx < sosSteps.length - 1) { sosIdx++; renderSosStep(); } else { document.getElementById('sos-card-wrapper').style.display = 'none'; document.getElementById('sos-finish-area').style.display = 'flex'; if(tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success'); } }
-
-    // --- ОБНОВЛЕННАЯ ЛОГИКА ДНЕВНИКА ---
+    const breathCanvas=document.getElementById('breathCanvas'),breathCtx=breathCanvas.getContext('2d'),breathLabel=document.getElementById('breathLabel'),breathInstr=document.getElementById('breathInstruction'),playIcon=document.getElementById('playIcon'),playText=document.getElementById('playText');
+    let breathAnimId,breathParticles=[],isBreathing=false,breathTimer=0,breathInterval,currentR=110,targetR=110;
+    class Particle{constructor(){this.angle=Math.random()*Math.PI*2;this.r=110+Math.random()*20;this.size=Math.random()*3+1;this.speed=Math.random()*0.02+0.005;this.color=`rgba(100,181,246,${Math.random()*0.5})`}update(r){this.angle+=this.speed;let d=r+Math.sin(Date.now()/500)*10;this.r+=(d-this.r)*0.05;this.x=breathCanvas.width/2+Math.cos(this.angle)*this.r;this.y=(breathCanvas.height/2-60)+Math.sin(this.angle)*this.r}draw(){breathCtx.fillStyle=this.color;breathCtx.beginPath();breathCtx.arc(this.x,this.y,this.size,0,Math.PI*2);breathCtx.fill()}}
+    function resizeBreathCanvas(){breathCanvas.width=window.innerWidth;breathCanvas.height=window.innerHeight;breathParticles=Array.from({length:150},()=>new Particle())}
+    function startBreathingAnimationLoop(){if(!breathAnimId)animateBreath()}
+    function stopBreathingAnimationLoop(){cancelAnimationFrame(breathAnimId);breathAnimId=null}
+    function animateBreath(){breathCtx.clearRect(0,0,breathCanvas.width,breathCanvas.height);currentR+=(targetR-currentR)*0.02;breathParticles.forEach(p=>{p.update(currentR);p.draw()});breathAnimId=requestAnimationFrame(animateBreath)}
+    function toggleBreathing(){if(isBreathing){clearInterval(breathInterval);isBreathing=false;playIcon.innerText='play_arrow';playText.innerText='Продолжить'}else{isBreathing=true;playIcon.innerText='pause';playText.innerText='Пауза';breathInterval=setInterval(()=>{breathTimer++;const t=breathTimer%19;if(t<4){targetR=180;breathLabel.innerText="ВДОХ";breathInstr.innerText="Носом"}else if(t<11){targetR=190;breathLabel.innerText="ПАУЗА";breathInstr.innerText="Держим"}else{targetR=110;breathLabel.innerText="ВЫДОХ";breathInstr.innerText="Ртом"}},1000)}}
+    function resetBreathing(){clearInterval(breathInterval);isBreathing=false;breathTimer=0;targetR=110;playIcon.innerText='play_arrow';playText.innerText='Старт';breathLabel.innerText='ДЫШИМ';breathInstr.innerText='Нажми Старт'}
+    
+    // --- ДНЕВНИК (ИСПРАВЛЕНО: 30 ДНЕЙ, АДАПТИВНОСТЬ) ---
     function saveMood(level) { 
-        // level: 5 (Excellent) to 1 (Bad)
         const h = JSON.parse(localStorage.getItem('mood_history_v2') || '{}');
-        const date = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+        const date = new Date().toISOString().split('T')[0];
         h[date] = level;
         localStorage.setItem('mood_history_v2', JSON.stringify(h));
-        
         if(tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
         renderDiary(); 
     }
@@ -608,54 +349,41 @@
         const h = JSON.parse(localStorage.getItem('mood_history_v2') || '{}');
         const dates = Object.keys(h).sort();
         
-        // 1. Отрисовка списка
         const c = document.getElementById('history-container');
         c.innerHTML = '';
         
-        // Словарь для отображения (ЦВЕТА ИСПРАВЛЕНЫ)
         const moodMap = {
             5: {text: 'Отлично', color: '#4DB6AC', bg: '#E0F2F1'},
-            4: {text: 'Хорошо', color: '#80CBC4', bg: '#E0F2F1'}, // Светло-мятный
-            3: {text: 'Нормально', color: '#64B5F6', bg: '#E3F2FD'}, // Голубой
-            2: {text: 'Так себе', color: '#FFE082', bg: '#FFF8E1'}, // Светло-бежевый
-            1: {text: 'Плохо', color: '#FFB74D', bg: '#FFF3E0'} // Бежевый
+            4: {text: 'Хорошо', color: '#80CBC4', bg: '#E0F2F1'},
+            3: {text: 'Нормально', color: '#64B5F6', bg: '#E3F2FD'},
+            2: {text: 'Так себе', color: '#FFE082', bg: '#FFF8E1'},
+            1: {text: 'Плохо', color: '#FFB74D', bg: '#FFF3E0'}
         };
 
         [...dates].reverse().forEach(date => {
             const val = h[date];
             const m = moodMap[val];
-            c.innerHTML += `
-            <div class="history-item">
-                <span style="font-weight:600; color:var(--text-header)">${new Date(date).toLocaleDateString()}</span>
-                <span style="padding:4px 10px; border-radius:8px; font-size:13px; font-weight:600; background:${m.bg}; color:${m.color};">
-                    ${m.text}
-                </span>
-            </div>`;
+            c.innerHTML += `<div class="history-item"><span style="font-weight:600;color:var(--text-header)">${new Date(date).toLocaleDateString()}</span><span style="padding:4px 10px;border-radius:8px;font-size:13px;font-weight:600;background:${m.bg};color:${m.color};">${m.text}</span></div>`;
         });
 
-        // 2. Расчет статистики
-        const total = dates.length;
-        if (total > 0) {
+        // БЕРЕМ ПОСЛЕДНИЕ 30 ДНЕЙ ДЛЯ СТАТИСТИКИ (ИСПРАВЛЕНО)
+        const recentDates = dates.slice(-30);
+
+        if (recentDates.length > 0) { 
             const counts = {5:0, 4:0, 3:0, 2:0, 1:0};
-            dates.forEach(d => counts[h[d]]++);
-            
+            recentDates.forEach(d => counts[h[d]]++);
             const statsDiv = document.getElementById('stats-container');
             statsDiv.innerHTML = '';
-            
-            // Порядок для статистики
             [5,4,3,2,1].forEach(lvl => {
                 if (counts[lvl] > 0) {
-                    const pct = Math.round((counts[lvl] / total) * 100);
+                    const pct = Math.round((counts[lvl] / recentDates.length) * 100);
                     const m = moodMap[lvl];
                     statsDiv.innerHTML += `<div class="stat-pill" style="color:${m.color}">${m.text}: ${pct}%</div>`;
                 }
             });
-            
             drawMoodChart(h);
             document.getElementById('empty-chart-msg').style.display = 'none';
         } else {
-            const ctx = document.getElementById('moodChart').getContext('2d');
-            ctx.clearRect(0,0,300,150);
             document.getElementById('empty-chart-msg').style.display = 'block';
         }
     }
@@ -664,289 +392,112 @@
         const canvas = document.getElementById('moodChart');
         const ctx = canvas.getContext('2d');
         const dpr = window.devicePixelRatio || 1;
-        
-        // Размеры канваса
         const rect = canvas.getBoundingClientRect();
-        canvas.width = rect.width * dpr;
-        canvas.height = rect.height * dpr;
+        canvas.width = rect.width * dpr; canvas.height = rect.height * dpr;
         ctx.scale(dpr, dpr);
-        
-        const w = rect.width;
-        const h = rect.height;
+        const w = rect.width; const h = rect.height;
         ctx.clearRect(0, 0, w, h);
 
-        // Берем последние 7 дней
-        const dates = Object.keys(history).sort().slice(-7);
-        if (dates.length < 2) return; 
+        // ИСПРАВЛЕНО: 30 ДНЕЙ
+        const dates = Object.keys(history).sort().slice(-30);
+        if (dates.length === 0) return;
 
         const points = dates.map((date, i) => {
-            const val = history[date]; // 1-5
-            const y = 20 + ((5 - val) / 4) * (h - 40); 
-            const x = 20 + (i / (dates.length - 1)) * (w - 40);
+            const val = history[date];
+            const y = 20 + ((5 - val) / 4) * (h - 40);
+            
+            // ЛОГИКА "РЕЗИНОВОГО" ГРАФИКА
+            let x;
+            if (dates.length === 1) {
+                x = w / 2; // Если одна точка, она в центре (но линия будет во всю ширину)
+            } else {
+                // Если точек > 1, распределяем от 20px до (w-20px)
+                x = 20 + (i / (dates.length - 1)) * (w - 40);
+            }
             return {x, y};
         });
 
-        // Рисуем плавную линию (Spline)
         ctx.beginPath();
-        ctx.moveTo(points[0].x, points[0].y);
-        
-        for (let i = 0; i < points.length - 1; i++) {
-            const curr = points[i];
-            const next = points[i+1];
-            const xc = (curr.x + next.x) / 2;
-            const yc = (curr.y + next.y) / 2;
-            ctx.quadraticCurveTo(curr.x, curr.y, xc, yc);
+        if (points.length === 1) {
+            // ПРЯМАЯ ЛИНИЯ ДЛЯ ОДНОЙ ЗАПИСИ
+            ctx.moveTo(0, points[0].y);
+            ctx.lineTo(w, points[0].y);
+        } else {
+            // КРИВАЯ ДЛЯ > 1 ЗАПИСИ
+            ctx.moveTo(points[0].x, points[0].y);
+            for (let i = 0; i < points.length - 1; i++) {
+                const xc = (points[i].x + points[i+1].x) / 2;
+                const yc = (points[i].y + points[i+1].y) / 2;
+                ctx.quadraticCurveTo(points[i].x, points[i].y, xc, yc);
+            }
+            ctx.lineTo(points[points.length-1].x, points[points.length-1].y);
         }
-        ctx.lineTo(points[points.length-1].x, points[points.length-1].y);
 
-        ctx.lineCap = 'round';
-        ctx.lineWidth = 4;
-        ctx.strokeStyle = '#4DB6AC'; 
-        ctx.stroke();
+        ctx.lineCap = 'round'; ctx.lineWidth = 4; ctx.strokeStyle = '#4DB6AC'; ctx.stroke();
 
-        // Градиент
-        ctx.lineTo(points[points.length-1].x, h);
-        ctx.lineTo(points[0].x, h);
+        // Заливка
+        if (points.length === 1) {
+            ctx.lineTo(w, h); ctx.lineTo(0, h);
+        } else {
+            ctx.lineTo(points[points.length-1].x, h); ctx.lineTo(points[0].x, h);
+        }
         ctx.closePath();
         
         const grad = ctx.createLinearGradient(0, 0, 0, h);
         grad.addColorStop(0, 'rgba(77, 182, 172, 0.4)');
         grad.addColorStop(1, 'rgba(77, 182, 172, 0.0)');
-        ctx.fillStyle = grad;
-        ctx.fill();
+        ctx.fillStyle = grad; ctx.fill();
 
-        // Точки
+        // Точки (АДАПТИВНЫЙ РАЗМЕР)
+        const dotRadius = dates.length > 15 ? 3 : 5; // Если много точек, делаем их меньше
         points.forEach(p => {
-            ctx.beginPath();
-            ctx.arc(p.x, p.y, 5, 0, Math.PI*2);
-            ctx.fillStyle = '#FFFFFF';
-            ctx.fill();
-            ctx.lineWidth = 2;
-            ctx.stroke();
+            ctx.beginPath(); ctx.arc(p.x, p.y, dotRadius, 0, Math.PI*2); ctx.fillStyle = '#FFFFFF'; ctx.fill(); ctx.lineWidth = 2; ctx.stroke();
         });
     }
 
-    // --- ИГРА ШАРИКИ (ФИНАЛЬНАЯ - DELTA TIME + HACKS + OBJECT POOL + CONFETTI + TIMER + HIGHSCORE) ---
+    // GAME
     const ballCanvas = document.getElementById('balloon-game-canvas');
     const bCtx = ballCanvas.getContext('2d');
-    
-    // ТРЮК №2: ОГРАНИЧЕНИЕ ПЛОТНОСТИ ПИКСЕЛЕЙ (DPR CAP)
-    const dpr = Math.min(window.devicePixelRatio || 1, 1.5); 
-
-    const cachedTarget = document.createElement('canvas');
-    const cachedDummy = document.createElement('canvas');
+    const dpr2 = Math.min(window.devicePixelRatio || 1, 1.5); 
+    const cachedTarget = document.createElement('canvas'); const cachedDummy = document.createElement('canvas');
     const balloonSize = 80; 
-    
-    cachedTarget.width = balloonSize * dpr; cachedTarget.height = (balloonSize + 60) * dpr;
-    cachedDummy.width = balloonSize * dpr; cachedDummy.height = (balloonSize + 60) * dpr;
+    cachedTarget.width = balloonSize * dpr2; cachedTarget.height = (balloonSize + 60) * dpr2;
+    cachedDummy.width = balloonSize * dpr2; cachedDummy.height = (balloonSize + 60) * dpr2;
 
     function preDrawBalloon(ctx, type) {
-        ctx.scale(dpr, dpr); 
-        const cx = balloonSize/2; const cy = balloonSize/2; const r = 35;
+        ctx.scale(dpr2, dpr2); const cx = balloonSize/2; const cy = balloonSize/2; const r = 35;
         ctx.beginPath(); ctx.moveTo(cx, cy+r); ctx.bezierCurveTo(cx+10, cy+r+20, cx-10, cy+r+40, cx, cy+r+60);
         ctx.strokeStyle = 'rgba(0,0,0,0.15)'; ctx.lineWidth = 2; ctx.stroke();
-        if (type === 'target') {
-            let g = ctx.createLinearGradient(cx, cy-r, cx, cy+r); g.addColorStop(0, '#81D4FA'); g.addColorStop(1, '#FFF59D'); ctx.fillStyle = g;
-        } else { ctx.fillStyle = '#CFD8DC'; }
+        if (type === 'target') { let g = ctx.createLinearGradient(cx, cy-r, cx, cy+r); g.addColorStop(0, '#81D4FA'); g.addColorStop(1, '#FFF59D'); ctx.fillStyle = g; } else { ctx.fillStyle = '#CFD8DC'; }
         ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI*2); ctx.fill();
         ctx.beginPath(); ctx.moveTo(cx, cy+r-2); ctx.lineTo(cx-6, cy+r+8); ctx.lineTo(cx+6, cy+r+8); ctx.fill();
         ctx.beginPath(); ctx.arc(cx, cy, r-10, -0.2*Math.PI, 0.1*Math.PI); 
         ctx.strokeStyle = 'rgba(255,255,255,0.6)'; ctx.lineWidth = 3; ctx.lineCap = 'round'; ctx.stroke();
         ctx.setTransform(1, 0, 0, 1, 0, 0); 
     }
-    preDrawBalloon(cachedTarget.getContext('2d'), 'target');
-    preDrawBalloon(cachedDummy.getContext('2d'), 'dummy');
+    preDrawBalloon(cachedTarget.getContext('2d'), 'target'); preDrawBalloon(cachedDummy.getContext('2d'), 'dummy');
 
-    // POOLS
-    const MAX_BALLOONS = 100;
-    const pool = new Array(MAX_BALLOONS).fill(null).map(() => ({active: false, x: 0, y: 0, baseX: 0, baseSpeed: 0, wobble: 0, type: 'dummy'}));
-    
-    // CONFETTI POOL
-    const MAX_PARTICLES = 150;
-    const particles = new Array(MAX_PARTICLES).fill(null).map(()=>({active:false, x:0, y:0, vx:0, vy:0, life:0, color:'#000'}));
+    const MAX_BALLOONS = 100; const pool = new Array(MAX_BALLOONS).fill(null).map(() => ({active: false, x: 0, y: 0, baseX: 0, baseSpeed: 0, wobble: 0, type: 'dummy'}));
+    const MAX_PARTICLES = 150; const particles = new Array(MAX_PARTICLES).fill(null).map(()=>({active:false, x:0, y:0, vx:0, vy:0, life:0, color:'#000'}));
     const particleColors = ['#FFD700', '#FF6B6B', '#4ECDC4', '#45B7D1'];
-
-    let bLoopId, bScore = 0;
-    let gameStartTime = 0;
-    let isGameRunning = false;
-    let lastFrameTime = 0;
-    const GAME_DURATION = 120; // 2 минуты (в секундах)
+    let bLoopId, bScore = 0, gameStartTime = 0, isGameRunning = false, lastFrameTime = 0;
+    const GAME_DURATION = 120;
 
     function initBalloonGame() {
-        // Сброс UI
-        document.getElementById('game-over-modal').style.display = 'none';
-        document.getElementById('record-badge').style.display = 'none';
-        document.getElementById('game-icon').style.display = 'none';
-        
-        ballCanvas.width = window.innerWidth * dpr;
-        ballCanvas.height = window.innerHeight * dpr;
-        bCtx.scale(dpr, dpr);
-
-        pool.forEach(b => b.active = false);
-        particles.forEach(p => p.active = false);
-        bScore = 0; 
-        document.getElementById('balloon-score').innerText = 0;
-        document.getElementById('game-timer').innerText = "02:00";
-        
+        document.getElementById('game-over-modal').style.display = 'none'; document.getElementById('record-badge').style.display = 'none'; document.getElementById('game-icon').style.display = 'none';
+        ballCanvas.width = window.innerWidth * dpr2; ballCanvas.height = window.innerHeight * dpr2; bCtx.scale(dpr2, dpr2);
+        pool.forEach(b => b.active = false); particles.forEach(p => p.active = false);
+        bScore = 0; document.getElementById('balloon-score').innerText = 0; document.getElementById('game-timer').innerText = "02:00";
         ballCanvas.addEventListener('touchstart', popBalloon, {passive: false}); ballCanvas.addEventListener('mousedown', popBalloon);
-        gameStartTime = Date.now();
-        lastFrameTime = performance.now();
-        isGameRunning = true;
+        gameStartTime = Date.now(); lastFrameTime = performance.now(); isGameRunning = true;
         requestAnimationFrame(runBalloonLoop);
     }
-
-    function stopBalloonGame() {
-        isGameRunning = false;
-        ballCanvas.removeEventListener('touchstart', popBalloon); ballCanvas.removeEventListener('mousedown', popBalloon);
-    }
-
-    function endGame() {
-        isGameRunning = false;
-        
-        // Логика рекорда
-        const savedScore = parseInt(localStorage.getItem('balloon_highscore') || '0');
-        let isNewRecord = bScore > savedScore;
-        
-        if (isNewRecord) {
-            localStorage.setItem('balloon_highscore', bScore);
-        }
-
-        // Показ UI
-        document.getElementById('final-score').innerText = bScore;
-        if (isNewRecord) {
-            document.getElementById('record-badge').style.display = 'inline-block';
-            document.getElementById('game-icon').style.display = 'block';
-            if(tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
-        } else {
-            if(tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('warning');
-        }
-        
-        document.getElementById('game-over-modal').style.display = 'flex';
-    }
-
-    function spawnBalloon() {
-        const b = pool.find(p => !p.active);
-        if (!b) return; 
-
-        const type = Math.random() < 0.6 ? 'target' : 'dummy';
-        
-        b.active = true;
-        b.baseX = Math.random() * (window.innerWidth - 70) + 35;
-        b.x = b.baseX;
-        b.y = window.innerHeight + 50;
-        b.baseSpeed = Math.random() * 2 + 2;
-        b.wobble = Math.random() * Math.PI * 2;
-        b.type = type;
-    }
-
-    function explodeConfetti(x, y) {
-        let count = 0;
-        for(let i=0; i<MAX_PARTICLES; i++) {
-            const p = particles[i];
-            if(!p.active) {
-                p.active = true;
-                p.x = x; p.y = y;
-                p.vx = (Math.random() - 0.5) * 10;
-                p.vy = (Math.random() - 0.5) * 10 - 2;
-                p.life = 1.0;
-                p.color = particleColors[Math.floor(Math.random()*particleColors.length)];
-                count++;
-                if(count >= 15) break; 
-            }
-        }
-    }
-
-    function runBalloonLoop(timestamp) {
-        if (!isGameRunning) return;
-
-        // --- TIMER LOGIC ---
-        const elapsedTotal = (Date.now() - gameStartTime) / 1000;
-        const timeLeft = Math.max(0, GAME_DURATION - elapsedTotal);
-        
-        // Форматирование 02:00
-        const m = Math.floor(timeLeft / 60).toString().padStart(2, '0');
-        const s = Math.floor(timeLeft % 60).toString().padStart(2, '0');
-        document.getElementById('game-timer').innerText = `${m}:${s}`;
-
-        if (timeLeft <= 0) {
-            endGame();
-            return;
-        }
-
-        // --- GAME LOOP ---
-        let dt = (timestamp - lastFrameTime) / 1000;
-        lastFrameTime = timestamp;
-        if (dt > 0.1) dt = 0.1; 
-
-        bCtx.clearRect(0, 0, window.innerWidth, window.innerHeight);
-        
-        const speedMultiplier = 1 + (Math.floor(elapsedTotal / 30) * 0.2); 
-
-        // SPAWN
-        if (Math.random() < 0.06 * (dt * 60)) { 
-            spawnBalloon();
-        }
-        
-        // BALLOONS
-        for (let i = 0; i < MAX_BALLOONS; i++) {
-            const b = pool[i];
-            if (!b.active) continue;
-
-            const moveStep = b.baseSpeed * speedMultiplier * (dt * 60);
-            
-            b.y -= moveStep;
-            // ЗИГЗАГ
-            b.x = b.baseX + Math.sin(timestamp * 0.005 + b.wobble) * 50;
-
-            const img = b.type === 'target' ? cachedTarget : cachedDummy;
-            bCtx.drawImage(img, 0, 0, img.width, img.height, (b.x - 40)|0, (b.y - 40)|0, 80, 140);
-
-            if (b.y < -150) b.active = false;
-        }
-
-        // PARTICLES
-        for(let i=0; i<MAX_PARTICLES; i++){
-            const p=particles[i]; if(!p.active)continue;
-            p.x += p.vx * (dt*60);
-            p.y += p.vy * (dt*60);
-            p.vy += 0.5 * (dt*60); // Gravity
-            p.life -= 0.02 * (dt*60);
-            
-            bCtx.globalAlpha = p.life;
-            bCtx.fillStyle = p.color;
-            bCtx.fillRect((p.x)|0, (p.y)|0, 6, 6); 
-            bCtx.globalAlpha = 1.0;
-
-            if(p.life <= 0) p.active = false;
-        }
-        
-        requestAnimationFrame(runBalloonLoop);
-    }
-
-    function popBalloon(e) {
-        e.preventDefault();
-        const rect = ballCanvas.getBoundingClientRect();
-        const tx = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
-        const ty = (e.touches ? e.touches[0].clientY : e.clientY) - rect.top;
-        
-        for (let i = 0; i < MAX_BALLOONS; i++) {
-            const b = pool[i];
-            if (!b.active) continue;
-
-            const dist = Math.sqrt((tx - b.x)**2 + (ty - b.y)**2);
-            if (dist < 50) { 
-                if (b.type === 'target') {
-                    b.active = false; 
-                    bScore++;
-                    document.getElementById('balloon-score').innerText = bScore;
-                    explodeConfetti(b.x, b.y);
-                    if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
-                }
-                break; 
-            }
-        }
-    }
-
+    function stopBalloonGame() { isGameRunning = false; ballCanvas.removeEventListener('touchstart', popBalloon); ballCanvas.removeEventListener('mousedown', popBalloon); }
+    function endGame() { isGameRunning = false; const savedScore = parseInt(localStorage.getItem('balloon_highscore') || '0'); let isNewRecord = bScore > savedScore; if (isNewRecord) { localStorage.setItem('balloon_highscore', bScore); } document.getElementById('final-score').innerText = bScore; if (isNewRecord) { document.getElementById('record-badge').style.display = 'inline-block'; document.getElementById('game-icon').style.display = 'block'; if(tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success'); } else { if(tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('warning'); } document.getElementById('game-over-modal').style.display = 'flex'; }
+    function spawnBalloon() { const b = pool.find(p => !p.active); if (!b) return; const type = Math.random() < 0.6 ? 'target' : 'dummy'; b.active = true; b.baseX = Math.random() * (window.innerWidth - 70) + 35; b.x = b.baseX; b.y = window.innerHeight + 50; b.baseSpeed = Math.random() * 2 + 2; b.wobble = Math.random() * Math.PI * 2; b.type = type; }
+    function explodeConfetti(x, y) { let count = 0; for(let i=0; i<MAX_PARTICLES; i++) { const p = particles[i]; if(!p.active) { p.active = true; p.x = x; p.y = y; p.vx = (Math.random() - 0.5) * 10; p.vy = (Math.random() - 0.5) * 10 - 2; p.life = 1.0; p.color = particleColors[Math.floor(Math.random()*particleColors.length)]; count++; if(count >= 15) break; } } }
+    function runBalloonLoop(timestamp) { if (!isGameRunning) return; const elapsedTotal = (Date.now() - gameStartTime) / 1000; const timeLeft = Math.max(0, GAME_DURATION - elapsedTotal); const m = Math.floor(timeLeft / 60).toString().padStart(2, '0'); const s = Math.floor(timeLeft % 60).toString().padStart(2, '0'); document.getElementById('game-timer').innerText = `${m}:${s}`; if (timeLeft <= 0) { endGame(); return; } let dt = (timestamp - lastFrameTime) / 1000; lastFrameTime = timestamp; if (dt > 0.1) dt = 0.1; bCtx.clearRect(0, 0, window.innerWidth, window.innerHeight); const speedMultiplier = 1 + (Math.floor(elapsedTotal / 30) * 0.2); if (Math.random() < 0.06 * (dt * 60)) { spawnBalloon(); } for (let i = 0; i < MAX_BALLOONS; i++) { const b = pool[i]; if (!b.active) continue; const moveStep = b.baseSpeed * speedMultiplier * (dt * 60); b.y -= moveStep; b.x = b.baseX + Math.sin(timestamp * 0.005 + b.wobble) * 50; const img = b.type === 'target' ? cachedTarget : cachedDummy; bCtx.drawImage(img, 0, 0, img.width, img.height, (b.x - 40)|0, (b.y - 40)|0, 80, 140); if (b.y < -150) b.active = false; } for(let i=0; i<MAX_PARTICLES; i++){ const p=particles[i]; if(!p.active)continue; p.x += p.vx * (dt*60); p.y += p.vy * (dt*60); p.vy += 0.5 * (dt*60); p.life -= 0.02 * (dt*60); bCtx.globalAlpha = p.life; bCtx.fillStyle = p.color; bCtx.fillRect((p.x)|0, (p.y)|0, 6, 6); bCtx.globalAlpha = 1.0; if(p.life <= 0) p.active = false; } requestAnimationFrame(runBalloonLoop); }
+    function popBalloon(e) { e.preventDefault(); const rect = ballCanvas.getBoundingClientRect(); const tx = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left; const ty = (e.touches ? e.touches[0].clientY : e.clientY) - rect.top; for (let i = 0; i < MAX_BALLOONS; i++) { const b = pool[i]; if (!b.active) continue; const dist = Math.sqrt((tx - b.x)**2 + (ty - b.y)**2); if (dist < 50) { if (b.type === 'target') { b.active = false; bScore++; document.getElementById('balloon-score').innerText = bScore; explodeConfetti(b.x, b.y); if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light'); } break; } } }
 </script>
 </body>
 </html>
