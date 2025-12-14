@@ -143,9 +143,11 @@
         #game-screen { background: var(--primary-soft); }
         canvas#breathCanvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; opacity: 0.6; }
         .game-ui-overlay { position: relative; z-index: 10; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; width: 100%; padding-bottom: 80px; pointer-events: none; }
+        
         .breath-text-container { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; margin-bottom: 40px; }
         .breath-status { font-size: 32px; font-weight: 800; color: var(--text-header); margin-bottom: 8px; }
         .breath-timer-text { font-size: 18px; color: var(--text-muted); }
+        
         .game-controls { pointer-events: auto; display: flex; gap: 20px; }
         .btn-game-card { padding: 20px 40px; border-radius: var(--radius-card); border: none; font-size: 18px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 14px; background: var(--secondary-bg); color: var(--secondary-text); box-shadow: var(--shadow-float-blue); }
         .btn-reset-sq { width: 64px; height: 64px; border-radius: 20px; background: var(--secondary-bg); color: var(--secondary-text); border: none; box-shadow: var(--shadow-float-blue); display: flex; align-items: center; justify-content: center; cursor: pointer; }
@@ -178,7 +180,7 @@
         .score-label { font-size: 16px; color: var(--text-muted); margin-bottom: 30px; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
         .new-record-badge { background: var(--warm-bg); color: var(--warm-text); padding: 6px 12px; border-radius: 8px; font-weight: 700; font-size: 14px; margin-bottom: 10px; display: inline-block; }
 
-        /* --- НОВЫЙ ДИЗАЙН ДНЕВНИКА --- */
+        /* --- ОБНОВЛЕННЫЕ ЦВЕТА ДНЕВНИКА --- */
         .chart-container { 
             background: white; border-radius: 24px; padding: 20px; margin-bottom: 20px; box-shadow: var(--shadow-card); 
             height: 200px; position: relative; display: flex; align-items: center; justify-content: center;
@@ -202,12 +204,12 @@
         .mood-item .material-icons-round { font-size: 32px; margin-bottom: 6px; }
         .mood-item span { font-size: 10px; font-weight: 600; color: var(--text-muted); text-align: center; line-height: 1.2; }
         
-        /* Цвета для настроений */
-        .mood-5 { color: var(--primary-main); } /* Отлично */
-        .mood-4 { color: #64B5F6; } /* Хорошо */
-        .mood-3 { color: #90A4AE; } /* Норм */
-        .mood-2 { color: #FFB74D; } /* Не очень */
-        .mood-1 { color: #EF5350; } /* Плохо */
+        /* НОВАЯ ПАЛИТРА НАСТРОЕНИЙ (От Мятного до Бежевого) */
+        .mood-5 { color: #4DB6AC; } /* Отлично - Мятный (Primary Main) */
+        .mood-4 { color: #80CBC4; } /* Хорошо - Светло-мятный */
+        .mood-3 { color: #64B5F6; } /* Норм - Светло-голубой (Secondary Accent) */
+        .mood-2 { color: #FFE082; } /* Так себе - Светло-бежевый */
+        .mood-1 { color: #FFB74D; } /* Плохо - Бежевый/Оранжевый (Warm Accent) */
 
         .history-list { display: flex; flex-direction: column; gap: 10px; }
     </style>
@@ -335,7 +337,7 @@
         </div>
     </div>
 
-    <!-- 6. ДНЕВНИК (ПОЛНОСТЬЮ ОБНОВЛЕННЫЙ) -->
+    <!-- 6. ДНЕВНИК (ЦВЕТА ИСПРАВЛЕНЫ) -->
     <div id="music-screen" class="screen">
         <div style="padding:24px; overflow-y:auto;">
             <!-- ГРАФИК -->
@@ -347,14 +349,11 @@
             </div>
 
             <!-- СТАТИСТИКА -->
-            <div class="stats-container" id="stats-container">
-                <!-- Сюда JS добавит плашки -->
-            </div>
+            <div class="stats-container" id="stats-container"></div>
 
             <!-- ВЫБОР НАСТРОЕНИЯ -->
             <h2 style="margin-bottom:15px; font-size:18px;">Как вы сейчас?</h2>
             <div class="mood-grid">
-                <!-- 5 кнопок -->
                 <div class="mood-item" onclick="saveMood(5)">
                     <span class="material-icons-round mood-5">sentiment_very_satisfied</span>
                     <span>Отлично</span>
@@ -613,13 +612,13 @@
         const c = document.getElementById('history-container');
         c.innerHTML = '';
         
-        // Словарь для отображения
+        // Словарь для отображения (ЦВЕТА ИСПРАВЛЕНЫ)
         const moodMap = {
-            5: {text: 'Отлично', color: 'var(--primary-main)', bg: 'var(--primary-soft)'},
-            4: {text: 'Хорошо', color: '#64B5F6', bg: '#E3F2FD'},
-            3: {text: 'Нормально', color: '#90A4AE', bg: '#ECEFF1'},
-            2: {text: 'Так себе', color: '#FFB74D', bg: '#FFF3E0'},
-            1: {text: 'Плохо', color: '#EF5350', bg: '#FFEBEE'}
+            5: {text: 'Отлично', color: '#4DB6AC', bg: '#E0F2F1'},
+            4: {text: 'Хорошо', color: '#80CBC4', bg: '#E0F2F1'}, // Светло-мятный
+            3: {text: 'Нормально', color: '#64B5F6', bg: '#E3F2FD'}, // Голубой
+            2: {text: 'Так себе', color: '#FFE082', bg: '#FFF8E1'}, // Светло-бежевый
+            1: {text: 'Плохо', color: '#FFB74D', bg: '#FFF3E0'} // Бежевый
         };
 
         [...dates].reverse().forEach(date => {
@@ -643,7 +642,7 @@
             const statsDiv = document.getElementById('stats-container');
             statsDiv.innerHTML = '';
             
-            // Порядок для статистики: Отлично -> Плохо
+            // Порядок для статистики
             [5,4,3,2,1].forEach(lvl => {
                 if (counts[lvl] > 0) {
                     const pct = Math.round((counts[lvl] / total) * 100);
@@ -678,12 +677,10 @@
 
         // Берем последние 7 дней
         const dates = Object.keys(history).sort().slice(-7);
-        if (dates.length < 2) return; // Нужно хотя бы 2 точки для линии
+        if (dates.length < 2) return; 
 
         const points = dates.map((date, i) => {
             const val = history[date]; // 1-5
-            // Нормализуем Y: 5 -> верх (padding 10px), 1 -> низ
-            // (5-val) инвертирует, т.к. Y=0 это верх
             const y = 20 + ((5 - val) / 4) * (h - 40); 
             const x = 20 + (i / (dates.length - 1)) * (w - 40);
             return {x, y};
@@ -700,16 +697,14 @@
             const yc = (curr.y + next.y) / 2;
             ctx.quadraticCurveTo(curr.x, curr.y, xc, yc);
         }
-        // Последняя точка
         ctx.lineTo(points[points.length-1].x, points[points.length-1].y);
 
-        // Стили линии
         ctx.lineCap = 'round';
         ctx.lineWidth = 4;
-        ctx.strokeStyle = '#4DB6AC'; // Mint
+        ctx.strokeStyle = '#4DB6AC'; 
         ctx.stroke();
 
-        // Градиент под линией
+        // Градиент
         ctx.lineTo(points[points.length-1].x, h);
         ctx.lineTo(points[0].x, h);
         ctx.closePath();
