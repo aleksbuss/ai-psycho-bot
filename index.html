@@ -195,21 +195,37 @@
         }
         
         .mood-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-bottom: 30px; }
+        
+        /* КАРТОЧКИ НАСТРОЕНИЯ (ЦВЕТНЫЕ) */
         .mood-item { 
-            background: white; border-radius: 16px; padding: 12px 4px; 
+            border-radius: 16px; padding: 12px 4px; 
             display: flex; flex-direction: column; align-items: center; justify-content: center; 
             box-shadow: var(--shadow-card); cursor: pointer; transition: transform 0.1s; 
         }
         .mood-item:active { transform: scale(0.95); }
         .mood-item .material-icons-round { font-size: 32px; margin-bottom: 6px; }
-        .mood-item span { font-size: 10px; font-weight: 600; color: var(--text-muted); text-align: center; line-height: 1.2; }
-        
-        /* ПАЛИТРА НАСТРОЕНИЙ */
-        .mood-5 { color: #4DB6AC; } 
-        .mood-4 { color: #80CBC4; } 
-        .mood-3 { color: #64B5F6; } 
-        .mood-2 { color: #FFE082; } 
-        .mood-1 { color: #FFB74D; } 
+        .mood-item span { font-size: 10px; font-weight: 700; text-align: center; line-height: 1.2; }
+
+        /* ЦВЕТА КАРТОЧЕК (СИНХРОНИЗАЦИЯ С ИСТОРИЕЙ) */
+        /* 5 - Отлично (Мятный) */
+        .mood-card-5 { background-color: #E0F2F1; }
+        .mood-card-5 .material-icons-round, .mood-card-5 span { color: #4DB6AC; }
+
+        /* 4 - Хорошо (Светло-мятный) */
+        .mood-card-4 { background-color: #E0F2F1; }
+        .mood-card-4 .material-icons-round, .mood-card-4 span { color: #80CBC4; }
+
+        /* 3 - Норм (Голубой) */
+        .mood-card-3 { background-color: #E3F2FD; }
+        .mood-card-3 .material-icons-round, .mood-card-3 span { color: #64B5F6; }
+
+        /* 2 - Так себе (Светло-бежевый) */
+        .mood-card-2 { background-color: #FFF8E1; }
+        .mood-card-2 .material-icons-round, .mood-card-2 span { color: #FFE082; }
+
+        /* 1 - Плохо (Бежевый/Оранжевый) */
+        .mood-card-1 { background-color: #FFF3E0; }
+        .mood-card-1 .material-icons-round, .mood-card-1 span { color: #FFB74D; }
 
         .history-list { display: flex; flex-direction: column; gap: 10px; }
     </style>
@@ -268,13 +284,31 @@
             </div>
             <div class="stats-container" id="stats-container"></div>
             <h2 style="margin-bottom:15px; font-size:18px;">Как вы сейчас?</h2>
+            
+            <!-- ЦВЕТНЫЕ КНОПКИ -->
             <div class="mood-grid">
-                <div class="mood-item" onclick="saveMood(5)"><span class="material-icons-round mood-5">sentiment_very_satisfied</span><span>Отлично</span></div>
-                <div class="mood-item" onclick="saveMood(4)"><span class="material-icons-round mood-4">sentiment_satisfied_alt</span><span>Хорошо</span></div>
-                <div class="mood-item" onclick="saveMood(3)"><span class="material-icons-round mood-3">sentiment_neutral</span><span>Норм</span></div>
-                <div class="mood-item" onclick="saveMood(2)"><span class="material-icons-round mood-2">sentiment_dissatisfied</span><span>Так себе</span></div>
-                <div class="mood-item" onclick="saveMood(1)"><span class="material-icons-round mood-1">sentiment_very_dissatisfied</span><span>Плохо</span></div>
+                <div class="mood-item mood-card-5" onclick="saveMood(5)">
+                    <span class="material-icons-round">sentiment_very_satisfied</span>
+                    <span>Отлично</span>
+                </div>
+                <div class="mood-item mood-card-4" onclick="saveMood(4)">
+                    <span class="material-icons-round">sentiment_satisfied_alt</span>
+                    <span>Хорошо</span>
+                </div>
+                <div class="mood-item mood-card-3" onclick="saveMood(3)">
+                    <span class="material-icons-round">sentiment_neutral</span>
+                    <span>Норм</span>
+                </div>
+                <div class="mood-item mood-card-2" onclick="saveMood(2)">
+                    <span class="material-icons-round">sentiment_dissatisfied</span>
+                    <span>Так себе</span>
+                </div>
+                <div class="mood-item mood-card-1" onclick="saveMood(1)">
+                    <span class="material-icons-round">sentiment_very_dissatisfied</span>
+                    <span>Плохо</span>
+                </div>
             </div>
+
             <h2 style="margin-bottom:15px; font-size:18px;">История</h2>
             <div id="history-container" class="history-list"></div>
         </div>
@@ -335,7 +369,7 @@
     function toggleBreathing(){if(isBreathing){clearInterval(breathInterval);isBreathing=false;playIcon.innerText='play_arrow';playText.innerText='Продолжить'}else{isBreathing=true;playIcon.innerText='pause';playText.innerText='Пауза';breathInterval=setInterval(()=>{breathTimer++;const t=breathTimer%19;if(t<4){targetR=180;breathLabel.innerText="ВДОХ";breathInstr.innerText="Носом"}else if(t<11){targetR=190;breathLabel.innerText="ПАУЗА";breathInstr.innerText="Держим"}else{targetR=110;breathLabel.innerText="ВЫДОХ";breathInstr.innerText="Ртом"}},1000)}}
     function resetBreathing(){clearInterval(breathInterval);isBreathing=false;breathTimer=0;targetR=110;playIcon.innerText='play_arrow';playText.innerText='Старт';breathLabel.innerText='ДЫШИМ';breathInstr.innerText='Нажми Старт'}
     
-    // --- ДНЕВНИК (ИСПРАВЛЕНО: 30 ДНЕЙ, АДАПТИВНОСТЬ) ---
+    // --- ДНЕВНИК (ИСПРАВЛЕНО) ---
     function saveMood(level) { 
         const h = JSON.parse(localStorage.getItem('mood_history_v2') || '{}');
         const date = new Date().toISOString().split('T')[0];
@@ -352,6 +386,7 @@
         const c = document.getElementById('history-container');
         c.innerHTML = '';
         
+        // ЦВЕТА ИСТОРИИ (И КНОПОК)
         const moodMap = {
             5: {text: 'Отлично', color: '#4DB6AC', bg: '#E0F2F1'},
             4: {text: 'Хорошо', color: '#80CBC4', bg: '#E0F2F1'},
@@ -366,7 +401,6 @@
             c.innerHTML += `<div class="history-item"><span style="font-weight:600;color:var(--text-header)">${new Date(date).toLocaleDateString()}</span><span style="padding:4px 10px;border-radius:8px;font-size:13px;font-weight:600;background:${m.bg};color:${m.color};">${m.text}</span></div>`;
         });
 
-        // БЕРЕМ ПОСЛЕДНИЕ 30 ДНЕЙ ДЛЯ СТАТИСТИКИ (ИСПРАВЛЕНО)
         const recentDates = dates.slice(-30);
 
         if (recentDates.length > 0) { 
@@ -398,20 +432,16 @@
         const w = rect.width; const h = rect.height;
         ctx.clearRect(0, 0, w, h);
 
-        // ИСПРАВЛЕНО: 30 ДНЕЙ
         const dates = Object.keys(history).sort().slice(-30);
         if (dates.length === 0) return;
 
         const points = dates.map((date, i) => {
             const val = history[date];
             const y = 20 + ((5 - val) / 4) * (h - 40);
-            
-            // ЛОГИКА "РЕЗИНОВОГО" ГРАФИКА
             let x;
             if (dates.length === 1) {
-                x = w / 2; // Если одна точка, она в центре (но линия будет во всю ширину)
+                x = w / 2;
             } else {
-                // Если точек > 1, распределяем от 20px до (w-20px)
                 x = 20 + (i / (dates.length - 1)) * (w - 40);
             }
             return {x, y};
@@ -419,11 +449,9 @@
 
         ctx.beginPath();
         if (points.length === 1) {
-            // ПРЯМАЯ ЛИНИЯ ДЛЯ ОДНОЙ ЗАПИСИ
             ctx.moveTo(0, points[0].y);
             ctx.lineTo(w, points[0].y);
         } else {
-            // КРИВАЯ ДЛЯ > 1 ЗАПИСИ
             ctx.moveTo(points[0].x, points[0].y);
             for (let i = 0; i < points.length - 1; i++) {
                 const xc = (points[i].x + points[i+1].x) / 2;
@@ -435,7 +463,6 @@
 
         ctx.lineCap = 'round'; ctx.lineWidth = 4; ctx.strokeStyle = '#4DB6AC'; ctx.stroke();
 
-        // Заливка
         if (points.length === 1) {
             ctx.lineTo(w, h); ctx.lineTo(0, h);
         } else {
@@ -448,8 +475,7 @@
         grad.addColorStop(1, 'rgba(77, 182, 172, 0.0)');
         ctx.fillStyle = grad; ctx.fill();
 
-        // Точки (АДАПТИВНЫЙ РАЗМЕР)
-        const dotRadius = dates.length > 15 ? 3 : 5; // Если много точек, делаем их меньше
+        const dotRadius = dates.length > 15 ? 3 : 5; 
         points.forEach(p => {
             ctx.beginPath(); ctx.arc(p.x, p.y, dotRadius, 0, Math.PI*2); ctx.fillStyle = '#FFFFFF'; ctx.fill(); ctx.lineWidth = 2; ctx.stroke();
         });
