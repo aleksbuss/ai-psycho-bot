@@ -180,19 +180,17 @@
         .score-label { font-size: 16px; color: var(--text-muted); margin-bottom: 30px; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
         .new-record-badge { background: var(--warm-bg); color: var(--warm-text); padding: 6px 12px; border-radius: 8px; font-weight: 700; font-size: 14px; margin-bottom: 10px; display: inline-block; }
 
-        /* ДНЕВНИК */
+        /* --- ДНЕВНИК (3D PIE CHART) --- */
         .chart-container { 
             background: white; border-radius: 24px; padding: 20px; margin-bottom: 20px; box-shadow: var(--shadow-card); 
-            height: 200px; position: relative; display: flex; align-items: center; justify-content: center;
+            min-height: 250px; display: flex; flex-direction: column; align-items: center; justify-content: center;
         }
-        #moodChart { width: 100%; height: 100%; }
+        #pieChart { width: 180px; height: 180px; margin-bottom: 20px; }
         
-        .stats-container { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 20px; scrollbar-width: none; }
-        .stats-container::-webkit-scrollbar { display: none; }
-        .stat-pill { 
-            background: white; padding: 8px 16px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); 
-            white-space: nowrap; font-size: 13px; font-weight: 600; color: var(--text-body); border: 1px solid transparent;
-        }
+        /* Легенда под диаграммой */
+        .pie-legend { display: flex; flex-direction: column; gap: 8px; width: 100%; }
+        .legend-item { display: flex; justify-content: space-between; align-items: center; font-size: 14px; font-weight: 600; color: var(--text-body); }
+        .legend-marker { width: 12px; height: 12px; border-radius: 4px; display: inline-block; margin-right: 8px; }
         
         .mood-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-bottom: 30px; }
         
@@ -206,26 +204,12 @@
         .mood-item .material-icons-round { font-size: 32px; margin-bottom: 6px; }
         .mood-item span { font-size: 10px; font-weight: 700; text-align: center; line-height: 1.2; }
 
-        /* ЦВЕТА КАРТОЧЕК (СИНХРОНИЗАЦИЯ С ИСТОРИЕЙ) */
-        /* 5 - Отлично (Мятный) */
-        .mood-card-5 { background-color: #E0F2F1; }
-        .mood-card-5 .material-icons-round, .mood-card-5 span { color: #4DB6AC; }
-
-        /* 4 - Хорошо (Светло-мятный) */
-        .mood-card-4 { background-color: #E0F2F1; }
-        .mood-card-4 .material-icons-round, .mood-card-4 span { color: #80CBC4; }
-
-        /* 3 - Норм (Голубой) */
-        .mood-card-3 { background-color: #E3F2FD; }
-        .mood-card-3 .material-icons-round, .mood-card-3 span { color: #64B5F6; }
-
-        /* 2 - Так себе (Светло-бежевый) */
-        .mood-card-2 { background-color: #FFF8E1; }
-        .mood-card-2 .material-icons-round, .mood-card-2 span { color: #FFE082; }
-
-        /* 1 - Плохо (Бежевый/Оранжевый) */
-        .mood-card-1 { background-color: #FFF3E0; }
-        .mood-card-1 .material-icons-round, .mood-card-1 span { color: #FFB74D; }
+        /* ЦВЕТА КАРТОЧЕК */
+        .mood-card-5 { background-color: #E0F2F1; } .mood-card-5 .material-icons-round, .mood-card-5 span { color: #4DB6AC; }
+        .mood-card-4 { background-color: #E0F2F1; } .mood-card-4 .material-icons-round, .mood-card-4 span { color: #80CBC4; }
+        .mood-card-3 { background-color: #E3F2FD; } .mood-card-3 .material-icons-round, .mood-card-3 span { color: #64B5F6; }
+        .mood-card-2 { background-color: #FFF8E1; } .mood-card-2 .material-icons-round, .mood-card-2 span { color: #FFE082; }
+        .mood-card-1 { background-color: #FFF3E0; } .mood-card-1 .material-icons-round, .mood-card-1 span { color: #FFB74D; }
 
         .history-list { display: flex; flex-direction: column; gap: 10px; }
     </style>
@@ -240,7 +224,6 @@
         <span class="header-title" id="page-title">Назад</span>
     </header>
 
-    <!-- ТРЮК №1 ВСТАВКА (НЕВИДИМКА) -->
     <div id="gpu-activator"></div>
 
     <!-- SCREENS -->
@@ -274,18 +257,20 @@
     
     <div id="game-screen" class="screen"><canvas id="breathCanvas"></canvas><div class="game-ui-overlay"><div class="breath-text-container"><div class="breath-status" id="breathLabel">ДЫШИМ</div><div class="breath-timer-text" id="breathInstruction">Нажми Старт</div></div><div class="game-controls"><button class="btn-game-card" id="breathStartBtn" onclick="toggleBreathing()"><span class="material-icons-round" id="playIcon">play_arrow</span><span id="playText">Старт</span></button><button class="btn-reset-sq" onclick="resetBreathing()"><span class="material-icons-round">refresh</span></button></div></div></div>
 
+    <!-- ДНЕВНИК С 3D ДИАГРАММОЙ -->
     <div id="music-screen" class="screen">
         <div style="padding:24px; overflow-y:auto;">
+            <!-- ДИАГРАММА -->
             <div class="chart-container">
-                <canvas id="moodChart"></canvas>
+                <canvas id="pieChart"></canvas>
+                <div id="chart-legend" class="pie-legend"></div>
                 <div id="empty-chart-msg" style="position:absolute; color:var(--text-muted); font-size:14px; text-align:center; display:none;">
                     Нет данных<br>Отметьте состояние
                 </div>
             </div>
-            <div class="stats-container" id="stats-container"></div>
+
+            <!-- ВЫБОР НАСТРОЕНИЯ -->
             <h2 style="margin-bottom:15px; font-size:18px;">Как вы сейчас?</h2>
-            
-            <!-- ЦВЕТНЫЕ КНОПКИ -->
             <div class="mood-grid">
                 <div class="mood-item mood-card-5" onclick="saveMood(5)">
                     <span class="material-icons-round">sentiment_very_satisfied</span>
@@ -369,7 +354,7 @@
     function toggleBreathing(){if(isBreathing){clearInterval(breathInterval);isBreathing=false;playIcon.innerText='play_arrow';playText.innerText='Продолжить'}else{isBreathing=true;playIcon.innerText='pause';playText.innerText='Пауза';breathInterval=setInterval(()=>{breathTimer++;const t=breathTimer%19;if(t<4){targetR=180;breathLabel.innerText="ВДОХ";breathInstr.innerText="Носом"}else if(t<11){targetR=190;breathLabel.innerText="ПАУЗА";breathInstr.innerText="Держим"}else{targetR=110;breathLabel.innerText="ВЫДОХ";breathInstr.innerText="Ртом"}},1000)}}
     function resetBreathing(){clearInterval(breathInterval);isBreathing=false;breathTimer=0;targetR=110;playIcon.innerText='play_arrow';playText.innerText='Старт';breathLabel.innerText='ДЫШИМ';breathInstr.innerText='Нажми Старт'}
     
-    // --- ДНЕВНИК (ИСПРАВЛЕНО) ---
+    // --- ДНЕВНИК С 3D ДИАГРАММОЙ ---
     function saveMood(level) { 
         const h = JSON.parse(localStorage.getItem('mood_history_v2') || '{}');
         const date = new Date().toISOString().split('T')[0];
@@ -383,16 +368,16 @@
         const h = JSON.parse(localStorage.getItem('mood_history_v2') || '{}');
         const dates = Object.keys(h).sort();
         
+        // 1. История
         const c = document.getElementById('history-container');
         c.innerHTML = '';
         
-        // ЦВЕТА ИСТОРИИ (И КНОПОК)
         const moodMap = {
-            5: {text: 'Отлично', color: '#4DB6AC', bg: '#E0F2F1'},
-            4: {text: 'Хорошо', color: '#80CBC4', bg: '#E0F2F1'},
-            3: {text: 'Нормально', color: '#64B5F6', bg: '#E3F2FD'},
-            2: {text: 'Так себе', color: '#FFE082', bg: '#FFF8E1'},
-            1: {text: 'Плохо', color: '#FFB74D', bg: '#FFF3E0'}
+            5: {text: 'Отлично', color: '#4DB6AC', bg: '#E0F2F1', shadow: '#398E86'},
+            4: {text: 'Хорошо', color: '#80CBC4', bg: '#E0F2F1', shadow: '#63A39D'},
+            3: {text: 'Нормально', color: '#64B5F6', bg: '#E3F2FD', shadow: '#4295D1'},
+            2: {text: 'Так себе', color: '#FFE082', bg: '#FFF8E1', shadow: '#D3B765'},
+            1: {text: 'Плохо', color: '#FFB74D', bg: '#FFF3E0', shadow: '#D6963B'}
         };
 
         [...dates].reverse().forEach(date => {
@@ -401,83 +386,106 @@
             c.innerHTML += `<div class="history-item"><span style="font-weight:600;color:var(--text-header)">${new Date(date).toLocaleDateString()}</span><span style="padding:4px 10px;border-radius:8px;font-size:13px;font-weight:600;background:${m.bg};color:${m.color};">${m.text}</span></div>`;
         });
 
+        // 2. Расчет для Диаграммы (30 дней)
         const recentDates = dates.slice(-30);
-
-        if (recentDates.length > 0) { 
+        
+        if (recentDates.length > 0) {
             const counts = {5:0, 4:0, 3:0, 2:0, 1:0};
             recentDates.forEach(d => counts[h[d]]++);
-            const statsDiv = document.getElementById('stats-container');
-            statsDiv.innerHTML = '';
+            
+            const legend = document.getElementById('chart-legend');
+            legend.innerHTML = '';
+            
+            // Данные для диаграммы
+            const slices = [];
             [5,4,3,2,1].forEach(lvl => {
-                if (counts[lvl] > 0) {
+                if(counts[lvl] > 0) {
                     const pct = Math.round((counts[lvl] / recentDates.length) * 100);
-                    const m = moodMap[lvl];
-                    statsDiv.innerHTML += `<div class="stat-pill" style="color:${m.color}">${m.text}: ${pct}%</div>`;
+                    slices.push({ value: counts[lvl], color: moodMap[lvl].color, shadow: moodMap[lvl].shadow });
+                    
+                    // Легенда
+                    legend.innerHTML += `
+                    <div class="legend-item">
+                        <div style="display:flex;align-items:center;">
+                            <span class="legend-marker" style="background:${moodMap[lvl].color}"></span>
+                            <span>${moodMap[lvl].text}</span>
+                        </div>
+                        <span>${pct}%</span>
+                    </div>`;
                 }
             });
-            drawMoodChart(h);
+            
+            draw3DPieChart(slices);
             document.getElementById('empty-chart-msg').style.display = 'none';
         } else {
+            const ctx = document.getElementById('pieChart').getContext('2d');
+            ctx.clearRect(0,0,300,150);
             document.getElementById('empty-chart-msg').style.display = 'block';
         }
     }
 
-    function drawMoodChart(history) {
-        const canvas = document.getElementById('moodChart');
+    function draw3DPieChart(slices) {
+        const canvas = document.getElementById('pieChart');
         const ctx = canvas.getContext('2d');
         const dpr = window.devicePixelRatio || 1;
         const rect = canvas.getBoundingClientRect();
         canvas.width = rect.width * dpr; canvas.height = rect.height * dpr;
         ctx.scale(dpr, dpr);
-        const w = rect.width; const h = rect.height;
-        ctx.clearRect(0, 0, w, h);
+        
+        const cx = rect.width / 2;
+        const cy = rect.height / 2;
+        const rx = 80; // Радиус X
+        const ry = 50; // Радиус Y (сплюснутый для 3D)
+        const depth = 20; // Высота монетки
+        
+        ctx.clearRect(0, 0, rect.width, rect.height);
+        
+        const total = slices.reduce((acc, s) => acc + s.value, 0);
+        let startAngle = -Math.PI / 2; // Начинаем сверху
 
-        const dates = Object.keys(history).sort().slice(-30);
-        if (dates.length === 0) return;
-
-        const points = dates.map((date, i) => {
-            const val = history[date];
-            const y = 20 + ((5 - val) / 4) * (h - 40);
-            let x;
-            if (dates.length === 1) {
-                x = w / 2;
-            } else {
-                x = 20 + (i / (dates.length - 1)) * (w - 40);
-            }
-            return {x, y};
+        // 1. Рисуем "стенки" (объем) - порядок важен для Z-index
+        // Сначала рисуем задние грани, потом передние
+        // Но простой хак: рисуем все стенки сначала
+        
+        let currentAngle = startAngle;
+        slices.forEach(slice => {
+            const sliceAngle = (slice.value / total) * 2 * Math.PI;
+            const endAngle = currentAngle + sliceAngle;
+            
+            // Рисуем боковину (толщину)
+            // Рисуем только если кусок находится в "передней" части круга (от 0 до PI)
+            // Но проще нарисовать толщину для всего, просто сместив Y
+            
+            ctx.beginPath();
+            ctx.ellipse(cx, cy, rx, ry, 0, currentAngle, endAngle);
+            ctx.lineTo(cx + rx * Math.cos(endAngle), cy + ry * Math.sin(endAngle) + depth);
+            ctx.ellipse(cx, cy + depth, rx, ry, 0, endAngle, currentAngle, true);
+            ctx.lineTo(cx + rx * Math.cos(currentAngle), cy + ry * Math.sin(currentAngle)); // вверх
+            ctx.fillStyle = slice.shadow;
+            ctx.fill();
+            
+            currentAngle += sliceAngle;
         });
 
-        ctx.beginPath();
-        if (points.length === 1) {
-            ctx.moveTo(0, points[0].y);
-            ctx.lineTo(w, points[0].y);
-        } else {
-            ctx.moveTo(points[0].x, points[0].y);
-            for (let i = 0; i < points.length - 1; i++) {
-                const xc = (points[i].x + points[i+1].x) / 2;
-                const yc = (points[i].y + points[i+1].y) / 2;
-                ctx.quadraticCurveTo(points[i].x, points[i].y, xc, yc);
-            }
-            ctx.lineTo(points[points.length-1].x, points[points.length-1].y);
-        }
-
-        ctx.lineCap = 'round'; ctx.lineWidth = 4; ctx.strokeStyle = '#4DB6AC'; ctx.stroke();
-
-        if (points.length === 1) {
-            ctx.lineTo(w, h); ctx.lineTo(0, h);
-        } else {
-            ctx.lineTo(points[points.length-1].x, h); ctx.lineTo(points[0].x, h);
-        }
-        ctx.closePath();
-        
-        const grad = ctx.createLinearGradient(0, 0, 0, h);
-        grad.addColorStop(0, 'rgba(77, 182, 172, 0.4)');
-        grad.addColorStop(1, 'rgba(77, 182, 172, 0.0)');
-        ctx.fillStyle = grad; ctx.fill();
-
-        const dotRadius = dates.length > 15 ? 3 : 5; 
-        points.forEach(p => {
-            ctx.beginPath(); ctx.arc(p.x, p.y, dotRadius, 0, Math.PI*2); ctx.fillStyle = '#FFFFFF'; ctx.fill(); ctx.lineWidth = 2; ctx.stroke();
+        // 2. Рисуем "крышку" (топ)
+        currentAngle = startAngle;
+        slices.forEach(slice => {
+            const sliceAngle = (slice.value / total) * 2 * Math.PI;
+            const endAngle = currentAngle + sliceAngle;
+            
+            ctx.beginPath();
+            ctx.moveTo(cx, cy); // Центр
+            ctx.ellipse(cx, cy, rx, ry, 0, currentAngle, endAngle);
+            ctx.closePath();
+            ctx.fillStyle = slice.color;
+            ctx.fill();
+            
+            // Разделители (опционально)
+            ctx.lineWidth = 1;
+            ctx.strokeStyle = '#fff';
+            ctx.stroke();
+            
+            currentAngle += sliceAngle;
         });
     }
 
