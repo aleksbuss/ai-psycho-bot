@@ -183,9 +183,10 @@
         /* --- ДНЕВНИК (3D PIE CHART) --- */
         .chart-container { 
             background: white; border-radius: 24px; padding: 20px; margin-bottom: 20px; box-shadow: var(--shadow-card); 
-            min-height: 250px; display: flex; flex-direction: column; align-items: center; justify-content: center;
+            min-height: 350px; /* Увеличена высота для большой диаграммы */
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
         }
-        #pieChart { width: 180px; height: 180px; margin-bottom: 20px; }
+        #pieChart { width: 270px; height: 270px; margin-bottom: 20px; } /* УВЕЛИЧЕНО НА 50% */
         
         /* Легенда под диаграммой */
         .pie-legend { display: flex; flex-direction: column; gap: 8px; width: 100%; }
@@ -434,33 +435,26 @@
         
         const cx = rect.width / 2;
         const cy = rect.height / 2;
-        const rx = 80; // Радиус X
-        const ry = 50; // Радиус Y (сплюснутый для 3D)
-        const depth = 20; // Высота монетки
+        const rx = 120; // УВЕЛИЧЕНО (+50%)
+        const ry = 75;  // УВЕЛИЧЕНО (+50%)
+        const depth = 35; // УВЕЛИЧЕНО (Глубина)
         
         ctx.clearRect(0, 0, rect.width, rect.height);
         
         const total = slices.reduce((acc, s) => acc + s.value, 0);
-        let startAngle = -Math.PI / 2; // Начинаем сверху
+        let startAngle = -Math.PI / 2;
 
-        // 1. Рисуем "стенки" (объем) - порядок важен для Z-index
-        // Сначала рисуем задние грани, потом передние
-        // Но простой хак: рисуем все стенки сначала
-        
+        // 1. Рисуем "стенки" (объем)
         let currentAngle = startAngle;
         slices.forEach(slice => {
             const sliceAngle = (slice.value / total) * 2 * Math.PI;
             const endAngle = currentAngle + sliceAngle;
             
-            // Рисуем боковину (толщину)
-            // Рисуем только если кусок находится в "передней" части круга (от 0 до PI)
-            // Но проще нарисовать толщину для всего, просто сместив Y
-            
             ctx.beginPath();
             ctx.ellipse(cx, cy, rx, ry, 0, currentAngle, endAngle);
             ctx.lineTo(cx + rx * Math.cos(endAngle), cy + ry * Math.sin(endAngle) + depth);
             ctx.ellipse(cx, cy + depth, rx, ry, 0, endAngle, currentAngle, true);
-            ctx.lineTo(cx + rx * Math.cos(currentAngle), cy + ry * Math.sin(currentAngle)); // вверх
+            ctx.lineTo(cx + rx * Math.cos(currentAngle), cy + ry * Math.sin(currentAngle));
             ctx.fillStyle = slice.shadow;
             ctx.fill();
             
@@ -474,13 +468,12 @@
             const endAngle = currentAngle + sliceAngle;
             
             ctx.beginPath();
-            ctx.moveTo(cx, cy); // Центр
+            ctx.moveTo(cx, cy);
             ctx.ellipse(cx, cy, rx, ry, 0, currentAngle, endAngle);
             ctx.closePath();
             ctx.fillStyle = slice.color;
             ctx.fill();
             
-            // Разделители (опционально)
             ctx.lineWidth = 1;
             ctx.strokeStyle = '#fff';
             ctx.stroke();
