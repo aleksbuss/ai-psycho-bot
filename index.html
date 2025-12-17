@@ -156,21 +156,24 @@
         #game-screen { background: var(--primary-soft); }
         canvas#breathCanvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; opacity: 0.6; }
         .game-ui-overlay { position: relative; z-index: 10; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; width: 100%; padding-bottom: 80px; pointer-events: none; }
+        
         .breath-text-container { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; margin-bottom: 40px; }
         .breath-status { font-size: 32px; font-weight: 800; color: var(--text-header); margin-bottom: 8px; }
         .breath-timer-text { font-size: 18px; color: var(--text-muted); }
+        
         .game-controls { pointer-events: auto; display: flex; gap: 20px; }
         .btn-game-card { padding: 20px 40px; border-radius: var(--radius-card); border: none; font-size: 18px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 14px; background: var(--secondary-bg); color: var(--secondary-text); box-shadow: var(--shadow-float-blue); }
         .btn-reset-sq { width: 64px; height: 64px; border-radius: 20px; background: var(--secondary-bg); color: var(--secondary-text); border: none; box-shadow: var(--shadow-float-blue); display: flex; align-items: center; justify-content: center; cursor: pointer; }
 
-        /* --- НОВЫЙ SOS SCREEN (ПЕРЕДЕЛАННЫЙ) --- */
+        /* --- SOS SCREEN (LETTER GLOW STYLE) --- */
         #sos-screen { 
-            background: linear-gradient(135deg, #F5F7FA 0%, #E0F2F1 100%); 
+            background-color: #1F2937; /* Dark background for Glow effect */
             justify-content: center; 
             overflow: hidden;
+            color: #FFFFFF;
         }
 
-        .sos-container-3d {
+        .sos-container-glow {
             position: relative;
             width: 100%;
             height: 100%;
@@ -181,96 +184,74 @@
             padding: 30px;
         }
 
-        /* 3D TEXT STYLES */
-        .sos-title-block {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 50px;
-            transform: skew(-5deg) rotate(-2deg);
+        /* LETTER GLOW ANIMATION */
+        @keyframes letter-glow {
+            0% { opacity: 0; text-shadow: 0px 0px 1px rgba(255,255,255,0.1); }
+            66% { opacity: 1; text-shadow: 0px 0px 20px rgba(255,255,255,0.9); }
+            77% { opacity: 1; }
+            100% { opacity: 0.9; text-shadow: 0px 0px 10px rgba(77, 182, 172, 0.8); }
         }
 
-        .sos-big-number {
-            font-size: 140px;
-            line-height: 1;
-            font-weight: 900;
+        .sos-step-number {
+            font-size: 100px;
+            font-weight: 800;
+            margin-bottom: 20px;
             color: #EF6C00; /* Warm Accent */
-            text-shadow: 
-                1px 1px 0 #bf360c, 
-                2px 2px 0 #bf360c, 
-                3px 3px 0 #bf360c, 
-                4px 4px 0 #bf360c, 
-                5px 5px 0 #bf360c,
-                10px 10px 20px rgba(0,0,0,0.2);
-            opacity: 0; /* JS activates animation */
-            display: block;
+            text-shadow: 0 0 20px rgba(239, 108, 0, 0.5);
+            /* Static, but impressive */
         }
 
-        .sos-text-line {
-            display: flex;
-            gap: 8px;
+        .sos-glow-title {
             font-size: 32px;
-            font-weight: 800;
             text-transform: uppercase;
-            color: #1F2937;
-        }
-
-        .sos-letter {
-            display: inline-block;
-            opacity: 0;
-            transform: translateY(60px) rotate(10deg);
-            text-shadow: 2px 2px 0 rgba(77, 182, 172, 0.4); /* Mint shadow */
-        }
-
-        /* ANIMATION FOR LETTERS */
-        @keyframes pop-up-letter {
-            0% { opacity: 0; transform: translateY(60px) rotate(10deg); }
-            60% { opacity: 1; transform: translateY(-10px) rotate(-5deg); }
-            100% { opacity: 1; transform: translateY(0) rotate(0deg); }
-        }
-
-        .sos-btn-3d {
-            padding: 20px 40px;
-            font-size: 20px;
-            font-weight: 800;
-            text-transform: uppercase;
-            color: #FFFFFF;
-            background: #4DB6AC;
-            border: none;
-            cursor: pointer;
-            transform: skew(-10deg);
-            box-shadow: 
-                1px 1px 0 #00796B, 
-                2px 2px 0 #00796B, 
-                3px 3px 0 #00796B, 
-                4px 4px 0 #00796B,
-                0 10px 20px rgba(0,0,0,0.15);
-            transition: transform 0.1s, box-shadow 0.1s;
-            opacity: 0;
-            animation: pop-up-letter 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-            animation-delay: 0.8s;
-        }
-
-        .sos-btn-3d:active {
-            transform: skew(-10deg) translate(2px, 2px);
-            box-shadow: 1px 1px 0 #00796B, 0 5px 10px rgba(0,0,0,0.1);
+            letter-spacing: 0.1em;
+            margin-bottom: 10px;
+            text-align: center;
         }
         
-        .sos-btn-3d span {
-            display: block;
-            transform: skew(10deg); /* Counter skew for text */
+        .sos-glow-title span {
+            /* Animation applied to each letter */
+            animation: letter-glow 0.7s ease both;
+            /* Delay based on index variable set in JS */
+            animation-delay: calc(var(--i) * 0.05s); 
         }
-        
-        .sos-desc {
+
+        .sos-glow-desc {
+            font-size: 16px;
+            color: #9CA3AF;
+            text-align: center;
+            max-width: 80%;
+            margin-bottom: 50px;
+            line-height: 1.5;
+        }
+
+        .sos-glow-desc span {
+            animation: letter-glow 0.7s ease both;
+            animation-delay: calc(var(--i) * 0.02s + 0.5s); /* Starts after title */
+        }
+
+        .sos-btn-glow {
+            padding: 16px 32px;
             font-size: 18px;
-            color: #4B5563;
-            margin-top: 10px;
-            font-weight: 500;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #4DB6AC;
+            background: transparent;
+            border: 2px solid #4DB6AC;
+            border-radius: 8px;
+            cursor: pointer;
             opacity: 0;
-            animation: fadeIn 0.5s ease forwards;
-            animation-delay: 0.5s;
+            animation: fadeIn 1s ease forwards 1.5s; /* Late fade in */
+            box-shadow: 0 0 10px rgba(77, 182, 172, 0.2);
+            transition: all 0.3s;
         }
+        
+        .sos-btn-glow:active {
+            background: rgba(77, 182, 172, 0.1);
+            box-shadow: 0 0 20px rgba(77, 182, 172, 0.6);
+        }
+
         @keyframes fadeIn { to { opacity: 1; } }
 
 
@@ -310,7 +291,6 @@
         
         .mood-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-bottom: 30px; }
         
-        /* КАРТОЧКИ НАСТРОЕНИЯ (ЦВЕТНЫЕ) */
         .mood-item { 
             border-radius: 16px; padding: 12px 4px; 
             display: flex; flex-direction: column; align-items: center; justify-content: center; 
@@ -320,7 +300,6 @@
         .mood-item .material-icons-round { font-size: 32px; margin-bottom: 6px; }
         .mood-item span { font-size: 10px; font-weight: 700; text-align: center; line-height: 1.2; }
 
-        /* ЦВЕТА КАРТОЧЕК */
         .mood-card-5 { background-color: #E0F2F1; } .mood-card-5 .material-icons-round, .mood-card-5 span { color: #4DB6AC; }
         .mood-card-4 { background-color: #E0F2F1; } .mood-card-4 .material-icons-round, .mood-card-4 span { color: #80CBC4; }
         .mood-card-3 { background-color: #E3F2FD; } .mood-card-3 .material-icons-round, .mood-card-3 span { color: #64B5F6; }
@@ -373,17 +352,15 @@
         <div class="input-area"><button id="micBtn" class="btn-sq"><span class="material-icons-round">mic</span></button><input type="text" id="userInput" placeholder="Сообщение..."><button id="sendBtn" class="btn-sq"><span class="material-icons-round">arrow_upward</span></button></div>
     </div>
 
-    <!-- SOS SCREEN (RE-DESIGNED 3D) -->
+    <!-- SOS SCREEN (GLOW STYLE) -->
     <div id="sos-screen" class="screen">
-        <div class="sos-container-3d">
-            <div id="sos-content-area" class="sos-title-block">
-                <!-- Сюда JS рендерит 3D текст -->
-            </div>
-            <div id="sos-desc-area" style="text-align:center; margin-bottom:40px; min-height:30px;">
-                <!-- Описание -->
-            </div>
-            <button id="sos-main-btn" class="sos-btn-3d" onclick="nextSos()">
-                <span>Готово</span>
+        <div class="sos-container-glow">
+            <div id="sos-step-num" class="sos-step-number"></div>
+            <div id="sos-title" class="sos-glow-title"></div>
+            <div id="sos-desc" class="sos-glow-desc"></div>
+            
+            <button id="sos-main-btn" class="sos-btn-glow" onclick="nextSos()">
+                <span>Я нашел</span>
             </button>
         </div>
     </div>
@@ -471,7 +448,7 @@
     function blobToBase64(b){return new Promise(r=>{const z=new FileReader();z.onloadend=()=>r(z.result);z.readAsDataURL(b)})}
     sendBtn.addEventListener('click',sendMessage);micBtn.addEventListener('click',toggleRecording);userInput.addEventListener('keydown',e=>{if(e.key==='Enter')sendMessage()});
 
-    // --- SOS REDESIGNED (3D POPUP TEXT) ---
+    // --- SOS (GLOW STYLE) ---
     const sosSteps = [
         { n: 5, t: 'ВЕЩЕЙ', d: 'Найди 5 предметов одного цвета' },
         { n: 4, t: 'ОЩУЩЕНИЯ', d: 'Почувствуй 4 касания' },
@@ -483,58 +460,33 @@
 
     function resetSos() {
         sosIdx = 0;
-        document.getElementById('sos-content-area').innerHTML = '';
-        document.getElementById('sos-desc-area').innerHTML = '';
+        document.getElementById('sos-step-num').innerHTML = '';
+        document.getElementById('sos-title').innerHTML = '';
+        document.getElementById('sos-desc').innerHTML = '';
         document.getElementById('sos-main-btn').querySelector('span').innerText = 'Я НАШЕЛ';
     }
 
     function startSos() { renderSosStep(); }
 
+    function spanize(text) {
+        return text.split('').map((char, i) => `<span style="--i:${i}">${char}</span>`).join('');
+    }
+
     function renderSosStep() {
         const s = sosSteps[sosIdx];
-        const content = document.getElementById('sos-content-area');
         
-        // 1. Clear previous
-        content.innerHTML = '';
-        
-        // 2. Render Big Number (Popup)
-        const numDiv = document.createElement('div');
-        numDiv.className = 'sos-big-number';
+        // 1. Number
+        const numDiv = document.getElementById('sos-step-num');
         numDiv.innerText = s.n;
-        // Animation trigger
-        numDiv.style.animation = 'pop-up-letter 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards';
-        content.appendChild(numDiv);
+        numDiv.style.animation = 'none';
+        numDiv.offsetHeight; /* trigger reflow */
+        numDiv.style.animation = 'pop-up-letter 0.5s forwards';
 
-        // 3. Render Text Letters (Staggered)
-        const textLine = document.createElement('div');
-        textLine.className = 'sos-text-line';
-        
-        s.t.split('').forEach((char, index) => {
-            const span = document.createElement('span');
-            span.className = 'sos-letter';
-            span.innerText = char;
-            // Stagger animation: 100ms + (50ms * index)
-            span.style.animation = `pop-up-letter 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards`;
-            span.style.animationDelay = `${0.2 + (index * 0.05)}s`;
-            
-            // Alternate Colors for fun
-            if (index % 2 === 0) span.style.color = '#4DB6AC'; // Mint
-            else span.style.color = '#1F2937'; // Dark
-            
-            textLine.appendChild(span);
-        });
-        
-        content.appendChild(textLine);
+        // 2. Title (Letter Glow)
+        document.getElementById('sos-title').innerHTML = spanize(s.t);
 
-        // 4. Description
-        const desc = document.getElementById('sos-desc-area');
-        desc.className = 'sos-desc';
-        desc.innerText = s.d;
-        
-        // Reset animation for description
-        desc.style.animation = 'none';
-        desc.offsetHeight; /* trigger reflow */
-        desc.style.animation = 'fadeIn 0.5s ease forwards 0.5s';
+        // 3. Description (Letter Glow)
+        document.getElementById('sos-desc').innerHTML = spanize(s.d);
     }
 
     function nextSos() {
@@ -544,19 +496,13 @@
             sosIdx++;
             renderSosStep();
         } else {
-            // FINISH STATE
-            document.getElementById('sos-content-area').innerHTML = `
-                <span class="material-icons-round" style="font-size:100px; color:#4DB6AC; animation:pop-up-letter 0.6s forwards;">check_circle</span>
-                <div class="sos-text-line" style="margin-top:20px">
-                    <span class="sos-letter" style="animation:pop-up-letter 0.5s forwards 0.2s; color:#1F2937">ТЫ</span>
-                    <span class="sos-letter" style="animation:pop-up-letter 0.5s forwards 0.3s; color:#EF6C00">МОЛОДЕЦ</span>
-                </div>
-            `;
-            document.getElementById('sos-desc-area').innerText = 'Ты справился. Дыши спокойно.';
-            document.getElementById('sos-main-btn').querySelector('span').innerText = 'В МЕНЮ';
+            // FINISH
+            document.getElementById('sos-step-num').innerHTML = '<span class="material-icons-round" style="font-size:120px; color:#4DB6AC;">check_circle</span>';
+            document.getElementById('sos-title').innerHTML = spanize("ТЫ МОЛОДЕЦ");
+            document.getElementById('sos-desc').innerHTML = spanize("Дыши спокойно");
             
-            // Re-bind click to go back
             const btn = document.getElementById('sos-main-btn');
+            btn.querySelector('span').innerText = 'В МЕНЮ';
             btn.onclick = goBack;
             
             if(tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
