@@ -104,7 +104,7 @@
         .card-breath h3 { color: #1565C0; font-size: 15px; font-weight: 600; }
         .card-breath .icon-box { color: var(--secondary-accent); width: 50px; height: 50px; border-radius: 16px; background: rgba(255,255,255,0.7); display: flex; align-items: center; justify-content: center; margin-bottom: 12px; }
 
-        /* ВИДЖЕТ ВОЛНЫ */
+        /* ВИДЖЕТ ВОЛНЫ (МЕДИТАЦИИ) */
         .widget-card { background: #E0F2F1; border-radius: var(--radius-card); padding: 20px; margin-bottom: 24px; overflow: hidden; position: relative; cursor: pointer; }
         .widget-header { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
         .dot-indicator { width: 8px; height: 8px; background: var(--primary-main); border-radius: 50%; opacity: 0.8; }
@@ -114,6 +114,8 @@
         .wave-graph { width: 200%; height: 100%; opacity: 0.9; animation: waveMove 8s linear infinite; }
         
         .bottom-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        
+        /* КАРТОЧКИ НИЖНИЕ */
         .small-card { background: var(--bg-card); padding: 16px; border-radius: 20px; display: flex; align-items: center; gap: 12px; box-shadow: var(--shadow-card); cursor: pointer; }
         .small-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: visible; }
         .warm-icon { background: var(--warm-bg); color: var(--warm-accent); }
@@ -121,22 +123,29 @@
         .small-card h4 { font-size: 14px; font-weight: 600; color: var(--text-header); margin: 0; }
         .small-card span { font-size: 11px; color: var(--text-muted); }
 
+        /* АНИМАЦИЯ СЕРДЦА (ALERT) */
         @keyframes heart-beat {
             0% { transform: scale(1.3); }
             50% { transform: scale(1.6); text-shadow: 0 0 10px rgba(239, 108, 0, 0.4); }
             100% { transform: scale(1.3); }
         }
-        .heart-alert { color: #EF6C00 !important; animation: heart-beat 1.5s infinite ease-in-out; z-index: 10; }
+        .heart-alert {
+            color: #EF6C00 !important; 
+            animation: heart-beat 1.5s infinite ease-in-out;
+            z-index: 10; 
+        }
 
         /* ЧАТ */
         #chat-container { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; scroll-behavior: smooth; }
         .message { max-width: 85%; padding: 14px 18px; border-radius: 20px; font-size: 15px; box-shadow: var(--shadow-card); position: relative; }
         .msg-bot { align-self: flex-start; background-color: var(--msg-bot-bg); color: var(--text-body); border-top-left-radius: 4px; }
         .msg-user { align-self: flex-end; background-color: var(--msg-user-bg); color: var(--msg-user-text); border-top-right-radius: 4px; }
+        
         .typing-indicator { display: none; align-self: flex-start; background: var(--bg-card); padding: 12px; border-radius: 16px; margin-bottom: 10px; box-shadow: var(--shadow-card); }
         .dot { height: 6px; width: 6px; background-color: #CFD8DC; border-radius: 50%; display: inline-block; animation: bounce 1.4s infinite ease-in-out both; margin: 0 2px; }
         .dot:nth-child(1) { animation-delay: -0.32s; } .dot:nth-child(2) { animation-delay: -0.16s; }
         @keyframes bounce { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
+
         .input-area { width: 100%; background: var(--bg-main); padding: 10px 16px; display: flex; align-items: center; justify-content: center; gap: 12px; padding-bottom: calc(15px + env(safe-area-inset-bottom)); box-sizing: border-box; }
         input[type="text"] { flex: 1; height: 54px; border-radius: 18px; border: none; padding: 0 20px; font-size: 16px; outline: none; background: #FFFFFF; box-shadow: 0 2px 10px rgba(0,0,0,0.03); }
         .btn-sq { width: 54px; height: 54px; border-radius: var(--radius-btn-sq); border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; flex-shrink: 0; }
@@ -148,9 +157,11 @@
         #game-screen { background: var(--primary-soft); }
         canvas#breathCanvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; opacity: 0.6; }
         .game-ui-overlay { position: relative; z-index: 10; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; width: 100%; padding-bottom: 80px; pointer-events: none; }
+        
         .breath-text-container { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; margin-bottom: 40px; }
         .breath-status { font-size: 32px; font-weight: 800; color: var(--text-header); margin-bottom: 8px; }
         .breath-timer-text { font-size: 18px; color: var(--text-muted); }
+        
         .game-controls { pointer-events: auto; display: flex; gap: 20px; }
         .btn-game-card { padding: 20px 40px; border-radius: var(--radius-card); border: none; font-size: 18px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 14px; background: var(--secondary-bg); color: var(--secondary-text); box-shadow: var(--shadow-float-blue); }
         .btn-reset-sq { width: 64px; height: 64px; border-radius: 20px; background: var(--secondary-bg); color: var(--secondary-text); border: none; box-shadow: var(--shadow-float-blue); display: flex; align-items: center; justify-content: center; cursor: pointer; }
@@ -264,11 +275,17 @@
 
 
         /* ШАРИКИ */
-        #balloon-game-screen { background-color: var(--primary-soft); position: relative; overflow: hidden; transform: translate3d(0,0,0); }
+        #balloon-game-screen { 
+            background-color: var(--primary-soft); 
+            position: relative; 
+            overflow: hidden; 
+            transform: translate3d(0,0,0);
+        }
         .game-ui-header { position: absolute; top: 0; left: 0; width: 100%; padding: 20px; z-index: 10; display: flex; justify-content: space-between; align-items: center; pointer-events: none; }
         .score-box { background: white; padding: 8px 16px; border-radius: 16px; box-shadow: var(--shadow-card); font-weight: 700; color: var(--primary-text); font-size: 18px; }
         #back-btn-game { pointer-events: auto; background: var(--primary-main); border: none; border-radius: 14px; width: 44px; height: 44px; box-shadow: var(--shadow-card); display: flex; align-items: center; justify-content: center; color: white; }
         #game-timer { font-size: 20px; font-weight: 800; color: var(--text-header); background: white; padding: 8px 16px; border-radius: 16px; box-shadow: var(--shadow-card); }
+        
         .game-modal { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(5px); z-index: 100; display: none; flex-direction: column; align-items: center; justify-content: center; padding: 40px; text-align: center; animation: fadeInScale 0.3s ease-out; }
         @keyframes fadeInScale { from{opacity:0;transform:scale(0.9)} to{opacity:1;transform:scale(1)} }
         .cup-icon { font-size: 80px; color: #FFD700; margin-bottom: 20px; filter: drop-shadow(0 4px 10px rgba(255, 215, 0, 0.4)); animation: pulse-mint 2s infinite; }
@@ -277,21 +294,39 @@
         .new-record-badge { background: var(--warm-bg); color: var(--warm-text); padding: 6px 12px; border-radius: 8px; font-weight: 700; font-size: 14px; margin-bottom: 10px; display: inline-block; }
 
         /* ДНЕВНИК */
-        .chart-container { background: white; border-radius: 24px; padding: 20px; margin-bottom: 20px; box-shadow: var(--shadow-card); min-height: 350px; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding-top: 20px; }
+        .chart-container { 
+            background: white; border-radius: 24px; padding: 20px; margin-bottom: 20px; box-shadow: var(--shadow-card); 
+            min-height: 350px; 
+            display: flex; flex-direction: column; align-items: center; 
+            justify-content: flex-start;
+            padding-top: 20px;
+        }
+        
         #pieChart { width: 270px; height: 270px; margin-bottom: 10px; margin-top: -40px; } 
+        
         .pie-legend { display: flex; flex-direction: column; gap: 8px; width: 100%; }
         .legend-item { display: flex; justify-content: space-between; align-items: center; font-size: 14px; font-weight: 600; color: var(--text-body); }
         .legend-marker { width: 12px; height: 12px; border-radius: 4px; display: inline-block; margin-right: 8px; }
+        
         .mood-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-bottom: 30px; }
-        .mood-item { border-radius: 16px; padding: 12px 4px; display: flex; flex-direction: column; align-items: center; justify-content: center; box-shadow: var(--shadow-card); cursor: pointer; transition: transform 0.1s; }
+        
+        /* КАРТОЧКИ НАСТРОЕНИЯ (ЦВЕТНЫЕ) */
+        .mood-item { 
+            border-radius: 16px; padding: 12px 4px; 
+            display: flex; flex-direction: column; align-items: center; justify-content: center; 
+            box-shadow: var(--shadow-card); cursor: pointer; transition: transform 0.1s; 
+        }
         .mood-item:active { transform: scale(0.95); }
         .mood-item .material-icons-round { font-size: 32px; margin-bottom: 6px; }
         .mood-item span { font-size: 10px; font-weight: 700; text-align: center; line-height: 1.2; }
+
+        /* ЦВЕТА КАРТОЧЕК */
         .mood-card-5 { background-color: #E0F2F1; } .mood-card-5 .material-icons-round, .mood-card-5 span { color: #4DB6AC; }
         .mood-card-4 { background-color: #E0F2F1; } .mood-card-4 .material-icons-round, .mood-card-4 span { color: #80CBC4; }
         .mood-card-3 { background-color: #E3F2FD; } .mood-card-3 .material-icons-round, .mood-card-3 span { color: #64B5F6; }
         .mood-card-2 { background-color: #FFF8E1; } .mood-card-2 .material-icons-round, .mood-card-2 span { color: #FFE082; }
         .mood-card-1 { background-color: #FFF3E0; } .mood-card-1 .material-icons-round, .mood-card-1 span { color: #FFB74D; }
+
         .history-list { display: flex; flex-direction: column; gap: 10px; }
     </style>
 </head>
@@ -317,6 +352,7 @@
             <div class="action-card card-chat" onclick="navigateTo('chat')"><div class="icon-box"><span class="material-icons-round">chat_bubble_outline</span></div><h3>Чат поддержки</h3></div>
             <div class="action-card card-breath" onclick="navigateTo('game')"><div class="icon-box"><span class="material-icons-round">air</span></div><h3>Дыхание</h3></div>
         </div>
+        <!-- ВЕРНУЛ СИНУСОИДУ (ВОЛНУ) -->
         <div class="widget-card" onclick="navigateTo('video')">
             <div class="widget-header"><div class="dot-indicator"></div><div style="font-size:14px;color:var(--text-muted)">Медитации</div></div>
             <div style="font-size:18px;font-weight:600;color:var(--text-header)">Спокойствие</div>
@@ -338,7 +374,7 @@
         <div class="input-area"><button id="micBtn" class="btn-sq"><span class="material-icons-round">mic</span></button><input type="text" id="userInput" placeholder="Сообщение..."><button id="sendBtn" class="btn-sq"><span class="material-icons-round">arrow_upward</span></button></div>
     </div>
 
-    <!-- SOS SCREEN (BREATHING SPHERE) -->
+    <!-- SOS SCREEN (BREATHING SPHERE) - ТЕПЕРЬ ОТДЕЛЬНО -->
     <div id="sos-screen" class="screen">
         <div id="sos-content" class="sos-sphere-container">
             <!-- Text Above -->
@@ -364,6 +400,7 @@
     <!-- ДНЕВНИК -->
     <div id="music-screen" class="screen">
         <div style="padding:24px; overflow-y:auto;">
+            <!-- ДИАГРАММА -->
             <div class="chart-container">
                 <canvas id="pieChart"></canvas>
                 <div id="chart-legend" class="pie-legend"></div>
@@ -371,14 +408,32 @@
                     Нет данных<br>Отметьте состояние
                 </div>
             </div>
+
+            <!-- ВЫБОР НАСТРОЕНИЯ -->
             <h2 style="margin-bottom:15px; font-size:18px;">Как вы сейчас?</h2>
             <div class="mood-grid">
-                <div class="mood-item mood-card-5" onclick="saveMood(5)"><span class="material-icons-round mood-5">sentiment_very_satisfied</span><span>Отлично</span></div>
-                <div class="mood-item mood-card-4" onclick="saveMood(4)"><span class="material-icons-round mood-4">sentiment_satisfied_alt</span><span>Хорошо</span></div>
-                <div class="mood-item mood-card-3" onclick="saveMood(3)"><span class="material-icons-round mood-3">sentiment_neutral</span><span>Норм</span></div>
-                <div class="mood-item mood-card-2" onclick="saveMood(2)"><span class="material-icons-round mood-2">sentiment_dissatisfied</span><span>Так себе</span></div>
-                <div class="mood-item mood-card-1" onclick="saveMood(1)"><span class="material-icons-round mood-1">sentiment_very_dissatisfied</span><span>Плохо</span></div>
+                <div class="mood-item mood-card-5" onclick="saveMood(5)">
+                    <span class="material-icons-round">sentiment_very_satisfied</span>
+                    <span>Отлично</span>
+                </div>
+                <div class="mood-item mood-card-4" onclick="saveMood(4)">
+                    <span class="material-icons-round">sentiment_satisfied_alt</span>
+                    <span>Хорошо</span>
+                </div>
+                <div class="mood-item mood-card-3" onclick="saveMood(3)">
+                    <span class="material-icons-round">sentiment_neutral</span>
+                    <span>Норм</span>
+                </div>
+                <div class="mood-item mood-card-2" onclick="saveMood(2)">
+                    <span class="material-icons-round">sentiment_dissatisfied</span>
+                    <span>Так себе</span>
+                </div>
+                <div class="mood-item mood-card-1" onclick="saveMood(1)">
+                    <span class="material-icons-round">sentiment_very_dissatisfied</span>
+                    <span>Плохо</span>
+                </div>
             </div>
+
             <h2 style="margin-bottom:15px; font-size:18px;">История</h2>
             <div id="history-container" class="history-list"></div>
         </div>
