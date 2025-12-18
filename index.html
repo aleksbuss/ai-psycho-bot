@@ -238,7 +238,6 @@
             min-width: 220px;
         }
         
-        /* Класс для анимации кнопки */
         .sos-btn-enter {
             opacity: 0;
             animation: pop-up-letter 0.5s ease forwards;
@@ -263,7 +262,7 @@
         @keyframes fadeIn { to { opacity: 1; } }
 
 
-        /* ШАРИКИ */
+        /* ШАРИКИ - СТИЛИ ДЛЯ ИГРЫ */
         #balloon-game-screen { 
             background-color: var(--primary-soft); 
             position: relative; 
@@ -281,6 +280,39 @@
         .score-big { font-size: 60px; font-weight: 800; color: var(--primary-text); line-height: 1; margin-bottom: 10px; }
         .score-label { font-size: 16px; color: var(--text-muted); margin-bottom: 30px; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
         .new-record-badge { background: var(--warm-bg); color: var(--warm-text); padding: 6px 12px; border-radius: 8px; font-weight: 700; font-size: 14px; margin-bottom: 10px; display: inline-block; }
+
+        /* НОВЫЕ КНОПКИ ДЛЯ ИГРЫ */
+        .btn-game-primary {
+            padding: 18px 0;
+            font-size: 18px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #FFFFFF;
+            background: linear-gradient(135deg, #4DB6AC, #009688);
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            box-shadow: 0 10px 20px rgba(77, 182, 172, 0.4);
+            width: 100%;
+            transition: transform 0.1s;
+        }
+        .btn-game-primary:active { transform: scale(0.96); }
+
+        .btn-game-secondary {
+            padding: 18px 0;
+            font-size: 18px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #1565C0; /* Dark Blue Text */
+            background: #E3F2FD; /* Soft Blue BG */
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(33, 150, 243, 0.15);
+            width: 100%;
+            transition: transform 0.1s;
+        }
+        .btn-game-secondary:active { transform: scale(0.96); }
 
         /* ДНЕВНИК */
         .chart-container { 
@@ -426,7 +458,16 @@
     <div id="balloon-game-screen" class="screen">
         <div class="game-ui-header"><button id="back-btn-game" onclick="goBack()"><span class="material-icons-round">arrow_back</span></button><div id="game-timer">02:00</div><div class="score-box" id="balloon-score">0</div></div>
         <canvas id="balloon-game-canvas"></canvas>
-        <div id="game-over-modal" class="game-modal"><div id="record-badge" class="new-record-badge" style="display:none">🏆 НОВЫЙ РЕКОРД!</div><span id="game-icon" class="material-icons-round cup-icon" style="display:none">emoji_events</span><div class="score-big" id="final-score">0</div><div class="score-label">Шариков</div><div style="width:100%;max-width:280px;display:flex;gap:12px;flex-direction:column;"><button class="sos-next-btn" onclick="initBalloonGame()">Играть снова</button><button class="sos-next-btn" style="background:white;color:var(--text-body);box-shadow:var(--shadow-card);" onclick="goBack()">В меню</button></div></div>
+        <div id="game-over-modal" class="game-modal">
+            <div id="record-badge" class="new-record-badge" style="display:none">🏆 НОВЫЙ РЕКОРД!</div>
+            <span id="game-icon" class="material-icons-round cup-icon" style="display:none">emoji_events</span>
+            <div class="score-big" id="final-score">0</div>
+            <div class="score-label">Шариков</div>
+            <div style="width:100%;max-width:280px;display:flex;gap:12px;flex-direction:column;">
+                <button class="btn-game-primary" onclick="initBalloonGame()">Играть снова</button>
+                <button class="btn-game-secondary" onclick="goBack()">В меню</button>
+            </div>
+        </div>
     </div>
 
 <script>
