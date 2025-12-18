@@ -366,7 +366,7 @@
     <!-- SCREENS -->
     <div id="menu-screen" class="screen active">
         <div class="greeting-header">
-            <div class="greeting-text"><h1>Доброе утро,<br><span id="userNameDisplay">User</span></h1><p>Что поддержит вас сегодня?</p></div>
+            <div class="greeting-text"><h1><span id="greetingText">Доброе утро</span>,<br><span id="userNameDisplay">User</span></h1><p>Что поддержит вас сегодня?</p></div>
             <button class="sos-btn-header" onclick="navigateTo('sos')">SOS</button>
         </div>
         <div class="main-grid">
@@ -475,7 +475,18 @@
     const tg=window.Telegram.WebApp; tg.expand();
     const userId=tg.initDataUnsafe?.user?.id||'test_'+Math.floor(Math.random()*1000);
     const userName=tg.initDataUnsafe?.user?.first_name||'Друг';
-    document.getElementById('userNameDisplay').innerText=userName;
+    
+    // --- ДИНАМИЧЕСКОЕ ПРИВЕТСТВИЕ ---
+    const hour = new Date().getHours();
+    let greeting = 'Доброе утро';
+    if (hour >= 0 && hour < 5) greeting = 'Доброй ночи';
+    else if (hour >= 5 && hour < 12) greeting = 'Доброе утро';
+    else if (hour >= 12 && hour < 17) greeting = 'Добрый день';
+    else if (hour >= 17 && hour < 24) greeting = 'Добрый вечер';
+    
+    document.getElementById('greetingText').innerText = greeting;
+    document.getElementById('userNameDisplay').innerText = userName;
+    // ---------------------------------
 
     const screens={menu:document.getElementById('menu-screen'),chat:document.getElementById('chat-screen'),video:document.getElementById('video-screen'),music:document.getElementById('music-screen'),game:document.getElementById('game-screen'),sos:document.getElementById('sos-screen'),balloons:document.getElementById('balloon-game-screen')};
     const header=document.getElementById('main-header');
