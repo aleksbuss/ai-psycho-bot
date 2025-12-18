@@ -187,14 +187,13 @@
             align-items: center;
             gap: 15px;
             margin-bottom: 50px;
-            /* REMOVED SKEW/ROTATE - NOW STRAIGHT */
         }
 
         .sos-big-number {
             font-size: 160px;
             line-height: 1;
             font-weight: 900;
-            color: #FF6F00; /* Orange from image */
+            color: #FF6F00;
             text-shadow: 4px 4px 0 rgba(255, 111, 0, 0.2);
             opacity: 0;
             display: block;
@@ -206,7 +205,7 @@
             font-size: 42px;
             font-weight: 900;
             text-transform: uppercase;
-            color: #4DB6AC; /* Mint/Teal color from image */
+            color: #4DB6AC;
             letter-spacing: 2px;
         }
 
@@ -229,16 +228,21 @@
             font-weight: 700;
             text-transform: uppercase;
             color: #FFFFFF;
-            background: linear-gradient(135deg, #4DB6AC, #009688); /* Gradient for depth */
+            background: linear-gradient(135deg, #4DB6AC, #009688);
             border: none;
-            border-radius: 20px; /* Soft Rounded Corners */
+            border-radius: 20px;
             cursor: pointer;
             box-shadow: 0 10px 20px rgba(77, 182, 172, 0.4);
             transition: transform 0.1s, box-shadow 0.1s;
+            opacity: 1; /* Default visible */
+            min-width: 220px;
+        }
+        
+        /* Класс для анимации кнопки */
+        .sos-btn-enter {
             opacity: 0;
             animation: pop-up-letter 0.5s ease forwards;
             animation-delay: 0.6s;
-            min-width: 220px;
         }
 
         .sos-btn-3d:active {
@@ -470,7 +474,9 @@
         sosIdx = 0;
         document.getElementById('sos-content-area').innerHTML = '';
         document.getElementById('sos-desc-area').innerHTML = '';
-        document.getElementById('sos-main-btn').querySelector('span').innerText = 'Я НАШЕЛ';
+        const btn = document.getElementById('sos-main-btn');
+        btn.querySelector('span').innerText = 'Я НАШЕЛ';
+        btn.onclick = nextSos; // RESET CLICK HANDLER
     }
 
     function startSos() { renderSosStep(); }
@@ -486,7 +492,6 @@
         const numDiv = document.createElement('div');
         numDiv.className = 'sos-big-number';
         numDiv.innerText = s.n;
-        // Animation trigger
         numDiv.style.animation = 'pop-up-letter 0.5s ease forwards';
         content.appendChild(numDiv);
 
@@ -498,10 +503,8 @@
             const span = document.createElement('span');
             span.className = 'sos-letter';
             span.innerText = char;
-            // Straight pop-up animation
             span.style.animation = `pop-up-letter 0.4s ease forwards`;
             span.style.animationDelay = `${0.2 + (index * 0.05)}s`;
-            
             textLine.appendChild(span);
         });
         
@@ -511,11 +514,15 @@
         const desc = document.getElementById('sos-desc-area');
         desc.className = 'sos-desc';
         desc.innerText = s.d;
-        
-        // Reset animation for description
         desc.style.animation = 'none';
         desc.offsetHeight; /* trigger reflow */
         desc.style.animation = 'fadeIn 0.5s ease forwards 0.5s';
+
+        // 5. Button Animation Reset
+        const btn = document.getElementById('sos-main-btn');
+        btn.classList.remove('sos-btn-enter');
+        void btn.offsetWidth; // trigger reflow
+        btn.classList.add('sos-btn-enter');
     }
 
     function nextSos() {
@@ -533,10 +540,15 @@
                 </div>
             `;
             document.getElementById('sos-desc-area').innerText = 'Ты справился. Дыши спокойно.';
-            document.getElementById('sos-main-btn').querySelector('span').innerText = 'В МЕНЮ';
             
             const btn = document.getElementById('sos-main-btn');
-            btn.onclick = goBack;
+            btn.querySelector('span').innerText = 'В МЕНЮ';
+            btn.onclick = goBack; // CHANGE HANDLER TO GO BACK
+            
+            // Re-trigger button animation on finish screen too
+            btn.classList.remove('sos-btn-enter');
+            void btn.offsetWidth;
+            btn.classList.add('sos-btn-enter');
             
             if(tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
         }
