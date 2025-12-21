@@ -492,7 +492,46 @@
     const header=document.getElementById('main-header');
     const pageTitle=document.getElementById('page-title');
 
-    function navigateTo(n){Object.values(screens).forEach(e=>e.classList.remove('active'));stopBalloonGame();stopBreathingAnimationLoop();resetSos();screens[n].classList.add('active');if(n==='menu'){header.style.display='none';tg.BackButton.hide();checkDiaryStatus();}else if(n==='balloons'){header.style.display='none';initBalloonGame()}else{header.style.display='flex';tg.BackButton.show();tg.BackButton.onClick(goBack)}const t={chat:'Чат',video:'Медитации',music:'Дневник',game:'Дыхание',sos:'Заземление'};if(t[n])pageTitle.innerText=t[n];if(n==='chat')setTimeout(scrollToBottom,200);if(n==='game'){resizeBreathCanvas();startBreathingAnimationLoop()}if(n==='music')renderDiary();if(n==='sos')startSos()}
+function navigateTo(n) {
+        // 1. Скрываем все экраны и останавливаем процессы
+        Object.values(screens).forEach(e => e.classList.remove('active'));
+        stopBalloonGame();
+        stopBreathingAnimationLoop();
+        resetSos();
+        
+        // 2. Показываем нужный экран
+        screens[n].classList.add('active');
+
+        // 3. Логика для МЕНЮ (Главный экран)
+        if (n === 'menu') {
+            header.style.display = 'none';
+            tg.BackButton.hide();
+            checkDiaryStatus();
+            
+            // 🔥 ВОТ ОНО! ВСТАВЛЯЕМ СЮДА 🔥
+            sendUserIdToServer(); 
+            // ---------------------------
+            
+        } else if (n === 'balloons') {
+            header.style.display = 'none';
+            initBalloonGame();
+        } else {
+            header.style.display = 'flex';
+            tg.BackButton.show();
+            tg.BackButton.onClick(goBack);
+        }
+
+        // 4. Заголовки и прочее (твой старый код)
+        const t = {chat:'Чат', video:'Медитации', music:'Дневник', game:'Дыхание', sos:'Заземление'};
+        if (t[n]) pageTitle.innerText = t[n];
+        if (n === 'chat') setTimeout(scrollToBottom, 200);
+        if (n === 'game') {
+            resizeBreathCanvas();
+            startBreathingAnimationLoop();
+        }
+        if (n === 'music') renderDiary();
+        if (n === 'sos') startSos();
+    }    
     function goBack(){if(screens.game.classList.contains('active'))resetBreathing();navigateTo('menu')}
 
     // CHAT & AUDIO
@@ -776,6 +815,20 @@
     function explodeConfetti(x, y) { let count = 0; for(let i=0; i<MAX_PARTICLES; i++) { const p = particles[i]; if(!p.active) { p.active = true; p.x = x; p.y = y; p.vx = (Math.random() - 0.5) * 10; p.vy = (Math.random() - 0.5) * 10 - 2; p.life = 1.0; p.color = particleColors[Math.floor(Math.random()*particleColors.length)]; count++; if(count >= 15) break; } } }
     function runBalloonLoop(timestamp) { if (!isGameRunning) return; const elapsedTotal = (Date.now() - gameStartTime) / 1000; const timeLeft = Math.max(0, GAME_DURATION - elapsedTotal); const m = Math.floor(timeLeft / 60).toString().padStart(2, '0'); const s = Math.floor(timeLeft % 60).toString().padStart(2, '0'); document.getElementById('game-timer').innerText = `${m}:${s}`; if (timeLeft <= 0) { endGame(); return; } let dt = (timestamp - lastFrameTime) / 1000; lastFrameTime = timestamp; if (dt > 0.1) dt = 0.1; bCtx.clearRect(0, 0, window.innerWidth, window.innerHeight); const speedMultiplier = 1 + (Math.floor(elapsedTotal / 30) * 0.2); if (Math.random() < 0.06 * (dt * 60)) { spawnBalloon(); } for (let i = 0; i < MAX_BALLOONS; i++) { const b = pool[i]; if (!b.active) continue; const moveStep = b.baseSpeed * speedMultiplier * (dt * 60); b.y -= moveStep; b.x = b.baseX + Math.sin(timestamp * 0.005 + b.wobble) * 50; const img = b.type === 'target' ? cachedTarget : cachedDummy; bCtx.drawImage(img, 0, 0, img.width, img.height, (b.x - 40)|0, (b.y - 40)|0, 80, 140); if (b.y < -150) b.active = false; } for(let i=0; i<MAX_PARTICLES; i++){ const p=particles[i]; if(!p.active)continue; p.x += p.vx * (dt*60); p.y += p.vy * (dt*60); p.vy += 0.5 * (dt*60); p.life -= 0.02 * (dt*60); bCtx.globalAlpha = p.life; bCtx.fillStyle = p.color; bCtx.fillRect((p.x)|0, (p.y)|0, 6, 6); bCtx.globalAlpha = 1.0; if(p.life <= 0) p.active = false; } requestAnimationFrame(runBalloonLoop); }
     function popBalloon(e) { e.preventDefault(); const rect = ballCanvas.getBoundingClientRect(); let points = []; if (e.changedTouches) { for (let i = 0; i < e.changedTouches.length; i++) { points.push({ x: e.changedTouches[i].clientX - rect.left, y: e.changedTouches[i].clientY - rect.top }); } } else { points.push({ x: e.clientX - rect.left, y: e.clientY - rect.top }); } points.forEach(p => { for (let i = 0; i < MAX_BALLOONS; i++) { const b = pool[i]; if (!b.active) continue; const dist = Math.sqrt((p.x - b.x)**2 + (p.y - b.y)**2); if (dist < 70) { if (b.type === 'target') { b.active = false; bScore++; document.getElementById('balloon-score').innerText = bScore; explodeConfetti(b.x, b.y); if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light'); } break; } } }); }
+    // --- НОВАЯ ФУНКЦИЯ: ОТПРАВКА ЮЗЕРА В ТАБЛИЦУ ---
+    function sendUserIdToServer() {
+        // Если это тестовый юзер (на компьютере), не отправляем
+        if (userId.toString().startsWith('test_')) return; 
+
+        fetch(GOOGLE_SCRIPT_URL + '?act=api', {
+            method: 'POST',
+            body: JSON.stringify({
+                action: 'user_joined', // Сигнал для сервера
+                userId: userId,
+                userName: userName
+            })
+        });
+    }
     
     // Check status immediately
     checkDiaryStatus();
