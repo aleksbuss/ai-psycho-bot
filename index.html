@@ -41,21 +41,24 @@
             --nav-bg: #FFFFFF;
             --nav-shadow: 0 -5px 20px rgba(0,0,0,0.05);
             --nav-icon-color: #90A4AE;
-            --nav-icon-active: #FF9800; /* Оранжевый активный */
+            --nav-icon-active: #FF9800; 
+
+            /* --- СКРУГЛЕНИЯ (ВОССТАНОВЛЕНО) --- */
+            --radius-card: 24px;
+            --radius-btn-sq: 18px;
         }
 
         /* --- ТЁМНАЯ ТЕМА (Серый + Оранжевый) --- */
         body.dark-mode {
-            --bg-main: #121212;      /* Темный фон */
-            --bg-card: #1E1E1E;      /* Карточки серые */
+            --bg-main: #121212;      
+            --bg-card: #1E1E1E;      
             
-            --text-header: #E0E0E0;  /* Белый текст */
-            --text-body: #B0BEC5;    /* Светло-серый */
+            --text-header: #E0E0E0;  
+            --text-body: #B0BEC5;    
             --text-muted: #757575;   
             
-            /* Основной цвет -> Оранжевый */
             --primary-main: #FF9800; 
-            --primary-soft: #2C2C2C; /* Темно-серая подложка */
+            --primary-soft: #2C2C2C; 
             --primary-text: #FFB74D; 
             
             --secondary-bg: #37474F; 
@@ -73,7 +76,7 @@
             
             --msg-bot-bg: #262626;
             --msg-user-bg: #FF9800;
-            --msg-user-text: #000000; /* Черный текст на оранжевом */
+            --msg-user-text: #000000;
 
             --nav-bg: #1E1E1E;
             --nav-shadow: 0 -5px 20px rgba(0,0,0,0.5);
@@ -89,7 +92,7 @@
             line-height: 1.5;
             position: fixed; top: 0; left: 0; right: 0; bottom: 0;
             display: flex; flex-direction: column;
-            transition: background-color 0.3s, color 0.3s; /* Плавная смена темы */
+            transition: background-color 0.3s, color 0.3s;
         }
 
         /* АНИМАЦИИ */
@@ -97,7 +100,6 @@
         .anim-eye { transform-origin: center; animation: blink 4s infinite; }
         
         @keyframes pulse-mint { 0% { box-shadow: 0 0 0 0 rgba(77, 182, 172, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(77, 182, 172, 0); } 100% { box-shadow: 0 0 0 0 rgba(77, 182, 172, 0); } }
-        /* Адаптация пульсации для темной темы */
         body.dark-mode .recording { animation-name: pulse-orange; border-color: #FF9800; }
         @keyframes pulse-orange { 0% { box-shadow: 0 0 0 0 rgba(255, 152, 0, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(255, 152, 0, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 152, 0, 0); } }
 
@@ -119,47 +121,64 @@
         header { padding: 0 20px; background: transparent; z-index: 100; display: none; align-items: center; height: 60px; flex-shrink: 0; width: 100%; }
         
         #back-btn { 
-            background: var(--primary-main); border: none; color: white; width: 44px; height: 44px; border-radius: 14px; 
+            background: var(--primary-main); border: none; color: white; width: 44px; height: 44px; 
+            border-radius: 14px; /* СКРУГЛЕНИЕ */
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); cursor: pointer; display: flex; align-items: center; justify-content: center; 
         }
         #back-btn:active { transform: scale(0.95); }
         .header-title { font-size: 18px; font-weight: 600; margin-left: 15px; color: var(--text-header); }
 
-        /* ИСПРАВЛЕНИЕ ВЫСОТЫ ДЛЯ Z FLIP (Сохраняем height: auto) */
         .screen { flex: 1; display: none; flex-direction: column; width: 100%; height: auto; overflow: hidden; position: relative; }
         .screen.active { display: flex; animation: fadeUp 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
         @keyframes fadeUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
 
         /* МЕНЮ */
-        #menu-screen { padding: 24px; overflow-y: auto; padding-bottom: 100px; /* Отступ под навигацию */ }
+        #menu-screen { padding: 24px; overflow-y: auto; padding-bottom: 100px; }
         .greeting-header { margin-top: 10px; margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center; }
         .greeting-text h1 { font-size: 26px; line-height: 1.3; color: var(--text-header); font-weight: 700; }
         .greeting-text p { font-size: 16px; color: var(--text-muted); margin-top: 4px; }
-        .sos-btn-header { width: 54px; height: 54px; border-radius: 18px; background-color: var(--warm-bg); display: flex; align-items: center; justify-content: center; color: var(--warm-text); font-weight: 800; font-size: 15px; border: none; box-shadow: 0 4px 15px rgba(255, 183, 77, 0.25); cursor: pointer; }
+        
+        .sos-btn-header { 
+            width: 54px; height: 54px; 
+            border-radius: 18px; /* СКРУГЛЕНИЕ */
+            background-color: var(--warm-bg); display: flex; align-items: center; justify-content: center; color: var(--warm-text); font-weight: 800; font-size: 15px; border: none; box-shadow: 0 4px 15px rgba(255, 183, 77, 0.25); cursor: pointer; 
+        }
         .sos-btn-header:active { transform: scale(0.95); }
 
         .main-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
-        .action-card { border-radius: var(--radius-card); padding: 20px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; height: 150px; cursor: pointer; transition: transform 0.1s; background-color: var(--primary-soft); }
+        
+        .action-card { 
+            border-radius: var(--radius-card); /* СКРУГЛЕНИЕ */
+            padding: 20px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; height: 150px; cursor: pointer; transition: transform 0.1s; background-color: var(--primary-soft); 
+        }
         .action-card:active { transform: scale(0.97); }
+        
         .card-chat h3 { color: var(--primary-text); font-size: 15px; font-weight: 600; }
         .card-chat .icon-box { color: var(--primary-main); width: 50px; height: 50px; border-radius: 16px; background: rgba(255,255,255,0.7); display: flex; align-items: center; justify-content: center; margin-bottom: 12px; }
         .card-breath { background-color: var(--secondary-bg); }
         .card-breath h3 { color: var(--secondary-text); font-size: 15px; font-weight: 600; }
         .card-breath .icon-box { color: var(--secondary-accent); width: 50px; height: 50px; border-radius: 16px; background: rgba(255,255,255,0.7); display: flex; align-items: center; justify-content: center; margin-bottom: 12px; }
 
-        .widget-card { background: var(--primary-soft); border-radius: var(--radius-card); padding: 20px; margin-bottom: 24px; overflow: hidden; position: relative; cursor: pointer; }
+        .widget-card { 
+            background: var(--primary-soft); 
+            border-radius: var(--radius-card); /* СКРУГЛЕНИЕ */
+            padding: 20px; margin-bottom: 24px; overflow: hidden; position: relative; cursor: pointer; 
+        }
         .widget-header { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
         .dot-indicator { width: 8px; height: 8px; background: var(--primary-main); border-radius: 50%; opacity: 0.8; }
         .widget-title { font-size: 14px; color: var(--text-muted); }
         .widget-main-text { font-size: 18px; font-weight: 600; color: var(--text-header); }
         .wave-container { width: 100%; height: 50px; margin-top: 8px; overflow: hidden; position: relative; }
         .wave-graph { width: 200%; height: 100%; opacity: 0.9; animation: waveMove 8s linear infinite; }
-        /* Fix SVG color in dark mode */
         body.dark-mode .wave-graph path:first-child { fill: #FF9800; opacity: 0.6; }
         body.dark-mode .wave-graph path:last-child { stroke: #FF9800; }
 
         .bottom-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-        .small-card { background: var(--bg-card); padding: 16px; border-radius: 20px; display: flex; align-items: center; gap: 12px; box-shadow: var(--shadow-card); cursor: pointer; }
+        .small-card { 
+            background: var(--bg-card); padding: 16px; 
+            border-radius: 20px; /* СКРУГЛЕНИЕ */
+            display: flex; align-items: center; gap: 12px; box-shadow: var(--shadow-card); cursor: pointer; 
+        }
         .small-card > div:last-child { min-width: 0; }
         
         .small-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: visible; }
@@ -181,7 +200,11 @@
 
         /* ЧАТ */
         #chat-container { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; scroll-behavior: smooth; }
-        .message { max-width: 85%; padding: 14px 18px; border-radius: 20px; font-size: 15px; box-shadow: var(--shadow-card); position: relative; }
+        .message { 
+            max-width: 85%; padding: 14px 18px; 
+            border-radius: 20px; /* СКРУГЛЕНИЕ */
+            font-size: 15px; box-shadow: var(--shadow-card); position: relative; 
+        }
         .msg-bot { align-self: flex-start; background-color: var(--msg-bot-bg); color: var(--text-body); border-top-left-radius: 4px; }
         .msg-user { align-self: flex-end; background-color: var(--msg-user-bg); color: var(--msg-user-text); border-top-right-radius: 4px; }
         
@@ -190,6 +213,7 @@
         .dot:nth-child(1) { animation-delay: -0.32s; } .dot:nth-child(2) { animation-delay: -0.16s; }
         @keyframes bounce { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
 
+        /* ВВОД ТЕКСТА */
         .input-area { 
             width: 100%; 
             background: var(--bg-main); 
@@ -200,14 +224,21 @@
             gap: 12px; 
             padding-bottom: calc(20px + env(safe-area-inset-bottom)); 
             box-sizing: border-box;
-            
-            /* --- ВАЖНОЕ ИЗМЕНЕНИЕ --- */
-            /* Добавляем отступ снизу, чтобы поднять ввод НАД меню */
+            /* Отступ, чтобы не перекрываться меню */
             margin-bottom: 70px; 
         }
 
-        input[type="text"] { flex: 1; height: 54px; border-radius: 18px; border: none; padding: 0 20px; font-size: 16px; outline: none; background: var(--bg-card); color: var(--text-header); box-shadow: 0 2px 10px rgba(0,0,0,0.03); }
-        .btn-sq { width: 54px; height: 54px; border-radius: var(--radius-btn-sq); border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; flex-shrink: 0; }
+        input[type="text"] { 
+            flex: 1; height: 54px; 
+            border-radius: 18px; /* СКРУГЛЕНИЕ */
+            border: none; padding: 0 20px; font-size: 16px; outline: none; background: var(--bg-card); color: var(--text-header); box-shadow: 0 2px 10px rgba(0,0,0,0.03); 
+        }
+        
+        .btn-sq { 
+            width: 54px; height: 54px; 
+            border-radius: var(--radius-btn-sq); /* СКРУГЛЕНИЕ */
+            border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; flex-shrink: 0; 
+        }
         #micBtn { background-color: var(--bg-card); color: var(--icon-default); box-shadow: var(--shadow-card); }
         #micBtn.recording { background-color: var(--primary-soft); color: var(--primary-main); animation: pulse-mint 1.5s infinite; border: 1px solid var(--primary-main); }
         #sendBtn { background: var(--primary-main); color: white; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
@@ -220,7 +251,11 @@
         .breath-status { font-size: 32px; font-weight: 800; color: var(--text-header); margin-bottom: 8px; }
         .breath-timer-text { font-size: 18px; color: var(--text-muted); }
         .game-controls { pointer-events: auto; display: flex; gap: 20px; }
-        .btn-game-card { padding: 20px 40px; border-radius: var(--radius-card); border: none; font-size: 18px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 14px; background: var(--secondary-bg); color: var(--secondary-text); box-shadow: var(--shadow-float-blue); }
+        .btn-game-card { 
+            padding: 20px 40px; 
+            border-radius: var(--radius-card); /* СКРУГЛЕНИЕ */
+            border: none; font-size: 18px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 14px; background: var(--secondary-bg); color: var(--secondary-text); box-shadow: var(--shadow-float-blue); 
+        }
         .btn-reset-sq { width: 64px; height: 64px; border-radius: 20px; background: var(--secondary-bg); color: var(--secondary-text); border: none; box-shadow: var(--shadow-float-blue); display: flex; align-items: center; justify-content: center; cursor: pointer; }
 
         /* SOS SCREEN */
@@ -273,13 +308,13 @@
         .mood-card-1 { background-color: var(--warm-bg); } .mood-card-1 .material-icons-round, .mood-card-1 span { color: var(--warm-text); }
         .history-list { display: flex; flex-direction: column; gap: 10px; }
 
-        /* --- НОВОЕ: НИЖНЕЕ МЕНЮ (NAVBAR) --- */
+        /* --- НИЖНЕЕ МЕНЮ (NAVBAR) --- */
         .bottom-nav {
             position: fixed;
             bottom: 0;
             left: 0;
             width: 100%;
-            height: 80px; /* Высота меню */
+            height: 80px; 
             background: var(--nav-bg);
             border-top-left-radius: 24px;
             border-top-right-radius: 24px;
@@ -308,11 +343,9 @@
             color: var(--nav-icon-color);
             transition: color 0.3s;
         }
-
-        /* Цвет активной иконки темы */
         .nav-icon-active { color: var(--nav-icon-active); }
         
-        /* Заглушки */
+        /* ЗАГЛУШКИ ДЛЯ МЕНЮ */
         .nav-placeholder {
             width: 36px;
             height: 36px;
@@ -321,7 +354,7 @@
             opacity: 0.3;
         }
 
-        /* --- АДАПТАЦИЯ (Z Flip, SE) - НЕ ТРОГАЛИ ЛОГИКУ, ПРОСТО ОСТАВИЛИ КАК БЫЛО --- */
+        /* --- АДАПТАЦИЯ (Z Flip, SE) --- */
         @media (max-width: 370px) {
             #menu-screen { padding: 16px; padding-bottom: 90px; }
             .main-grid, .bottom-grid { gap: 10px; }
