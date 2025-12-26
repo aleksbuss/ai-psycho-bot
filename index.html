@@ -8,7 +8,7 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
     <style>
         :root {
-            /* --- СВЕТЛАЯ ТЕМА (MINT) --- */
+            /* --- ПАЛИТРА FRESH MINT (Светлая - по умолчанию) --- */
             --bg-main: #F5F7FA;      
             --bg-card: #FFFFFF;      
             
@@ -29,7 +29,7 @@
             --warm-text: #EF6C00;
 
             --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.04);
-            --shadow-float: 0 10px 30px rgba(100, 181, 246, 0.25);
+            --shadow-float-blue: 0 10px 30px rgba(100, 181, 246, 0.25);
             
             --icon-default: #90A4AE;
             
@@ -37,26 +37,25 @@
             --msg-user-bg: #4DB6AC;
             --msg-user-text: #FFFFFF;
 
-            /* Навигация */
+            /* Переменные для Меню */
             --nav-bg: #FFFFFF;
-            --nav-shadow: 0 -4px 20px rgba(0,0,0,0.05);
-            --nav-height: 80px; 
-            --nav-icon-color: #9CA3AF;
-            --nav-icon-active: #4DB6AC;
+            --nav-shadow: 0 -5px 20px rgba(0,0,0,0.05);
+            --nav-icon-color: #90A4AE;
+            --nav-icon-active: #FF9800; /* Оранжевый активный */
         }
 
-        /* --- ТЁМНАЯ ТЕМА (GRAY + ORANGE) --- */
+        /* --- ТЁМНАЯ ТЕМА (Серый + Оранжевый) --- */
         body.dark-mode {
-            --bg-main: #121212;      /* Глубокий серый */
+            --bg-main: #121212;      /* Темный фон */
             --bg-card: #1E1E1E;      /* Карточки серые */
             
             --text-header: #E0E0E0;  /* Белый текст */
             --text-body: #B0BEC5;    /* Светло-серый */
             --text-muted: #757575;   
             
-            /* ОРАНЖЕВЫЙ АКЦЕНТ */
+            /* Основной цвет -> Оранжевый */
             --primary-main: #FF9800; 
-            --primary-soft: #263238; /* Темная подложка */
+            --primary-soft: #2C2C2C; /* Темно-серая подложка */
             --primary-text: #FFB74D; 
             
             --secondary-bg: #37474F; 
@@ -68,18 +67,17 @@
             --warm-text: #FF5722;
 
             --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.5);
-            --shadow-float: none;
+            --shadow-float-blue: none;
             
             --icon-default: #607D8B;
             
-            --msg-bot-bg: #2C2C2C;
+            --msg-bot-bg: #262626;
             --msg-user-bg: #FF9800;
-            --msg-user-text: #000000;
-            
+            --msg-user-text: #000000; /* Черный текст на оранжевом */
+
             --nav-bg: #1E1E1E;
-            --nav-shadow: 0 -4px 20px rgba(0,0,0, 0.5);
+            --nav-shadow: 0 -5px 20px rgba(0,0,0,0.5);
             --nav-icon-color: #546E7A;
-            --nav-icon-active: #FF9800;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
@@ -95,45 +93,53 @@
         }
 
         /* АНИМАЦИИ */
+        @keyframes blink { 0%, 90%, 100% { transform: scaleY(1); } 95% { transform: scaleY(0.1); } }
+        .anim-eye { transform-origin: center; animation: blink 4s infinite; }
+        
+        @keyframes pulse-mint { 0% { box-shadow: 0 0 0 0 rgba(77, 182, 172, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(77, 182, 172, 0); } 100% { box-shadow: 0 0 0 0 rgba(77, 182, 172, 0); } }
+        /* Адаптация пульсации для темной темы */
+        body.dark-mode .recording { animation-name: pulse-orange; border-color: #FF9800; }
+        @keyframes pulse-orange { 0% { box-shadow: 0 0 0 0 rgba(255, 152, 0, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(255, 152, 0, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 152, 0, 0); } }
+
         @keyframes msgSlideUp { from { opacity: 0; transform: translateY(20px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
         .msg-enter { animation: msgSlideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
         
-        @keyframes pulse-mint { 0% { box-shadow: 0 0 0 0 rgba(77, 182, 172, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(77, 182, 172, 0); } 100% { box-shadow: 0 0 0 0 rgba(77, 182, 172, 0); } }
-        /* Адаптация пульсации под тему */
-        body.dark-mode .pulse-anim { animation-name: pulse-orange; }
-        @keyframes pulse-orange { 0% { box-shadow: 0 0 0 0 rgba(255, 152, 0, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(255, 152, 0, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 152, 0, 0); } }
-
         @keyframes waveMove { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 
-        /* HEADER */
+        /* ТРЮК №1: НЕВИДИМЫЙ ВРАЩАТЕЛЬ ДЛЯ GPU */
+        #gpu-activator {
+            position: absolute; top: 0; left: 0; width: 1px; height: 1px;
+            opacity: 0.01; pointer-events: none; z-index: -1;
+            animation: force-gpu 1s infinite linear;
+            will-change: transform;
+        }
+        @keyframes force-gpu { from { transform: rotate(0deg) translateZ(0); } to { transform: rotate(360deg) translateZ(0); } }
+
+        /* UI ЭЛЕМЕНТЫ */
         header { padding: 0 20px; background: transparent; z-index: 100; display: none; align-items: center; height: 60px; flex-shrink: 0; width: 100%; }
-        #back-btn { background: var(--primary-main); border: none; color: white; width: 44px; height: 44px; border-radius: 14px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        
+        #back-btn { 
+            background: var(--primary-main); border: none; color: white; width: 44px; height: 44px; border-radius: 14px; 
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); cursor: pointer; display: flex; align-items: center; justify-content: center; 
+        }
+        #back-btn:active { transform: scale(0.95); }
         .header-title { font-size: 18px; font-weight: 600; margin-left: 15px; color: var(--text-header); }
 
-        /* SCREENS */
-        .screen { 
-            flex: 1; 
-            display: none; 
-            flex-direction: column; 
-            width: 100%; 
-            height: auto; 
-            overflow: hidden; 
-            position: relative;
-            /* ВАЖНО: Отступ снизу, чтобы контент не перекрывался меню */
-            padding-bottom: var(--nav-height); 
-        }
+        /* ИСПРАВЛЕНИЕ ВЫСОТЫ ДЛЯ Z FLIP (Сохраняем height: auto) */
+        .screen { flex: 1; display: none; flex-direction: column; width: 100%; height: auto; overflow: hidden; position: relative; }
         .screen.active { display: flex; animation: fadeUp 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
         @keyframes fadeUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* MENU SCREEN */
-        #menu-screen { padding: 24px; overflow-y: auto; }
+        /* МЕНЮ */
+        #menu-screen { padding: 24px; overflow-y: auto; padding-bottom: 100px; /* Отступ под навигацию */ }
         .greeting-header { margin-top: 10px; margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center; }
         .greeting-text h1 { font-size: 26px; line-height: 1.3; color: var(--text-header); font-weight: 700; }
         .greeting-text p { font-size: 16px; color: var(--text-muted); margin-top: 4px; }
         .sos-btn-header { width: 54px; height: 54px; border-radius: 18px; background-color: var(--warm-bg); display: flex; align-items: center; justify-content: center; color: var(--warm-text); font-weight: 800; font-size: 15px; border: none; box-shadow: 0 4px 15px rgba(255, 183, 77, 0.25); cursor: pointer; }
+        .sos-btn-header:active { transform: scale(0.95); }
 
         .main-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
-        .action-card { border-radius: 24px; padding: 20px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; height: 150px; cursor: pointer; background-color: var(--primary-soft); transition: transform 0.1s; }
+        .action-card { border-radius: var(--radius-card); padding: 20px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; height: 150px; cursor: pointer; transition: transform 0.1s; background-color: var(--primary-soft); }
         .action-card:active { transform: scale(0.97); }
         .card-chat h3 { color: var(--primary-text); font-size: 15px; font-weight: 600; }
         .card-chat .icon-box { color: var(--primary-main); width: 50px; height: 50px; border-radius: 16px; background: rgba(255,255,255,0.7); display: flex; align-items: center; justify-content: center; margin-bottom: 12px; }
@@ -141,35 +147,49 @@
         .card-breath h3 { color: var(--secondary-text); font-size: 15px; font-weight: 600; }
         .card-breath .icon-box { color: var(--secondary-accent); width: 50px; height: 50px; border-radius: 16px; background: rgba(255,255,255,0.7); display: flex; align-items: center; justify-content: center; margin-bottom: 12px; }
 
-        .widget-card { background: var(--primary-soft); border-radius: 24px; padding: 20px; margin-bottom: 24px; overflow: hidden; position: relative; cursor: pointer; }
+        .widget-card { background: var(--primary-soft); border-radius: var(--radius-card); padding: 20px; margin-bottom: 24px; overflow: hidden; position: relative; cursor: pointer; }
         .widget-header { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
         .dot-indicator { width: 8px; height: 8px; background: var(--primary-main); border-radius: 50%; opacity: 0.8; }
+        .widget-title { font-size: 14px; color: var(--text-muted); }
         .widget-main-text { font-size: 18px; font-weight: 600; color: var(--text-header); }
         .wave-container { width: 100%; height: 50px; margin-top: 8px; overflow: hidden; position: relative; }
         .wave-graph { width: 200%; height: 100%; opacity: 0.9; animation: waveMove 8s linear infinite; }
-        /* SVG fill fix for dark mode */
-        body.dark-mode .wave-path-fill { stop-color: #FF9800; } 
-        body.dark-mode .wave-path-stroke { stroke: #FF9800; }
+        /* Fix SVG color in dark mode */
+        body.dark-mode .wave-graph path:first-child { fill: #FF9800; opacity: 0.6; }
+        body.dark-mode .wave-graph path:last-child { stroke: #FF9800; }
 
         .bottom-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
         .small-card { background: var(--bg-card); padding: 16px; border-radius: 20px; display: flex; align-items: center; gap: 12px; box-shadow: var(--shadow-card); cursor: pointer; }
         .small-card > div:last-child { min-width: 0; }
-        .small-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        
+        .small-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: visible; }
         .warm-icon { background: var(--warm-bg); color: var(--warm-accent); }
         .mint-icon { background: var(--primary-soft); color: var(--primary-main); }
         .small-card h4 { font-size: 14px; font-weight: 600; color: var(--text-header); margin: 0; }
         .small-card span { font-size: 11px; color: var(--text-muted); }
 
-        /* CHAT */
-        #chat-container { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; scroll-behavior: smooth; padding-bottom: 80px; } /* Pad for input */
+        @keyframes heart-beat {
+            0% { transform: scale(1.3); }
+            50% { transform: scale(1.6); text-shadow: 0 0 10px rgba(239, 108, 0, 0.4); }
+            100% { transform: scale(1.3); }
+        }
+        .heart-alert {
+            color: #EF6C00 !important; 
+            animation: heart-beat 1.5s infinite ease-in-out;
+            z-index: 10; 
+        }
+
+        /* ЧАТ */
+        #chat-container { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; scroll-behavior: smooth; }
         .message { max-width: 85%; padding: 14px 18px; border-radius: 20px; font-size: 15px; box-shadow: var(--shadow-card); position: relative; }
         .msg-bot { align-self: flex-start; background-color: var(--msg-bot-bg); color: var(--text-body); border-top-left-radius: 4px; }
         .msg-user { align-self: flex-end; background-color: var(--msg-user-bg); color: var(--msg-user-text); border-top-right-radius: 4px; }
+        
         .typing-indicator { display: none; align-self: flex-start; background: var(--bg-card); padding: 12px; border-radius: 16px; margin-bottom: 10px; box-shadow: var(--shadow-card); }
-        .dot { height: 6px; width: 6px; background-color: #CFD8DC; border-radius: 50%; display: inline-block; animation: bounce 1.4s infinite; margin: 0 2px; }
+        .dot { height: 6px; width: 6px; background-color: #CFD8DC; border-radius: 50%; display: inline-block; animation: bounce 1.4s infinite ease-in-out both; margin: 0 2px; }
+        .dot:nth-child(1) { animation-delay: -0.32s; } .dot:nth-child(2) { animation-delay: -0.16s; }
         @keyframes bounce { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
 
-        /* INPUT AREA - POSITIONED ABOVE NAV */
         .input-area { 
             width: 100%; 
             background: var(--bg-main); 
@@ -178,61 +198,93 @@
             align-items: center; 
             justify-content: center; 
             gap: 12px; 
-            position: absolute; 
-            bottom: var(--nav-height); /* Sticks above navbar */
-            left: 0;
-            padding-bottom: 10px;
-            box-sizing: border-box; 
-            z-index: 500;
+            padding-bottom: calc(20px + env(safe-area-inset-bottom)); 
+            box-sizing: border-box;
+            
+            /* --- ВАЖНОЕ ИЗМЕНЕНИЕ --- */
+            /* Добавляем отступ снизу, чтобы поднять ввод НАД меню */
+            margin-bottom: 70px; 
         }
+
         input[type="text"] { flex: 1; height: 54px; border-radius: 18px; border: none; padding: 0 20px; font-size: 16px; outline: none; background: var(--bg-card); color: var(--text-header); box-shadow: 0 2px 10px rgba(0,0,0,0.03); }
-        .btn-sq { width: 54px; height: 54px; border-radius: var(--radius-btn-sq); border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; }
+        .btn-sq { width: 54px; height: 54px; border-radius: var(--radius-btn-sq); border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; flex-shrink: 0; }
         #micBtn { background-color: var(--bg-card); color: var(--icon-default); box-shadow: var(--shadow-card); }
         #micBtn.recording { background-color: var(--primary-soft); color: var(--primary-main); animation: pulse-mint 1.5s infinite; border: 1px solid var(--primary-main); }
-        body.dark-mode #micBtn.recording { animation-name: pulse-orange; border-color: var(--primary-main); }
         #sendBtn { background: var(--primary-main); color: white; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
 
-        /* GAME BREATH */
+        /* ИГРА ДЫХАНИЕ */
         #game-screen { background: var(--primary-soft); }
-        .game-ui-overlay { position: relative; z-index: 10; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; width: 100%; padding-bottom: 20px; pointer-events: none; }
+        canvas#breathCanvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; opacity: 0.6; }
+        .game-ui-overlay { position: relative; z-index: 10; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; width: 100%; padding-bottom: 80px; pointer-events: none; }
+        .breath-text-container { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; margin-bottom: 40px; }
         .breath-status { font-size: 32px; font-weight: 800; color: var(--text-header); margin-bottom: 8px; }
-        .btn-game-card { padding: 20px 40px; border-radius: 24px; border: none; font-size: 18px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 14px; background: var(--secondary-bg); color: var(--secondary-text); box-shadow: var(--shadow-float); }
-        .btn-reset-sq { width: 64px; height: 64px; border-radius: 20px; background: var(--secondary-bg); color: var(--secondary-text); border: none; box-shadow: var(--shadow-float); display: flex; align-items: center; justify-content: center; cursor: pointer; }
+        .breath-timer-text { font-size: 18px; color: var(--text-muted); }
+        .game-controls { pointer-events: auto; display: flex; gap: 20px; }
+        .btn-game-card { padding: 20px 40px; border-radius: var(--radius-card); border: none; font-size: 18px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 14px; background: var(--secondary-bg); color: var(--secondary-text); box-shadow: var(--shadow-float-blue); }
+        .btn-reset-sq { width: 64px; height: 64px; border-radius: 20px; background: var(--secondary-bg); color: var(--secondary-text); border: none; box-shadow: var(--shadow-float-blue); display: flex; align-items: center; justify-content: center; cursor: pointer; }
 
         /* SOS SCREEN */
         #sos-screen { background: var(--bg-main); justify-content: center; overflow: hidden; }
         .sos-container-3d { position: relative; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 30px; }
+        .sos-title-block { display: flex; flex-direction: column; align-items: center; gap: 15px; margin-bottom: 50px; }
         .sos-big-number { font-size: 160px; line-height: 1; font-weight: 900; color: #FF6F00; text-shadow: 4px 4px 0 rgba(255, 111, 0, 0.2); opacity: 0; display: block; }
         .sos-text-line { display: flex; gap: 2px; font-size: 42px; font-weight: 900; text-transform: uppercase; color: var(--primary-main); letter-spacing: 2px; }
         .sos-letter { display: inline-block; opacity: 0; transform: translateY(20px); }
         @keyframes pop-up-letter { 0% { opacity: 0; transform: translateY(20px); } 100% { opacity: 1; transform: translateY(0); } }
-        .sos-btn-3d { padding: 18px 60px; font-size: 18px; font-weight: 700; text-transform: uppercase; color: #FFFFFF; background: linear-gradient(135deg, var(--primary-main), var(--primary-text)); border: none; border-radius: 20px; cursor: pointer; box-shadow: 0 10px 20px rgba(0,0,0,0.2); min-width: 220px; }
+        .sos-btn-3d { padding: 18px 60px; font-size: 18px; font-weight: 700; text-transform: uppercase; color: #FFFFFF; background: linear-gradient(135deg, var(--primary-main), var(--primary-text)); border: none; border-radius: 20px; cursor: pointer; box-shadow: 0 10px 20px rgba(0,0,0, 0.2); transition: transform 0.1s, box-shadow 0.1s; opacity: 1; min-width: 220px; }
         .sos-btn-enter { opacity: 0; animation: pop-up-letter 0.5s ease forwards; animation-delay: 0.6s; }
+        .sos-btn-3d:active { transform: scale(0.96); box-shadow: 0 5px 10px rgba(0,0,0, 0.2); }
         .sos-desc { font-size: 18px; color: var(--text-body); margin-top: 20px; font-weight: 500; opacity: 0; animation: fadeIn 0.5s ease forwards; animation-delay: 0.4s; text-align: center; }
         @keyframes fadeIn { to { opacity: 1; } }
 
-        /* DIARY */
+        /* BALLOON GAME */
+        #balloon-game-screen { background-color: var(--primary-soft); position: relative; overflow: hidden; transform: translate3d(0,0,0); }
+        .game-ui-header { position: absolute; top: 0; left: 0; width: 100%; padding: 20px; z-index: 10; display: flex; justify-content: space-between; align-items: center; pointer-events: none; }
+        .score-box { background: var(--bg-card); padding: 8px 16px; border-radius: 16px; box-shadow: var(--shadow-card); font-weight: 700; color: var(--primary-text); font-size: 18px; }
+        #back-btn-game { pointer-events: auto; background: var(--primary-main); border: none; border-radius: 14px; width: 44px; height: 44px; box-shadow: var(--shadow-card); display: flex; align-items: center; justify-content: center; color: white; }
+        #game-timer { font-size: 20px; font-weight: 800; color: var(--text-header); background: var(--bg-card); padding: 8px 16px; border-radius: 16px; box-shadow: var(--shadow-card); }
+        .game-modal { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(5px); z-index: 100; display: none; flex-direction: column; align-items: center; justify-content: center; padding: 40px; text-align: center; animation: fadeInScale 0.3s ease-out; }
+        @keyframes fadeInScale { from{opacity:0;transform:scale(0.9)} to{opacity:1;transform:scale(1)} }
+        body.dark-mode .game-modal { background: rgba(30, 30, 30, 0.9); }
+        .cup-icon { font-size: 80px; color: #FFD700; margin-bottom: 20px; filter: drop-shadow(0 4px 10px rgba(255, 215, 0, 0.4)); animation: pulse-mint 2s infinite; }
+        .score-big { font-size: 60px; font-weight: 800; color: var(--primary-text); line-height: 1; margin-bottom: 10px; }
+        .score-label { font-size: 16px; color: var(--text-muted); margin-bottom: 30px; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
+        .new-record-badge { background: var(--warm-bg); color: var(--warm-text); padding: 6px 12px; border-radius: 8px; font-weight: 700; font-size: 14px; margin-bottom: 10px; display: inline-block; }
+        .btn-game-primary { padding: 18px 0; font-size: 18px; font-weight: 700; text-transform: uppercase; color: #FFFFFF; background: linear-gradient(135deg, var(--primary-main), var(--primary-text)); border: none; border-radius: 20px; cursor: pointer; box-shadow: 0 10px 20px rgba(0,0,0,0.2); width: 100%; transition: transform 0.1s; }
+        .btn-game-primary:active { transform: scale(0.96); }
+        .btn-game-secondary { padding: 18px 0; font-size: 18px; font-weight: 700; text-transform: uppercase; color: var(--secondary-text); background: var(--secondary-bg); border: none; border-radius: 20px; cursor: pointer; box-shadow: 0 4px 15px rgba(33, 150, 243, 0.15); width: 100%; transition: transform 0.1s; }
+        .btn-game-secondary:active { transform: scale(0.96); }
+
+        /* ДНЕВНИК */
         .chart-container { background: var(--bg-card); border-radius: 24px; padding: 20px; margin-bottom: 20px; box-shadow: var(--shadow-card); min-height: 350px; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding-top: 20px; }
+        #pieChart { width: 270px; height: 270px; margin-bottom: 10px; margin-top: -40px; } 
+        .pie-legend { display: flex; flex-direction: column; gap: 8px; width: 100%; }
+        .legend-item { display: flex; justify-content: space-between; align-items: center; font-size: 14px; font-weight: 600; color: var(--text-body); }
+        .legend-marker { width: 12px; height: 12px; border-radius: 4px; display: inline-block; margin-right: 8px; }
         .mood-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-bottom: 30px; }
-        .mood-item { border-radius: 16px; padding: 12px 4px; display: flex; flex-direction: column; align-items: center; justify-content: center; box-shadow: var(--shadow-card); cursor: pointer; }
+        .mood-item { border-radius: 16px; padding: 12px 4px; display: flex; flex-direction: column; align-items: center; justify-content: center; box-shadow: var(--shadow-card); cursor: pointer; transition: transform 0.1s; }
+        .mood-item:active { transform: scale(0.95); }
+        .mood-item .material-icons-round { font-size: 32px; margin-bottom: 6px; }
+        .mood-item span { font-size: 10px; font-weight: 700; text-align: center; line-height: 1.2; }
         .mood-card-5 { background-color: var(--primary-soft); } .mood-card-5 .material-icons-round, .mood-card-5 span { color: var(--primary-main); }
         .mood-card-4 { background-color: var(--primary-soft); } .mood-card-4 .material-icons-round, .mood-card-4 span { color: #80CBC4; }
         .mood-card-3 { background-color: var(--secondary-bg); } .mood-card-3 .material-icons-round, .mood-card-3 span { color: var(--secondary-accent); }
         .mood-card-2 { background-color: var(--warm-bg); } .mood-card-2 .material-icons-round, .mood-card-2 span { color: #FFE082; }
         .mood-card-1 { background-color: var(--warm-bg); } .mood-card-1 .material-icons-round, .mood-card-1 span { color: var(--warm-text); }
+        .history-list { display: flex; flex-direction: column; gap: 10px; }
 
-        /* --- BOTTOM NAV (NEW) --- */
+        /* --- НОВОЕ: НИЖНЕЕ МЕНЮ (NAVBAR) --- */
         .bottom-nav {
             position: fixed;
             bottom: 0;
             left: 0;
             width: 100%;
-            height: var(--nav-height);
+            height: 80px; /* Высота меню */
             background: var(--nav-bg);
             border-top-left-radius: 24px;
             border-top-right-radius: 24px;
             box-shadow: var(--nav-shadow);
-            display: flex; /* ВСЕГДА ПОКАЗЫВАЕМ */
+            display: flex;
             justify-content: space-around;
             align-items: center;
             z-index: 1000;
@@ -249,17 +301,29 @@
             border: none;
             background: transparent;
             cursor: pointer;
-            transition: transform 0.1s;
         }
-        .nav-item:active { transform: scale(0.9); }
-        .nav-icon { font-size: 28px; color: var(--nav-icon-color); transition: color 0.3s; }
+        
+        .nav-icon {
+            font-size: 28px;
+            color: var(--nav-icon-color);
+            transition: color 0.3s;
+        }
+
+        /* Цвет активной иконки темы */
         .nav-icon-active { color: var(--nav-icon-active); }
+        
+        /* Заглушки */
+        .nav-placeholder {
+            width: 36px;
+            height: 36px;
+            border-radius: 12px;
+            border: 2px dashed var(--text-muted);
+            opacity: 0.3;
+        }
 
-        .nav-placeholder { width: 40px; height: 40px; border-radius: 12px; border: 2px dashed var(--text-muted); opacity: 0.3; }
-
-        /* Z FLIP FIX */
+        /* --- АДАПТАЦИЯ (Z Flip, SE) - НЕ ТРОГАЛИ ЛОГИКУ, ПРОСТО ОСТАВИЛИ КАК БЫЛО --- */
         @media (max-width: 370px) {
-            #menu-screen { padding: 16px; }
+            #menu-screen { padding: 16px; padding-bottom: 90px; }
             .main-grid, .bottom-grid { gap: 10px; }
             .action-card { padding: 12px 6px; } 
             .card-chat h3, .card-breath h3 { font-size: 13px; white-space: nowrap; }
@@ -282,7 +346,7 @@
 
     <div id="gpu-activator"></div>
 
-    <!-- MENU SCREEN -->
+    <!-- SCREENS -->
     <div id="menu-screen" class="screen active">
         <div class="greeting-header">
             <div class="greeting-text"><h1><span id="greetingText">Доброе утро</span>,<br><span id="userNameDisplay">User</span></h1><p>Что поддержит вас сегодня?</p></div>
@@ -299,20 +363,21 @@
         </div>
         <div class="bottom-grid">
             <div class="small-card" onclick="navigateTo('music')">
-                <div class="small-icon warm-icon"><span id="diary-icon" class="material-icons-round">favorite_border</span></div>
+                <div class="small-icon warm-icon">
+                    <span id="diary-icon" class="material-icons-round">favorite_border</span>
+                </div>
                 <div><h4>Дневник</h4><span>Забота о себе</span></div>
             </div>
             <div class="small-card" onclick="navigateTo('balloons')"><div class="small-icon mint-icon"><span class="material-icons-round">sports_esports</span></div><div><h4>Игра</h4><span>Лопай шарики</span></div></div>
         </div>
     </div>
 
-    <!-- CHAT SCREEN -->
     <div id="chat-screen" class="screen">
         <div id="chat-container"><div class="message msg-bot msg-enter">Я рядом. Вы можете рассказать мне все, что вас тревожит. 🌿</div><div class="typing-indicator" id="typing"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></div>
         <div class="input-area"><button id="micBtn" class="btn-sq"><span class="material-icons-round">mic</span></button><input type="text" id="userInput" placeholder="Сообщение..."><button id="sendBtn" class="btn-sq"><span class="material-icons-round">arrow_upward</span></button></div>
     </div>
 
-    <!-- OTHER SCREENS -->
+    <!-- SOS SCREEN -->
     <div id="sos-screen" class="screen">
         <div class="sos-container-3d">
             <div id="sos-content-area" class="sos-title-block"></div>
@@ -320,10 +385,14 @@
             <button id="sos-main-btn" class="sos-btn-3d" onclick="nextSos()"><span>Готово</span></button>
         </div>
     </div>
+
     <div id="video-screen" class="screen"><div style="padding:24px;"><h2>Практики</h2><div class="small-card" onclick="alert('Скоро!')"><div class="small-icon mint-icon"><span class="material-icons-round">self_improvement</span></div><div><h4>Осознанность</h4><span>5 минут</span></div></div></div></div>
+    
     <div id="game-screen" class="screen"><canvas id="breathCanvas"></canvas><div class="game-ui-overlay"><div class="breath-text-container"><div class="breath-status" id="breathLabel">ДЫШИМ</div><div class="breath-timer-text" id="breathInstruction">Нажми Старт</div></div><div class="game-controls"><button class="btn-game-card" id="breathStartBtn" onclick="toggleBreathing()"><span class="material-icons-round" id="playIcon">play_arrow</span><span id="playText">Старт</span></button><button class="btn-reset-sq" onclick="resetBreathing()"><span class="material-icons-round">refresh</span></button></div></div></div>
+
+    <!-- ДНЕВНИК -->
     <div id="music-screen" class="screen">
-        <div style="padding:24px; overflow-y:auto;">
+        <div style="padding:24px; overflow-y:auto; padding-bottom: 90px;">
             <div class="chart-container"><canvas id="pieChart"></canvas><div id="chart-legend" class="pie-legend"></div><div id="empty-chart-msg" style="position:absolute; color:var(--text-muted); font-size:14px; text-align:center; display:none;">Нет данных<br>Отметьте состояние</div></div>
             <h2 style="margin-bottom:15px; font-size:18px; color:var(--text-header)">Как вы сейчас?</h2>
             <div class="mood-grid">
@@ -337,6 +406,7 @@
             <div id="history-container" class="history-list"></div>
         </div>
     </div>
+
     <div id="balloon-game-screen" class="screen">
         <div class="game-ui-header"><button id="back-btn-game" onclick="goBack()"><span class="material-icons-round">arrow_back</span></button><div id="game-timer">02:00</div><div class="score-box" id="balloon-score">0</div></div>
         <canvas id="balloon-game-canvas"></canvas>
@@ -352,7 +422,7 @@
         </div>
     </div>
 
-    <!-- NAVIGATION BAR -->
+    <!-- НОВОЕ НИЖНЕЕ МЕНЮ (NAVBAR) -->
     <nav class="bottom-nav">
         <!-- Кнопка 1: Темы -->
         <button class="nav-item" onclick="toggleTheme()">
@@ -369,8 +439,8 @@
     const tg=window.Telegram.WebApp; tg.expand();
     const userId=tg.initDataUnsafe?.user?.id||'test_'+Math.floor(Math.random()*1000);
     const userName=tg.initDataUnsafe?.user?.first_name||'Друг';
-
-    // --- THEME LOGIC ---
+    
+    // --- УПРАВЛЕНИЕ ТЕМОЙ ---
     function initTheme() {
         const savedTheme = localStorage.getItem('app_theme');
         if (savedTheme === 'dark') {
@@ -385,14 +455,19 @@
         document.getElementById('theme-icon').classList.toggle('nav-icon-active', isDark);
         localStorage.setItem('app_theme', isDark ? 'dark' : 'light');
         if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
-        
-        // Перерисовываем диаграмму, если открыт дневник
-        if (document.getElementById('music-screen').classList.contains('active')) {
-            renderDiary();
-        }
+        if (document.getElementById('music-screen').classList.contains('active')) renderDiary();
     }
 
-    // --- NAVIGATION ---
+    // --- ПРИВЕТСТВИЕ ---
+    const hour = new Date().getHours();
+    let greeting = 'Доброе утро';
+    if (hour >= 0 && hour < 5) greeting = 'Доброй ночи';
+    else if (hour >= 5 && hour < 12) greeting = 'Доброе утро';
+    else if (hour >= 12 && hour < 17) greeting = 'Добрый день';
+    else if (hour >= 17 && hour < 24) greeting = 'Добрый вечер';
+    document.getElementById('greetingText').innerText = greeting;
+    document.getElementById('userNameDisplay').innerText = userName;
+
     const screens={menu:document.getElementById('menu-screen'),chat:document.getElementById('chat-screen'),video:document.getElementById('video-screen'),music:document.getElementById('music-screen'),game:document.getElementById('game-screen'),sos:document.getElementById('sos-screen'),balloons:document.getElementById('balloon-game-screen')};
     const header=document.getElementById('main-header');
     const pageTitle=document.getElementById('page-title');
@@ -430,17 +505,7 @@
     }    
     function goBack(){if(screens.game.classList.contains('active'))resetBreathing();navigateTo('menu')}
 
-    // Greeting
-    const hour = new Date().getHours();
-    let greeting = 'Доброе утро';
-    if (hour >= 0 && hour < 5) greeting = 'Доброй ночи';
-    else if (hour >= 5 && hour < 12) greeting = 'Доброе утро';
-    else if (hour >= 12 && hour < 17) greeting = 'Добрый день';
-    else if (hour >= 17 && hour < 24) greeting = 'Добрый вечер';
-    document.getElementById('greetingText').innerText = greeting;
-    document.getElementById('userNameDisplay').innerText = userName;
-
-    // CHAT & AUDIO
+    // CHAT
     const chatContainer=document.getElementById('chat-container'),userInput=document.getElementById('userInput'),sendBtn=document.getElementById('sendBtn'),micBtn=document.getElementById('micBtn'),typingIndicator=document.getElementById('typing');
     let mediaRecorder=null,audioChunks=[],isRecording=false;
     loadChatHistory();
@@ -481,7 +546,6 @@
     function renderDiary() {
         const h = JSON.parse(localStorage.getItem('mood_history_v2') || '{}'); const dates = Object.keys(h).sort(); const c = document.getElementById('history-container'); c.innerHTML = '';
         const moodMap = { 5: {text: 'Отлично', color: '#4DB6AC', bg: '#E0F2F1', shadow: '#398E86'}, 4: {text: 'Хорошо', color: '#80CBC4', bg: '#E0F2F1', shadow: '#63A39D'}, 3: {text: 'Нормально', color: '#64B5F6', bg: '#E3F2FD', shadow: '#4295D1'}, 2: {text: 'Так себе', color: '#FFE082', bg: '#FFF8E1', shadow: '#D3B765'}, 1: {text: 'Плохо', color: '#FFB74D', bg: '#FFF3E0', shadow: '#D6963B'} };
-        // Override for Dark Mode (if needed, but using fixed colors for graph looks okay, texts are adaptive)
         [...dates].reverse().forEach(date => { const val = h[date]; const m = moodMap[val]; c.innerHTML += `<div class="history-item"><span style="font-weight:600;color:var(--text-header)">${new Date(date).toLocaleDateString()}</span><span style="padding:4px 10px;border-radius:8px;font-size:13px;font-weight:600;background:${m.bg};color:${m.color};">${m.text}</span></div>`; });
         const recentDates = dates.slice(-30);
         if (recentDates.length > 0) {
@@ -514,9 +578,9 @@
     
     function sendUserIdToServer() { if (userId.toString().startsWith('test_')) return; fetch(GOOGLE_SCRIPT_URL + '?act=api', { method: 'POST', body: JSON.stringify({ action: 'user_joined', userId: userId, userName: userName }) }); }
     
-    // INIT
+    // STARTUP
     checkDiaryStatus();
-    initTheme();
+    initTheme(); // Применяем тему при загрузке
 </script>
 </body>
 </html>
