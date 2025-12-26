@@ -96,10 +96,30 @@
         .sos-btn-header:active { transform: scale(0.95); }
 
         .main-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
-        .action-card { border-radius: var(--radius-card); padding: 20px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; height: 150px; cursor: pointer; transition: transform 0.1s; background-color: var(--primary-soft); }
+        
+        /* ИСПРАВЛЕНИЕ: Фиксированная высота и центрирование */
+        .action-card { 
+            border-radius: var(--radius-card); 
+            padding: 16px; 
+            display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; 
+            height: 150px; 
+            cursor: pointer; transition: transform 0.1s; 
+            background-color: var(--primary-soft); 
+        }
         .action-card:active { transform: scale(0.97); }
-        .card-chat h3 { color: var(--primary-text); font-size: 15px; font-weight: 600; }
+        
+        /* ИСПРАВЛЕНИЕ: Запрет переноса строк для заголовков */
+        .card-chat h3 { 
+            color: var(--primary-text); 
+            font-size: 15px; 
+            font-weight: 600; 
+            white-space: nowrap; 
+            overflow: hidden; 
+            text-overflow: ellipsis; 
+            max-width: 100%;
+        }
         .card-chat .icon-box { color: var(--primary-main); width: 50px; height: 50px; border-radius: 16px; background: rgba(255,255,255,0.7); display: flex; align-items: center; justify-content: center; margin-bottom: 12px; }
+        
         .card-breath { background-color: var(--secondary-bg); }
         .card-breath h3 { color: #1565C0; font-size: 15px; font-weight: 600; }
         .card-breath .icon-box { color: var(--secondary-accent); width: 50px; height: 50px; border-radius: 16px; background: rgba(255,255,255,0.7); display: flex; align-items: center; justify-content: center; margin-bottom: 12px; }
@@ -115,54 +135,68 @@
         
         .bottom-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
         
-        /* КАРТОЧКИ НИЖНИЕ */
+        /* ИСПРАВЛЕНИЕ: Нижние карточки для узких экранов */
         .small-card { 
             background: var(--bg-card); 
             padding: 16px; 
             border-radius: 20px; 
             display: flex; align-items: center; gap: 12px; 
             box-shadow: var(--shadow-card); cursor: pointer; 
-            overflow: hidden; /* Защита от вылезания */
+            overflow: hidden; 
         }
-        .small-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: visible; }
+        /* Иконка не сжимается */
+        .small-icon { 
+            width: 36px; height: 36px; 
+            border-radius: 10px; 
+            display: flex; align-items: center; justify-content: center; 
+            flex-shrink: 0; 
+        }
         .warm-icon { background: var(--warm-bg); color: var(--warm-accent); }
         .mint-icon { background: var(--primary-soft); color: var(--primary-main); }
         
-        .small-card-content { flex: 1; min-width: 0; } /* Flex hack for truncating text */
-        .small-card h4 { font-size: 14px; font-weight: 600; color: var(--text-header); margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .small-card span { font-size: 11px; color: var(--text-muted); white-space: nowrap; }
+        /* Контейнер текста сжимается, если надо */
+        .small-card-content { flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: center; }
+        .small-card h4 { 
+            font-size: 14px; font-weight: 600; color: var(--text-header); margin: 0; 
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis; 
+        }
+        .small-card span { 
+            font-size: 11px; color: var(--text-muted); 
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis; 
+        }
 
-        /* --- MEDIA QUERY ДЛЯ УЗКИХ ЭКРАНОВ (Z Flip и т.д.) --- */
+        /* --- ВАЖНО: АДАПТАЦИЯ ПОД УЗКИЕ ЭКРАНЫ (Z Flip и др.) --- */
         @media (max-width: 370px) {
             #menu-screen { padding: 16px; }
             .main-grid, .bottom-grid { gap: 10px; }
             
-            /* Уменьшаем отступы и шрифты в главных карточках */
+            /* Уменьшаем отступы в главных карточках */
             .action-card { padding: 12px; height: 130px; }
             .card-chat h3, .card-breath h3 { font-size: 13px; }
-            .icon-box { width: 42px; height: 42px; }
+            .icon-box { width: 42px; height: 42px; margin-bottom: 8px; }
 
-            /* Уменьшаем отступы и шрифты в нижних карточках */
+            /* Уменьшаем отступы в нижних карточках */
             .small-card { padding: 12px; gap: 8px; }
             .small-icon { width: 32px; height: 32px; }
             .small-card h4 { font-size: 13px; }
             .small-card span { font-size: 10px; }
             
             .greeting-text h1 { font-size: 22px; }
+            
+            /* Волна тоже чуть компактнее */
+            .widget-card { padding: 16px; margin-bottom: 16px; }
+            .widget-main-text { font-size: 16px; }
         }
 
-        /* --- АНИМАЦИЯ СЕРДЦА (ALERT) --- */
-        @keyframes heart-alert-anim {
-            0% { transform: scale(1.5); }
-            50% { transform: scale(1.7); filter: drop-shadow(0 0 5px rgba(239, 108, 0, 0.4)); }
-            100% { transform: scale(1.5); }
+        @keyframes heart-beat {
+            0% { transform: scale(1.3); }
+            50% { transform: scale(1.6); text-shadow: 0 0 10px rgba(239, 108, 0, 0.4); }
+            100% { transform: scale(1.3); }
         }
-        /* Класс, который будет добавляться JS */
         .heart-alert {
-            color: #EF6C00 !important; /* Цвет SOS */
-            animation: heart-alert-anim 1.5s infinite ease-in-out;
+            color: #EF6C00 !important; 
+            animation: heart-beat 1.5s infinite ease-in-out;
             z-index: 10; 
-            position: relative;
         }
 
         /* ЧАТ */
@@ -380,7 +414,6 @@
             <div class="action-card card-chat" onclick="navigateTo('chat')"><div class="icon-box"><span class="material-icons-round">chat_bubble_outline</span></div><h3>Чат поддержки</h3></div>
             <div class="action-card card-breath" onclick="navigateTo('game')"><div class="icon-box"><span class="material-icons-round">air</span></div><h3>Дыхание</h3></div>
         </div>
-        <!-- ВЕРНУЛ СИНУСОИДУ (ВОЛНУ) -->
         <div class="widget-card" onclick="navigateTo('video')">
             <div class="widget-header"><div class="dot-indicator"></div><div style="font-size:14px;color:var(--text-muted)">Медитации</div></div>
             <div style="font-size:18px;font-weight:600;color:var(--text-header)">Спокойствие</div>
