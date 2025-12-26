@@ -83,7 +83,11 @@
         #back-btn:active { transform: scale(0.95); }
         .header-title { font-size: 18px; font-weight: 600; margin-left: 15px; color: var(--text-header); }
 
-        .screen { flex: 1; display: none; flex-direction: column; width: 100%; height: 100%; overflow: hidden; position: relative; }
+        /* --- ИСПРАВЛЕНИЕ ОШИБКИ 1: Высота экрана --- */
+        /* Было height: 100% - это заставляло экран быть выше чем нужно, когда есть Header */
+        /* Стало height: auto - теперь Flexbox сам считает правильную высоту */
+        .screen { flex: 1; display: none; flex-direction: column; width: 100%; height: auto; overflow: hidden; position: relative; }
+        
         .screen.active { display: flex; animation: fadeUp 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
         @keyframes fadeUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
 
@@ -149,7 +153,20 @@
         .dot:nth-child(1) { animation-delay: -0.32s; } .dot:nth-child(2) { animation-delay: -0.16s; }
         @keyframes bounce { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
 
-        .input-area { width: 100%; background: var(--bg-main); padding: 10px 16px; display: flex; align-items: center; justify-content: center; gap: 12px; padding-bottom: calc(15px + env(safe-area-inset-bottom)); box-sizing: border-box; }
+        /* --- ИСПРАВЛЕНИЕ ОШИБКИ 2: Ввод текста --- */
+        .input-area { 
+            width: 100%; 
+            background: var(--bg-main); 
+            padding: 10px 16px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            gap: 12px; 
+            /* Чуть увеличили безопасную зону снизу для Android */
+            padding-bottom: calc(20px + env(safe-area-inset-bottom)); 
+            box-sizing: border-box; 
+        }
+
         input[type="text"] { flex: 1; height: 54px; border-radius: 18px; border: none; padding: 0 20px; font-size: 16px; outline: none; background: #FFFFFF; box-shadow: 0 2px 10px rgba(0,0,0,0.03); }
         .btn-sq { width: 54px; height: 54px; border-radius: var(--radius-btn-sq); border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; flex-shrink: 0; }
         #micBtn { background-color: #FFFFFF; color: var(--icon-default); box-shadow: var(--shadow-card); }
