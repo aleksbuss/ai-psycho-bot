@@ -8,7 +8,7 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
     <style>
         :root {
-            /* --- ПАЛИТРА FRESH MINT --- */
+            /* --- СВЕТЛАЯ ТЕМА (MINT) --- */
             --bg-main: #F5F7FA;      
             --bg-card: #FFFFFF;      
             
@@ -28,17 +28,58 @@
             --warm-accent: #FFB74D;
             --warm-text: #EF6C00;
 
-            --radius-card: 24px;
-            --radius-btn-sq: 18px;
-            
             --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.04);
-            --shadow-float-blue: 0 10px 30px rgba(100, 181, 246, 0.25);
+            --shadow-float: 0 10px 30px rgba(100, 181, 246, 0.25);
             
             --icon-default: #90A4AE;
             
             --msg-bot-bg: #FFFFFF;
             --msg-user-bg: #4DB6AC;
             --msg-user-text: #FFFFFF;
+
+            /* Навигация */
+            --nav-bg: #FFFFFF;
+            --nav-shadow: 0 -4px 20px rgba(0,0,0,0.05);
+            --nav-height: 80px; 
+            --nav-icon-color: #9CA3AF;
+            --nav-icon-active: #4DB6AC;
+        }
+
+        /* --- ТЁМНАЯ ТЕМА (GRAY + ORANGE) --- */
+        body.dark-mode {
+            --bg-main: #121212;      /* Глубокий серый */
+            --bg-card: #1E1E1E;      /* Карточки серые */
+            
+            --text-header: #E0E0E0;  /* Белый текст */
+            --text-body: #B0BEC5;    /* Светло-серый */
+            --text-muted: #757575;   
+            
+            /* ОРАНЖЕВЫЙ АКЦЕНТ */
+            --primary-main: #FF9800; 
+            --primary-soft: #263238; /* Темная подложка */
+            --primary-text: #FFB74D; 
+            
+            --secondary-bg: #37474F; 
+            --secondary-accent: #FFCC80;
+            --secondary-text: #FF9800;
+            
+            --warm-bg: #3E2723;
+            --warm-accent: #FFAB91;
+            --warm-text: #FF5722;
+
+            --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.5);
+            --shadow-float: none;
+            
+            --icon-default: #607D8B;
+            
+            --msg-bot-bg: #2C2C2C;
+            --msg-user-bg: #FF9800;
+            --msg-user-text: #000000;
+            
+            --nav-bg: #1E1E1E;
+            --nav-shadow: 0 -4px 20px rgba(0,0,0, 0.5);
+            --nav-icon-color: #546E7A;
+            --nav-icon-active: #FF9800;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
@@ -50,110 +91,85 @@
             line-height: 1.5;
             position: fixed; top: 0; left: 0; right: 0; bottom: 0;
             display: flex; flex-direction: column;
+            transition: background-color 0.3s, color 0.3s; /* Плавная смена темы */
         }
 
         /* АНИМАЦИИ */
-        @keyframes blink { 0%, 90%, 100% { transform: scaleY(1); } 95% { transform: scaleY(0.1); } }
-        .anim-eye { transform-origin: center; animation: blink 4s infinite; }
-        
-        @keyframes pulse-mint { 0% { box-shadow: 0 0 0 0 rgba(77, 182, 172, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(77, 182, 172, 0); } 100% { box-shadow: 0 0 0 0 rgba(77, 182, 172, 0); } }
-        
         @keyframes msgSlideUp { from { opacity: 0; transform: translateY(20px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
         .msg-enter { animation: msgSlideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
         
-        /* ВОЛНА (СИНУС) */
+        @keyframes pulse-mint { 0% { box-shadow: 0 0 0 0 rgba(77, 182, 172, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(77, 182, 172, 0); } 100% { box-shadow: 0 0 0 0 rgba(77, 182, 172, 0); } }
+        /* Адаптация пульсации под тему */
+        body.dark-mode .pulse-anim { animation-name: pulse-orange; }
+        @keyframes pulse-orange { 0% { box-shadow: 0 0 0 0 rgba(255, 152, 0, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(255, 152, 0, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 152, 0, 0); } }
+
         @keyframes waveMove { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 
-        /* ТРЮК №1: НЕВИДИМЫЙ ВРАЩАТЕЛЬ ДЛЯ GPU */
-        #gpu-activator {
-            position: absolute; top: 0; left: 0; width: 1px; height: 1px;
-            opacity: 0.01; pointer-events: none; z-index: -1;
-            animation: force-gpu 1s infinite linear;
-            will-change: transform;
-        }
-        @keyframes force-gpu { from { transform: rotate(0deg) translateZ(0); } to { transform: rotate(360deg) translateZ(0); } }
-
-        /* UI ЭЛЕМЕНТЫ */
+        /* HEADER */
         header { padding: 0 20px; background: transparent; z-index: 100; display: none; align-items: center; height: 60px; flex-shrink: 0; width: 100%; }
-        
-        #back-btn { 
-            background: var(--primary-main); border: none; color: white; width: 44px; height: 44px; border-radius: 14px; 
-            box-shadow: 0 4px 15px rgba(77, 182, 172, 0.4); cursor: pointer; display: flex; align-items: center; justify-content: center; 
-        }
-        #back-btn:active { transform: scale(0.95); }
+        #back-btn { background: var(--primary-main); border: none; color: white; width: 44px; height: 44px; border-radius: 14px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); cursor: pointer; display: flex; align-items: center; justify-content: center; }
         .header-title { font-size: 18px; font-weight: 600; margin-left: 15px; color: var(--text-header); }
 
-        /* --- ИСПРАВЛЕНИЕ ОШИБКИ 1: Высота экрана --- */
-        /* Было height: 100% - это заставляло экран быть выше чем нужно, когда есть Header */
-        /* Стало height: auto - теперь Flexbox сам считает правильную высоту */
-        .screen { flex: 1; display: none; flex-direction: column; width: 100%; height: auto; overflow: hidden; position: relative; }
-        
+        /* SCREENS */
+        .screen { 
+            flex: 1; 
+            display: none; 
+            flex-direction: column; 
+            width: 100%; 
+            height: auto; 
+            overflow: hidden; 
+            position: relative;
+            /* ВАЖНО: Отступ снизу, чтобы контент не перекрывался меню */
+            padding-bottom: var(--nav-height); 
+        }
         .screen.active { display: flex; animation: fadeUp 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
         @keyframes fadeUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* МЕНЮ */
+        /* MENU SCREEN */
         #menu-screen { padding: 24px; overflow-y: auto; }
         .greeting-header { margin-top: 10px; margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center; }
         .greeting-text h1 { font-size: 26px; line-height: 1.3; color: var(--text-header); font-weight: 700; }
         .greeting-text p { font-size: 16px; color: var(--text-muted); margin-top: 4px; }
         .sos-btn-header { width: 54px; height: 54px; border-radius: 18px; background-color: var(--warm-bg); display: flex; align-items: center; justify-content: center; color: var(--warm-text); font-weight: 800; font-size: 15px; border: none; box-shadow: 0 4px 15px rgba(255, 183, 77, 0.25); cursor: pointer; }
-        .sos-btn-header:active { transform: scale(0.95); }
 
         .main-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
-        .action-card { border-radius: var(--radius-card); padding: 20px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; height: 150px; cursor: pointer; transition: transform 0.1s; background-color: var(--primary-soft); }
+        .action-card { border-radius: 24px; padding: 20px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; height: 150px; cursor: pointer; background-color: var(--primary-soft); transition: transform 0.1s; }
         .action-card:active { transform: scale(0.97); }
         .card-chat h3 { color: var(--primary-text); font-size: 15px; font-weight: 600; }
         .card-chat .icon-box { color: var(--primary-main); width: 50px; height: 50px; border-radius: 16px; background: rgba(255,255,255,0.7); display: flex; align-items: center; justify-content: center; margin-bottom: 12px; }
         .card-breath { background-color: var(--secondary-bg); }
-        .card-breath h3 { color: #1565C0; font-size: 15px; font-weight: 600; }
+        .card-breath h3 { color: var(--secondary-text); font-size: 15px; font-weight: 600; }
         .card-breath .icon-box { color: var(--secondary-accent); width: 50px; height: 50px; border-radius: 16px; background: rgba(255,255,255,0.7); display: flex; align-items: center; justify-content: center; margin-bottom: 12px; }
 
-        /* ВИДЖЕТ ВОЛНЫ */
-        .widget-card { background: #E0F2F1; border-radius: var(--radius-card); padding: 20px; margin-bottom: 24px; overflow: hidden; position: relative; cursor: pointer; }
+        .widget-card { background: var(--primary-soft); border-radius: 24px; padding: 20px; margin-bottom: 24px; overflow: hidden; position: relative; cursor: pointer; }
         .widget-header { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
         .dot-indicator { width: 8px; height: 8px; background: var(--primary-main); border-radius: 50%; opacity: 0.8; }
-        .widget-title { font-size: 14px; color: var(--text-muted); }
         .widget-main-text { font-size: 18px; font-weight: 600; color: var(--text-header); }
         .wave-container { width: 100%; height: 50px; margin-top: 8px; overflow: hidden; position: relative; }
         .wave-graph { width: 200%; height: 100%; opacity: 0.9; animation: waveMove 8s linear infinite; }
-        
+        /* SVG fill fix for dark mode */
+        body.dark-mode .wave-path-fill { stop-color: #FF9800; } 
+        body.dark-mode .wave-path-stroke { stroke: #FF9800; }
+
         .bottom-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-        
-        /* КАРТОЧКИ НИЖНИЕ */
         .small-card { background: var(--bg-card); padding: 16px; border-radius: 20px; display: flex; align-items: center; gap: 12px; box-shadow: var(--shadow-card); cursor: pointer; }
-        
-        /* Добавили min-width:0 для корректной работы Flexbox с текстом */
         .small-card > div:last-child { min-width: 0; }
-        
-        .small-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: visible; }
+        .small-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
         .warm-icon { background: var(--warm-bg); color: var(--warm-accent); }
         .mint-icon { background: var(--primary-soft); color: var(--primary-main); }
         .small-card h4 { font-size: 14px; font-weight: 600; color: var(--text-header); margin: 0; }
         .small-card span { font-size: 11px; color: var(--text-muted); }
 
-        @keyframes heart-beat {
-            0% { transform: scale(1.3); }
-            50% { transform: scale(1.6); text-shadow: 0 0 10px rgba(239, 108, 0, 0.4); }
-            100% { transform: scale(1.3); }
-        }
-        .heart-alert {
-            color: #EF6C00 !important; 
-            animation: heart-beat 1.5s infinite ease-in-out;
-            z-index: 10; 
-        }
-
-        /* ЧАТ */
-        #chat-container { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; scroll-behavior: smooth; }
+        /* CHAT */
+        #chat-container { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; scroll-behavior: smooth; padding-bottom: 80px; } /* Pad for input */
         .message { max-width: 85%; padding: 14px 18px; border-radius: 20px; font-size: 15px; box-shadow: var(--shadow-card); position: relative; }
         .msg-bot { align-self: flex-start; background-color: var(--msg-bot-bg); color: var(--text-body); border-top-left-radius: 4px; }
         .msg-user { align-self: flex-end; background-color: var(--msg-user-bg); color: var(--msg-user-text); border-top-right-radius: 4px; }
-        
         .typing-indicator { display: none; align-self: flex-start; background: var(--bg-card); padding: 12px; border-radius: 16px; margin-bottom: 10px; box-shadow: var(--shadow-card); }
-        .dot { height: 6px; width: 6px; background-color: #CFD8DC; border-radius: 50%; display: inline-block; animation: bounce 1.4s infinite ease-in-out both; margin: 0 2px; }
-        .dot:nth-child(1) { animation-delay: -0.32s; } .dot:nth-child(2) { animation-delay: -0.16s; }
+        .dot { height: 6px; width: 6px; background-color: #CFD8DC; border-radius: 50%; display: inline-block; animation: bounce 1.4s infinite; margin: 0 2px; }
         @keyframes bounce { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
 
-        /* --- ИСПРАВЛЕНИЕ ОШИБКИ 2: Ввод текста --- */
+        /* INPUT AREA - POSITIONED ABOVE NAV */
         .input-area { 
             width: 100%; 
             background: var(--bg-main); 
@@ -162,245 +178,95 @@
             align-items: center; 
             justify-content: center; 
             gap: 12px; 
-            /* Чуть увеличили безопасную зону снизу для Android */
-            padding-bottom: calc(20px + env(safe-area-inset-bottom)); 
+            position: absolute; 
+            bottom: var(--nav-height); /* Sticks above navbar */
+            left: 0;
+            padding-bottom: 10px;
             box-sizing: border-box; 
+            z-index: 500;
         }
-
-        input[type="text"] { flex: 1; height: 54px; border-radius: 18px; border: none; padding: 0 20px; font-size: 16px; outline: none; background: #FFFFFF; box-shadow: 0 2px 10px rgba(0,0,0,0.03); }
-        .btn-sq { width: 54px; height: 54px; border-radius: var(--radius-btn-sq); border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; flex-shrink: 0; }
-        #micBtn { background-color: #FFFFFF; color: var(--icon-default); box-shadow: var(--shadow-card); }
+        input[type="text"] { flex: 1; height: 54px; border-radius: 18px; border: none; padding: 0 20px; font-size: 16px; outline: none; background: var(--bg-card); color: var(--text-header); box-shadow: 0 2px 10px rgba(0,0,0,0.03); }
+        .btn-sq { width: 54px; height: 54px; border-radius: var(--radius-btn-sq); border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; }
+        #micBtn { background-color: var(--bg-card); color: var(--icon-default); box-shadow: var(--shadow-card); }
         #micBtn.recording { background-color: var(--primary-soft); color: var(--primary-main); animation: pulse-mint 1.5s infinite; border: 1px solid var(--primary-main); }
-        #sendBtn { background: var(--primary-main); color: white; box-shadow: 0 4px 15px rgba(77, 182, 172, 0.3); }
+        body.dark-mode #micBtn.recording { animation-name: pulse-orange; border-color: var(--primary-main); }
+        #sendBtn { background: var(--primary-main); color: white; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
 
-        /* ИГРА ДЫХАНИЕ */
+        /* GAME BREATH */
         #game-screen { background: var(--primary-soft); }
-        canvas#breathCanvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; opacity: 0.6; }
-        .game-ui-overlay { position: relative; z-index: 10; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; width: 100%; padding-bottom: 80px; pointer-events: none; }
-        .breath-text-container { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; margin-bottom: 40px; }
+        .game-ui-overlay { position: relative; z-index: 10; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; width: 100%; padding-bottom: 20px; pointer-events: none; }
         .breath-status { font-size: 32px; font-weight: 800; color: var(--text-header); margin-bottom: 8px; }
-        .breath-timer-text { font-size: 18px; color: var(--text-muted); }
-        .game-controls { pointer-events: auto; display: flex; gap: 20px; }
-        .btn-game-card { padding: 20px 40px; border-radius: var(--radius-card); border: none; font-size: 18px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 14px; background: var(--secondary-bg); color: var(--secondary-text); box-shadow: var(--shadow-float-blue); }
-        .btn-reset-sq { width: 64px; height: 64px; border-radius: 20px; background: var(--secondary-bg); color: var(--secondary-text); border: none; box-shadow: var(--shadow-float-blue); display: flex; align-items: center; justify-content: center; cursor: pointer; }
+        .btn-game-card { padding: 20px 40px; border-radius: 24px; border: none; font-size: 18px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 14px; background: var(--secondary-bg); color: var(--secondary-text); box-shadow: var(--shadow-float); }
+        .btn-reset-sq { width: 64px; height: 64px; border-radius: 20px; background: var(--secondary-bg); color: var(--secondary-text); border: none; box-shadow: var(--shadow-float); display: flex; align-items: center; justify-content: center; cursor: pointer; }
 
-        /* --- SOS SCREEN FIXED (STRAIGHT & SOFT UI) --- */
-        #sos-screen { 
-            background: #F5F7FA;
-            justify-content: center; 
-            overflow: hidden;
+        /* SOS SCREEN */
+        #sos-screen { background: var(--bg-main); justify-content: center; overflow: hidden; }
+        .sos-container-3d { position: relative; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 30px; }
+        .sos-big-number { font-size: 160px; line-height: 1; font-weight: 900; color: #FF6F00; text-shadow: 4px 4px 0 rgba(255, 111, 0, 0.2); opacity: 0; display: block; }
+        .sos-text-line { display: flex; gap: 2px; font-size: 42px; font-weight: 900; text-transform: uppercase; color: var(--primary-main); letter-spacing: 2px; }
+        .sos-letter { display: inline-block; opacity: 0; transform: translateY(20px); }
+        @keyframes pop-up-letter { 0% { opacity: 0; transform: translateY(20px); } 100% { opacity: 1; transform: translateY(0); } }
+        .sos-btn-3d { padding: 18px 60px; font-size: 18px; font-weight: 700; text-transform: uppercase; color: #FFFFFF; background: linear-gradient(135deg, var(--primary-main), var(--primary-text)); border: none; border-radius: 20px; cursor: pointer; box-shadow: 0 10px 20px rgba(0,0,0,0.2); min-width: 220px; }
+        .sos-btn-enter { opacity: 0; animation: pop-up-letter 0.5s ease forwards; animation-delay: 0.6s; }
+        .sos-desc { font-size: 18px; color: var(--text-body); margin-top: 20px; font-weight: 500; opacity: 0; animation: fadeIn 0.5s ease forwards; animation-delay: 0.4s; text-align: center; }
+        @keyframes fadeIn { to { opacity: 1; } }
+
+        /* DIARY */
+        .chart-container { background: var(--bg-card); border-radius: 24px; padding: 20px; margin-bottom: 20px; box-shadow: var(--shadow-card); min-height: 350px; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding-top: 20px; }
+        .mood-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-bottom: 30px; }
+        .mood-item { border-radius: 16px; padding: 12px 4px; display: flex; flex-direction: column; align-items: center; justify-content: center; box-shadow: var(--shadow-card); cursor: pointer; }
+        .mood-card-5 { background-color: var(--primary-soft); } .mood-card-5 .material-icons-round, .mood-card-5 span { color: var(--primary-main); }
+        .mood-card-4 { background-color: var(--primary-soft); } .mood-card-4 .material-icons-round, .mood-card-4 span { color: #80CBC4; }
+        .mood-card-3 { background-color: var(--secondary-bg); } .mood-card-3 .material-icons-round, .mood-card-3 span { color: var(--secondary-accent); }
+        .mood-card-2 { background-color: var(--warm-bg); } .mood-card-2 .material-icons-round, .mood-card-2 span { color: #FFE082; }
+        .mood-card-1 { background-color: var(--warm-bg); } .mood-card-1 .material-icons-round, .mood-card-1 span { color: var(--warm-text); }
+
+        /* --- BOTTOM NAV (NEW) --- */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: var(--nav-height);
+            background: var(--nav-bg);
+            border-top-left-radius: 24px;
+            border-top-right-radius: 24px;
+            box-shadow: var(--nav-shadow);
+            display: flex; /* ВСЕГДА ПОКАЗЫВАЕМ */
+            justify-content: space-around;
+            align-items: center;
+            z-index: 1000;
+            padding-bottom: env(safe-area-inset-bottom);
         }
 
-        .sos-container-3d {
-            position: relative;
-            width: 100%;
-            height: 100%;
+        .nav-item {
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 30px;
-        }
-
-        .sos-title-block {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 50px;
-        }
-
-        .sos-big-number {
-            font-size: 160px;
-            line-height: 1;
-            font-weight: 900;
-            color: #FF6F00;
-            text-shadow: 4px 4px 0 rgba(255, 111, 0, 0.2);
-            opacity: 0;
-            display: block;
-        }
-
-        .sos-text-line {
-            display: flex;
-            gap: 2px;
-            font-size: 42px;
-            font-weight: 900;
-            text-transform: uppercase;
-            color: #4DB6AC;
-            letter-spacing: 2px;
-        }
-
-        .sos-letter {
-            display: inline-block;
-            opacity: 0;
-            transform: translateY(20px);
-        }
-
-        /* ANIMATION FOR LETTERS */
-        @keyframes pop-up-letter {
-            0% { opacity: 0; transform: translateY(20px); }
-            100% { opacity: 1; transform: translateY(0); }
-        }
-
-        /* BUTTON STYLE - SOFT UI RECTANGLE */
-        .sos-btn-3d {
-            padding: 18px 60px;
-            font-size: 18px;
-            font-weight: 700;
-            text-transform: uppercase;
-            color: #FFFFFF;
-            background: linear-gradient(135deg, #4DB6AC, #009688);
+            width: 60px;
+            height: 100%;
             border: none;
-            border-radius: 20px;
+            background: transparent;
             cursor: pointer;
-            box-shadow: 0 10px 20px rgba(77, 182, 172, 0.4);
-            transition: transform 0.1s, box-shadow 0.1s;
-            opacity: 1; /* Default visible */
-            min-width: 220px;
-        }
-        
-        .sos-btn-enter {
-            opacity: 0;
-            animation: pop-up-letter 0.5s ease forwards;
-            animation-delay: 0.6s;
-        }
-
-        .sos-btn-3d:active {
-            transform: scale(0.96);
-            box-shadow: 0 5px 10px rgba(77, 182, 172, 0.3);
-        }
-        
-        .sos-desc {
-            font-size: 18px;
-            color: #546E7A;
-            margin-top: 20px;
-            font-weight: 500;
-            opacity: 0;
-            animation: fadeIn 0.5s ease forwards;
-            animation-delay: 0.4s;
-            text-align: center;
-        }
-        @keyframes fadeIn { to { opacity: 1; } }
-
-
-        /* ШАРИКИ - СТИЛИ ДЛЯ ИГРЫ */
-        #balloon-game-screen { 
-            background-color: var(--primary-soft); 
-            position: relative; 
-            overflow: hidden; 
-            transform: translate3d(0,0,0);
-        }
-        .game-ui-header { position: absolute; top: 0; left: 0; width: 100%; padding: 20px; z-index: 10; display: flex; justify-content: space-between; align-items: center; pointer-events: none; }
-        .score-box { background: white; padding: 8px 16px; border-radius: 16px; box-shadow: var(--shadow-card); font-weight: 700; color: var(--primary-text); font-size: 18px; }
-        #back-btn-game { pointer-events: auto; background: var(--primary-main); border: none; border-radius: 14px; width: 44px; height: 44px; box-shadow: var(--shadow-card); display: flex; align-items: center; justify-content: center; color: white; }
-        #game-timer { font-size: 20px; font-weight: 800; color: var(--text-header); background: white; padding: 8px 16px; border-radius: 16px; box-shadow: var(--shadow-card); }
-        
-        .game-modal { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(5px); z-index: 100; display: none; flex-direction: column; align-items: center; justify-content: center; padding: 40px; text-align: center; animation: fadeInScale 0.3s ease-out; }
-        @keyframes fadeInScale { from{opacity:0;transform:scale(0.9)} to{opacity:1;transform:scale(1)} }
-        .cup-icon { font-size: 80px; color: #FFD700; margin-bottom: 20px; filter: drop-shadow(0 4px 10px rgba(255, 215, 0, 0.4)); animation: pulse-mint 2s infinite; }
-        .score-big { font-size: 60px; font-weight: 800; color: var(--primary-text); line-height: 1; margin-bottom: 10px; }
-        .score-label { font-size: 16px; color: var(--text-muted); margin-bottom: 30px; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
-        .new-record-badge { background: var(--warm-bg); color: var(--warm-text); padding: 6px 12px; border-radius: 8px; font-weight: 700; font-size: 14px; margin-bottom: 10px; display: inline-block; }
-
-        /* НОВЫЕ КНОПКИ ДЛЯ ИГРЫ */
-        .btn-game-primary {
-            padding: 18px 0;
-            font-size: 18px;
-            font-weight: 700;
-            text-transform: uppercase;
-            color: #FFFFFF;
-            background: linear-gradient(135deg, #4DB6AC, #009688);
-            border: none;
-            border-radius: 20px;
-            cursor: pointer;
-            box-shadow: 0 10px 20px rgba(77, 182, 172, 0.4);
-            width: 100%;
             transition: transform 0.1s;
         }
-        .btn-game-primary:active { transform: scale(0.96); }
+        .nav-item:active { transform: scale(0.9); }
+        .nav-icon { font-size: 28px; color: var(--nav-icon-color); transition: color 0.3s; }
+        .nav-icon-active { color: var(--nav-icon-active); }
 
-        .btn-game-secondary {
-            padding: 18px 0;
-            font-size: 18px;
-            font-weight: 700;
-            text-transform: uppercase;
-            color: #1565C0; /* Dark Blue Text */
-            background: #E3F2FD; /* Soft Blue BG */
-            border: none;
-            border-radius: 20px;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(33, 150, 243, 0.15);
-            width: 100%;
-            transition: transform 0.1s;
-        }
-        .btn-game-secondary:active { transform: scale(0.96); }
+        .nav-placeholder { width: 40px; height: 40px; border-radius: 12px; border: 2px dashed var(--text-muted); opacity: 0.3; }
 
-        /* ДНЕВНИК */
-        .chart-container { 
-            background: white; border-radius: 24px; padding: 20px; margin-bottom: 20px; box-shadow: var(--shadow-card); 
-            min-height: 350px; 
-            display: flex; flex-direction: column; align-items: center; 
-            justify-content: flex-start;
-            padding-top: 20px;
-        }
-        
-        #pieChart { width: 270px; height: 270px; margin-bottom: 10px; margin-top: -40px; } 
-        
-        .pie-legend { display: flex; flex-direction: column; gap: 8px; width: 100%; }
-        .legend-item { display: flex; justify-content: space-between; align-items: center; font-size: 14px; font-weight: 600; color: var(--text-body); }
-        .legend-marker { width: 12px; height: 12px; border-radius: 4px; display: inline-block; margin-right: 8px; }
-        
-        .mood-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-bottom: 30px; }
-        
-        /* КАРТОЧКИ НАСТРОЕНИЯ (ЦВЕТНЫЕ) */
-        .mood-item { 
-            border-radius: 16px; padding: 12px 4px; 
-            display: flex; flex-direction: column; align-items: center; justify-content: center; 
-            box-shadow: var(--shadow-card); cursor: pointer; transition: transform 0.1s; 
-        }
-        .mood-item:active { transform: scale(0.95); }
-        .mood-item .material-icons-round { font-size: 32px; margin-bottom: 6px; }
-        .mood-item span { font-size: 10px; font-weight: 700; text-align: center; line-height: 1.2; }
-
-        /* ЦВЕТА КАРТОЧЕК */
-        .mood-card-5 { background-color: #E0F2F1; } .mood-card-5 .material-icons-round, .mood-card-5 span { color: #4DB6AC; }
-        .mood-card-4 { background-color: #E0F2F1; } .mood-card-4 .material-icons-round, .mood-card-4 span { color: #80CBC4; }
-        .mood-card-3 { background-color: #E3F2FD; } .mood-card-3 .material-icons-round, .mood-card-3 span { color: #64B5F6; }
-        .mood-card-2 { background-color: #FFF8E1; } .mood-card-2 .material-icons-round, .mood-card-2 span { color: #FFE082; }
-        .mood-card-1 { background-color: #FFF3E0; } .mood-card-1 .material-icons-round, .mood-card-1 span { color: #FFB74D; }
-
-        .history-list { display: flex; flex-direction: column; gap: 10px; }
-
-        /* --- ИСПРАВЛЕНИЕ ДЛЯ УЗКИХ ЭКРАНОВ (Z Flip, SE) --- */
+        /* Z FLIP FIX */
         @media (max-width: 370px) {
-            /* 1. Уменьшаем общие отступы экрана */
             #menu-screen { padding: 16px; }
-            
-            /* 2. Сжимаем отступы между карточками */
             .main-grid, .bottom-grid { gap: 10px; }
-
-            /* 3. Верхние карточки (Чат/Дыхание) */
-            .action-card { padding: 12px 6px; } /* Сильно уменьшаем внутренний отступ */
-            .card-chat h3, .card-breath h3 { 
-                font-size: 13px; /* Чуть меньше шрифт */
-                white-space: nowrap; /* ЗАПРЕЩАЕМ перенос строки */
-            }
-
-            /* 4. Нижние карточки (Дневник/Игра) */
-            .small-card { 
-                padding: 10px 8px; /* Компактнее */
-                gap: 8px; 
-            }
-            .small-icon { width: 32px; height: 32px; } /* Чуть меньше иконка */
-            
-            .small-card h4 { 
-                font-size: 13px; 
-                white-space: nowrap; /* ЗАПРЕЩАЕМ перенос заголовка */
-            }
-            .small-card span { 
-                font-size: 10px;
-                white-space: nowrap; /* ЗАПРЕЩАЕМ перенос подзаголовка */
-            }
+            .action-card { padding: 12px 6px; } 
+            .card-chat h3, .card-breath h3 { font-size: 13px; white-space: nowrap; }
+            .small-card { padding: 10px 8px; gap: 8px; }
+            .small-icon { width: 32px; height: 32px; } 
+            .small-card h4 { font-size: 13px; white-space: nowrap; }
+            .small-card span { font-size: 10px; white-space: nowrap; }
         }
     </style>
 </head>
@@ -416,7 +282,7 @@
 
     <div id="gpu-activator"></div>
 
-    <!-- SCREENS -->
+    <!-- MENU SCREEN -->
     <div id="menu-screen" class="screen active">
         <div class="greeting-header">
             <div class="greeting-text"><h1><span id="greetingText">Доброе утро</span>,<br><span id="userNameDisplay">User</span></h1><p>Что поддержит вас сегодня?</p></div>
@@ -429,85 +295,48 @@
         <div class="widget-card" onclick="navigateTo('video')">
             <div class="widget-header"><div class="dot-indicator"></div><div style="font-size:14px;color:var(--text-muted)">Медитации</div></div>
             <div style="font-size:18px;font-weight:600;color:var(--text-header)">Спокойствие</div>
-            <div class="wave-container"><svg class="wave-graph" viewBox="0 0 600 50" preserveAspectRatio="none"><defs><linearGradient id="grad1" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" style="stop-color:#4DB6AC;stop-opacity:0.6"/><stop offset="100%" style="stop-color:#4DB6AC;stop-opacity:0"/></linearGradient></defs><path d="M0,25 Q75,5 150,25 T300,25 T450,25 T600,25 V50 H0 Z" fill="url(#grad1)"/><path d="M0,25 Q75,5 150,25 T300,25 T450,25 T600,25" stroke="#4DB6AC" stroke-width="2" fill="none"/></svg></div>
+            <div class="wave-container"><svg class="wave-graph" viewBox="0 0 600 50" preserveAspectRatio="none"><defs><linearGradient id="grad1" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" style="stop-color:currentColor;stop-opacity:0.6" class="wave-path-fill"/><stop offset="100%" style="stop-color:currentColor;stop-opacity:0" class="wave-path-fill"/></linearGradient></defs><path d="M0,25 Q75,5 150,25 T300,25 T450,25 T600,25 V50 H0 Z" fill="url(#grad1)" style="color:#4DB6AC"/><path d="M0,25 Q75,5 150,25 T300,25 T450,25 T600,25" stroke="#4DB6AC" stroke-width="2" fill="none" class="wave-path-stroke"/></svg></div>
         </div>
         <div class="bottom-grid">
             <div class="small-card" onclick="navigateTo('music')">
-                <div class="small-icon warm-icon">
-                    <span id="diary-icon" class="material-icons-round">favorite_border</span>
-                </div>
+                <div class="small-icon warm-icon"><span id="diary-icon" class="material-icons-round">favorite_border</span></div>
                 <div><h4>Дневник</h4><span>Забота о себе</span></div>
             </div>
             <div class="small-card" onclick="navigateTo('balloons')"><div class="small-icon mint-icon"><span class="material-icons-round">sports_esports</span></div><div><h4>Игра</h4><span>Лопай шарики</span></div></div>
         </div>
     </div>
 
+    <!-- CHAT SCREEN -->
     <div id="chat-screen" class="screen">
         <div id="chat-container"><div class="message msg-bot msg-enter">Я рядом. Вы можете рассказать мне все, что вас тревожит. 🌿</div><div class="typing-indicator" id="typing"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></div>
         <div class="input-area"><button id="micBtn" class="btn-sq"><span class="material-icons-round">mic</span></button><input type="text" id="userInput" placeholder="Сообщение..."><button id="sendBtn" class="btn-sq"><span class="material-icons-round">arrow_upward</span></button></div>
     </div>
 
-    <!-- SOS SCREEN (RE-DESIGNED 3D) -->
+    <!-- OTHER SCREENS -->
     <div id="sos-screen" class="screen">
         <div class="sos-container-3d">
-            <div id="sos-content-area" class="sos-title-block">
-                <!-- Сюда JS рендерит 3D текст -->
-            </div>
-            <div id="sos-desc-area" style="text-align:center; margin-bottom:40px; min-height:30px;">
-                <!-- Описание -->
-            </div>
-            <button id="sos-main-btn" class="sos-btn-3d" onclick="nextSos()">
-                <span>Готово</span>
-            </button>
+            <div id="sos-content-area" class="sos-title-block"></div>
+            <div id="sos-desc-area" style="text-align:center; margin-bottom:40px; min-height:30px;"></div>
+            <button id="sos-main-btn" class="sos-btn-3d" onclick="nextSos()"><span>Готово</span></button>
         </div>
     </div>
-
     <div id="video-screen" class="screen"><div style="padding:24px;"><h2>Практики</h2><div class="small-card" onclick="alert('Скоро!')"><div class="small-icon mint-icon"><span class="material-icons-round">self_improvement</span></div><div><h4>Осознанность</h4><span>5 минут</span></div></div></div></div>
-    
     <div id="game-screen" class="screen"><canvas id="breathCanvas"></canvas><div class="game-ui-overlay"><div class="breath-text-container"><div class="breath-status" id="breathLabel">ДЫШИМ</div><div class="breath-timer-text" id="breathInstruction">Нажми Старт</div></div><div class="game-controls"><button class="btn-game-card" id="breathStartBtn" onclick="toggleBreathing()"><span class="material-icons-round" id="playIcon">play_arrow</span><span id="playText">Старт</span></button><button class="btn-reset-sq" onclick="resetBreathing()"><span class="material-icons-round">refresh</span></button></div></div></div>
-
-    <!-- ДНЕВНИК -->
     <div id="music-screen" class="screen">
         <div style="padding:24px; overflow-y:auto;">
-            <!-- ДИАГРАММА -->
-            <div class="chart-container">
-                <canvas id="pieChart"></canvas>
-                <div id="chart-legend" class="pie-legend"></div>
-                <div id="empty-chart-msg" style="position:absolute; color:var(--text-muted); font-size:14px; text-align:center; display:none;">
-                    Нет данных<br>Отметьте состояние
-                </div>
-            </div>
-
-            <!-- ВЫБОР НАСТРОЕНИЯ -->
-            <h2 style="margin-bottom:15px; font-size:18px;">Как вы сейчас?</h2>
+            <div class="chart-container"><canvas id="pieChart"></canvas><div id="chart-legend" class="pie-legend"></div><div id="empty-chart-msg" style="position:absolute; color:var(--text-muted); font-size:14px; text-align:center; display:none;">Нет данных<br>Отметьте состояние</div></div>
+            <h2 style="margin-bottom:15px; font-size:18px; color:var(--text-header)">Как вы сейчас?</h2>
             <div class="mood-grid">
-                <div class="mood-item mood-card-5" onclick="saveMood(5)">
-                    <span class="material-icons-round">sentiment_very_satisfied</span>
-                    <span>Отлично</span>
-                </div>
-                <div class="mood-item mood-card-4" onclick="saveMood(4)">
-                    <span class="material-icons-round">sentiment_satisfied_alt</span>
-                    <span>Хорошо</span>
-                </div>
-                <div class="mood-item mood-card-3" onclick="saveMood(3)">
-                    <span class="material-icons-round">sentiment_neutral</span>
-                    <span>Норм</span>
-                </div>
-                <div class="mood-item mood-card-2" onclick="saveMood(2)">
-                    <span class="material-icons-round">sentiment_dissatisfied</span>
-                    <span>Так себе</span>
-                </div>
-                <div class="mood-item mood-card-1" onclick="saveMood(1)">
-                    <span class="material-icons-round">sentiment_very_dissatisfied</span>
-                    <span>Плохо</span>
-                </div>
+                <div class="mood-item mood-card-5" onclick="saveMood(5)"><span class="material-icons-round">sentiment_very_satisfied</span><span>Отлично</span></div>
+                <div class="mood-item mood-card-4" onclick="saveMood(4)"><span class="material-icons-round">sentiment_satisfied_alt</span><span>Хорошо</span></div>
+                <div class="mood-item mood-card-3" onclick="saveMood(3)"><span class="material-icons-round">sentiment_neutral</span><span>Норм</span></div>
+                <div class="mood-item mood-card-2" onclick="saveMood(2)"><span class="material-icons-round">sentiment_dissatisfied</span><span>Так себе</span></div>
+                <div class="mood-item mood-card-1" onclick="saveMood(1)"><span class="material-icons-round">sentiment_very_dissatisfied</span><span>Плохо</span></div>
             </div>
-
-            <h2 style="margin-bottom:15px; font-size:18px;">История</h2>
+            <h2 style="margin-bottom:15px; font-size:18px; color:var(--text-header)">История</h2>
             <div id="history-container" class="history-list"></div>
         </div>
     </div>
-
     <div id="balloon-game-screen" class="screen">
         <div class="game-ui-header"><button id="back-btn-game" onclick="goBack()"><span class="material-icons-round">arrow_back</span></button><div id="game-timer">02:00</div><div class="score-box" id="balloon-score">0</div></div>
         <canvas id="balloon-game-canvas"></canvas>
@@ -523,48 +352,63 @@
         </div>
     </div>
 
+    <!-- NAVIGATION BAR -->
+    <nav class="bottom-nav">
+        <!-- Кнопка 1: Темы -->
+        <button class="nav-item" onclick="toggleTheme()">
+            <span id="theme-icon" class="material-icons-round nav-icon">dark_mode</span>
+        </button>
+        <!-- Заглушки -->
+        <button class="nav-item" onclick="alert('Скоро!')"><div class="nav-placeholder"></div></button>
+        <button class="nav-item" onclick="alert('Скоро!')"><div class="nav-placeholder"></div></button>
+        <button class="nav-item" onclick="alert('Скоро!')"><div class="nav-placeholder"></div></button>
+    </nav>
+
 <script>
     const GOOGLE_SCRIPT_URL="https://script.google.com/macros/s/AKfycbyXqB6VVOwd4cg_GtenaKkY-VtXMLCeq2gfSNEN6BxysXOLWLWL80VmyoUO-6B46Rnf/exec";
     const tg=window.Telegram.WebApp; tg.expand();
     const userId=tg.initDataUnsafe?.user?.id||'test_'+Math.floor(Math.random()*1000);
     const userName=tg.initDataUnsafe?.user?.first_name||'Друг';
-    
-    // --- ДИНАМИЧЕСКОЕ ПРИВЕТСТВИЕ ---
-    const hour = new Date().getHours();
-    let greeting = 'Доброе утро';
-    if (hour >= 0 && hour < 5) greeting = 'Доброй ночи';
-    else if (hour >= 5 && hour < 12) greeting = 'Доброе утро';
-    else if (hour >= 12 && hour < 17) greeting = 'Добрый день';
-    else if (hour >= 17 && hour < 24) greeting = 'Добрый вечер';
-    
-    document.getElementById('greetingText').innerText = greeting;
-    document.getElementById('userNameDisplay').innerText = userName;
-    // ---------------------------------
 
+    // --- THEME LOGIC ---
+    function initTheme() {
+        const savedTheme = localStorage.getItem('app_theme');
+        if (savedTheme === 'dark') {
+            document.body.classList.add('dark-mode');
+            document.getElementById('theme-icon').classList.add('nav-icon-active');
+        }
+    }
+    
+    function toggleTheme() {
+        document.body.classList.toggle('dark-mode');
+        const isDark = document.body.classList.contains('dark-mode');
+        document.getElementById('theme-icon').classList.toggle('nav-icon-active', isDark);
+        localStorage.setItem('app_theme', isDark ? 'dark' : 'light');
+        if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
+        
+        // Перерисовываем диаграмму, если открыт дневник
+        if (document.getElementById('music-screen').classList.contains('active')) {
+            renderDiary();
+        }
+    }
+
+    // --- NAVIGATION ---
     const screens={menu:document.getElementById('menu-screen'),chat:document.getElementById('chat-screen'),video:document.getElementById('video-screen'),music:document.getElementById('music-screen'),game:document.getElementById('game-screen'),sos:document.getElementById('sos-screen'),balloons:document.getElementById('balloon-game-screen')};
     const header=document.getElementById('main-header');
     const pageTitle=document.getElementById('page-title');
 
-function navigateTo(n) {
-        // 1. Скрываем все экраны и останавливаем процессы
+    function navigateTo(n) {
         Object.values(screens).forEach(e => e.classList.remove('active'));
         stopBalloonGame();
         stopBreathingAnimationLoop();
         resetSos();
-        
-        // 2. Показываем нужный экран
         screens[n].classList.add('active');
 
-        // 3. Логика для МЕНЮ (Главный экран)
         if (n === 'menu') {
             header.style.display = 'none';
             tg.BackButton.hide();
             checkDiaryStatus();
-            
-            // 🔥 ВОТ ОНО! ВСТАВЛЯЕМ СЮДА 🔥
             sendUserIdToServer(); 
-            // ---------------------------
-            
         } else if (n === 'balloons') {
             header.style.display = 'none';
             initBalloonGame();
@@ -574,7 +418,6 @@ function navigateTo(n) {
             tg.BackButton.onClick(goBack);
         }
 
-        // 4. Заголовки и прочее (твой старый код)
         const t = {chat:'Чат', video:'Медитации', music:'Дневник', game:'Дыхание', sos:'Заземление'};
         if (t[n]) pageTitle.innerText = t[n];
         if (n === 'chat') setTimeout(scrollToBottom, 200);
@@ -586,6 +429,16 @@ function navigateTo(n) {
         if (n === 'sos') startSos();
     }    
     function goBack(){if(screens.game.classList.contains('active'))resetBreathing();navigateTo('menu')}
+
+    // Greeting
+    const hour = new Date().getHours();
+    let greeting = 'Доброе утро';
+    if (hour >= 0 && hour < 5) greeting = 'Доброй ночи';
+    else if (hour >= 5 && hour < 12) greeting = 'Доброе утро';
+    else if (hour >= 12 && hour < 17) greeting = 'Добрый день';
+    else if (hour >= 17 && hour < 24) greeting = 'Добрый вечер';
+    document.getElementById('greetingText').innerText = greeting;
+    document.getElementById('userNameDisplay').innerText = userName;
 
     // CHAT & AUDIO
     const chatContainer=document.getElementById('chat-container'),userInput=document.getElementById('userInput'),sendBtn=document.getElementById('sendBtn'),micBtn=document.getElementById('micBtn'),typingIndicator=document.getElementById('typing');
@@ -600,104 +453,18 @@ function navigateTo(n) {
     function handleResponse(d){showTyping(false);sendBtn.disabled=false;micBtn.disabled=false;if(d.status==='success'){addMessage(d.text,false);if(d.audio)playAudioResponse(d.audio)}else{addMessage("⚠️ "+d.text,false)}}
     function handleError(){showTyping(false);sendBtn.disabled=false;micBtn.disabled=false;addMessage("⚠️ Ошибка сети",false)}
     function loadChatHistory(){fetch(GOOGLE_SCRIPT_URL+'?act=api',{method:'POST',body:JSON.stringify({userId:userId,action:'load_history'})}).then(r=>r.json()).then(d=>{if(d.status==='success')d.history.forEach(m=>{if(m.role!=='system')addMessage(m.parts[0].text,m.role==='user')})})}
-    function playAudioResponse(z){if(!z)return;try{const a=new Audio("data:audio/mp3;base64,"+z);const m=document.querySelectorAll('.msg-bot');const l=m[m.length-1];let i=null;if(l){i=document.createElement('span');i.className='material-icons-round';i.innerText='volume_up';i.style.cssText="margin-left:8px;vertical-align:middle;color:#4DB6AC;font-size:20px;";i.animate([{opacity:0.5},{opacity:1},{opacity:0.5}],{duration:1000,iterations:Infinity});l.appendChild(i)}a.play().catch(e=>{});a.onended=()=>{if(i)i.remove()}}catch(e){}}
+    function playAudioResponse(z){if(!z)return;try{const a=new Audio("data:audio/mp3;base64,"+z);const m=document.querySelectorAll('.msg-bot');const l=m[m.length-1];let i=null;if(l){i=document.createElement('span');i.className='material-icons-round';i.innerText='volume_up';i.style.cssText="margin-left:8px;vertical-align:middle;color:var(--primary-main);font-size:20px;";i.animate([{opacity:0.5},{opacity:1},{opacity:0.5}],{duration:1000,iterations:Infinity});l.appendChild(i)}a.play().catch(e=>{});a.onended=()=>{if(i)i.remove()}}catch(e){}}
     function blobToBase64(b){return new Promise(r=>{const z=new FileReader();z.onloadend=()=>r(z.result);z.readAsDataURL(b)})}
     sendBtn.addEventListener('click',sendMessage);micBtn.addEventListener('click',toggleRecording);userInput.addEventListener('keydown',e=>{if(e.key==='Enter')sendMessage()});
 
-    // --- SOS REDESIGNED (STRAIGHT & CLEAN) ---
-    const sosSteps = [
-        { n: 5, t: 'ВЕЩЕЙ', d: 'Найди 5 предметов одного цвета' },
-        { n: 4, t: 'ОЩУЩЕНИЯ', d: 'Почувствуй 4 касания' },
-        { n: 3, t: 'ЗВУКА', d: 'Услышь 3 звука вокруг' },
-        { n: 2, t: 'ЗАПАХА', d: 'Почувствуй 2 аромата' },
-        { n: 1, t: 'ВКУС', d: 'Ощути 1 вкус' }
-    ];
-    let sosIdx = 0;
-
-    function resetSos() {
-        sosIdx = 0;
-        document.getElementById('sos-content-area').innerHTML = '';
-        document.getElementById('sos-desc-area').innerHTML = '';
-        const btn = document.getElementById('sos-main-btn');
-        btn.querySelector('span').innerText = 'Я НАШЕЛ';
-        btn.onclick = nextSos; // RESET CLICK HANDLER
-    }
-
+    // SOS
+    const sosSteps = [{n:5,t:'ВЕЩЕЙ',d:'Найди 5 предметов одного цвета'},{n:4,t:'ОЩУЩЕНИЯ',d:'Почувствуй 4 касания'},{n:3,t:'ЗВУКА',d:'Услышь 3 звука вокруг'},{n:2,t:'ЗАПАХА',d:'Почувствуй 2 аромата'},{n:1,t:'ВКУС',d:'Ощути 1 вкус'}]; let sosIdx = 0;
+    function resetSos() { sosIdx = 0; document.getElementById('sos-content-area').innerHTML = ''; document.getElementById('sos-desc-area').innerHTML = ''; const btn = document.getElementById('sos-main-btn'); btn.querySelector('span').innerText = 'Я НАШЕЛ'; btn.onclick = nextSos; }
     function startSos() { renderSosStep(); }
-
-    function renderSosStep() {
-        const s = sosSteps[sosIdx];
-        const content = document.getElementById('sos-content-area');
-        
-        // 1. Clear previous
-        content.innerHTML = '';
-        
-        // 2. Render Big Number
-        const numDiv = document.createElement('div');
-        numDiv.className = 'sos-big-number';
-        numDiv.innerText = s.n;
-        numDiv.style.animation = 'pop-up-letter 0.5s ease forwards';
-        content.appendChild(numDiv);
-
-        // 3. Render Text
-        const textLine = document.createElement('div');
-        textLine.className = 'sos-text-line';
-        
-        s.t.split('').forEach((char, index) => {
-            const span = document.createElement('span');
-            span.className = 'sos-letter';
-            span.innerText = char;
-            span.style.animation = `pop-up-letter 0.4s ease forwards`;
-            span.style.animationDelay = `${0.2 + (index * 0.05)}s`;
-            textLine.appendChild(span);
-        });
-        
-        content.appendChild(textLine);
-
-        // 4. Description
-        const desc = document.getElementById('sos-desc-area');
-        desc.className = 'sos-desc';
-        desc.innerText = s.d;
-        desc.style.animation = 'none';
-        desc.offsetHeight; /* trigger reflow */
-        desc.style.animation = 'fadeIn 0.5s ease forwards 0.5s';
-
-        // 5. Button Animation Reset
-        const btn = document.getElementById('sos-main-btn');
-        btn.classList.remove('sos-btn-enter');
-        void btn.offsetWidth; // trigger reflow
-        btn.classList.add('sos-btn-enter');
-    }
-
-    function nextSos() {
-        if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
-        
-        if (sosIdx < sosSteps.length - 1) {
-            sosIdx++;
-            renderSosStep();
-        } else {
-            // FINISH STATE
-            document.getElementById('sos-content-area').innerHTML = `
-                <span class="material-icons-round" style="font-size:100px; color:#4DB6AC; animation:pop-up-letter 0.6s forwards;">check_circle</span>
-                <div class="sos-text-line" style="margin-top:20px; color:#1F2937">
-                    ТЫ МОЛОДЕЦ
-                </div>
-            `;
-            document.getElementById('sos-desc-area').innerText = 'Ты справился. Дыши спокойно.';
-            
-            const btn = document.getElementById('sos-main-btn');
-            btn.querySelector('span').innerText = 'В МЕНЮ';
-            btn.onclick = goBack; // CHANGE HANDLER TO GO BACK
-            
-            // Re-trigger button animation on finish screen too
-            btn.classList.remove('sos-btn-enter');
-            void btn.offsetWidth;
-            btn.classList.add('sos-btn-enter');
-            
-            if(tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
-        }
-    }
+    function renderSosStep() { const s = sosSteps[sosIdx]; const content = document.getElementById('sos-content-area'); content.innerHTML = ''; const numDiv = document.createElement('div'); numDiv.className = 'sos-big-number'; numDiv.innerText = s.n; numDiv.style.animation = 'pop-up-letter 0.5s ease forwards'; content.appendChild(numDiv); const textLine = document.createElement('div'); textLine.className = 'sos-text-line'; s.t.split('').forEach((char, index) => { const span = document.createElement('span'); span.className = 'sos-letter'; span.innerText = char; span.style.animation = `pop-up-letter 0.4s ease forwards`; span.style.animationDelay = `${0.2 + (index * 0.05)}s`; textLine.appendChild(span); }); content.appendChild(textLine); const desc = document.getElementById('sos-desc-area'); desc.className = 'sos-desc'; desc.innerText = s.d; desc.style.animation = 'none'; desc.offsetHeight; desc.style.animation = 'fadeIn 0.5s ease forwards 0.5s'; const btn = document.getElementById('sos-main-btn'); btn.classList.remove('sos-btn-enter'); void btn.offsetWidth; btn.classList.add('sos-btn-enter'); }
+    function nextSos() { if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('medium'); if (sosIdx < sosSteps.length - 1) { sosIdx++; renderSosStep(); } else { document.getElementById('sos-content-area').innerHTML = `<span class="material-icons-round" style="font-size:100px; color:var(--primary-main); animation:pop-up-letter 0.6s forwards;">check_circle</span><div class="sos-text-line" style="margin-top:20px; color:var(--text-header)">ТЫ МОЛОДЕЦ</div>`; document.getElementById('sos-desc-area').innerText = 'Ты справился. Дыши спокойно.'; const btn = document.getElementById('sos-main-btn'); btn.querySelector('span').innerText = 'В МЕНЮ'; btn.onclick = goBack; btn.classList.remove('sos-btn-enter'); void btn.offsetWidth; btn.classList.add('sos-btn-enter'); if(tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success'); } }
     
+    // Breath
     const breathCanvas=document.getElementById('breathCanvas'),breathCtx=breathCanvas.getContext('2d'),breathLabel=document.getElementById('breathLabel'),breathInstr=document.getElementById('breathInstruction'),playIcon=document.getElementById('playIcon'),playText=document.getElementById('playText');
     let breathAnimId,breathParticles=[],isBreathing=false,breathTimer=0,breathInterval,currentR=110,targetR=110;
     class Particle{constructor(){this.angle=Math.random()*Math.PI*2;this.r=110+Math.random()*20;this.size=Math.random()*3+1;this.speed=Math.random()*0.02+0.005;this.color=`rgba(100,181,246,${Math.random()*0.5})`}update(r){this.angle+=this.speed;let d=r+Math.sin(Date.now()/500)*10;this.r+=(d-this.r)*0.05;this.x=breathCanvas.width/2+Math.cos(this.angle)*this.r;this.y=(breathCanvas.height/2-60)+Math.sin(this.angle)*this.r}draw(){breathCtx.fillStyle=this.color;breathCtx.beginPath();breathCtx.arc(this.x,this.y,this.size,0,Math.PI*2);breathCtx.fill()}}
@@ -708,183 +475,48 @@ function navigateTo(n) {
     function toggleBreathing(){if(isBreathing){clearInterval(breathInterval);isBreathing=false;playIcon.innerText='play_arrow';playText.innerText='Продолжить'}else{isBreathing=true;playIcon.innerText='pause';playText.innerText='Пауза';breathInterval=setInterval(()=>{breathTimer++;const t=breathTimer%19;if(t<4){targetR=180;breathLabel.innerText="ВДОХ";breathInstr.innerText="Носом"}else if(t<11){targetR=190;breathLabel.innerText="ПАУЗА";breathInstr.innerText="Держим"}else{targetR=110;breathLabel.innerText="ВЫДОХ";breathInstr.innerText="Ртом"}},1000)}}
     function resetBreathing(){clearInterval(breathInterval);isBreathing=false;breathTimer=0;targetR=110;playIcon.innerText='play_arrow';playText.innerText='Старт';breathLabel.innerText='ДЫШИМ';breathInstr.innerText='Нажми Старт'}
     
-    // --- ДНЕВНИК С 3D ДИАГРАММОЙ И ЖИВЫМ СЕРДЦЕМ ---
-    function checkDiaryStatus() {
-        const h = JSON.parse(localStorage.getItem('mood_history_v2') || '{}');
-        const today = new Date().toISOString().split('T')[0];
-        const icon = document.getElementById('diary-icon');
-        if (!h[today]) {
-            icon.classList.add('heart-alert');
-            icon.innerText = 'favorite'; // Filled
-        } else {
-            icon.classList.remove('heart-alert');
-            icon.innerText = 'favorite_border'; // Outline
-        }
-    }
-
-    function saveMood(level) { 
-        const h = JSON.parse(localStorage.getItem('mood_history_v2') || '{}');
-        const date = new Date().toISOString().split('T')[0];
-        h[date] = level;
-        localStorage.setItem('mood_history_v2', JSON.stringify(h));
-        if(tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
-        renderDiary(); 
-        checkDiaryStatus(); // Update heart immediately
-    }
-
+    // Diary
+    function checkDiaryStatus() { const h = JSON.parse(localStorage.getItem('mood_history_v2') || '{}'); const today = new Date().toISOString().split('T')[0]; const icon = document.getElementById('diary-icon'); if (!h[today]) { icon.classList.add('heart-alert'); icon.innerText = 'favorite'; } else { icon.classList.remove('heart-alert'); icon.innerText = 'favorite_border'; } }
+    function saveMood(level) { const h = JSON.parse(localStorage.getItem('mood_history_v2') || '{}'); const date = new Date().toISOString().split('T')[0]; h[date] = level; localStorage.setItem('mood_history_v2', JSON.stringify(h)); if(tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success'); renderDiary(); checkDiaryStatus(); }
     function renderDiary() {
-        const h = JSON.parse(localStorage.getItem('mood_history_v2') || '{}');
-        const dates = Object.keys(h).sort();
-        
-        const c = document.getElementById('history-container');
-        c.innerHTML = '';
-        
-        const moodMap = {
-            5: {text: 'Отлично', color: '#4DB6AC', bg: '#E0F2F1', shadow: '#398E86'},
-            4: {text: 'Хорошо', color: '#80CBC4', bg: '#E0F2F1', shadow: '#63A39D'},
-            3: {text: 'Нормально', color: '#64B5F6', bg: '#E3F2FD', shadow: '#4295D1'},
-            2: {text: 'Так себе', color: '#FFE082', bg: '#FFF8E1', shadow: '#D3B765'},
-            1: {text: 'Плохо', color: '#FFB74D', bg: '#FFF3E0', shadow: '#D6963B'}
-        };
-
-        [...dates].reverse().forEach(date => {
-            const val = h[date];
-            const m = moodMap[val];
-            c.innerHTML += `<div class="history-item"><span style="font-weight:600;color:var(--text-header)">${new Date(date).toLocaleDateString()}</span><span style="padding:4px 10px;border-radius:8px;font-size:13px;font-weight:600;background:${m.bg};color:${m.color};">${m.text}</span></div>`;
-        });
-
+        const h = JSON.parse(localStorage.getItem('mood_history_v2') || '{}'); const dates = Object.keys(h).sort(); const c = document.getElementById('history-container'); c.innerHTML = '';
+        const moodMap = { 5: {text: 'Отлично', color: '#4DB6AC', bg: '#E0F2F1', shadow: '#398E86'}, 4: {text: 'Хорошо', color: '#80CBC4', bg: '#E0F2F1', shadow: '#63A39D'}, 3: {text: 'Нормально', color: '#64B5F6', bg: '#E3F2FD', shadow: '#4295D1'}, 2: {text: 'Так себе', color: '#FFE082', bg: '#FFF8E1', shadow: '#D3B765'}, 1: {text: 'Плохо', color: '#FFB74D', bg: '#FFF3E0', shadow: '#D6963B'} };
+        // Override for Dark Mode (if needed, but using fixed colors for graph looks okay, texts are adaptive)
+        [...dates].reverse().forEach(date => { const val = h[date]; const m = moodMap[val]; c.innerHTML += `<div class="history-item"><span style="font-weight:600;color:var(--text-header)">${new Date(date).toLocaleDateString()}</span><span style="padding:4px 10px;border-radius:8px;font-size:13px;font-weight:600;background:${m.bg};color:${m.color};">${m.text}</span></div>`; });
         const recentDates = dates.slice(-30);
-        
         if (recentDates.length > 0) {
-            const counts = {5:0, 4:0, 3:0, 2:0, 1:0};
-            recentDates.forEach(d => counts[h[d]]++);
-            
-            const legend = document.getElementById('chart-legend');
-            legend.innerHTML = '';
-            
-            const slices = [];
-            [5,4,3,2,1].forEach(lvl => {
-                if(counts[lvl] > 0) {
-                    const pct = Math.round((counts[lvl] / recentDates.length) * 100);
-                    slices.push({ value: counts[lvl], color: moodMap[lvl].color, shadow: moodMap[lvl].shadow });
-                    legend.innerHTML += `<div class="legend-item"><div style="display:flex;align-items:center;"><span class="legend-marker" style="background:${moodMap[lvl].color}"></span><span>${moodMap[lvl].text}</span></div><span>${pct}%</span></div>`;
-                }
-            });
-            draw3DPieChart(slices);
-            document.getElementById('empty-chart-msg').style.display = 'none';
-        } else {
-            const ctx = document.getElementById('pieChart').getContext('2d');
-            ctx.clearRect(0,0,300,150);
-            document.getElementById('empty-chart-msg').style.display = 'block';
-        }
+            const counts = {5:0, 4:0, 3:0, 2:0, 1:0}; recentDates.forEach(d => counts[h[d]]++); const legend = document.getElementById('chart-legend'); legend.innerHTML = ''; const slices = [];
+            [5,4,3,2,1].forEach(lvl => { if(counts[lvl] > 0) { const pct = Math.round((counts[lvl] / recentDates.length) * 100); slices.push({ value: counts[lvl], color: moodMap[lvl].color, shadow: moodMap[lvl].shadow }); legend.innerHTML += `<div class="legend-item"><div style="display:flex;align-items:center;"><span class="legend-marker" style="background:${moodMap[lvl].color}"></span><span>${moodMap[lvl].text}</span></div><span>${pct}%</span></div>`; } });
+            draw3DPieChart(slices); document.getElementById('empty-chart-msg').style.display = 'none';
+        } else { const ctx = document.getElementById('pieChart').getContext('2d'); ctx.clearRect(0,0,300,150); document.getElementById('empty-chart-msg').style.display = 'block'; }
     }
-
     function draw3DPieChart(slices) {
-        const canvas = document.getElementById('pieChart');
-        const ctx = canvas.getContext('2d');
-        const dpr = window.devicePixelRatio || 1;
-        const rect = canvas.getBoundingClientRect();
-        canvas.width = rect.width * dpr; canvas.height = rect.height * dpr;
-        ctx.scale(dpr, dpr);
-        
-        const cx = rect.width / 2;
-        const cy = rect.height / 2;
-        const rx = 120; const ry = 75; const depth = 35;
-        
-        ctx.clearRect(0, 0, rect.width, rect.height);
-        
-        const total = slices.reduce((acc, s) => acc + s.value, 0);
-        let startAngle = -Math.PI / 2;
-
-        let currentAngle = startAngle;
-        slices.forEach(slice => {
-            const sliceAngle = (slice.value / total) * 2 * Math.PI;
-            const endAngle = currentAngle + sliceAngle;
-            ctx.beginPath();
-            ctx.ellipse(cx, cy, rx, ry, 0, currentAngle, endAngle);
-            ctx.lineTo(cx + rx * Math.cos(endAngle), cy + ry * Math.sin(endAngle) + depth);
-            ctx.ellipse(cx, cy + depth, rx, ry, 0, endAngle, currentAngle, true);
-            ctx.lineTo(cx + rx * Math.cos(currentAngle), cy + ry * Math.sin(currentAngle));
-            ctx.fillStyle = slice.shadow;
-            ctx.fill();
-            currentAngle += sliceAngle;
-        });
-
-        currentAngle = startAngle;
-        slices.forEach(slice => {
-            const sliceAngle = (slice.value / total) * 2 * Math.PI;
-            const endAngle = currentAngle + sliceAngle;
-            ctx.beginPath();
-            ctx.moveTo(cx, cy);
-            ctx.ellipse(cx, cy, rx, ry, 0, currentAngle, endAngle);
-            ctx.closePath();
-            ctx.fillStyle = slice.color;
-            ctx.fill();
-            ctx.lineWidth = 1; ctx.strokeStyle = '#fff'; ctx.stroke();
-            currentAngle += sliceAngle;
-        });
+        const canvas = document.getElementById('pieChart'); const ctx = canvas.getContext('2d'); const dpr = window.devicePixelRatio || 1; const rect = canvas.getBoundingClientRect(); canvas.width = rect.width * dpr; canvas.height = rect.height * dpr; ctx.scale(dpr, dpr);
+        const cx = rect.width / 2; const cy = rect.height / 2; const rx = 120; const ry = 75; const depth = 35; ctx.clearRect(0, 0, rect.width, rect.height); const total = slices.reduce((acc, s) => acc + s.value, 0); let startAngle = -Math.PI / 2; let currentAngle = startAngle;
+        slices.forEach(slice => { const sliceAngle = (slice.value / total) * 2 * Math.PI; const endAngle = currentAngle + sliceAngle; ctx.beginPath(); ctx.ellipse(cx, cy, rx, ry, 0, currentAngle, endAngle); ctx.lineTo(cx + rx * Math.cos(endAngle), cy + ry * Math.sin(endAngle) + depth); ctx.ellipse(cx, cy + depth, rx, ry, 0, endAngle, currentAngle, true); ctx.lineTo(cx + rx * Math.cos(currentAngle), cy + ry * Math.sin(currentAngle)); ctx.fillStyle = slice.shadow; ctx.fill(); currentAngle += sliceAngle; });
+        currentAngle = startAngle; slices.forEach(slice => { const sliceAngle = (slice.value / total) * 2 * Math.PI; const endAngle = currentAngle + sliceAngle; ctx.beginPath(); ctx.moveTo(cx, cy); ctx.ellipse(cx, cy, rx, ry, 0, currentAngle, endAngle); ctx.closePath(); ctx.fillStyle = slice.color; ctx.fill(); ctx.lineWidth = 1; ctx.strokeStyle = document.body.classList.contains('dark-mode') ? '#1E1E1E' : '#FFFFFF'; ctx.stroke(); currentAngle += sliceAngle; });
     }
 
-    // GAME
-    const ballCanvas = document.getElementById('balloon-game-canvas');
-    const bCtx = ballCanvas.getContext('2d');
-    const dpr2 = Math.min(window.devicePixelRatio || 1, 1.5); 
-    const cachedTarget = document.createElement('canvas'); const cachedDummy = document.createElement('canvas');
-    const balloonSize = 80; 
-    cachedTarget.width = balloonSize * dpr2; cachedTarget.height = (balloonSize + 60) * dpr2;
-    cachedDummy.width = balloonSize * dpr2; cachedDummy.height = (balloonSize + 60) * dpr2;
-
-    function preDrawBalloon(ctx, type) {
-        ctx.scale(dpr2, dpr2); const cx = balloonSize/2; const cy = balloonSize/2; const r = 35;
-        ctx.beginPath(); ctx.moveTo(cx, cy+r); ctx.bezierCurveTo(cx+10, cy+r+20, cx-10, cy+r+40, cx, cy+r+60);
-        ctx.strokeStyle = 'rgba(0,0,0,0.15)'; ctx.lineWidth = 2; ctx.stroke();
-        if (type === 'target') { let g = ctx.createLinearGradient(cx, cy-r, cx, cy+r); g.addColorStop(0, '#81D4FA'); g.addColorStop(1, '#FFF59D'); ctx.fillStyle = g; } else { ctx.fillStyle = '#CFD8DC'; }
-        ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI*2); ctx.fill();
-        ctx.beginPath(); ctx.moveTo(cx, cy+r-2); ctx.lineTo(cx-6, cy+r+8); ctx.lineTo(cx+6, cy+r+8); ctx.fill();
-        ctx.beginPath(); ctx.arc(cx, cy, r-10, -0.2*Math.PI, 0.1*Math.PI); 
-        ctx.strokeStyle = 'rgba(255,255,255,0.6)'; ctx.lineWidth = 3; ctx.lineCap = 'round'; ctx.stroke();
-        ctx.setTransform(1, 0, 0, 1, 0, 0); 
-    }
+    // Balloons
+    const ballCanvas = document.getElementById('balloon-game-canvas'); const bCtx = ballCanvas.getContext('2d'); const dpr2 = Math.min(window.devicePixelRatio || 1, 1.5); 
+    const cachedTarget = document.createElement('canvas'); const cachedDummy = document.createElement('canvas'); const balloonSize = 80; 
+    cachedTarget.width = balloonSize * dpr2; cachedTarget.height = (balloonSize + 60) * dpr2; cachedDummy.width = balloonSize * dpr2; cachedDummy.height = (balloonSize + 60) * dpr2;
+    function preDrawBalloon(ctx, type) { ctx.scale(dpr2, dpr2); const cx = balloonSize/2; const cy = balloonSize/2; const r = 35; ctx.beginPath(); ctx.moveTo(cx, cy+r); ctx.bezierCurveTo(cx+10, cy+r+20, cx-10, cy+r+40, cx, cy+r+60); ctx.strokeStyle = 'rgba(0,0,0,0.15)'; ctx.lineWidth = 2; ctx.stroke(); if (type === 'target') { let g = ctx.createLinearGradient(cx, cy-r, cx, cy+r); g.addColorStop(0, '#81D4FA'); g.addColorStop(1, '#FFF59D'); ctx.fillStyle = g; } else { ctx.fillStyle = '#CFD8DC'; } ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI*2); ctx.fill(); ctx.beginPath(); ctx.moveTo(cx, cy+r-2); ctx.lineTo(cx-6, cy+r+8); ctx.lineTo(cx+6, cy+r+8); ctx.fill(); ctx.beginPath(); ctx.arc(cx, cy, r-10, -0.2*Math.PI, 0.1*Math.PI); ctx.strokeStyle = 'rgba(255,255,255,0.6)'; ctx.lineWidth = 3; ctx.lineCap = 'round'; ctx.stroke(); ctx.setTransform(1, 0, 0, 1, 0, 0); }
     preDrawBalloon(cachedTarget.getContext('2d'), 'target'); preDrawBalloon(cachedDummy.getContext('2d'), 'dummy');
-
-    const MAX_BALLOONS = 100; const pool = new Array(MAX_BALLOONS).fill(null).map(() => ({active: false, x: 0, y: 0, baseX: 0, baseSpeed: 0, wobble: 0, type: 'dummy'}));
-    const MAX_PARTICLES = 150; const particles = new Array(MAX_PARTICLES).fill(null).map(()=>({active:false, x:0, y:0, vx:0, vy:0, life:0, color:'#000'}));
-    const particleColors = ['#FFD700', '#FF6B6B', '#4ECDC4', '#45B7D1'];
-    let bLoopId, bScore = 0, gameStartTime = 0, isGameRunning = false, lastFrameTime = 0;
-    const GAME_DURATION = 120;
-
-    function initBalloonGame() {
-        document.getElementById('game-over-modal').style.display = 'none'; document.getElementById('record-badge').style.display = 'none'; document.getElementById('game-icon').style.display = 'none';
-        ballCanvas.width = window.innerWidth * dpr2; ballCanvas.height = window.innerHeight * dpr2; bCtx.scale(dpr2, dpr2);
-        pool.forEach(b => b.active = false); particles.forEach(p => p.active = false);
-        bScore = 0; document.getElementById('balloon-score').innerText = 0; document.getElementById('game-timer').innerText = "02:00";
-        ballCanvas.addEventListener('touchstart', popBalloon, {passive: false}); ballCanvas.addEventListener('mousedown', popBalloon);
-        gameStartTime = Date.now(); lastFrameTime = performance.now(); isGameRunning = true;
-        requestAnimationFrame(runBalloonLoop);
-    }
+    const MAX_BALLOONS = 100; const pool = new Array(MAX_BALLOONS).fill(null).map(() => ({active: false, x: 0, y: 0, baseX: 0, baseSpeed: 0, wobble: 0, type: 'dummy'})); const MAX_PARTICLES = 150; const particles = new Array(MAX_PARTICLES).fill(null).map(()=>({active:false, x:0, y:0, vx:0, vy:0, life:0, color:'#000'})); const particleColors = ['#FFD700', '#FF6B6B', '#4ECDC4', '#45B7D1']; let bScore = 0, gameStartTime = 0, isGameRunning = false, lastFrameTime = 0;
+    function initBalloonGame() { document.getElementById('game-over-modal').style.display = 'none'; document.getElementById('record-badge').style.display = 'none'; document.getElementById('game-icon').style.display = 'none'; ballCanvas.width = window.innerWidth * dpr2; ballCanvas.height = window.innerHeight * dpr2; bCtx.scale(dpr2, dpr2); pool.forEach(b => b.active = false); particles.forEach(p => p.active = false); bScore = 0; document.getElementById('balloon-score').innerText = 0; document.getElementById('game-timer').innerText = "02:00"; ballCanvas.addEventListener('touchstart', popBalloon, {passive: false}); ballCanvas.addEventListener('mousedown', popBalloon); gameStartTime = Date.now(); lastFrameTime = performance.now(); isGameRunning = true; requestAnimationFrame(runBalloonLoop); }
     function stopBalloonGame() { isGameRunning = false; ballCanvas.removeEventListener('touchstart', popBalloon); ballCanvas.removeEventListener('mousedown', popBalloon); }
     function endGame() { isGameRunning = false; const savedScore = parseInt(localStorage.getItem('balloon_highscore') || '0'); let isNewRecord = bScore > savedScore; if (isNewRecord) { localStorage.setItem('balloon_highscore', bScore); } document.getElementById('final-score').innerText = bScore; if (isNewRecord) { document.getElementById('record-badge').style.display = 'inline-block'; document.getElementById('game-icon').style.display = 'block'; if(tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success'); } else { if(tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('warning'); } document.getElementById('game-over-modal').style.display = 'flex'; }
     function spawnBalloon() { const b = pool.find(p => !p.active); if (!b) return; const type = Math.random() < 0.6 ? 'target' : 'dummy'; b.active = true; b.baseX = Math.random() * (window.innerWidth - 70) + 35; b.x = b.baseX; b.y = window.innerHeight + 50; b.baseSpeed = Math.random() * 2 + 2; b.wobble = Math.random() * Math.PI * 2; b.type = type; }
     function explodeConfetti(x, y) { let count = 0; for(let i=0; i<MAX_PARTICLES; i++) { const p = particles[i]; if(!p.active) { p.active = true; p.x = x; p.y = y; p.vx = (Math.random() - 0.5) * 10; p.vy = (Math.random() - 0.5) * 10 - 2; p.life = 1.0; p.color = particleColors[Math.floor(Math.random()*particleColors.length)]; count++; if(count >= 15) break; } } }
-    function runBalloonLoop(timestamp) { if (!isGameRunning) return; const elapsedTotal = (Date.now() - gameStartTime) / 1000; const timeLeft = Math.max(0, GAME_DURATION - elapsedTotal); const m = Math.floor(timeLeft / 60).toString().padStart(2, '0'); const s = Math.floor(timeLeft % 60).toString().padStart(2, '0'); document.getElementById('game-timer').innerText = `${m}:${s}`; if (timeLeft <= 0) { endGame(); return; } let dt = (timestamp - lastFrameTime) / 1000; lastFrameTime = timestamp; if (dt > 0.1) dt = 0.1; bCtx.clearRect(0, 0, window.innerWidth, window.innerHeight); const speedMultiplier = 1 + (Math.floor(elapsedTotal / 30) * 0.2); if (Math.random() < 0.06 * (dt * 60)) { spawnBalloon(); } for (let i = 0; i < MAX_BALLOONS; i++) { const b = pool[i]; if (!b.active) continue; const moveStep = b.baseSpeed * speedMultiplier * (dt * 60); b.y -= moveStep; b.x = b.baseX + Math.sin(timestamp * 0.005 + b.wobble) * 50; const img = b.type === 'target' ? cachedTarget : cachedDummy; bCtx.drawImage(img, 0, 0, img.width, img.height, (b.x - 40)|0, (b.y - 40)|0, 80, 140); if (b.y < -150) b.active = false; } for(let i=0; i<MAX_PARTICLES; i++){ const p=particles[i]; if(!p.active)continue; p.x += p.vx * (dt*60); p.y += p.vy * (dt*60); p.vy += 0.5 * (dt*60); p.life -= 0.02 * (dt*60); bCtx.globalAlpha = p.life; bCtx.fillStyle = p.color; bCtx.fillRect((p.x)|0, (p.y)|0, 6, 6); bCtx.globalAlpha = 1.0; if(p.life <= 0) p.active = false; } requestAnimationFrame(runBalloonLoop); }
+    function runBalloonLoop(timestamp) { if (!isGameRunning) return; const elapsedTotal = (Date.now() - gameStartTime) / 1000; const timeLeft = Math.max(0, 120 - elapsedTotal); const m = Math.floor(timeLeft / 60).toString().padStart(2, '0'); const s = Math.floor(timeLeft % 60).toString().padStart(2, '0'); document.getElementById('game-timer').innerText = `${m}:${s}`; if (timeLeft <= 0) { endGame(); return; } let dt = (timestamp - lastFrameTime) / 1000; lastFrameTime = timestamp; if (dt > 0.1) dt = 0.1; bCtx.clearRect(0, 0, window.innerWidth, window.innerHeight); const speedMultiplier = 1 + (Math.floor(elapsedTotal / 30) * 0.2); if (Math.random() < 0.06 * (dt * 60)) { spawnBalloon(); } for (let i = 0; i < MAX_BALLOONS; i++) { const b = pool[i]; if (!b.active) continue; const moveStep = b.baseSpeed * speedMultiplier * (dt * 60); b.y -= moveStep; b.x = b.baseX + Math.sin(timestamp * 0.005 + b.wobble) * 50; const img = b.type === 'target' ? cachedTarget : cachedDummy; bCtx.drawImage(img, 0, 0, img.width, img.height, (b.x - 40)|0, (b.y - 40)|0, 80, 140); if (b.y < -150) b.active = false; } for(let i=0; i<MAX_PARTICLES; i++){ const p=particles[i]; if(!p.active)continue; p.x += p.vx * (dt*60); p.y += p.vy * (dt*60); p.vy += 0.5 * (dt*60); p.life -= 0.02 * (dt*60); bCtx.globalAlpha = p.life; bCtx.fillStyle = p.color; bCtx.fillRect((p.x)|0, (p.y)|0, 6, 6); bCtx.globalAlpha = 1.0; if(p.life <= 0) p.active = false; } requestAnimationFrame(runBalloonLoop); }
     function popBalloon(e) { e.preventDefault(); const rect = ballCanvas.getBoundingClientRect(); let points = []; if (e.changedTouches) { for (let i = 0; i < e.changedTouches.length; i++) { points.push({ x: e.changedTouches[i].clientX - rect.left, y: e.changedTouches[i].clientY - rect.top }); } } else { points.push({ x: e.clientX - rect.left, y: e.clientY - rect.top }); } points.forEach(p => { for (let i = 0; i < MAX_BALLOONS; i++) { const b = pool[i]; if (!b.active) continue; const dist = Math.sqrt((p.x - b.x)**2 + (p.y - b.y)**2); if (dist < 70) { if (b.type === 'target') { b.active = false; bScore++; document.getElementById('balloon-score').innerText = bScore; explodeConfetti(b.x, b.y); if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light'); } break; } } }); }
-    // --- НОВАЯ ФУНКЦИЯ: ОТПРАВКА ЮЗЕРА В ТАБЛИЦУ ---
-    function sendUserIdToServer() {
-        // Если это тестовый юзер (на компьютере), не отправляем
-        if (userId.toString().startsWith('test_')) return; 
-
-        fetch(GOOGLE_SCRIPT_URL + '?act=api', {
-            method: 'POST',
-            body: JSON.stringify({
-                action: 'user_joined', // Сигнал для сервера
-                userId: userId,
-                userName: userName
-            })
-        });
-    }
     
-    // Check status immediately
+    function sendUserIdToServer() { if (userId.toString().startsWith('test_')) return; fetch(GOOGLE_SCRIPT_URL + '?act=api', { method: 'POST', body: JSON.stringify({ action: 'user_joined', userId: userId, userName: userName }) }); }
+    
+    // INIT
     checkDiaryStatus();
+    initTheme();
 </script>
 </body>
 </html>
