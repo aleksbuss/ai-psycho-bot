@@ -96,30 +96,10 @@
         .sos-btn-header:active { transform: scale(0.95); }
 
         .main-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
-        
-        /* ИСПРАВЛЕНИЕ: Фиксированная высота и центрирование */
-        .action-card { 
-            border-radius: var(--radius-card); 
-            padding: 16px; 
-            display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; 
-            height: 150px; 
-            cursor: pointer; transition: transform 0.1s; 
-            background-color: var(--primary-soft); 
-        }
+        .action-card { border-radius: var(--radius-card); padding: 20px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; height: 150px; cursor: pointer; transition: transform 0.1s; background-color: var(--primary-soft); }
         .action-card:active { transform: scale(0.97); }
-        
-        /* ИСПРАВЛЕНИЕ: Запрет переноса строк для заголовков */
-        .card-chat h3 { 
-            color: var(--primary-text); 
-            font-size: 15px; 
-            font-weight: 600; 
-            white-space: nowrap; 
-            overflow: hidden; 
-            text-overflow: ellipsis; 
-            max-width: 100%;
-        }
+        .card-chat h3 { color: var(--primary-text); font-size: 15px; font-weight: 600; }
         .card-chat .icon-box { color: var(--primary-main); width: 50px; height: 50px; border-radius: 16px; background: rgba(255,255,255,0.7); display: flex; align-items: center; justify-content: center; margin-bottom: 12px; }
-        
         .card-breath { background-color: var(--secondary-bg); }
         .card-breath h3 { color: #1565C0; font-size: 15px; font-weight: 600; }
         .card-breath .icon-box { color: var(--secondary-accent); width: 50px; height: 50px; border-radius: 16px; background: rgba(255,255,255,0.7); display: flex; align-items: center; justify-content: center; margin-bottom: 12px; }
@@ -135,58 +115,17 @@
         
         .bottom-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
         
-        /* ИСПРАВЛЕНИЕ: Нижние карточки для узких экранов */
-        .small-card { 
-            background: var(--bg-card); 
-            padding: 16px; 
-            border-radius: 20px; 
-            display: flex; align-items: center; gap: 12px; 
-            box-shadow: var(--shadow-card); cursor: pointer; 
-            overflow: hidden; 
-        }
-        /* Иконка не сжимается */
-        .small-icon { 
-            width: 36px; height: 36px; 
-            border-radius: 10px; 
-            display: flex; align-items: center; justify-content: center; 
-            flex-shrink: 0; 
-        }
+        /* КАРТОЧКИ НИЖНИЕ */
+        .small-card { background: var(--bg-card); padding: 16px; border-radius: 20px; display: flex; align-items: center; gap: 12px; box-shadow: var(--shadow-card); cursor: pointer; }
+        
+        /* Добавили min-width:0 для корректной работы Flexbox с текстом */
+        .small-card > div:last-child { min-width: 0; }
+        
+        .small-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: visible; }
         .warm-icon { background: var(--warm-bg); color: var(--warm-accent); }
         .mint-icon { background: var(--primary-soft); color: var(--primary-main); }
-        
-        /* Контейнер текста сжимается, если надо */
-        .small-card-content { flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: center; }
-        .small-card h4 { 
-            font-size: 14px; font-weight: 600; color: var(--text-header); margin: 0; 
-            white-space: nowrap; overflow: hidden; text-overflow: ellipsis; 
-        }
-        .small-card span { 
-            font-size: 11px; color: var(--text-muted); 
-            white-space: nowrap; overflow: hidden; text-overflow: ellipsis; 
-        }
-
-        /* --- ВАЖНО: АДАПТАЦИЯ ПОД УЗКИЕ ЭКРАНЫ (Z Flip и др.) --- */
-        @media (max-width: 370px) {
-            #menu-screen { padding: 16px; }
-            .main-grid, .bottom-grid { gap: 10px; }
-            
-            /* Уменьшаем отступы в главных карточках */
-            .action-card { padding: 12px; height: 130px; }
-            .card-chat h3, .card-breath h3 { font-size: 13px; }
-            .icon-box { width: 42px; height: 42px; margin-bottom: 8px; }
-
-            /* Уменьшаем отступы в нижних карточках */
-            .small-card { padding: 12px; gap: 8px; }
-            .small-icon { width: 32px; height: 32px; }
-            .small-card h4 { font-size: 13px; }
-            .small-card span { font-size: 10px; }
-            
-            .greeting-text h1 { font-size: 22px; }
-            
-            /* Волна тоже чуть компактнее */
-            .widget-card { padding: 16px; margin-bottom: 16px; }
-            .widget-main-text { font-size: 16px; }
-        }
+        .small-card h4 { font-size: 14px; font-weight: 600; color: var(--text-header); margin: 0; }
+        .small-card span { font-size: 11px; color: var(--text-muted); }
 
         @keyframes heart-beat {
             0% { transform: scale(1.3); }
@@ -221,124 +160,113 @@
         #game-screen { background: var(--primary-soft); }
         canvas#breathCanvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; opacity: 0.6; }
         .game-ui-overlay { position: relative; z-index: 10; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; width: 100%; padding-bottom: 80px; pointer-events: none; }
-        
         .breath-text-container { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; margin-bottom: 40px; }
         .breath-status { font-size: 32px; font-weight: 800; color: var(--text-header); margin-bottom: 8px; }
         .breath-timer-text { font-size: 18px; color: var(--text-muted); }
-        
         .game-controls { pointer-events: auto; display: flex; gap: 20px; }
         .btn-game-card { padding: 20px 40px; border-radius: var(--radius-card); border: none; font-size: 18px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 14px; background: var(--secondary-bg); color: var(--secondary-text); box-shadow: var(--shadow-float-blue); }
         .btn-reset-sq { width: 64px; height: 64px; border-radius: 20px; background: var(--secondary-bg); color: var(--secondary-text); border: none; box-shadow: var(--shadow-float-blue); display: flex; align-items: center; justify-content: center; cursor: pointer; }
 
-        /* --- SOS SCREEN (BREATHING SPHERE) --- */
+        /* --- SOS SCREEN FIXED (STRAIGHT & SOFT UI) --- */
         #sos-screen { 
-            background: linear-gradient(180deg, #F5F7FA 0%, #E3F2FD 100%);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            position: relative;
+            background: #F5F7FA;
+            justify-content: center; 
             overflow: hidden;
         }
 
-        .sos-sphere-container {
+        .sos-container-3d {
+            position: relative;
+            width: 100%;
+            height: 100%;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            z-index: 2;
-            width: 100%;
+            padding: 30px;
         }
 
-        /* Текст вверху */
-        .sos-text-block {
-            text-align: center;
-            margin-bottom: 40px;
-            animation: fadeDown 0.6s ease-out;
-        }
-        @keyframes fadeDown { from{opacity:0;transform:translateY(-20px)} to{opacity:1;transform:translateY(0)} }
-
-        .sos-title {
-            font-size: 32px;
-            font-weight: 800;
-            color: var(--text-header);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 8px;
-        }
-        .sos-desc {
-            font-size: 18px;
-            color: var(--text-muted);
-            font-weight: 500;
-        }
-
-        /* Дышащая сфера */
-        .breathing-sphere {
-            width: 220px;
-            height: 220px;
-            border-radius: 50%;
-            background: radial-gradient(circle at 30% 30%, #4DB6AC, #00796B);
+        .sos-title-block {
             display: flex;
+            flex-direction: column;
             align-items: center;
-            justify-content: center;
-            box-shadow: 0 10px 40px rgba(77, 182, 172, 0.4), inset 0 0 20px rgba(255,255,255,0.3);
-            margin-bottom: 60px;
-            position: relative;
-            /* Дыхание: 6 секунд цикл (спокойный) */
-            animation: sphere-breathe 6s infinite ease-in-out;
+            gap: 15px;
+            margin-bottom: 50px;
         }
 
-        .breathing-sphere::after {
-            content: '';
-            position: absolute;
-            top: -10px; left: -10px; right: -10px; bottom: -10px;
-            border-radius: 50%;
-            border: 2px solid rgba(77, 182, 172, 0.3);
-            animation: sphere-ripple 6s infinite ease-out;
-        }
-
-        @keyframes sphere-breathe {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.15); }
-        }
-
-        @keyframes sphere-ripple {
-            0% { transform: scale(1); opacity: 0.5; }
-            100% { transform: scale(1.5); opacity: 0; }
-        }
-
-        .sos-number-inside {
-            font-size: 100px;
+        .sos-big-number {
+            font-size: 160px;
+            line-height: 1;
             font-weight: 900;
-            color: rgba(255,255,255,0.9);
-            text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            color: #FF6F00;
+            text-shadow: 4px 4px 0 rgba(255, 111, 0, 0.2);
+            opacity: 0;
+            display: block;
         }
 
-        .sos-btn-soft {
-            padding: 18px 48px;
+        .sos-text-line {
+            display: flex;
+            gap: 2px;
+            font-size: 42px;
+            font-weight: 900;
+            text-transform: uppercase;
+            color: #4DB6AC;
+            letter-spacing: 2px;
+        }
+
+        .sos-letter {
+            display: inline-block;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        /* ANIMATION FOR LETTERS */
+        @keyframes pop-up-letter {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        /* BUTTON STYLE - SOFT UI RECTANGLE */
+        .sos-btn-3d {
+            padding: 18px 60px;
             font-size: 18px;
             font-weight: 700;
-            color: white;
-            background: var(--text-header);
-            border-radius: 30px;
+            text-transform: uppercase;
+            color: #FFFFFF;
+            background: linear-gradient(135deg, #4DB6AC, #009688);
             border: none;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            border-radius: 20px;
             cursor: pointer;
-            transition: transform 0.1s;
+            box-shadow: 0 10px 20px rgba(77, 182, 172, 0.4);
+            transition: transform 0.1s, box-shadow 0.1s;
+            opacity: 1; /* Default visible */
+            min-width: 220px;
         }
-        .sos-btn-soft:active { transform: scale(0.96); }
-
-        /* Финальное состояние */
-        .sos-success-icon {
-            font-size: 120px;
-            color: #4DB6AC;
-            margin-bottom: 20px;
-            animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        
+        .sos-btn-enter {
+            opacity: 0;
+            animation: pop-up-letter 0.5s ease forwards;
+            animation-delay: 0.6s;
         }
-        @keyframes popIn { from{transform:scale(0)} to{transform:scale(1)} }
+
+        .sos-btn-3d:active {
+            transform: scale(0.96);
+            box-shadow: 0 5px 10px rgba(77, 182, 172, 0.3);
+        }
+        
+        .sos-desc {
+            font-size: 18px;
+            color: #546E7A;
+            margin-top: 20px;
+            font-weight: 500;
+            opacity: 0;
+            animation: fadeIn 0.5s ease forwards;
+            animation-delay: 0.4s;
+            text-align: center;
+        }
+        @keyframes fadeIn { to { opacity: 1; } }
 
 
-        /* ШАРИКИ */
+        /* ШАРИКИ - СТИЛИ ДЛЯ ИГРЫ */
         #balloon-game-screen { 
             background-color: var(--primary-soft); 
             position: relative; 
@@ -357,6 +285,39 @@
         .score-label { font-size: 16px; color: var(--text-muted); margin-bottom: 30px; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
         .new-record-badge { background: var(--warm-bg); color: var(--warm-text); padding: 6px 12px; border-radius: 8px; font-weight: 700; font-size: 14px; margin-bottom: 10px; display: inline-block; }
 
+        /* НОВЫЕ КНОПКИ ДЛЯ ИГРЫ */
+        .btn-game-primary {
+            padding: 18px 0;
+            font-size: 18px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #FFFFFF;
+            background: linear-gradient(135deg, #4DB6AC, #009688);
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            box-shadow: 0 10px 20px rgba(77, 182, 172, 0.4);
+            width: 100%;
+            transition: transform 0.1s;
+        }
+        .btn-game-primary:active { transform: scale(0.96); }
+
+        .btn-game-secondary {
+            padding: 18px 0;
+            font-size: 18px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #1565C0; /* Dark Blue Text */
+            background: #E3F2FD; /* Soft Blue BG */
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(33, 150, 243, 0.15);
+            width: 100%;
+            transition: transform 0.1s;
+        }
+        .btn-game-secondary:active { transform: scale(0.96); }
+
         /* ДНЕВНИК */
         .chart-container { 
             background: white; border-radius: 24px; padding: 20px; margin-bottom: 20px; box-shadow: var(--shadow-card); 
@@ -374,6 +335,7 @@
         
         .mood-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-bottom: 30px; }
         
+        /* КАРТОЧКИ НАСТРОЕНИЯ (ЦВЕТНЫЕ) */
         .mood-item { 
             border-radius: 16px; padding: 12px 4px; 
             display: flex; flex-direction: column; align-items: center; justify-content: center; 
@@ -383,6 +345,7 @@
         .mood-item .material-icons-round { font-size: 32px; margin-bottom: 6px; }
         .mood-item span { font-size: 10px; font-weight: 700; text-align: center; line-height: 1.2; }
 
+        /* ЦВЕТА КАРТОЧЕК */
         .mood-card-5 { background-color: #E0F2F1; } .mood-card-5 .material-icons-round, .mood-card-5 span { color: #4DB6AC; }
         .mood-card-4 { background-color: #E0F2F1; } .mood-card-4 .material-icons-round, .mood-card-4 span { color: #80CBC4; }
         .mood-card-3 { background-color: #E3F2FD; } .mood-card-3 .material-icons-round, .mood-card-3 span { color: #64B5F6; }
@@ -390,6 +353,38 @@
         .mood-card-1 { background-color: #FFF3E0; } .mood-card-1 .material-icons-round, .mood-card-1 span { color: #FFB74D; }
 
         .history-list { display: flex; flex-direction: column; gap: 10px; }
+
+        /* --- ИСПРАВЛЕНИЕ ДЛЯ УЗКИХ ЭКРАНОВ (Z Flip, SE) --- */
+        @media (max-width: 370px) {
+            /* 1. Уменьшаем общие отступы экрана */
+            #menu-screen { padding: 16px; }
+            
+            /* 2. Сжимаем отступы между карточками */
+            .main-grid, .bottom-grid { gap: 10px; }
+
+            /* 3. Верхние карточки (Чат/Дыхание) */
+            .action-card { padding: 12px 6px; } /* Сильно уменьшаем внутренний отступ */
+            .card-chat h3, .card-breath h3 { 
+                font-size: 13px; /* Чуть меньше шрифт */
+                white-space: nowrap; /* ЗАПРЕЩАЕМ перенос строки */
+            }
+
+            /* 4. Нижние карточки (Дневник/Игра) */
+            .small-card { 
+                padding: 10px 8px; /* Компактнее */
+                gap: 8px; 
+            }
+            .small-icon { width: 32px; height: 32px; } /* Чуть меньше иконка */
+            
+            .small-card h4 { 
+                font-size: 13px; 
+                white-space: nowrap; /* ЗАПРЕЩАЕМ перенос заголовка */
+            }
+            .small-card span { 
+                font-size: 10px;
+                white-space: nowrap; /* ЗАПРЕЩАЕМ перенос подзаголовка */
+            }
+        }
     </style>
 </head>
 <body>
@@ -407,7 +402,7 @@
     <!-- SCREENS -->
     <div id="menu-screen" class="screen active">
         <div class="greeting-header">
-            <div class="greeting-text"><h1>Доброе утро,<br><span id="userNameDisplay">User</span></h1><p>Что поддержит вас сегодня?</p></div>
+            <div class="greeting-text"><h1><span id="greetingText">Доброе утро</span>,<br><span id="userNameDisplay">User</span></h1><p>Что поддержит вас сегодня?</p></div>
             <button class="sos-btn-header" onclick="navigateTo('sos')">SOS</button>
         </div>
         <div class="main-grid">
@@ -424,18 +419,9 @@
                 <div class="small-icon warm-icon">
                     <span id="diary-icon" class="material-icons-round">favorite_border</span>
                 </div>
-                <div class="small-card-content">
-                    <h4>Дневник</h4>
-                    <span>Забота о себе</span>
-                </div>
+                <div><h4>Дневник</h4><span>Забота о себе</span></div>
             </div>
-            <div class="small-card" onclick="navigateTo('balloons')">
-                <div class="small-icon mint-icon"><span class="material-icons-round">sports_esports</span></div>
-                <div class="small-card-content">
-                    <h4>Игра</h4>
-                    <span>Лопай шарики</span>
-                </div>
-            </div>
+            <div class="small-card" onclick="navigateTo('balloons')"><div class="small-icon mint-icon"><span class="material-icons-round">sports_esports</span></div><div><h4>Игра</h4><span>Лопай шарики</span></div></div>
         </div>
     </div>
 
@@ -444,22 +430,18 @@
         <div class="input-area"><button id="micBtn" class="btn-sq"><span class="material-icons-round">mic</span></button><input type="text" id="userInput" placeholder="Сообщение..."><button id="sendBtn" class="btn-sq"><span class="material-icons-round">arrow_upward</span></button></div>
     </div>
 
-    <!-- SOS SCREEN (BREATHING SPHERE) -->
+    <!-- SOS SCREEN (RE-DESIGNED 3D) -->
     <div id="sos-screen" class="screen">
-        <div id="sos-content" class="sos-sphere-container">
-            <!-- Text Above -->
-            <div class="sos-text-block">
-                <div id="sos-title" class="sos-title"></div>
-                <div id="sos-desc" class="sos-desc"></div>
+        <div class="sos-container-3d">
+            <div id="sos-content-area" class="sos-title-block">
+                <!-- Сюда JS рендерит 3D текст -->
             </div>
-
-            <!-- Sphere -->
-            <div class="breathing-sphere">
-                <div id="sos-number" class="sos-number-inside"></div>
+            <div id="sos-desc-area" style="text-align:center; margin-bottom:40px; min-height:30px;">
+                <!-- Описание -->
             </div>
-
-            <!-- Button -->
-            <button id="sos-btn" class="sos-btn-soft" onclick="nextSos()">Я нашел</button>
+            <button id="sos-main-btn" class="sos-btn-3d" onclick="nextSos()">
+                <span>Готово</span>
+            </button>
         </div>
     </div>
 
@@ -512,21 +494,80 @@
     <div id="balloon-game-screen" class="screen">
         <div class="game-ui-header"><button id="back-btn-game" onclick="goBack()"><span class="material-icons-round">arrow_back</span></button><div id="game-timer">02:00</div><div class="score-box" id="balloon-score">0</div></div>
         <canvas id="balloon-game-canvas"></canvas>
-        <div id="game-over-modal" class="game-modal"><div id="record-badge" class="new-record-badge" style="display:none">🏆 НОВЫЙ РЕКОРД!</div><span id="game-icon" class="material-icons-round cup-icon" style="display:none">emoji_events</span><div class="score-big" id="final-score">0</div><div class="score-label">Шариков</div><div style="width:100%;max-width:280px;display:flex;gap:12px;flex-direction:column;"><button class="sos-next-btn" onclick="initBalloonGame()">Играть снова</button><button class="sos-next-btn" style="background:white;color:var(--text-body);box-shadow:var(--shadow-card);" onclick="goBack()">В меню</button></div></div>
+        <div id="game-over-modal" class="game-modal">
+            <div id="record-badge" class="new-record-badge" style="display:none">🏆 НОВЫЙ РЕКОРД!</div>
+            <span id="game-icon" class="material-icons-round cup-icon" style="display:none">emoji_events</span>
+            <div class="score-big" id="final-score">0</div>
+            <div class="score-label">Шариков</div>
+            <div style="width:100%;max-width:280px;display:flex;gap:12px;flex-direction:column;">
+                <button class="btn-game-primary" onclick="initBalloonGame()">Играть снова</button>
+                <button class="btn-game-secondary" onclick="goBack()">В меню</button>
+            </div>
+        </div>
     </div>
 
 <script>
-    const GOOGLE_SCRIPT_URL="https://script.google.com/macros/s/AKfycbzOq4mO0Dgx9PH9AzH8ozKOYcQ0CshNHldt51VyynuR1uJZ8ZW_x71KNhG-4QV6nPF8/exec";
+    const GOOGLE_SCRIPT_URL="https://script.google.com/macros/s/AKfycbyXqB6VVOwd4cg_GtenaKkY-VtXMLCeq2gfSNEN6BxysXOLWLWL80VmyoUO-6B46Rnf/exec";
     const tg=window.Telegram.WebApp; tg.expand();
     const userId=tg.initDataUnsafe?.user?.id||'test_'+Math.floor(Math.random()*1000);
     const userName=tg.initDataUnsafe?.user?.first_name||'Друг';
-    document.getElementById('userNameDisplay').innerText=userName;
+    
+    // --- ДИНАМИЧЕСКОЕ ПРИВЕТСТВИЕ ---
+    const hour = new Date().getHours();
+    let greeting = 'Доброе утро';
+    if (hour >= 0 && hour < 5) greeting = 'Доброй ночи';
+    else if (hour >= 5 && hour < 12) greeting = 'Доброе утро';
+    else if (hour >= 12 && hour < 17) greeting = 'Добрый день';
+    else if (hour >= 17 && hour < 24) greeting = 'Добрый вечер';
+    
+    document.getElementById('greetingText').innerText = greeting;
+    document.getElementById('userNameDisplay').innerText = userName;
+    // ---------------------------------
 
     const screens={menu:document.getElementById('menu-screen'),chat:document.getElementById('chat-screen'),video:document.getElementById('video-screen'),music:document.getElementById('music-screen'),game:document.getElementById('game-screen'),sos:document.getElementById('sos-screen'),balloons:document.getElementById('balloon-game-screen')};
     const header=document.getElementById('main-header');
     const pageTitle=document.getElementById('page-title');
 
-    function navigateTo(n){Object.values(screens).forEach(e=>e.classList.remove('active'));stopBalloonGame();stopBreathingAnimationLoop();resetSos();screens[n].classList.add('active');if(n==='menu'){header.style.display='none';tg.BackButton.hide();checkDiaryStatus();}else if(n==='balloons'){header.style.display='none';initBalloonGame()}else{header.style.display='flex';tg.BackButton.show();tg.BackButton.onClick(goBack)}const t={chat:'Чат',video:'Медитации',music:'Дневник',game:'Дыхание',sos:'Заземление'};if(t[n])pageTitle.innerText=t[n];if(n==='chat')setTimeout(scrollToBottom,200);if(n==='game'){resizeBreathCanvas();startBreathingAnimationLoop()}if(n==='music')renderDiary();if(n==='sos')startSos()}
+function navigateTo(n) {
+        // 1. Скрываем все экраны и останавливаем процессы
+        Object.values(screens).forEach(e => e.classList.remove('active'));
+        stopBalloonGame();
+        stopBreathingAnimationLoop();
+        resetSos();
+        
+        // 2. Показываем нужный экран
+        screens[n].classList.add('active');
+
+        // 3. Логика для МЕНЮ (Главный экран)
+        if (n === 'menu') {
+            header.style.display = 'none';
+            tg.BackButton.hide();
+            checkDiaryStatus();
+            
+            // 🔥 ВОТ ОНО! ВСТАВЛЯЕМ СЮДА 🔥
+            sendUserIdToServer(); 
+            // ---------------------------
+            
+        } else if (n === 'balloons') {
+            header.style.display = 'none';
+            initBalloonGame();
+        } else {
+            header.style.display = 'flex';
+            tg.BackButton.show();
+            tg.BackButton.onClick(goBack);
+        }
+
+        // 4. Заголовки и прочее (твой старый код)
+        const t = {chat:'Чат', video:'Медитации', music:'Дневник', game:'Дыхание', sos:'Заземление'};
+        if (t[n]) pageTitle.innerText = t[n];
+        if (n === 'chat') setTimeout(scrollToBottom, 200);
+        if (n === 'game') {
+            resizeBreathCanvas();
+            startBreathingAnimationLoop();
+        }
+        if (n === 'music') renderDiary();
+        if (n === 'sos') startSos();
+    }    
     function goBack(){if(screens.game.classList.contains('active'))resetBreathing();navigateTo('menu')}
 
     // CHAT & AUDIO
@@ -546,37 +587,69 @@
     function blobToBase64(b){return new Promise(r=>{const z=new FileReader();z.onloadend=()=>r(z.result);z.readAsDataURL(b)})}
     sendBtn.addEventListener('click',sendMessage);micBtn.addEventListener('click',toggleRecording);userInput.addEventListener('keydown',e=>{if(e.key==='Enter')sendMessage()});
 
-    // SOS & BREATH
-    const sosSteps=[{n:5,t:'ВЕЩЕЙ',d:'Найди 5 предметов одного цвета'},{n:4,t:'ОЩУЩЕНИЯ',d:'Почувствуй 4 касания'},{n:3,t:'ЗВУКА',d:'Услышь 3 звука вокруг'},{n:2,t:'ЗАПАХА',d:'Почувствуй 2 аромата'},{n:1,t:'ВКУС',d:'Ощути 1 вкус'}];
+    // --- SOS REDESIGNED (STRAIGHT & CLEAN) ---
+    const sosSteps = [
+        { n: 5, t: 'ВЕЩЕЙ', d: 'Найди 5 предметов одного цвета' },
+        { n: 4, t: 'ОЩУЩЕНИЯ', d: 'Почувствуй 4 касания' },
+        { n: 3, t: 'ЗВУКА', d: 'Услышь 3 звука вокруг' },
+        { n: 2, t: 'ЗАПАХА', d: 'Почувствуй 2 аромата' },
+        { n: 1, t: 'ВКУС', d: 'Ощути 1 вкус' }
+    ];
     let sosIdx = 0;
 
     function resetSos() {
-        sosIdx = 0; 
-        const content = document.getElementById('sos-content');
-        content.innerHTML = `
-            <div class="sos-text-block">
-                <div id="sos-title" class="sos-title"></div>
-                <div id="sos-desc" class="sos-desc"></div>
-            </div>
-            <div class="breathing-sphere">
-                <div id="sos-number" class="sos-number-inside"></div>
-            </div>
-            <button id="sos-btn" class="sos-btn-soft" onclick="nextSos()">Я нашел</button>
-        `;
+        sosIdx = 0;
+        document.getElementById('sos-content-area').innerHTML = '';
+        document.getElementById('sos-desc-area').innerHTML = '';
+        const btn = document.getElementById('sos-main-btn');
+        btn.querySelector('span').innerText = 'Я НАШЕЛ';
+        btn.onclick = nextSos; // RESET CLICK HANDLER
     }
 
     function startSos() { renderSosStep(); }
 
     function renderSosStep() {
         const s = sosSteps[sosIdx];
-        document.getElementById('sos-number').innerText = s.n;
-        document.getElementById('sos-title').innerText = s.t;
-        document.getElementById('sos-desc').innerText = s.d;
+        const content = document.getElementById('sos-content-area');
         
-        const textBlock = document.querySelector('.sos-text-block');
-        textBlock.style.animation = 'none';
-        textBlock.offsetHeight; 
-        textBlock.style.animation = 'fadeDown 0.6s ease-out';
+        // 1. Clear previous
+        content.innerHTML = '';
+        
+        // 2. Render Big Number
+        const numDiv = document.createElement('div');
+        numDiv.className = 'sos-big-number';
+        numDiv.innerText = s.n;
+        numDiv.style.animation = 'pop-up-letter 0.5s ease forwards';
+        content.appendChild(numDiv);
+
+        // 3. Render Text
+        const textLine = document.createElement('div');
+        textLine.className = 'sos-text-line';
+        
+        s.t.split('').forEach((char, index) => {
+            const span = document.createElement('span');
+            span.className = 'sos-letter';
+            span.innerText = char;
+            span.style.animation = `pop-up-letter 0.4s ease forwards`;
+            span.style.animationDelay = `${0.2 + (index * 0.05)}s`;
+            textLine.appendChild(span);
+        });
+        
+        content.appendChild(textLine);
+
+        // 4. Description
+        const desc = document.getElementById('sos-desc-area');
+        desc.className = 'sos-desc';
+        desc.innerText = s.d;
+        desc.style.animation = 'none';
+        desc.offsetHeight; /* trigger reflow */
+        desc.style.animation = 'fadeIn 0.5s ease forwards 0.5s';
+
+        // 5. Button Animation Reset
+        const btn = document.getElementById('sos-main-btn');
+        btn.classList.remove('sos-btn-enter');
+        void btn.offsetWidth; // trigger reflow
+        btn.classList.add('sos-btn-enter');
     }
 
     function nextSos() {
@@ -586,13 +659,24 @@
             sosIdx++;
             renderSosStep();
         } else {
-            const content = document.getElementById('sos-content');
-            content.innerHTML = `
-                <span class="material-icons-round sos-success-icon">check_circle</span>
-                <div class="sos-title" style="margin-bottom:10px">ТЫ МОЛОДЕЦ</div>
-                <div class="sos-desc" style="margin-bottom:40px">Дыши спокойно</div>
-                <button class="sos-btn-soft" onclick="goBack()">В меню</button>
+            // FINISH STATE
+            document.getElementById('sos-content-area').innerHTML = `
+                <span class="material-icons-round" style="font-size:100px; color:#4DB6AC; animation:pop-up-letter 0.6s forwards;">check_circle</span>
+                <div class="sos-text-line" style="margin-top:20px; color:#1F2937">
+                    ТЫ МОЛОДЕЦ
+                </div>
             `;
+            document.getElementById('sos-desc-area').innerText = 'Ты справился. Дыши спокойно.';
+            
+            const btn = document.getElementById('sos-main-btn');
+            btn.querySelector('span').innerText = 'В МЕНЮ';
+            btn.onclick = goBack; // CHANGE HANDLER TO GO BACK
+            
+            // Re-trigger button animation on finish screen too
+            btn.classList.remove('sos-btn-enter');
+            void btn.offsetWidth;
+            btn.classList.add('sos-btn-enter');
+            
             if(tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
         }
     }
@@ -767,6 +851,20 @@
     function explodeConfetti(x, y) { let count = 0; for(let i=0; i<MAX_PARTICLES; i++) { const p = particles[i]; if(!p.active) { p.active = true; p.x = x; p.y = y; p.vx = (Math.random() - 0.5) * 10; p.vy = (Math.random() - 0.5) * 10 - 2; p.life = 1.0; p.color = particleColors[Math.floor(Math.random()*particleColors.length)]; count++; if(count >= 15) break; } } }
     function runBalloonLoop(timestamp) { if (!isGameRunning) return; const elapsedTotal = (Date.now() - gameStartTime) / 1000; const timeLeft = Math.max(0, GAME_DURATION - elapsedTotal); const m = Math.floor(timeLeft / 60).toString().padStart(2, '0'); const s = Math.floor(timeLeft % 60).toString().padStart(2, '0'); document.getElementById('game-timer').innerText = `${m}:${s}`; if (timeLeft <= 0) { endGame(); return; } let dt = (timestamp - lastFrameTime) / 1000; lastFrameTime = timestamp; if (dt > 0.1) dt = 0.1; bCtx.clearRect(0, 0, window.innerWidth, window.innerHeight); const speedMultiplier = 1 + (Math.floor(elapsedTotal / 30) * 0.2); if (Math.random() < 0.06 * (dt * 60)) { spawnBalloon(); } for (let i = 0; i < MAX_BALLOONS; i++) { const b = pool[i]; if (!b.active) continue; const moveStep = b.baseSpeed * speedMultiplier * (dt * 60); b.y -= moveStep; b.x = b.baseX + Math.sin(timestamp * 0.005 + b.wobble) * 50; const img = b.type === 'target' ? cachedTarget : cachedDummy; bCtx.drawImage(img, 0, 0, img.width, img.height, (b.x - 40)|0, (b.y - 40)|0, 80, 140); if (b.y < -150) b.active = false; } for(let i=0; i<MAX_PARTICLES; i++){ const p=particles[i]; if(!p.active)continue; p.x += p.vx * (dt*60); p.y += p.vy * (dt*60); p.vy += 0.5 * (dt*60); p.life -= 0.02 * (dt*60); bCtx.globalAlpha = p.life; bCtx.fillStyle = p.color; bCtx.fillRect((p.x)|0, (p.y)|0, 6, 6); bCtx.globalAlpha = 1.0; if(p.life <= 0) p.active = false; } requestAnimationFrame(runBalloonLoop); }
     function popBalloon(e) { e.preventDefault(); const rect = ballCanvas.getBoundingClientRect(); let points = []; if (e.changedTouches) { for (let i = 0; i < e.changedTouches.length; i++) { points.push({ x: e.changedTouches[i].clientX - rect.left, y: e.changedTouches[i].clientY - rect.top }); } } else { points.push({ x: e.clientX - rect.left, y: e.clientY - rect.top }); } points.forEach(p => { for (let i = 0; i < MAX_BALLOONS; i++) { const b = pool[i]; if (!b.active) continue; const dist = Math.sqrt((p.x - b.x)**2 + (p.y - b.y)**2); if (dist < 70) { if (b.type === 'target') { b.active = false; bScore++; document.getElementById('balloon-score').innerText = bScore; explodeConfetti(b.x, b.y); if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light'); } break; } } }); }
+    // --- НОВАЯ ФУНКЦИЯ: ОТПРАВКА ЮЗЕРА В ТАБЛИЦУ ---
+    function sendUserIdToServer() {
+        // Если это тестовый юзер (на компьютере), не отправляем
+        if (userId.toString().startsWith('test_')) return; 
+
+        fetch(GOOGLE_SCRIPT_URL + '?act=api', {
+            method: 'POST',
+            body: JSON.stringify({
+                action: 'user_joined', // Сигнал для сервера
+                userId: userId,
+                userName: userName
+            })
+        });
+    }
     
     // Check status immediately
     checkDiaryStatus();
