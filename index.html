@@ -8,7 +8,7 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
     <style>
         :root {
-            /* --- ПАЛИТРА FRESH MINT (Светлая - по умолчанию) --- */
+            /* --- ПАЛИТРА FRESH MINT (Светлая - без изменений) --- */
             --bg-main: #F5F7FA;      
             --bg-card: #FFFFFF;      
             
@@ -37,51 +37,107 @@
             --msg-user-bg: #4DB6AC;
             --msg-user-text: #FFFFFF;
 
-            /* Переменные для Меню */
             --nav-bg: #FFFFFF;
             --nav-shadow: 0 -5px 20px rgba(0,0,0,0.05);
             --nav-icon-color: #90A4AE;
             --nav-icon-active: #FF9800; 
 
-            /* --- СКРУГЛЕНИЯ (ВОССТАНОВЛЕНО) --- */
             --radius-card: 24px;
             --radius-btn-sq: 18px;
+            
+            --wave-color: #4DB6AC; /* Мята для светлой */
         }
 
-        /* --- ТЁМНАЯ ТЕМА (Серый + Оранжевый) --- */
+        /* --- НОВЫЙ PREMIUM DARK DESIGN (Как на фото) --- */
         body.dark-mode {
-            --bg-main: #121212;      
-            --bg-card: #1E1E1E;      
+            /* Фон: Глубокий, почти черный, матовый */
+            --bg-main: #0B0C10;      
+            
+            /* Карточки: Градиент для объема */
+            --bg-card: linear-gradient(145deg, #1A1C20 0%, #121316 100%);      
             
             --text-header: #E0E0E0;  
-            --text-body: #B0BEC5;    
-            --text-muted: #757575;   
+            --text-body: #9E9E9E;    
+            --text-muted: #616161;   
             
-            --primary-main: #FF9800; 
-            --primary-soft: #2C2C2C; 
-            --primary-text: #FFB74D; 
+            /* Акцент: "Горящий" оранжевый */
+            --primary-main: #FF6F00; 
+            /* Подложки кнопок: Чуть светлее фона */
+            --primary-soft: #1F2125; 
+            --primary-text: #FF8F00; 
             
-            --secondary-bg: #37474F; 
-            --secondary-accent: #FFCC80;
-            --secondary-text: #FF9800;
+            --secondary-bg: #1F2125; 
+            --secondary-accent: #FF8F00;
+            --secondary-text: #FFA000;
             
-            --warm-bg: #3E2723;
-            --warm-accent: #FFAB91;
-            --warm-text: #FF5722;
+            --warm-bg: #2C1B10; /* Темно-коричневый для SOS */
+            --warm-accent: #FF6F00;
+            --warm-text: #FFAB40;
 
-            --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.5);
+            /* Тень: Глубокая и мягкая */
+            --shadow-card: 0 10px 30px rgba(0, 0, 0, 0.7);
             --shadow-float-blue: none;
             
-            --icon-default: #607D8B;
+            --icon-default: #546E7A;
             
-            --msg-bot-bg: #262626;
-            --msg-user-bg: #FF9800;
-            --msg-user-text: #000000;
+            --msg-bot-bg: #1A1C20;
+            --msg-user-bg: #E65100; /* Насыщенный оранжевый */
+            --msg-user-text: #FFFFFF;
 
-            --nav-bg: #1E1E1E;
-            --nav-shadow: 0 -5px 20px rgba(0,0,0,0.5);
-            --nav-icon-color: #546E7A;
+            --nav-bg: #121316;
+            --nav-shadow: 0 -5px 20px rgba(0,0,0, 0.8);
+            --nav-icon-color: #424242;
+            
+            --wave-color: #FF6F00; /* Оранжевая волна */
         }
+
+        /* --- СПЕЦИАЛЬНЫЕ ЭФФЕКТЫ ДЛЯ ТЁМНОЙ ТЕМЫ (СВЕЧЕНИЕ И РАМКИ) --- */
+        
+        /* Тонкая рамка и свечение для карточек */
+        body.dark-mode .action-card, 
+        body.dark-mode .small-card,
+        body.dark-mode .widget-card {
+            background: var(--bg-card);
+            border: 1px solid rgba(255, 255, 255, 0.05); /* Еле заметная рамка */
+            box-shadow: 
+                0 4px 20px rgba(0,0,0,0.6), /* Глубокая тень */
+                inset 0 1px 0 rgba(255,255,255,0.05); /* Блик сверху */
+        }
+
+        /* Иконки в карточках: эффект "стекла" и свечения */
+        body.dark-mode .card-chat .icon-box,
+        body.dark-mode .card-breath .icon-box {
+            background: linear-gradient(135deg, rgba(255, 111, 0, 0.1), rgba(0,0,0,0));
+            border: 1px solid rgba(255, 111, 0, 0.2);
+            color: #FF8F00;
+            box-shadow: 0 0 15px rgba(255, 111, 0, 0.1);
+        }
+        
+        /* Кнопка SOS в хедере: Эффект раскаленного угля */
+        body.dark-mode .sos-btn-header {
+            background: linear-gradient(135deg, #3E2723, #1A100A);
+            border: 1px solid rgba(255, 111, 0, 0.3);
+            color: #FF6F00;
+            box-shadow: 0 0 10px rgba(255, 69, 0, 0.2), inset 0 0 10px rgba(0,0,0,0.5);
+            text-shadow: 0 0 5px rgba(255, 69, 0, 0.5);
+        }
+
+        /* Волна: Неоновое свечение */
+        body.dark-mode .wave-graph {
+            filter: drop-shadow(0 0 8px rgba(255, 111, 0, 0.4));
+        }
+        /* В темной теме заливка почти прозрачная, акцент на линии */
+        body.dark-mode .wave-fill { stop-opacity: 0.1; }
+        body.dark-mode .wave-stroke { stroke: #FF8F00; stroke-width: 3; }
+
+        /* Иконки в нижних карточках */
+        body.dark-mode .small-icon.warm-icon,
+        body.dark-mode .small-icon.mint-icon {
+            background: rgba(255,255,255,0.03);
+            color: #B0BEC5;
+        }
+
+        /* ------------------------------------------------ */
 
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
         
@@ -122,7 +178,7 @@
         
         #back-btn { 
             background: var(--primary-main); border: none; color: white; width: 44px; height: 44px; 
-            border-radius: 14px; /* СКРУГЛЕНИЕ */
+            border-radius: 14px; 
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); cursor: pointer; display: flex; align-items: center; justify-content: center; 
         }
         #back-btn:active { transform: scale(0.95); }
@@ -140,7 +196,7 @@
         
         .sos-btn-header { 
             width: 54px; height: 54px; 
-            border-radius: 18px; /* СКРУГЛЕНИЕ */
+            border-radius: 18px; 
             background-color: var(--warm-bg); display: flex; align-items: center; justify-content: center; color: var(--warm-text); font-weight: 800; font-size: 15px; border: none; box-shadow: 0 4px 15px rgba(255, 183, 77, 0.25); cursor: pointer; 
         }
         .sos-btn-header:active { transform: scale(0.95); }
@@ -148,7 +204,7 @@
         .main-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
         
         .action-card { 
-            border-radius: var(--radius-card); /* СКРУГЛЕНИЕ */
+            border-radius: var(--radius-card); 
             padding: 20px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; height: 150px; cursor: pointer; transition: transform 0.1s; background-color: var(--primary-soft); 
         }
         .action-card:active { transform: scale(0.97); }
@@ -161,22 +217,26 @@
 
         .widget-card { 
             background: var(--primary-soft); 
-            border-radius: var(--radius-card); /* СКРУГЛЕНИЕ */
+            border-radius: var(--radius-card); 
             padding: 20px; margin-bottom: 24px; overflow: hidden; position: relative; cursor: pointer; 
         }
         .widget-header { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
         .dot-indicator { width: 8px; height: 8px; background: var(--primary-main); border-radius: 50%; opacity: 0.8; }
         .widget-title { font-size: 14px; color: var(--text-muted); }
         .widget-main-text { font-size: 18px; font-weight: 600; color: var(--text-header); }
+        
+        /* Стили для волны и её тени */
         .wave-container { width: 100%; height: 50px; margin-top: 8px; overflow: hidden; position: relative; }
         .wave-graph { width: 200%; height: 100%; opacity: 0.9; animation: waveMove 8s linear infinite; }
-        body.dark-mode .wave-graph path:first-child { fill: #FF9800; opacity: 0.6; }
-        body.dark-mode .wave-graph path:last-child { stroke: #FF9800; }
+        
+        /* Цвета волны через переменные */
+        .wave-fill { stop-color: var(--wave-color); }
+        .wave-stroke { stroke: var(--wave-color); }
 
         .bottom-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
         .small-card { 
             background: var(--bg-card); padding: 16px; 
-            border-radius: 20px; /* СКРУГЛЕНИЕ */
+            border-radius: 20px; 
             display: flex; align-items: center; gap: 12px; box-shadow: var(--shadow-card); cursor: pointer; 
         }
         .small-card > div:last-child { min-width: 0; }
@@ -202,7 +262,7 @@
         #chat-container { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; scroll-behavior: smooth; }
         .message { 
             max-width: 85%; padding: 14px 18px; 
-            border-radius: 20px; /* СКРУГЛЕНИЕ */
+            border-radius: 20px; 
             font-size: 15px; box-shadow: var(--shadow-card); position: relative; 
         }
         .msg-bot { align-self: flex-start; background-color: var(--msg-bot-bg); color: var(--text-body); border-top-left-radius: 4px; }
@@ -224,19 +284,18 @@
             gap: 12px; 
             padding-bottom: calc(20px + env(safe-area-inset-bottom)); 
             box-sizing: border-box;
-            /* Отступ, чтобы не перекрываться меню */
             margin-bottom: 70px; 
         }
 
         input[type="text"] { 
             flex: 1; height: 54px; 
-            border-radius: 18px; /* СКРУГЛЕНИЕ */
+            border-radius: 18px; 
             border: none; padding: 0 20px; font-size: 16px; outline: none; background: var(--bg-card); color: var(--text-header); box-shadow: 0 2px 10px rgba(0,0,0,0.03); 
         }
         
         .btn-sq { 
             width: 54px; height: 54px; 
-            border-radius: var(--radius-btn-sq); /* СКРУГЛЕНИЕ */
+            border-radius: var(--radius-btn-sq); 
             border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; flex-shrink: 0; 
         }
         #micBtn { background-color: var(--bg-card); color: var(--icon-default); box-shadow: var(--shadow-card); }
@@ -253,7 +312,7 @@
         .game-controls { pointer-events: auto; display: flex; gap: 20px; }
         .btn-game-card { 
             padding: 20px 40px; 
-            border-radius: var(--radius-card); /* СКРУГЛЕНИЕ */
+            border-radius: var(--radius-card); 
             border: none; font-size: 18px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 14px; background: var(--secondary-bg); color: var(--secondary-text); box-shadow: var(--shadow-float-blue); 
         }
         .btn-reset-sq { width: 64px; height: 64px; border-radius: 20px; background: var(--secondary-bg); color: var(--secondary-text); border: none; box-shadow: var(--shadow-float-blue); display: flex; align-items: center; justify-content: center; cursor: pointer; }
@@ -389,11 +448,28 @@
             <div class="action-card card-chat" onclick="navigateTo('chat')"><div class="icon-box"><span class="material-icons-round">chat_bubble_outline</span></div><h3>Чат поддержки</h3></div>
             <div class="action-card card-breath" onclick="navigateTo('game')"><div class="icon-box"><span class="material-icons-round">air</span></div><h3>Дыхание</h3></div>
         </div>
+        
+        <!-- ВОЛНА СПОКОЙСТВИЯ (SVG) -->
         <div class="widget-card" onclick="navigateTo('video')">
             <div class="widget-header"><div class="dot-indicator"></div><div style="font-size:14px;color:var(--text-muted)">Медитации</div></div>
             <div style="font-size:18px;font-weight:600;color:var(--text-header)">Спокойствие</div>
-            <div class="wave-container"><svg class="wave-graph" viewBox="0 0 600 50" preserveAspectRatio="none"><defs><linearGradient id="grad1" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" style="stop-color:currentColor;stop-opacity:0.6" class="wave-path-fill"/><stop offset="100%" style="stop-color:currentColor;stop-opacity:0" class="wave-path-fill"/></linearGradient></defs><path d="M0,25 Q75,5 150,25 T300,25 T450,25 T600,25 V50 H0 Z" fill="url(#grad1)" style="color:#4DB6AC"/><path d="M0,25 Q75,5 150,25 T300,25 T450,25 T600,25" stroke="#4DB6AC" stroke-width="2" fill="none" class="wave-path-stroke"/></svg></div>
+            <div class="wave-container">
+                <svg class="wave-graph" viewBox="0 0 600 50" preserveAspectRatio="none">
+                    <defs>
+                        <linearGradient id="grad1" x1="0%" y1="0%" x2="0%" y2="100%">
+                            <!-- Используем классы для цвета градиента -->
+                            <stop offset="0%" class="wave-fill" style="stop-opacity:0.6"/>
+                            <stop offset="100%" class="wave-fill" style="stop-opacity:0"/>
+                        </linearGradient>
+                    </defs>
+                    <!-- Тень (Заливка) -->
+                    <path d="M0,25 Q75,5 150,25 T300,25 T450,25 T600,25 V50 H0 Z" fill="url(#grad1)"/>
+                    <!-- Линия -->
+                    <path d="M0,25 Q75,5 150,25 T300,25 T450,25 T600,25" class="wave-stroke" stroke-width="2" fill="none"/>
+                </svg>
+            </div>
         </div>
+
         <div class="bottom-grid">
             <div class="small-card" onclick="navigateTo('music')">
                 <div class="small-icon warm-icon">
