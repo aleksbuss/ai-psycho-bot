@@ -230,7 +230,7 @@
         /* --- ИСПРАВЛЕНИЕ: ЖЕСТКОЕ ПОЗИЦИОНИРОВАНИЕ ТЕКСТА --- */
         .breath-text-container { 
             position: absolute;
-            top: 42%; /* Центр круга и текста */
+            top: 35%; /* Центр круга и текста */
             left: 0; 
             width: 100%;
             transform: translateY(-50%);
@@ -315,6 +315,15 @@
             .small-icon { width: 32px; height: 32px; } 
             .small-card h4 { font-size: 13px; white-space: nowrap; }
             .small-card span { font-size: 10px; white-space: nowrap; }
+        }
+
+        /* --- ИСПРАВЛЕНИЕ: Контраст кнопок в Дыхании (Тёмная тема) --- */
+        body.dark-mode .btn-game-card,
+        body.dark-mode .btn-reset-sq {
+            border: 2px solid var(--primary-main); /* Жирная оранжевая рамка */
+            background: rgba(255, 111, 0, 0.15);   /* Слегка подсвеченный фон внутри */
+            color: var(--primary-main);            /* Ярко-оранжевый текст/иконка */
+            box-shadow: 0 0 15px rgba(255, 111, 0, 0.2); /* Неоновое свечение вокруг */
         }
     </style>
 </head>
@@ -543,7 +552,7 @@
             this.x=breathCanvas.width/2+Math.cos(this.angle)*this.r;
             
             // ИСПРАВЛЕНИЕ: ЦЕНТР КРУГА ТЕПЕРЬ СИНХРОНИЗИРОВАН С ТЕКСТОМ (42% высоты)
-            this.y=(breathCanvas.height * 0.42) + Math.sin(this.angle)*this.r;
+            this.y=(breathCanvas.height * 0.35) + Math.sin(this.angle)*this.r;
         }
         draw(){
             breathCtx.fillStyle=this.color;
