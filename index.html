@@ -94,20 +94,14 @@
             --wave-color: #FF6F00; /* Оранжевая волна */
         }
 
-        /* --- СПЕЦИАЛЬНЫЕ ЭФФЕКТЫ ДЛЯ ТЁМНОЙ ТЕМЫ (СВЕЧЕНИЕ И РАМКИ) --- */
-        
-        /* Тонкая рамка и свечение для карточек */
+        /* --- СПЕЦИАЛЬНЫЕ ЭФФЕКТЫ ДЛЯ ТЁМНОЙ ТЕМЫ --- */
         body.dark-mode .action-card, 
         body.dark-mode .small-card,
         body.dark-mode .widget-card {
             background: var(--bg-card);
-            border: 1px solid rgba(255, 255, 255, 0.05); /* Еле заметная рамка */
-            box-shadow: 
-                0 4px 20px rgba(0,0,0,0.6), /* Глубокая тень */
-                inset 0 1px 0 rgba(255,255,255,0.05); /* Блик сверху */
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.05);
         }
-
-        /* Иконки в карточках: эффект "стекла" и свечения */
         body.dark-mode .card-chat .icon-box,
         body.dark-mode .card-breath .icon-box {
             background: linear-gradient(135deg, rgba(255, 111, 0, 0.1), rgba(0,0,0,0));
@@ -115,8 +109,6 @@
             color: #FF8F00;
             box-shadow: 0 0 15px rgba(255, 111, 0, 0.1);
         }
-        
-        /* Кнопка SOS в хедере: Эффект раскаленного угля */
         body.dark-mode .sos-btn-header {
             background: linear-gradient(135deg, #3E2723, #1A100A);
             border: 1px solid rgba(255, 111, 0, 0.3);
@@ -124,21 +116,10 @@
             box-shadow: 0 0 10px rgba(255, 69, 0, 0.2), inset 0 0 10px rgba(0,0,0,0.5);
             text-shadow: 0 0 5px rgba(255, 69, 0, 0.5);
         }
-
-        /* Волна: Неоновое свечение */
-        body.dark-mode .wave-graph {
-            filter: drop-shadow(0 0 8px rgba(255, 111, 0, 0.4));
-        }
-        /* В темной теме заливка почти прозрачная, акцент на линии */
+        body.dark-mode .wave-graph { filter: drop-shadow(0 0 8px rgba(255, 111, 0, 0.4)); }
         body.dark-mode .wave-fill { stop-opacity: 0.1; }
         body.dark-mode .wave-stroke { stroke: #FF8F00; stroke-width: 3; }
-
-        /* Иконки в нижних карточках */
-        body.dark-mode .small-icon.warm-icon,
-        body.dark-mode .small-icon.mint-icon {
-            background: rgba(255,255,255,0.03);
-            color: #B0BEC5;
-        }
+        body.dark-mode .small-icon.warm-icon, body.dark-mode .small-icon.mint-icon { background: rgba(255,255,255,0.03); color: #B0BEC5; }
 
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
         
@@ -166,22 +147,13 @@
         @keyframes waveMove { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 
         /* ТРЮК №1: НЕВИДИМЫЙ ВРАЩАТЕЛЬ ДЛЯ GPU */
-        #gpu-activator {
-            position: absolute; top: 0; left: 0; width: 1px; height: 1px;
-            opacity: 0.01; pointer-events: none; z-index: -1;
-            animation: force-gpu 1s infinite linear;
-            will-change: transform;
-        }
+        #gpu-activator { position: absolute; top: 0; left: 0; width: 1px; height: 1px; opacity: 0.01; pointer-events: none; z-index: -1; animation: force-gpu 1s infinite linear; will-change: transform; }
         @keyframes force-gpu { from { transform: rotate(0deg) translateZ(0); } to { transform: rotate(360deg) translateZ(0); } }
 
         /* UI ЭЛЕМЕНТЫ */
         header { padding: 0 20px; background: transparent; z-index: 100; display: none; align-items: center; height: 60px; flex-shrink: 0; width: 100%; }
         
-        #back-btn { 
-            background: var(--primary-main); border: none; color: white; width: 44px; height: 44px; 
-            border-radius: 14px; 
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); cursor: pointer; display: flex; align-items: center; justify-content: center; 
-        }
+        #back-btn { background: var(--primary-main); border: none; color: white; width: 44px; height: 44px; border-radius: 14px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); cursor: pointer; display: flex; align-items: center; justify-content: center; }
         #back-btn:active { transform: scale(0.95); }
         .header-title { font-size: 18px; font-weight: 600; margin-left: 15px; color: var(--text-header); }
 
@@ -195,19 +167,12 @@
         .greeting-text h1 { font-size: 26px; line-height: 1.3; color: var(--text-header); font-weight: 700; }
         .greeting-text p { font-size: 16px; color: var(--text-muted); margin-top: 4px; }
         
-        .sos-btn-header { 
-            width: 54px; height: 54px; 
-            border-radius: 18px; 
-            background-color: var(--warm-bg); display: flex; align-items: center; justify-content: center; color: var(--warm-text); font-weight: 800; font-size: 15px; border: none; box-shadow: 0 4px 15px rgba(255, 183, 77, 0.25); cursor: pointer; 
-        }
+        .sos-btn-header { width: 54px; height: 54px; border-radius: 18px; background-color: var(--warm-bg); display: flex; align-items: center; justify-content: center; color: var(--warm-text); font-weight: 800; font-size: 15px; border: none; box-shadow: 0 4px 15px rgba(255, 183, 77, 0.25); cursor: pointer; }
         .sos-btn-header:active { transform: scale(0.95); }
 
         .main-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
         
-        .action-card { 
-            border-radius: var(--radius-card); 
-            padding: 20px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; height: 150px; cursor: pointer; transition: transform 0.1s; background-color: var(--primary-soft); 
-        }
+        .action-card { border-radius: var(--radius-card); padding: 20px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; height: 150px; cursor: pointer; transition: transform 0.1s; background-color: var(--primary-soft); }
         .action-card:active { transform: scale(0.97); }
         
         .card-chat h3 { color: var(--primary-text); font-size: 15px; font-weight: 600; }
@@ -216,30 +181,19 @@
         .card-breath h3 { color: var(--secondary-text); font-size: 15px; font-weight: 600; }
         .card-breath .icon-box { color: var(--secondary-accent); width: 50px; height: 50px; border-radius: 16px; background: rgba(255,255,255,0.7); display: flex; align-items: center; justify-content: center; margin-bottom: 12px; }
 
-        .widget-card { 
-            background: var(--primary-soft); 
-            border-radius: var(--radius-card); 
-            padding: 20px; margin-bottom: 24px; overflow: hidden; position: relative; cursor: pointer; 
-        }
+        .widget-card { background: var(--primary-soft); border-radius: var(--radius-card); padding: 20px; margin-bottom: 24px; overflow: hidden; position: relative; cursor: pointer; }
         .widget-header { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
         .dot-indicator { width: 8px; height: 8px; background: var(--primary-main); border-radius: 50%; opacity: 0.8; }
         .widget-title { font-size: 14px; color: var(--text-muted); }
         .widget-main-text { font-size: 18px; font-weight: 600; color: var(--text-header); }
         
-        /* Стили для волны и её тени */
         .wave-container { width: 100%; height: 50px; margin-top: 8px; overflow: hidden; position: relative; }
         .wave-graph { width: 200%; height: 100%; opacity: 0.9; animation: waveMove 8s linear infinite; }
-        
-        /* Цвета волны через переменные */
         .wave-fill { stop-color: var(--wave-color); }
         .wave-stroke { stroke: var(--wave-color); }
 
         .bottom-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-        .small-card { 
-            background: var(--bg-card); padding: 16px; 
-            border-radius: 20px; 
-            display: flex; align-items: center; gap: 12px; box-shadow: var(--shadow-card); cursor: pointer; 
-        }
+        .small-card { background: var(--bg-card); padding: 16px; border-radius: 20px; display: flex; align-items: center; gap: 12px; box-shadow: var(--shadow-card); cursor: pointer; }
         .small-card > div:last-child { min-width: 0; }
         
         .small-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: visible; }
@@ -248,57 +202,22 @@
         .small-card h4 { font-size: 14px; font-weight: 600; color: var(--text-header); margin: 0; }
         .small-card span { font-size: 11px; color: var(--text-muted); }
 
-        @keyframes heart-beat {
-            0% { transform: scale(1.3); }
-            50% { transform: scale(1.6); text-shadow: 0 0 10px rgba(239, 108, 0, 0.4); }
-            100% { transform: scale(1.3); }
-        }
-        .heart-alert {
-            color: #EF6C00 !important; 
-            animation: heart-beat 1.5s infinite ease-in-out;
-            z-index: 10; 
-        }
+        @keyframes heart-beat { 0% { transform: scale(1.3); } 50% { transform: scale(1.6); text-shadow: 0 0 10px rgba(239, 108, 0, 0.4); } 100% { transform: scale(1.3); } }
+        .heart-alert { color: #EF6C00 !important; animation: heart-beat 1.5s infinite ease-in-out; z-index: 10; }
 
         /* ЧАТ */
         #chat-container { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; scroll-behavior: smooth; }
-        .message { 
-            max-width: 85%; padding: 14px 18px; 
-            border-radius: 20px; 
-            font-size: 15px; box-shadow: var(--shadow-card); position: relative; 
-        }
+        .message { max-width: 85%; padding: 14px 18px; border-radius: 20px; font-size: 15px; box-shadow: var(--shadow-card); position: relative; }
         .msg-bot { align-self: flex-start; background-color: var(--msg-bot-bg); color: var(--text-body); border-top-left-radius: 4px; }
         .msg-user { align-self: flex-end; background-color: var(--msg-user-bg); color: var(--msg-user-text); border-top-right-radius: 4px; }
         
         .typing-indicator { display: none; align-self: flex-start; background: var(--bg-card); padding: 12px; border-radius: 16px; margin-bottom: 10px; box-shadow: var(--shadow-card); }
         .dot { height: 6px; width: 6px; background-color: #CFD8DC; border-radius: 50%; display: inline-block; animation: bounce 1.4s infinite ease-in-out both; margin: 0 2px; }
-        .dot:nth-child(1) { animation-delay: -0.32s; } .dot:nth-child(2) { animation-delay: -0.16s; }
-        @keyframes bounce { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
-
-        /* ВВОД ТЕКСТА */
-        .input-area { 
-            width: 100%; 
-            background: var(--bg-main); 
-            padding: 10px 16px; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            gap: 12px; 
-            padding-bottom: calc(20px + env(safe-area-inset-bottom)); 
-            box-sizing: border-box;
-            margin-bottom: 70px; 
-        }
-
-        input[type="text"] { 
-            flex: 1; height: 54px; 
-            border-radius: 18px; 
-            border: none; padding: 0 20px; font-size: 16px; outline: none; background: var(--bg-card); color: var(--text-header); box-shadow: 0 2px 10px rgba(0,0,0,0.03); 
-        }
         
-        .btn-sq { 
-            width: 54px; height: 54px; 
-            border-radius: var(--radius-btn-sq); 
-            border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; flex-shrink: 0; 
-        }
+        /* ВВОД ТЕКСТА */
+        .input-area { width: 100%; background: var(--bg-main); padding: 10px 16px; display: flex; align-items: center; justify-content: center; gap: 12px; padding-bottom: calc(20px + env(safe-area-inset-bottom)); box-sizing: border-box; margin-bottom: 70px; }
+        input[type="text"] { flex: 1; height: 54px; border-radius: 18px; border: none; padding: 0 20px; font-size: 16px; outline: none; background: var(--bg-card); color: var(--text-header); box-shadow: 0 2px 10px rgba(0,0,0,0.03); }
+        .btn-sq { width: 54px; height: 54px; border-radius: var(--radius-btn-sq); border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; flex-shrink: 0; }
         #micBtn { background-color: var(--bg-card); color: var(--icon-default); box-shadow: var(--shadow-card); }
         #micBtn.recording { background-color: var(--primary-soft); color: var(--primary-main); animation: pulse-mint 1.5s infinite; border: 1px solid var(--primary-main); }
         #sendBtn { background: var(--primary-main); color: white; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
@@ -306,31 +225,27 @@
         /* ИГРА ДЫХАНИЕ */
         #game-screen { background: var(--primary-soft); }
         canvas#breathCanvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; opacity: 0.6; }
+        .game-ui-overlay { position: relative; z-index: 10; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; width: 100%; padding-bottom: 180px; pointer-events: none; }
         
-        /* --- ИСПРАВЛЕНИЕ: ПОДНЯЛИ КНОПКИ --- */
-        .game-ui-overlay { 
-            position: relative; 
-            z-index: 10; 
+        /* --- ИСПРАВЛЕНИЕ: ЖЕСТКОЕ ПОЗИЦИОНИРОВАНИЕ ТЕКСТА --- */
+        .breath-text-container { 
+            position: absolute;
+            top: 42%; /* Центр круга и текста */
+            left: 0; 
+            width: 100%;
+            transform: translateY(-50%);
             display: flex; 
             flex-direction: column; 
             align-items: center; 
-            justify-content: flex-end; 
-            height: 100%; 
-            width: 100%; 
-            padding-bottom: 180px; /* УВЕЛИЧЕНО с 80px до 180px */
-            pointer-events: none; 
+            justify-content: center; 
+            margin-bottom: 0; 
         }
-        /* ------------------------------------- */
+        /* ---------------------------------------------------- */
 
-        .breath-text-container { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; margin-bottom: 40px; }
         .breath-status { font-size: 32px; font-weight: 800; color: var(--text-header); margin-bottom: 8px; }
         .breath-timer-text { font-size: 18px; color: var(--text-muted); }
         .game-controls { pointer-events: auto; display: flex; gap: 20px; }
-        .btn-game-card { 
-            padding: 20px 40px; 
-            border-radius: var(--radius-card); 
-            border: none; font-size: 18px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 14px; background: var(--secondary-bg); color: var(--secondary-text); box-shadow: var(--shadow-float-blue); 
-        }
+        .btn-game-card { padding: 20px 40px; border-radius: var(--radius-card); border: none; font-size: 18px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 14px; background: var(--secondary-bg); color: var(--secondary-text); box-shadow: var(--shadow-float-blue); }
         .btn-reset-sq { width: 64px; height: 64px; border-radius: 20px; background: var(--secondary-bg); color: var(--secondary-text); border: none; box-shadow: var(--shadow-float-blue); display: flex; align-items: center; justify-content: center; cursor: pointer; }
 
         /* SOS SCREEN */
@@ -384,50 +299,11 @@
         .history-list { display: flex; flex-direction: column; gap: 10px; }
 
         /* --- НИЖНЕЕ МЕНЮ (NAVBAR) --- */
-        .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 80px; 
-            background: var(--nav-bg);
-            border-top-left-radius: 24px;
-            border-top-right-radius: 24px;
-            box-shadow: var(--nav-shadow);
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            z-index: 1000;
-            padding-bottom: env(safe-area-inset-bottom);
-        }
-
-        .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            width: 60px;
-            height: 100%;
-            border: none;
-            background: transparent;
-            cursor: pointer;
-        }
-        
-        .nav-icon {
-            font-size: 28px;
-            color: var(--nav-icon-color);
-            transition: color 0.3s;
-        }
+        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; height: 80px; background: var(--nav-bg); border-top-left-radius: 24px; border-top-right-radius: 24px; box-shadow: var(--nav-shadow); display: flex; justify-content: space-around; align-items: center; z-index: 1000; padding-bottom: env(safe-area-inset-bottom); }
+        .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 60px; height: 100%; border: none; background: transparent; cursor: pointer; }
+        .nav-icon { font-size: 28px; color: var(--nav-icon-color); transition: color 0.3s; }
         .nav-icon-active { color: var(--nav-icon-active); }
-        
-        /* ЗАГЛУШКИ ДЛЯ МЕНЮ */
-        .nav-placeholder {
-            width: 36px;
-            height: 36px;
-            border-radius: 12px;
-            border: 2px dashed var(--text-muted);
-            opacity: 0.3;
-        }
+        .nav-placeholder { width: 36px; height: 36px; border-radius: 12px; border: 2px dashed var(--text-muted); opacity: 0.3; }
 
         /* --- АДАПТАЦИЯ (Z Flip, SE) --- */
         @media (max-width: 370px) {
@@ -473,14 +349,11 @@
                 <svg class="wave-graph" viewBox="0 0 600 50" preserveAspectRatio="none">
                     <defs>
                         <linearGradient id="grad1" x1="0%" y1="0%" x2="0%" y2="100%">
-                            <!-- Используем классы для цвета градиента -->
                             <stop offset="0%" class="wave-fill" style="stop-opacity:0.6"/>
                             <stop offset="100%" class="wave-fill" style="stop-opacity:0"/>
                         </linearGradient>
                     </defs>
-                    <!-- Тень (Заливка) -->
                     <path d="M0,25 Q75,5 150,25 T300,25 T450,25 T600,25 V50 H0 Z" fill="url(#grad1)"/>
-                    <!-- Линия -->
                     <path d="M0,25 Q75,5 150,25 T300,25 T450,25 T600,25" class="wave-stroke" stroke-width="2" fill="none"/>
                 </svg>
             </div>
@@ -549,11 +422,7 @@
 
     <!-- НОВОЕ НИЖНЕЕ МЕНЮ (NAVBAR) -->
     <nav class="bottom-nav">
-        <!-- Кнопка 1: Темы -->
-        <button class="nav-item" onclick="toggleTheme()">
-            <span id="theme-icon" class="material-icons-round nav-icon">dark_mode</span>
-        </button>
-        <!-- Заглушки -->
+        <button class="nav-item" onclick="toggleTheme()"><span id="theme-icon" class="material-icons-round nav-icon">dark_mode</span></button>
         <button class="nav-item" onclick="alert('Скоро!')"><div class="nav-placeholder"></div></button>
         <button class="nav-item" onclick="alert('Скоро!')"><div class="nav-placeholder"></div></button>
         <button class="nav-item" onclick="alert('Скоро!')"><div class="nav-placeholder"></div></button>
@@ -657,7 +526,33 @@
     // Breath
     const breathCanvas=document.getElementById('breathCanvas'),breathCtx=breathCanvas.getContext('2d'),breathLabel=document.getElementById('breathLabel'),breathInstr=document.getElementById('breathInstruction'),playIcon=document.getElementById('playIcon'),playText=document.getElementById('playText');
     let breathAnimId,breathParticles=[],isBreathing=false,breathTimer=0,breathInterval,currentR=110,targetR=110;
-    class Particle{constructor(){this.angle=Math.random()*Math.PI*2;this.r=110+Math.random()*20;this.size=Math.random()*3+1;this.speed=Math.random()*0.02+0.005;this.color=`rgba(100,181,246,${Math.random()*0.5})`}update(r){this.angle+=this.speed;let d=r+Math.sin(Date.now()/500)*10;this.r+=(d-this.r)*0.05;this.x=breathCanvas.width/2+Math.cos(this.angle)*this.r;this.y=(breathCanvas.height/2-60)+Math.sin(this.angle)*this.r}draw(){breathCtx.fillStyle=this.color;breathCtx.beginPath();breathCtx.arc(this.x,this.y,this.size,0,Math.PI*2);breathCtx.fill()}}
+    
+    class Particle{
+        constructor(){
+            this.angle=Math.random()*Math.PI*2;
+            this.r=110+Math.random()*20;
+            // УВЕЛИЧЕННЫЙ РАЗМЕР ШАРИКОВ (x2)
+            this.size = Math.random() * 6 + 2; 
+            this.speed=Math.random()*0.02+0.005;
+            this.color=`rgba(100,181,246,${Math.random()*0.5})`;
+        }
+        update(r){
+            this.angle+=this.speed;
+            let d=r+Math.sin(Date.now()/500)*10;
+            this.r+=(d-this.r)*0.05;
+            this.x=breathCanvas.width/2+Math.cos(this.angle)*this.r;
+            
+            // ИСПРАВЛЕНИЕ: ЦЕНТР КРУГА ТЕПЕРЬ СИНХРОНИЗИРОВАН С ТЕКСТОМ (42% высоты)
+            this.y=(breathCanvas.height * 0.42) + Math.sin(this.angle)*this.r;
+        }
+        draw(){
+            breathCtx.fillStyle=this.color;
+            breathCtx.beginPath();
+            breathCtx.arc(this.x,this.y,this.size,0,Math.PI*2);
+            breathCtx.fill();
+        }
+    }
+
     function resizeBreathCanvas(){breathCanvas.width=window.innerWidth;breathCanvas.height=window.innerHeight;breathParticles=Array.from({length:150},()=>new Particle())}
     function startBreathingAnimationLoop(){if(!breathAnimId)animateBreath()}
     function stopBreathingAnimationLoop(){cancelAnimationFrame(breathAnimId);breathAnimId=null}
