@@ -325,6 +325,10 @@
             color: var(--primary-main);            /* Ярко-оранжевый текст/иконка */
             box-shadow: 0 0 15px rgba(255, 111, 0, 0.2); /* Неоновое свечение вокруг */
         }
+        /* Делаем иконку чата оранжевой в тёмной теме */
+        body.dark-mode #chat-nav-icon {
+            color: var(--nav-icon-active);
+        }
     </style>
 </head>
 <body>
@@ -434,9 +438,8 @@
         <button class="nav-item" onclick="toggleTheme()"><span id="theme-icon" class="material-icons-round nav-icon">dark_mode</span></button>
         <button class="nav-item" onclick="alert('Скоро!')"><div class="nav-placeholder"></div></button>
         <button class="nav-item" onclick="alert('Скоро!')"><div class="nav-placeholder"></div></button>
-        <button class="nav-item" onclick="navigateTo('chat')">
-            <span class="material-icons-round nav-icon">chat_bubble_outline</span>
-        </button>    </nav>
+        <button class="nav-item" onclick="navigateTo('chat')"><span id="chat-nav-icon" class="material-icons-round nav-icon">chat_bubble_outline</span></button>    
+    </nav>
 
 <script>
     const GOOGLE_SCRIPT_URL="https://script.google.com/macros/s/AKfycbyXqB6VVOwd4cg_GtenaKkY-VtXMLCeq2gfSNEN6BxysXOLWLWL80VmyoUO-6B46Rnf/exec";
