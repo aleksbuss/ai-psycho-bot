@@ -565,48 +565,62 @@
     checkDiaryStatus();
     initTheme(); // Применяем тему при загрузке
 
-// --- ИСПРАВЛЕННАЯ ЛОГИКА ЗВОНКА (CALIBRATED VAD) ---
+// --- ФИНАЛЬНАЯ ЛОГИКА ЗВОНКА (БЕЗ ПОВТОРНЫХ ЗАПРОСОВ И С ПРЕРЫВАНИЕМ) ---
+    
+    // Глобальные переменные
     let vadContext, vadAnalyser, vadSource, vadStream;
     let vadInterval;
     let isSpeaking = false;
     let silenceStart = Date.now();
     let callMediaRecorder = null;
     let callChunks = [];
+    let currentBotAudio = null; // Переменная для текущего голоса бота
     
-    // НАСТРОЙКА ЧУВСТВИТЕЛЬНОСТИ
-    // Если бот не слышит вас -> УМЕНЬШИТЬ (до 10-15)
-    // Если бот не замолкает -> УВЕЛИЧИТЬ (до 40-50)
+    // Настройка чувствительности (10-50)
     const VAD_THRESHOLD = 30; 
 
     async function initCallUI() {
         document.getElementById('callStatus').innerText = "Подключение...";
         
         try {
-            vadStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            // 1. ПРОВЕРКА: Если микрофон уже был получен ранее, не просим снова
+            if (!vadStream || !vadStream.active) {
+                vadStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            }
             
-            vadContext = new (window.AudioContext || window.webkitAudioContext)();
-            // Важно для iOS/Android: принудительно запускаем контекст
+            // Настраиваем Аудио Контекст (если он закрыт или не существует)
+            if (!vadContext || vadContext.state === 'closed') {
+                vadContext = new (window.AudioContext || window.webkitAudioContext)();
+            }
             if (vadContext.state === 'suspended') await vadContext.resume();
 
-            vadAnalyser = vadContext.createAnalyser();
+            // Создаем анализатор (если нужно)
+            if (!vadAnalyser) vadAnalyser = vadContext.createAnalyser();
             vadAnalyser.fftSize = 512;
+            
+            // Подключаем поток к анализатору (создаем источник заново, чтобы не было ошибок)
+            try {
+                if (vadSource) vadSource.disconnect(); // Отключаем старый, если был
+            } catch(e) {}
+            
             vadSource = vadContext.createMediaStreamSource(vadStream);
             vadSource.connect(vadAnalyser);
             
+            // Рекордер создаем заново для чистоты сессии
             callMediaRecorder = new MediaRecorder(vadStream);
             callMediaRecorder.ondataavailable = e => callChunks.push(e.data);
             
-            // Логика остановки записи
             callMediaRecorder.onstop = async () => {
+                // Если мы ушли с экрана, не обрабатываем
+                if (!document.getElementById('call-screen').classList.contains('active')) return;
+
                 const blob = new Blob(callChunks, { type: 'audio/webm' });
-                // Если запись слишком короткая (< 0.5 сек), это был шум, игнорируем
                 if (blob.size < 1000) { 
                     resetListening(); 
                     return; 
                 }
 
                 document.getElementById('callStatus').innerText = "Думаю...";
-                // Визуально сжимаем круг, пока думает
                 document.querySelector('.ai-avatar-circle').style.transform = 'scale(0.8)';
                 
                 const base64 = await blobToBase64(blob);
@@ -630,15 +644,22 @@
             };
 
             document.getElementById('callStatus').innerText = "Слушаю...";
-            vadInterval = setInterval(analyzeVolume, 50); // Проверяем чаще (50мс)
+            // Запускаем анализ
+            clearInterval(vadInterval);
+            vadInterval = setInterval(analyzeVolume, 50);
             
         } catch (e) {
-            alert("Доступ к микрофону запрещен или ошибка: " + e);
-            endCall();
+            alert("Ошибка доступа к микрофону: " + e);
+            // Если ошибка, пробуем сбросить поток, чтобы в след. раз запросить заново
+            vadStream = null;
+            navigateTo('menu');
         }
     }
 
     function analyzeVolume() {
+        // Если контекст не работает или экран закрыт — ничего не делаем
+        if (!vadAnalyser || !document.getElementById('call-screen').classList.contains('active')) return;
+
         const dataArray = new Uint8Array(vadAnalyser.frequencyBinCount);
         vadAnalyser.getByteFrequencyData(dataArray);
         
@@ -646,33 +667,34 @@
         for (let i = 0; i < dataArray.length; i++) sum += dataArray[i];
         const average = sum / dataArray.length;
         
-        // 1. Визуализация (чтобы ты видел, слышит ли он)
-        // Круг будет увеличиваться от громкости
+        // Визуализация
         const scale = 1 + (average / 200); 
-        document.querySelector('.ai-avatar-circle').style.transform = `scale(${scale})`;
+        const circle = document.querySelector('.ai-avatar-circle');
+        if(circle) circle.style.transform = `scale(${scale})`;
 
-        // 2. Логика детектора
+        // Логика VAD
         if (average > VAD_THRESHOLD) {
-            // Шум выше порога - ГОВОРИМ
             if (!isSpeaking) {
                 isSpeaking = true;
                 callChunks = [];
-                // Начинаем запись только если реально начали говорить
+                // Если бот говорил — перебиваем его
+                if (currentBotAudio && !currentBotAudio.paused) {
+                    currentBotAudio.pause();
+                    currentBotAudio = null;
+                }
+                
                 if (callMediaRecorder && callMediaRecorder.state === 'inactive') {
                     callMediaRecorder.start();
                 }
             }
-            // Сбрасываем таймер тишины, пока есть звук
             silenceStart = Date.now();
         } else {
-            // Звук ниже порога - ТИШИНА
             if (isSpeaking) {
-                // Ждем 1.2 секунды тишины, чтобы убедиться, что фраза закончена
                 if (Date.now() - silenceStart > 1200) {
                     isSpeaking = false;
                     if (callMediaRecorder && callMediaRecorder.state === 'recording') {
                         callMediaRecorder.stop();
-                        clearInterval(vadInterval); // Пауза анализатора
+                        clearInterval(vadInterval);
                     }
                 }
             }
@@ -680,15 +702,23 @@
     }
 
     function playAudioResponseInCall(base64) {
+        // Если пользователь уже вышел, не включаем звук
+        if (!document.getElementById('call-screen').classList.contains('active')) return;
+
         try {
-            const audio = new Audio("data:audio/mp3;base64," + base64);
-            audio.play();
+            // Останавливаем предыдущее аудио, если есть
+            if (currentBotAudio) {
+                currentBotAudio.pause();
+                currentBotAudio.currentTime = 0;
+            }
+
+            currentBotAudio = new Audio("data:audio/mp3;base64," + base64);
+            currentBotAudio.play();
             
-            // Простая визуальная анимация пока бот говорит
             document.querySelector('.ai-avatar-circle').style.animation = 'pulse-avatar 1s infinite';
             
-            audio.onended = () => {
-                document.querySelector('.ai-avatar-circle').style.animation = 'none'; // Стоп анимация
+            currentBotAudio.onended = () => {
+                document.querySelector('.ai-avatar-circle').style.animation = 'none';
                 resetListening();
             };
         } catch (e) {
@@ -703,7 +733,6 @@
         callChunks = [];
         isSpeaking = false;
         
-        // Перезапуск анализа
         clearInterval(vadInterval);
         vadInterval = setInterval(analyzeVolume, 50);
     }
@@ -711,16 +740,34 @@
     function endCall() {
         if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('heavy');
         
+        // 1. Останавливаем анализ (логику)
         clearInterval(vadInterval);
-        if (vadStream) {
-            vadStream.getTracks().forEach(t => t.stop());
-        }
-        if (vadContext) {
-            vadContext.close();
-        }
         
+        // 2. МГНОВЕННО УБИВАЕМ ГОЛОС БОТА
+        if (currentBotAudio) {
+            currentBotAudio.pause();
+            currentBotAudio.currentTime = 0;
+            currentBotAudio = null;
+        }
+
+        // 3. Останавливаем запись, если шла
+        if (callMediaRecorder && callMediaRecorder.state === 'recording') {
+            callMediaRecorder.stop(); 
+            // Очищаем чанки, чтобы не отправилось после выхода
+            callChunks = []; 
+        }
+
+        // ВАЖНО: Мы НЕ вызываем vadStream.stop(), чтобы сохранить разрешение на микрофон
+        // Но мы можем приостановить контекст, чтобы экономить батарею
+        if (vadContext) vadContext.suspend();
+
         // Сброс анимации
-        document.querySelector('.ai-avatar-circle').style.animation = 'pulse-avatar 2s infinite ease-in-out';
+        const circle = document.querySelector('.ai-avatar-circle');
+        if(circle) {
+            circle.style.animation = 'pulse-avatar 2s infinite ease-in-out';
+            circle.style.transform = 'scale(1)';
+        }
+
         navigateTo('menu');
     }
 
@@ -735,7 +782,7 @@
         const icon = btn.querySelector('span');
         icon.innerText = btn.classList.contains('btn-active-state') ? 'mic_off' : 'mic';
         
-        // Физическое отключение микрофона в потоке
+        // Если поток есть, выключаем/включаем дорожку
         if (vadStream) {
             vadStream.getAudioTracks()[0].enabled = !btn.classList.contains('btn-active-state');
         }
