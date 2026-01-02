@@ -216,8 +216,31 @@
         
         /* ВВОД ТЕКСТА */
         .input-area { width: 100%; background: var(--bg-main); padding: 10px 16px; display: flex; align-items: center; justify-content: center; gap: 12px; padding-bottom: calc(20px + env(safe-area-inset-bottom)); box-sizing: border-box; margin-bottom: 70px; }
-        input[type="text"] { flex: 1; height: 54px; border-radius: 18px; border: none; padding: 0 20px; font-size: 16px; outline: none; background: var(--bg-card); color: var(--text-header); box-shadow: 0 2px 10px rgba(0,0,0,0.03); }
-        .btn-sq { width: 54px; height: 54px; border-radius: var(--radius-btn-sq); border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; flex-shrink: 0; }
+input[type="text"] { 
+            flex: 1; 
+            height: 54px; 
+            border-radius: 18px; 
+            border: none; 
+            padding: 0 20px; 
+            font-size: 16px; 
+            outline: none; 
+            background: var(--bg-card); 
+            color: var(--text-header); 
+            box-shadow: 0 2px 10px rgba(0,0,0,0.03); 
+            min-width: 0; /* <--- ДОБАВИТЬ ЭТУ СТРОКУ */
+        }
+.btn-sq { 
+            width: 54px; 
+            height: 54px; 
+            border-radius: var(--radius-btn-sq); 
+            border: none; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            cursor: pointer; 
+            transition: all 0.2s; 
+            flex-shrink: 0; 
+        }
         #micBtn { background-color: var(--bg-card); color: var(--icon-default); box-shadow: var(--shadow-card); }
         #micBtn.recording { background-color: var(--primary-soft); color: var(--primary-main); animation: pulse-mint 1.5s infinite; border: 1px solid var(--primary-main); }
         #sendBtn { background: var(--primary-main); color: white; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
