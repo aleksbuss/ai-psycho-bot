@@ -566,26 +566,136 @@
     initTheme(); // Применяем тему при загрузке
 
     // --- ЛОГИКА ЗВОНКА (ИМИТАЦИЯ) ---
-    function initCallUI() {
-        document.getElementById('callStatus').innerText = "Соединение...";
-        setTimeout(() => {
+    // --- НАСТОЯЩАЯ ЛОГИКА ЗВОНКА (VAD) ---
+    let vadContext, vadAnalyser, vadSource, vadStream;
+    let vadInterval;
+    let isSpeaking = false;
+    let silenceStart = Date.now();
+    let callMediaRecorder = null;
+    let callChunks = [];
+
+    async function initCallUI() {
+        document.getElementById('callStatus').innerText = "Подключение...";
+        
+        try {
+            vadStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            
+            // 1. Настройка анализатора звука (VAD)
+            vadContext = new (window.AudioContext || window.webkitAudioContext)();
+            vadAnalyser = vadContext.createAnalyser();
+            vadAnalyser.fftSize = 512;
+            vadSource = vadContext.createMediaStreamSource(vadStream);
+            vadSource.connect(vadAnalyser);
+            
+            // 2. Настройка рекордера для отправки
+            callMediaRecorder = new MediaRecorder(vadStream);
+            callMediaRecorder.ondataavailable = e => callChunks.push(e.data);
+            callMediaRecorder.onstop = async () => {
+                if (callChunks.length > 0) {
+                    document.getElementById('callStatus').innerText = "Думаю...";
+                    const blob = new Blob(callChunks, { type: 'audio/webm' });
+                    const base64 = await blobToBase64(blob);
+                    
+                    // Отправляем (скрытно)
+                    fetch(GOOGLE_SCRIPT_URL + '?act=api', {
+                        method: 'POST',
+                        body: JSON.stringify({ audio: base64, userId: userId, text: '' })
+                    })
+                    .then(r => r.json())
+                    .then(d => {
+                        if (d.status === 'success' && d.audio) {
+                            document.getElementById('callStatus').innerText = "Говорит...";
+                            playAudioResponseInCall(d.audio);
+                        } else {
+                            resetListening(); // Если ошибка, слушаем снова
+                        }
+                    })
+                    .catch(() => resetListening());
+                } else {
+                    resetListening();
+                }
+            };
+
+            // 3. Запуск цикла прослушки
             document.getElementById('callStatus').innerText = "Слушаю...";
-            if(tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
-        }, 1500);
+            vadInterval = setInterval(analyzeVolume, 100);
+            
+        } catch (e) {
+            alert("Ошибка микрофона: " + e);
+            endCall();
+        }
+    }
+
+    function analyzeVolume() {
+        const dataArray = new Uint8Array(vadAnalyser.frequencyBinCount);
+        vadAnalyser.getByteFrequencyData(dataArray);
+        
+        // Считаем среднюю громкость
+        let sum = 0;
+        for (let i = 0; i < dataArray.length; i++) sum += dataArray[i];
+        const average = sum / dataArray.length;
+        
+        // ПОРОГ ТИШИНЫ (подстрой, если нужно. 10-15 обычно ок)
+        const THRESHOLD = 12; 
+
+        if (average > THRESHOLD) {
+            // Человек говорит
+            if (!isSpeaking) {
+                isSpeaking = true;
+                callChunks = [];
+                if (callMediaRecorder.state === 'inactive') callMediaRecorder.start();
+                document.getElementById('callStatus').innerText = "Слушаю...";
+            }
+            silenceStart = Date.now(); // Сбрасываем таймер тишины
+        } else {
+            // Тишина
+            if (isSpeaking) {
+                // Если тишина длится больше 1.5 секунды -> отправляем
+                if (Date.now() - silenceStart > 1500) {
+                    isSpeaking = false;
+                    if (callMediaRecorder.state === 'recording') callMediaRecorder.stop();
+                    // Останавливаем анализ пока бот думает
+                    clearInterval(vadInterval); 
+                }
+            }
+        }
+    }
+
+    function playAudioResponseInCall(base64) {
+        try {
+            const audio = new Audio("data:audio/mp3;base64," + base64);
+            audio.play();
+            // Когда бот закончил говорить -> снова слушаем
+            audio.onended = () => resetListening();
+        } catch (e) {
+            resetListening();
+        }
+    }
+
+    function resetListening() {
+        if (!document.getElementById('call-screen').classList.contains('active')) return;
+        document.getElementById('callStatus').innerText = "Слушаю...";
+        callChunks = [];
+        isSpeaking = false;
+        // Перезапускаем цикл анализа
+        clearInterval(vadInterval);
+        vadInterval = setInterval(analyzeVolume, 100);
     }
 
     function endCall() {
         if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('heavy');
+        
+        // Очистка ресурсов
+        clearInterval(vadInterval);
+        if (vadStream) vadStream.getTracks().forEach(t => t.stop());
+        if (vadContext) vadContext.close();
+        
         navigateTo('menu');
     }
 
     function toggleSpeaker() {
         const btn = document.getElementById('speakerBtn');
-        if (btn.classList.contains('btn-active-state')) {
-            btn.classList.remove('btn-active-state');
-        } else {
-            btn.classList.add('btn-active-state');
-        }
+        btn.classList.toggle('btn-active-state');
         if(tg.HapticFeedback) tg.HapticFeedback.selectionChanged();
     }
 
@@ -593,6 +703,11 @@
         btn.classList.toggle('btn-active-state');
         const icon = btn.querySelector('span');
         icon.innerText = btn.classList.contains('btn-active-state') ? 'mic_off' : 'mic';
+        
+        // Реальный мут
+        if (vadStream) {
+            vadStream.getAudioTracks()[0].enabled = !btn.classList.contains('btn-active-state');
+        }
         if(tg.HapticFeedback) tg.HapticFeedback.selectionChanged();
     }
 </script>
