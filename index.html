@@ -348,8 +348,9 @@ input[type="text"] {
             color: var(--primary-main);            /* Ярко-оранжевый текст/иконка */
             box-shadow: 0 0 15px rgba(255, 111, 0, 0.2); /* Неоновое свечение вокруг */
         }
-        /* Делаем иконку чата оранжевой в тёмной теме */
-        body.dark-mode #chat-nav-icon {
+       /* Делаем иконки Чата и SOS оранжевыми в тёмной теме */
+        body.dark-mode #chat-nav-icon,
+        body.dark-mode #sos-nav-icon {
             color: var(--nav-icon-active);
         }
         /* --- АДАПТАЦИЯ ДЛЯ УЗКИХ ЭКРАНОВ (Z Fold, Z Flip) --- */
@@ -476,7 +477,7 @@ input[type="text"] {
     <!-- НОВОЕ НИЖНЕЕ МЕНЮ (NAVBAR) -->
     <nav class="bottom-nav">
         <button class="nav-item" onclick="toggleTheme()"><span id="theme-icon" class="material-icons-round nav-icon">dark_mode</span></button>
-        <button class="nav-item" onclick="alert('Скоро!')"><div class="nav-placeholder"></div></button>
+        <button class="nav-item" onclick="navigateTo('sos')"><span id="sos-nav-icon" class="material-icons-round nav-icon">sos</span></button> 
         <button class="nav-item" onclick="alert('Скоро!')"><div class="nav-placeholder"></div></button>
         <button class="nav-item" onclick="navigateTo('chat')"><span id="chat-nav-icon" class="material-icons-round nav-icon">chat_bubble_outline</span></button>    
     </nav>
