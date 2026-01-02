@@ -8,113 +8,76 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
     <style>
         :root {
-            /* --- ПАЛИТРА FRESH MINT (Светлая - по умолчанию) --- */
+            /* --- ПАЛИТРА FRESH MINT --- */
             --bg-main: #F5F7FA;      
             --bg-card: #FFFFFF;      
-            
             --text-header: #1F2937;  
             --text-body: #4B5563;    
             --text-muted: #9CA3AF;   
-            
             --primary-main: #4DB6AC; 
             --primary-soft: #E0F2F1; 
             --primary-text: #00695C; 
-            
             --secondary-bg: #E3F2FD; 
             --secondary-accent: #64B5F6;
             --secondary-text: #1565C0;
-            
             --warm-bg: #FFF3E0;
             --warm-accent: #FFB74D;
             --warm-text: #EF6C00;
-
             --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.04);
             --shadow-float-blue: 0 10px 30px rgba(100, 181, 246, 0.25);
-            
             --icon-default: #90A4AE;
-            
             --msg-bot-bg: #FFFFFF;
             --msg-user-bg: #4DB6AC;
             --msg-user-text: #FFFFFF;
-
-            /* Переменные для Меню */
             --nav-bg: #FFFFFF;
             --nav-shadow: 0 -5px 20px rgba(0,0,0,0.05);
             --nav-icon-color: #90A4AE;
             --nav-icon-active: #FF9800; 
-
-            /* --- СКРУГЛЕНИЯ (ВОССТАНОВЛЕНО) --- */
             --radius-card: 24px;
             --radius-btn-sq: 18px;
-
-            /* Цвет волны (Мята) */
             --wave-color: #4DB6AC;
         }
 
-        /* --- ТЁМНАЯ ТЕМА (Серый + Оранжевый) --- */
+        /* --- ТЁМНАЯ ТЕМА --- */
         body.dark-mode {
-            /* Фон: Глубокий, почти черный, матовый */
             --bg-main: #0B0C10;      
-            
-            /* Карточки: Градиент для объема */
             --bg-card: linear-gradient(145deg, #1A1C20 0%, #121316 100%);      
-            
             --text-header: #E0E0E0;  
             --text-body: #9E9E9E;    
             --text-muted: #616161;   
-            
-            /* Акцент: "Горящий" оранжевый */
             --primary-main: #FF6F00; 
-            /* Подложки кнопок: Чуть светлее фона */
             --primary-soft: #1F2125; 
             --primary-text: #FF8F00; 
-            
             --secondary-bg: #1F2125; 
             --secondary-accent: #FF8F00;
             --secondary-text: #FFA000;
-            
-            --warm-bg: #2C1B10; /* Темно-коричневый для SOS */
+            --warm-bg: #2C1B10;
             --warm-accent: #FF6F00;
             --warm-text: #FFAB40;
-
-            /* Тень: Глубокая и мягкая */
             --shadow-card: 0 10px 30px rgba(0, 0, 0, 0.7);
             --shadow-float-blue: none;
-            
             --icon-default: #546E7A;
-            
             --msg-bot-bg: #1A1C20;
-            --msg-user-bg: #E65100; /* Насыщенный оранжевый */
+            --msg-user-bg: #E65100;
             --msg-user-text: #FFFFFF;
-
             --nav-bg: #121316;
             --nav-shadow: 0 -5px 20px rgba(0,0,0, 0.8);
             --nav-icon-color: #424242;
-            
-            --wave-color: #FF6F00; /* Оранжевая волна */
+            --wave-color: #FF6F00;
         }
 
-        /* --- СПЕЦИАЛЬНЫЕ ЭФФЕКТЫ ДЛЯ ТЁМНОЙ ТЕМЫ --- */
-        body.dark-mode .action-card, 
-        body.dark-mode .small-card,
-        body.dark-mode .widget-card {
-            background: var(--bg-card);
-            border: 1px solid rgba(255, 255, 255, 0.05);
+        /* Dark Mode Effects */
+        body.dark-mode .action-card, body.dark-mode .small-card, body.dark-mode .widget-card {
+            background: var(--bg-card); border: 1px solid rgba(255, 255, 255, 0.05);
             box-shadow: 0 4px 20px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.05);
         }
-        body.dark-mode .card-chat .icon-box,
-        body.dark-mode .card-breath .icon-box {
+        body.dark-mode .card-chat .icon-box, body.dark-mode .card-breath .icon-box {
             background: linear-gradient(135deg, rgba(255, 111, 0, 0.1), rgba(0,0,0,0));
-            border: 1px solid rgba(255, 111, 0, 0.2);
-            color: #FF8F00;
-            box-shadow: 0 0 15px rgba(255, 111, 0, 0.1);
+            border: 1px solid rgba(255, 111, 0, 0.2); color: #FF8F00; box-shadow: 0 0 15px rgba(255, 111, 0, 0.1);
         }
         body.dark-mode .sos-btn-header {
-            background: linear-gradient(135deg, #3E2723, #1A100A);
-            border: 1px solid rgba(255, 111, 0, 0.3);
-            color: #FF6F00;
-            box-shadow: 0 0 10px rgba(255, 69, 0, 0.2), inset 0 0 10px rgba(0,0,0,0.5);
-            text-shadow: 0 0 5px rgba(255, 69, 0, 0.5);
+            background: linear-gradient(135deg, #3E2723, #1A100A); border: 1px solid rgba(255, 111, 0, 0.3); color: #FF6F00;
+            box-shadow: 0 0 10px rgba(255, 69, 0, 0.2), inset 0 0 10px rgba(0,0,0,0.5); text-shadow: 0 0 5px rgba(255, 69, 0, 0.5);
         }
         body.dark-mode .wave-graph { filter: drop-shadow(0 0 8px rgba(255, 111, 0, 0.4)); }
         body.dark-mode .wave-fill { stop-opacity: 0.1; }
@@ -122,37 +85,20 @@
         body.dark-mode .small-icon.warm-icon, body.dark-mode .small-icon.mint-icon { background: rgba(255,255,255,0.03); color: #B0BEC5; }
 
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-        
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background-color: var(--bg-main);
-            color: var(--text-body);
-            line-height: 1.5;
-            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-            display: flex; flex-direction: column;
-            transition: background-color 0.3s, color 0.3s;
-        }
+        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: var(--bg-main); color: var(--text-body); line-height: 1.5; position: fixed; top: 0; left: 0; right: 0; bottom: 0; display: flex; flex-direction: column; transition: background-color 0.3s, color 0.3s; }
 
-        /* АНИМАЦИИ */
         @keyframes blink { 0%, 90%, 100% { transform: scaleY(1); } 95% { transform: scaleY(0.1); } }
         .anim-eye { transform-origin: center; animation: blink 4s infinite; }
-        
         @keyframes pulse-mint { 0% { box-shadow: 0 0 0 0 rgba(77, 182, 172, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(77, 182, 172, 0); } 100% { box-shadow: 0 0 0 0 rgba(77, 182, 172, 0); } }
         body.dark-mode .recording { animation-name: pulse-orange; border-color: #FF9800; }
         @keyframes pulse-orange { 0% { box-shadow: 0 0 0 0 rgba(255, 152, 0, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(255, 152, 0, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 152, 0, 0); } }
-
         @keyframes msgSlideUp { from { opacity: 0; transform: translateY(20px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
         .msg-enter { animation: msgSlideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
-        
         @keyframes waveMove { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
-
-        /* ТРЮК №1: НЕВИДИМЫЙ ВРАЩАТЕЛЬ ДЛЯ GPU */
         #gpu-activator { position: absolute; top: 0; left: 0; width: 1px; height: 1px; opacity: 0.01; pointer-events: none; z-index: -1; animation: force-gpu 1s infinite linear; will-change: transform; }
         @keyframes force-gpu { from { transform: rotate(0deg) translateZ(0); } to { transform: rotate(360deg) translateZ(0); } }
 
-        /* UI ЭЛЕМЕНТЫ */
         header { padding: 0 20px; background: transparent; z-index: 100; display: none; align-items: center; height: 60px; flex-shrink: 0; width: 100%; }
-        
         #back-btn { background: var(--primary-main); border: none; color: white; width: 44px; height: 44px; border-radius: 14px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); cursor: pointer; display: flex; align-items: center; justify-content: center; }
         #back-btn:active { transform: scale(0.95); }
         .header-title { font-size: 18px; font-weight: 600; margin-left: 15px; color: var(--text-header); }
@@ -161,20 +107,16 @@
         .screen.active { display: flex; animation: fadeUp 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
         @keyframes fadeUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* МЕНЮ */
         #menu-screen { padding: 24px; overflow-y: auto; padding-bottom: 100px; }
         .greeting-header { margin-top: 10px; margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center; }
         .greeting-text h1 { font-size: 26px; line-height: 1.3; color: var(--text-header); font-weight: 700; }
         .greeting-text p { font-size: 16px; color: var(--text-muted); margin-top: 4px; }
-        
         .sos-btn-header { width: 54px; height: 54px; border-radius: 18px; background-color: var(--warm-bg); display: flex; align-items: center; justify-content: center; color: var(--warm-text); font-weight: 800; font-size: 15px; border: none; box-shadow: 0 4px 15px rgba(255, 183, 77, 0.25); cursor: pointer; }
         .sos-btn-header:active { transform: scale(0.95); }
 
         .main-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
-        
         .action-card { border-radius: var(--radius-card); padding: 20px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; height: 150px; cursor: pointer; transition: transform 0.1s; background-color: var(--primary-soft); }
         .action-card:active { transform: scale(0.97); }
-        
         .card-chat h3 { color: var(--primary-text); font-size: 15px; font-weight: 600; }
         .card-chat .icon-box { color: var(--primary-main); width: 50px; height: 50px; border-radius: 16px; background: rgba(255,255,255,0.7); display: flex; align-items: center; justify-content: center; margin-bottom: 12px; }
         .card-breath { background-color: var(--secondary-bg); }
@@ -186,7 +128,6 @@
         .dot-indicator { width: 8px; height: 8px; background: var(--primary-main); border-radius: 50%; opacity: 0.8; }
         .widget-title { font-size: 14px; color: var(--text-muted); }
         .widget-main-text { font-size: 18px; font-weight: 600; color: var(--text-header); }
-        
         .wave-container { width: 100%; height: 50px; margin-top: 8px; overflow: hidden; position: relative; }
         .wave-graph { width: 200%; height: 100%; opacity: 0.9; animation: waveMove 8s linear infinite; }
         .wave-fill { stop-color: var(--wave-color); }
@@ -195,7 +136,6 @@
         .bottom-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
         .small-card { background: var(--bg-card); padding: 16px; border-radius: 20px; display: flex; align-items: center; gap: 12px; box-shadow: var(--shadow-card); cursor: pointer; }
         .small-card > div:last-child { min-width: 0; }
-        
         .small-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: visible; }
         .warm-icon { background: var(--warm-bg); color: var(--warm-accent); }
         .mint-icon { background: var(--primary-soft); color: var(--primary-main); }
@@ -205,73 +145,30 @@
         @keyframes heart-beat { 0% { transform: scale(1.3); } 50% { transform: scale(1.6); text-shadow: 0 0 10px rgba(239, 108, 0, 0.4); } 100% { transform: scale(1.3); } }
         .heart-alert { color: #EF6C00 !important; animation: heart-beat 1.5s infinite ease-in-out; z-index: 10; }
 
-        /* ЧАТ */
         #chat-container { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; scroll-behavior: smooth; }
         .message { max-width: 85%; padding: 14px 18px; border-radius: 20px; font-size: 15px; box-shadow: var(--shadow-card); position: relative; }
         .msg-bot { align-self: flex-start; background-color: var(--msg-bot-bg); color: var(--text-body); border-top-left-radius: 4px; }
         .msg-user { align-self: flex-end; background-color: var(--msg-user-bg); color: var(--msg-user-text); border-top-right-radius: 4px; }
-        
         .typing-indicator { display: none; align-self: flex-start; background: var(--bg-card); padding: 12px; border-radius: 16px; margin-bottom: 10px; box-shadow: var(--shadow-card); }
         .dot { height: 6px; width: 6px; background-color: #CFD8DC; border-radius: 50%; display: inline-block; animation: bounce 1.4s infinite ease-in-out both; margin: 0 2px; }
         
-        /* ВВОД ТЕКСТА */
         .input-area { width: 100%; background: var(--bg-main); padding: 10px 16px; display: flex; align-items: center; justify-content: center; gap: 12px; padding-bottom: calc(20px + env(safe-area-inset-bottom)); box-sizing: border-box; margin-bottom: 95px; }
-input[type="text"] { 
-            flex: 1; 
-            height: 54px; 
-            border-radius: 18px; 
-            border: none; 
-            padding: 0 20px; 
-            font-size: 16px; 
-            outline: none; 
-            background: var(--bg-card); 
-            color: var(--text-header); 
-            box-shadow: 0 2px 10px rgba(0,0,0,0.03); 
-            min-width: 0; /* <--- ДОБАВИТЬ ЭТУ СТРОКУ */
-        }
-.btn-sq { 
-            width: 54px; 
-            height: 54px; 
-            border-radius: var(--radius-btn-sq); 
-            border: none; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            cursor: pointer; 
-            transition: all 0.2s; 
-            flex-shrink: 0; 
-        }
+        input[type="text"] { flex: 1; height: 54px; border-radius: 18px; border: none; padding: 0 20px; font-size: 16px; outline: none; background: var(--bg-card); color: var(--text-header); box-shadow: 0 2px 10px rgba(0,0,0,0.03); min-width: 0; }
+        .btn-sq { width: 54px; height: 54px; border-radius: var(--radius-btn-sq); border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; flex-shrink: 0; }
         #micBtn { background-color: var(--bg-card); color: var(--icon-default); box-shadow: var(--shadow-card); }
         #micBtn.recording { background-color: var(--primary-soft); color: var(--primary-main); animation: pulse-mint 1.5s infinite; border: 1px solid var(--primary-main); }
         #sendBtn { background: var(--primary-main); color: white; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
 
-        /* ИГРА ДЫХАНИЕ */
         #game-screen { background: var(--primary-soft); }
         canvas#breathCanvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; opacity: 0.6; }
         .game-ui-overlay { position: relative; z-index: 10; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; width: 100%; padding-bottom: 180px; pointer-events: none; }
-        
-        /* --- ИСПРАВЛЕНИЕ: ЖЕСТКОЕ ПОЗИЦИОНИРОВАНИЕ ТЕКСТА --- */
-        .breath-text-container { 
-            position: absolute;
-            top: 35%; /* Центр круга и текста */
-            left: 0; 
-            width: 100%;
-            transform: translateY(-50%);
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            justify-content: center; 
-            margin-bottom: 0; 
-        }
-        /* ---------------------------------------------------- */
-
+        .breath-text-container { position: absolute; top: 35%; left: 0; width: 100%; transform: translateY(-50%); display: flex; flex-direction: column; align-items: center; justify-content: center; margin-bottom: 0; }
         .breath-status { font-size: 32px; font-weight: 800; color: var(--text-header); margin-bottom: 8px; }
         .breath-timer-text { font-size: 18px; color: var(--text-muted); }
         .game-controls { pointer-events: auto; display: flex; gap: 20px; }
         .btn-game-card { padding: 20px 40px; border-radius: var(--radius-card); border: none; font-size: 18px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 14px; background: var(--secondary-bg); color: var(--secondary-text); box-shadow: var(--shadow-float-blue); }
         .btn-reset-sq { width: 66px; height: 66px; border-radius: 20px; background: var(--secondary-bg); color: var(--secondary-text); border: none; box-shadow: var(--shadow-float-blue); display: flex; align-items: center; justify-content: center; cursor: pointer; }
 
-        /* SOS SCREEN */
         #sos-screen { background: var(--bg-main); justify-content: center; overflow: hidden; }
         .sos-container-3d { position: relative; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 30px; }
         .sos-title-block { display: flex; flex-direction: column; align-items: center; gap: 15px; margin-bottom: 50px; }
@@ -285,7 +182,6 @@ input[type="text"] {
         .sos-desc { font-size: 18px; color: var(--text-body); margin-top: 20px; font-weight: 500; opacity: 0; animation: fadeIn 0.5s ease forwards; animation-delay: 0.4s; text-align: center; }
         @keyframes fadeIn { to { opacity: 1; } }
 
-        /* BALLOON GAME */
         #balloon-game-screen { background-color: var(--primary-soft); position: relative; overflow: hidden; transform: translate3d(0,0,0); }
         .game-ui-header { position: absolute; top: 0; left: 0; width: 100%; padding: 20px; z-index: 10; display: flex; justify-content: space-between; align-items: center; pointer-events: none; }
         .score-box { background: var(--bg-card); padding: 8px 16px; border-radius: 16px; box-shadow: var(--shadow-card); font-weight: 700; color: var(--primary-text); font-size: 18px; }
@@ -303,7 +199,6 @@ input[type="text"] {
         .btn-game-secondary { padding: 18px 0; font-size: 18px; font-weight: 700; text-transform: uppercase; color: var(--secondary-text); background: var(--secondary-bg); border: none; border-radius: 20px; cursor: pointer; box-shadow: 0 4px 15px rgba(33, 150, 243, 0.15); width: 100%; transition: transform 0.1s; }
         .btn-game-secondary:active { transform: scale(0.96); }
 
-        /* ДНЕВНИК */
         .chart-container { background: var(--bg-card); border-radius: 24px; padding: 20px; margin-bottom: 20px; box-shadow: var(--shadow-card); min-height: 350px; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding-top: 20px; }
         #pieChart { width: 270px; height: 270px; margin-bottom: 10px; margin-top: -40px; } 
         .pie-legend { display: flex; flex-direction: column; gap: 8px; width: 100%; }
@@ -321,15 +216,16 @@ input[type="text"] {
         .mood-card-1 { background-color: var(--warm-bg); } .mood-card-1 .material-icons-round, .mood-card-1 span { color: var(--warm-text); }
         .history-list { display: flex; flex-direction: column; gap: 10px; }
 
-        /* --- НИЖНЕЕ МЕНЮ (NAVBAR) --- */
         .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; height: 80px; background: var(--nav-bg); border-top-left-radius: 24px; border-top-right-radius: 24px; box-shadow: var(--nav-shadow); display: flex; justify-content: space-around; align-items: center; z-index: 1000; padding-bottom: env(safe-area-inset-bottom); }
         .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 60px; height: 100%; border: none; background: transparent; cursor: pointer; }
         .nav-icon { font-size: 28px; color: var(--nav-icon-color); transition: color 0.3s; }
         .nav-icon-active { color: var(--nav-icon-active); }
         .nav-placeholder { width: 36px; height: 36px; border-radius: 12px; border: 2px dashed var(--text-muted); opacity: 0.3; }
 
-        /* --- АДАПТАЦИЯ (Z Flip, SE) --- */
-        @media (max-width: 370px) {
+        @media (max-width: 380px) {
+            .input-area { padding: 10px 8px; gap: 8px; }
+            .btn-sq { width: 44px; height: 44px; border-radius: 14px; }
+            input[type="text"] { height: 44px; font-size: 14px; padding: 0 12px; }
             #menu-screen { padding: 16px; padding-bottom: 90px; }
             .main-grid, .bottom-grid { gap: 10px; }
             .action-card { padding: 12px 6px; } 
@@ -340,36 +236,28 @@ input[type="text"] {
             .small-card span { font-size: 10px; white-space: nowrap; }
         }
 
-        /* --- ИСПРАВЛЕНИЕ: Контраст кнопок в Дыхании (Тёмная тема) --- */
-        body.dark-mode .btn-game-card,
-        body.dark-mode .btn-reset-sq {
-            border: 1px solid var(--primary-main); /* Жирная оранжевая рамка */
-            background: #1E1E1E;   
-            color: var(--primary-main);            /* Ярко-оранжевый текст/иконка */
-            box-shadow: 0 0 15px rgba(255, 111, 0, 0.2); /* Неоновое свечение вокруг */
+        body.dark-mode .btn-game-card, body.dark-mode .btn-reset-sq {
+            border: 1px solid var(--primary-main); background: #1E1E1E; color: var(--primary-main); box-shadow: 0 0 15px rgba(255, 111, 0, 0.2);
         }
-       /* Делаем иконки Чата и SOS оранжевыми в тёмной теме */
-        body.dark-mode #chat-nav-icon,
-        body.dark-mode #sos-nav-icon {
-            color: var(--nav-icon-active);
-        }
-        /* --- АДАПТАЦИЯ ДЛЯ УЗКИХ ЭКРАНОВ (Z Fold, Z Flip) --- */
-        @media (max-width: 380px) {
-            .input-area {
-                padding: 10px 8px; /* Уменьшаем боковые отступы */
-                gap: 8px;          /* Уменьшаем расстояние между элементами */
-            }
-            .btn-sq {
-                width: 44px;       /* Кнопки чуть компактнее */
-                height: 44px;
-                border-radius: 14px;
-            }
-            input[type="text"] {
-                height: 44px;      /* Поле ввода такой же высоты */
-                font-size: 14px;   /* Шрифт чуть меньше */
-                padding: 0 12px;
-            }
-        }
+        body.dark-mode #chat-nav-icon, body.dark-mode #sos-nav-icon, body.dark-mode #call-nav-icon { color: var(--nav-icon-active); }
+
+        /* --- СТИЛИ ДЛЯ ЗВОНКА (CALL SCREEN) --- */
+        #call-screen { background: linear-gradient(135deg, #263238, #101010); color: white; z-index: 2000; }
+        .call-ui-container { display: flex; flex-direction: column; height: 100%; justify-content: space-between; align-items: center; padding: 60px 30px 40px; }
+        .call-header { text-align: center; }
+        .call-name { font-size: 28px; font-weight: 700; margin-top: 8px; letter-spacing: 0.5px; }
+        .call-status { font-size: 16px; opacity: 0.7; font-weight: 500; }
+        .call-visual-area { flex: 1; display: flex; align-items: center; justify-content: center; width: 100%; }
+        .ai-avatar-circle { width: 160px; height: 160px; border-radius: 50%; background: linear-gradient(45deg, var(--primary-main), var(--primary-text)); display: flex; align-items: center; justify-content: center; box-shadow: 0 0 30px rgba(77, 182, 172, 0.4); animation: pulse-avatar 2s infinite ease-in-out; }
+        @keyframes pulse-avatar { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.2); } 50% { transform: scale(1.05); box-shadow: 0 0 0 20px rgba(255, 255, 255, 0); } 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); } }
+        .call-controls-row { display: flex; align-items: center; justify-content: center; gap: 25px; width: 100%; margin-bottom: 20px; }
+        .btn-round-control { width: 60px; height: 60px; border-radius: 50%; border: none; background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(10px); color: white; display: flex; align-items: center; justify-content: center; font-size: 24px; cursor: pointer; transition: all 0.2s; }
+        .btn-round-control:active { background: rgba(255, 255, 255, 0.3); transform: scale(0.95); }
+        .btn-active-state { background: white; color: #333; }
+        .btn-round-end { width: 75px; height: 75px; border-radius: 50%; border: none; background: #FF3B30; color: white; display: flex; align-items: center; justify-content: center; font-size: 32px; cursor: pointer; box-shadow: 0 4px 15px rgba(255, 59, 48, 0.4); transition: transform 0.1s; }
+        .btn-round-end:active { transform: scale(0.9); }
+        body.dark-mode #call-screen { background: #000000; }
+        body.dark-mode .ai-avatar-circle { background: linear-gradient(45deg, #FF6F00, #FF9800); box-shadow: 0 0 30px rgba(255, 111, 0, 0.3); }
     </style>
 </head>
 <body>
@@ -395,7 +283,6 @@ input[type="text"] {
             <div class="action-card card-breath" onclick="navigateTo('game')"><div class="icon-box"><span class="material-icons-round">air</span></div><h3>Дыхание</h3></div>
         </div>
         
-        <!-- ВОЛНА СПОКОЙСТВИЯ (SVG) -->
         <div class="widget-card" onclick="navigateTo('video')">
             <div class="widget-header"><div class="dot-indicator"></div><div style="font-size:14px;color:var(--text-muted)">Медитации</div></div>
             <div style="font-size:18px;font-weight:600;color:var(--text-header)">Спокойствие</div>
@@ -474,11 +361,27 @@ input[type="text"] {
         </div>
     </div>
 
+    <!-- CALL SCREEN (ЗВОНОК) -->
+    <div id="call-screen" class="screen">
+        <div class="call-ui-container">
+            <div class="call-header">
+                <div class="call-status" id="callStatus">Подключение...</div>
+                <div class="call-name">AI Психолог</div>
+            </div>
+            <div class="call-visual-area"><div class="ai-avatar-circle"><span class="material-icons-round" style="font-size: 64px; color: white;">graphic_eq</span></div></div>
+            <div class="call-controls-row">
+                <button class="btn-round-control" id="speakerBtn" onclick="toggleSpeaker()"><span class="material-icons-round">volume_up</span></button>
+                <button class="btn-round-control" onclick="toggleMicMute(this)"><span class="material-icons-round">mic</span></button>
+                <button class="btn-round-end" onclick="endCall()"><span class="material-icons-round">call_end</span></button>
+            </div>
+        </div>
+    </div>
+
     <!-- НОВОЕ НИЖНЕЕ МЕНЮ (NAVBAR) -->
     <nav class="bottom-nav">
         <button class="nav-item" onclick="toggleTheme()"><span id="theme-icon" class="material-icons-round nav-icon">dark_mode</span></button>
         <button class="nav-item" onclick="navigateTo('sos')"><span id="sos-nav-icon" class="material-icons-round nav-icon">sos</span></button> 
-        <button class="nav-item" onclick="alert('Скоро!')"><div class="nav-placeholder"></div></button>
+        <button class="nav-item" onclick="navigateTo('call')"><span id="call-nav-icon" class="material-icons-round nav-icon">call</span></button>
         <button class="nav-item" onclick="navigateTo('chat')"><span id="chat-nav-icon" class="material-icons-round nav-icon">chat_bubble_outline</span></button>    
     </nav>
 
@@ -516,7 +419,7 @@ input[type="text"] {
     document.getElementById('greetingText').innerText = greeting;
     document.getElementById('userNameDisplay').innerText = userName;
 
-    const screens={menu:document.getElementById('menu-screen'),chat:document.getElementById('chat-screen'),video:document.getElementById('video-screen'),music:document.getElementById('music-screen'),game:document.getElementById('game-screen'),sos:document.getElementById('sos-screen'),balloons:document.getElementById('balloon-game-screen')};
+    const screens={menu:document.getElementById('menu-screen'),chat:document.getElementById('chat-screen'),video:document.getElementById('video-screen'),music:document.getElementById('music-screen'),game:document.getElementById('game-screen'),sos:document.getElementById('sos-screen'),balloons:document.getElementById('balloon-game-screen'),call:document.getElementById('call-screen')};
     const header=document.getElementById('main-header');
     const pageTitle=document.getElementById('page-title');
 
@@ -527,6 +430,15 @@ input[type="text"] {
         resetSos();
         screens[n].classList.add('active');
 
+        // Логика меню и звонка
+        const nav = document.querySelector('.bottom-nav');
+        if (n === 'call') {
+            nav.style.display = 'none';
+            initCallUI();
+        } else {
+            nav.style.display = 'flex';
+        }
+
         if (n === 'menu') {
             header.style.display = 'none';
             tg.BackButton.hide();
@@ -535,7 +447,7 @@ input[type="text"] {
         } else if (n === 'balloons') {
             header.style.display = 'none';
             initBalloonGame();
-        } else {
+        } else if (n !== 'call') {
             header.style.display = 'flex';
             tg.BackButton.show();
             tg.BackButton.onClick(goBack);
@@ -585,7 +497,6 @@ input[type="text"] {
         constructor(){
             this.angle=Math.random()*Math.PI*2;
             this.r=110+Math.random()*20;
-            // УВЕЛИЧЕННЫЙ РАЗМЕР ШАРИКОВ (x2)
             this.size = Math.random() * 6 + 2; 
             this.speed=Math.random()*0.02+0.005;
             this.color=`rgba(100,181,246,${Math.random()*0.5})`;
@@ -595,8 +506,6 @@ input[type="text"] {
             let d=r+Math.sin(Date.now()/500)*10;
             this.r+=(d-this.r)*0.05;
             this.x=breathCanvas.width/2+Math.cos(this.angle)*this.r;
-            
-            // ИСПРАВЛЕНИЕ: ЦЕНТР КРУГА ТЕПЕРЬ СИНХРОНИЗИРОВАН С ТЕКСТОМ (42% высоты)
             this.y=(breathCanvas.height * 0.35) + Math.sin(this.angle)*this.r;
         }
         draw(){
@@ -655,6 +564,37 @@ input[type="text"] {
     // STARTUP
     checkDiaryStatus();
     initTheme(); // Применяем тему при загрузке
+
+    // --- ЛОГИКА ЗВОНКА (ИМИТАЦИЯ) ---
+    function initCallUI() {
+        document.getElementById('callStatus').innerText = "Соединение...";
+        setTimeout(() => {
+            document.getElementById('callStatus').innerText = "Слушаю...";
+            if(tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+        }, 1500);
+    }
+
+    function endCall() {
+        if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('heavy');
+        navigateTo('menu');
+    }
+
+    function toggleSpeaker() {
+        const btn = document.getElementById('speakerBtn');
+        if (btn.classList.contains('btn-active-state')) {
+            btn.classList.remove('btn-active-state');
+        } else {
+            btn.classList.add('btn-active-state');
+        }
+        if(tg.HapticFeedback) tg.HapticFeedback.selectionChanged();
+    }
+
+    function toggleMicMute(btn) {
+        btn.classList.toggle('btn-active-state');
+        const icon = btn.querySelector('span');
+        icon.innerText = btn.classList.contains('btn-active-state') ? 'mic_off' : 'mic';
+        if(tg.HapticFeedback) tg.HapticFeedback.selectionChanged();
+    }
 </script>
 </body>
 </html>
