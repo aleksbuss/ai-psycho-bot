@@ -352,6 +352,23 @@ input[type="text"] {
         body.dark-mode #chat-nav-icon {
             color: var(--nav-icon-active);
         }
+        /* --- АДАПТАЦИЯ ДЛЯ УЗКИХ ЭКРАНОВ (Z Fold, Z Flip) --- */
+        @media (max-width: 380px) {
+            .input-area {
+                padding: 10px 8px; /* Уменьшаем боковые отступы */
+                gap: 8px;          /* Уменьшаем расстояние между элементами */
+            }
+            .btn-sq {
+                width: 44px;       /* Кнопки чуть компактнее */
+                height: 44px;
+                border-radius: 14px;
+            }
+            input[type="text"] {
+                height: 44px;      /* Поле ввода такой же высоты */
+                font-size: 14px;   /* Шрифт чуть меньше */
+                padding: 0 12px;
+            }
+        }
     </style>
 </head>
 <body>
