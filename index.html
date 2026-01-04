@@ -146,14 +146,19 @@
         }
         
         .small-icon { 
-            width: 48px;  /* Увеличили иконку под стать карточке */
-            height: 48px; 
-            border-radius: 14px; 
+            width: 56px;        /* Было 36/48px -> Стало 56px (Крупнее) */
+            height: 56px;       /* Было 36/48px -> Стало 56px */
+            border-radius: 16px; 
             display: flex; 
             align-items: center; 
             justify-content: center; 
             flex-shrink: 0; 
             overflow: visible; 
+        }
+
+        /* Добавляем это правило, чтобы увеличить сам рисунок внутри квадрата */
+        .small-icon .material-icons-round {
+            font-size: 32px;    /* Было 24px -> Стало 32px */
         }
 
         .small-card h4 { font-size: 15px; font-weight: 600; color: var(--text-header); margin: 0; }
@@ -248,7 +253,15 @@
             .action-card { padding: 12px 6px; } 
             .card-chat h3, .card-breath h3 { font-size: 13px; white-space: nowrap; }
             .small-card { padding: 32px 8px; gap: 8px; }
-            .small-icon { width: 32px; height: 32px; } 
+            /* Адаптация иконки для узких экранов */
+            .small-icon { 
+                width: 42px;    /* На узком экране чуть меньше */
+                height: 42px; 
+                border-radius: 12px;
+            }
+            .small-icon .material-icons-round {
+                font-size: 24px; /* Стандартный размер иконки для узких экранов */
+            }
             .small-card h4 { font-size: 13px; white-space: nowrap; }
             .small-card span { font-size: 10px; white-space: nowrap; }
         }
