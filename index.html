@@ -8,7 +8,7 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
     <style>
         :root {
-            /* --- ПАЛИТРА FRESH MINT --- */
+            /* --- ПАЛИТРА FRESH MINT (Твоя оригинальная) --- */
             --bg-main: #F5F7FA;      
             --bg-card: #FFFFFF;      
             --text-header: #1F2937;  
@@ -136,7 +136,7 @@
         .bottom-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
        .small-card { 
             background: var(--bg-card); 
-            padding: 32px 16px; /* 32px сверху/снизу дают объем, заполняя пустоту */
+            padding: 32px 16px;
             border-radius: 20px; 
             display: flex; 
             align-items: center; 
@@ -146,8 +146,8 @@
         }
         
         .small-icon { 
-            width: 52px;        /* Было 36/48px -> Стало 56px (Крупнее) */
-            height: 52px;       /* Было 36/48px -> Стало 56px */
+            width: 52px;
+            height: 52px;
             border-radius: 16px; 
             display: flex; 
             align-items: center; 
@@ -156,9 +156,8 @@
             overflow: visible; 
         }
 
-        /* Добавляем это правило, чтобы увеличить сам рисунок внутри квадрата */
         .small-icon .material-icons-round {
-            font-size: 28px;    /* Было 24px -> Стало 32px */
+            font-size: 28px;
         }
 
         .small-card h4 { font-size: 15px; font-weight: 600; color: var(--text-header); margin: 0; }
@@ -253,15 +252,8 @@
             .action-card { padding: 12px 6px; } 
             .card-chat h3, .card-breath h3 { font-size: 13px; white-space: nowrap; }
             .small-card { padding: 32px 8px; gap: 8px; }
-            /* Адаптация иконки для узких экранов */
-            .small-icon { 
-                width: 42px;    /* На узком экране чуть меньше */
-                height: 42px; 
-                border-radius: 12px;
-            }
-            .small-icon .material-icons-round {
-                font-size: 24px; /* Стандартный размер иконки для узких экранов */
-            }
+            .small-icon { width: 42px; height: 42px; border-radius: 12px; }
+            .small-icon .material-icons-round { font-size: 24px; }
             .small-card h4 { font-size: 13px; white-space: nowrap; }
             .small-card span { font-size: 10px; white-space: nowrap; }
         }
@@ -271,7 +263,6 @@
         }
         body.dark-mode #chat-nav-icon, body.dark-mode #sos-nav-icon, body.dark-mode #call-nav-icon { color: var(--nav-icon-active); }
 
-        /* --- СТИЛИ ДЛЯ ЗВОНКА (CALL SCREEN) --- */
         #call-screen { background: linear-gradient(135deg, #263238, #101010); color: white; z-index: 2000; }
         .call-ui-container { display: flex; flex-direction: column; height: 100%; justify-content: space-between; align-items: center; padding: 60px 30px 40px; }
         .call-header { text-align: center; }
@@ -288,9 +279,51 @@
         .btn-round-end:active { transform: scale(0.9); }
         body.dark-mode #call-screen { background: #000000; }
         body.dark-mode .ai-avatar-circle { background: linear-gradient(45deg, #FF6F00, #FF9800); box-shadow: 0 0 30px rgba(255, 111, 0, 0.3); }
+
+        /* --- PAYWALL MODAL STYLES (NEW) --- */
+        .paywall-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 3000; display: none; flex-direction: column; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(10px); animation: fadeIn 0.3s; }
+        .pay-card { background: linear-gradient(145deg, #1A1C20, #000); border: 1px solid #FFD700; border-radius: 24px; padding: 24px; width: 100%; max-width: 340px; text-align: center; box-shadow: 0 0 30px rgba(255, 215, 0, 0.2); position: relative; overflow: hidden; }
+        .pay-card::before { content: ''; position: absolute; top: -50px; left: -50px; width: 100px; height: 100px; background: rgba(255,215,0,0.3); filter: blur(40px); border-radius: 50%; }
+        .pay-icon { font-size: 48px; color: #FFD700; margin-bottom: 15px; animation: pulse-gold 2s infinite; }
+        .pay-title { font-size: 22px; font-weight: 800; color: white; margin-bottom: 8px; }
+        .pay-desc { font-size: 14px; color: #CCC; margin-bottom: 24px; line-height: 1.4; }
+        .plan-btn { width: 100%; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 16px; padding: 15px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: all 0.2s; }
+        .plan-btn.popular { background: linear-gradient(90deg, #FFD700, #FDB931); border: none; color: black; }
+        .plan-btn:active { transform: scale(0.98); }
+        .plan-name { font-weight: 700; font-size: 16px; }
+        .plan-price { font-weight: 800; font-size: 16px; }
+        .plan-sub { font-size: 11px; opacity: 0.8; }
+        @keyframes pulse-gold { 0% { text-shadow: 0 0 0 rgba(255,215,0,0); } 50% { text-shadow: 0 0 20px rgba(255,215,0,0.8); } 100% { text-shadow: 0 0 0 rgba(255,215,0,0); } }
     </style>
 </head>
 <body>
+
+    <!-- МОДАЛЬНОЕ ОКНО ОПЛАТЫ (Скрыто по умолчанию) -->
+    <div id="paywall-modal" class="paywall-modal">
+        <div class="pay-card">
+            <span class="material-icons-round pay-icon">star</span>
+            <div class="pay-title">Снять ограничения</div>
+            <div class="pay-desc" id="paywall-reason-text">Лимит сообщений исчерпан. Получите полный доступ к AI Психологу.</div>
+            
+            <div class="plan-btn" onclick="buySubscription('week')">
+                <div style="text-align:left">
+                    <div class="plan-name">Неделя</div>
+                    <div class="plan-sub">Тест-драйв</div>
+                </div>
+                <div class="plan-price">399 ⭐</div>
+            </div>
+
+            <div class="plan-btn popular" onclick="buySubscription('month')">
+                <div style="text-align:left">
+                    <div class="plan-name">Месяц</div>
+                    <div class="plan-sub">Выбор большинства</div>
+                </div>
+                <div class="plan-price">999 ⭐</div>
+            </div>
+
+            <button onclick="closePaywall()" style="background:transparent; border:none; color:#777; margin-top:10px; font-size:14px; text-decoration:underline; cursor:pointer;">Я просто посмотрю</button>
+        </div>
+    </div>
 
     <!-- ШАПКА -->
     <header id="main-header">
@@ -417,10 +450,58 @@
 
 <script>
     const GOOGLE_SCRIPT_URL="https://script.google.com/macros/s/AKfycbyXqB6VVOwd4cg_GtenaKkY-VtXMLCeq2gfSNEN6BxysXOLWLWL80VmyoUO-6B46Rnf/exec";
-    const tg=window.Telegram.WebApp; tg.expand();
+    
+    const tg=window.Telegram.WebApp; 
+    tg.expand();
     const userId=tg.initDataUnsafe?.user?.id||'test_'+Math.floor(Math.random()*1000);
     const userName=tg.initDataUnsafe?.user?.first_name||'Друг';
-    
+
+    // --- PREMIUM STATUS (НОВОЕ) ---
+    window.isUserPremium = false;
+
+    // --- PAYWALL LOGIC (НОВОЕ) ---
+    function showPaywall(reason) {
+        const textEl = document.getElementById('paywall-reason-text');
+        if (reason === 'voice') {
+            textEl.innerText = "Голосовой режим и Звонки доступны только в полной версии.";
+        } else {
+            textEl.innerText = "Бесплатный лимит (3 сообщения) на сегодня исчерпан. Снимите ограничения.";
+        }
+        document.getElementById('paywall-modal').style.display = 'flex';
+        if(tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('warning');
+    }
+
+    function closePaywall() {
+        document.getElementById('paywall-modal').style.display = 'none';
+    }
+
+    function buySubscription(plan) {
+        tg.MainButton.showProgress();
+        fetch(GOOGLE_SCRIPT_URL + '?act=api', {
+            method: 'POST',
+            body: JSON.stringify({ action: 'get_invoice', userId: userId, plan: plan })
+        })
+        .then(r => r.json())
+        .then(data => {
+            tg.MainButton.hideProgress();
+            if (data.status === 'ok' && data.link) {
+                tg.openInvoice(data.link, (status) => {
+                    if (status === 'paid') {
+                        closePaywall();
+                        tg.showAlert("Подписка активирована! 🎉");
+                        window.isUserPremium = true; // Моментально обновляем UI
+                    }
+                });
+            } else {
+                alert("Ошибка создания счета.");
+            }
+        })
+        .catch(e => {
+            tg.MainButton.hideProgress();
+            alert("Ошибка сети");
+        });
+    }
+
     // --- УПРАВЛЕНИЕ ТЕМОЙ ---
     function initTheme() {
         const savedTheme = localStorage.getItem('app_theme');
@@ -454,6 +535,14 @@
     const pageTitle=document.getElementById('page-title');
 
     function navigateTo(n) {
+        // --- БЛОКИРОВКА ЗВОНКА (НОВОЕ) ---
+        if (n === 'call') {
+            if (!window.isUserPremium) { 
+                showPaywall('voice');
+                return; 
+            }
+        }
+
         Object.values(screens).forEach(e => e.classList.remove('active'));
         stopBalloonGame();
         stopBreathingAnimationLoop();
@@ -498,28 +587,73 @@
     // CHAT
     const chatContainer=document.getElementById('chat-container'),userInput=document.getElementById('userInput'),sendBtn=document.getElementById('sendBtn'),micBtn=document.getElementById('micBtn'),typingIndicator=document.getElementById('typing');
     let mediaRecorder=null,audioChunks=[],isRecording=false;
+    
+    // Запускаем загрузку истории
     loadChatHistory();
+    
     function scrollToBottom(){chatContainer.scrollTop=chatContainer.scrollHeight}
     function addMessage(t,u){const d=document.createElement('div');d.className=`message ${u?'msg-user':'msg-bot'} msg-enter`;d.innerHTML=t;chatContainer.insertBefore(d,typingIndicator);scrollToBottom()}
     function showTyping(s){typingIndicator.style.display=s?'block':'none';scrollToBottom()}
+    
     function sendMessage(){const t=userInput.value.trim();if(!t)return;addMessage(t,true);userInput.value='';sendBtn.disabled=true;showTyping(true);fetch(GOOGLE_SCRIPT_URL+'?act=api',{method:'POST',body:JSON.stringify({text:t,userId:userId})}).then(r=>r.json()).then(handleResponse).catch(handleError)}
+    
     async function toggleRecording(){if(!isRecording){try{const s=await navigator.mediaDevices.getUserMedia({audio:true});mediaRecorder=new MediaRecorder(s);audioChunks=[];mediaRecorder.ondataavailable=e=>audioChunks.push(e.data);mediaRecorder.onstop=async()=>{const b=new Blob(audioChunks,{type:'audio/webm'});const z=await blobToBase64(b);sendVoiceRequest(z)};mediaRecorder.start();isRecording=true;micBtn.classList.add('recording');if(tg.HapticFeedback)tg.HapticFeedback.impactOccurred('medium')}catch(e){alert("Нет микрофона")}}else{if(mediaRecorder){mediaRecorder.stop();mediaRecorder.stream.getTracks().forEach(t=>t.stop())}isRecording=false;micBtn.classList.remove('recording');if(tg.HapticFeedback)tg.HapticFeedback.notificationOccurred('success')}}
+    
     function sendVoiceRequest(z){addMessage("🎤 <i>Аудио...</i>",true);showTyping(true);sendBtn.disabled=true;micBtn.disabled=true;fetch(GOOGLE_SCRIPT_URL+'?act=api',{method:'POST',body:JSON.stringify({audio:z,userId:userId,text:''})}).then(r=>r.json()).then(handleResponse).catch(handleError)}
-    function handleResponse(d){showTyping(false);sendBtn.disabled=false;micBtn.disabled=false;if(d.status==='success'){addMessage(d.text,false);if(d.audio)playAudioResponse(d.audio)}else{addMessage("⚠️ "+d.text,false)}}
+    
+    // ОБНОВЛЕННАЯ ФУНКЦИЯ ОТВЕТА
+    function handleResponse(d) {
+        showTyping(false);
+        sendBtn.disabled = false;
+        micBtn.disabled = false;
+        
+        if (d.status === 'success') {
+            addMessage(d.text, false);
+            if (typeof d.isPremium !== 'undefined') window.isUserPremium = d.isPremium;
+            if (d.audio) playAudioResponse(d.audio);
+        } else if (d.status === 'error') {
+            // ОБРАБОТКА ОШИБОК ЛИМИТОВ
+            if (d.error_code === 'limit_reached') {
+                showPaywall('limit');
+            } else if (d.error_code === 'voice_blocked') {
+                showPaywall('voice');
+            } else {
+                addMessage("⚠️ " + d.text, false);
+            }
+        } else {
+            addMessage("⚠️ " + d.text, false);
+        }
+    }
+
     function handleError(){showTyping(false);sendBtn.disabled=false;micBtn.disabled=false;addMessage("⚠️ Ошибка сети",false)}
-    function loadChatHistory(){fetch(GOOGLE_SCRIPT_URL+'?act=api',{method:'POST',body:JSON.stringify({userId:userId,action:'load_history'})}).then(r=>r.json()).then(d=>{if(d.status==='success')d.history.forEach(m=>{if(m.role!=='system')addMessage(m.parts[0].text,m.role==='user')})})}
+    
+    // ОБНОВЛЕННАЯ ФУНКЦИЯ ЗАГРУЗКИ (С ПРОСЛУШКОЙ PREMIUM)
+    function loadChatHistory(){
+        fetch(GOOGLE_SCRIPT_URL+'?act=api',{method:'POST',body:JSON.stringify({userId:userId,action:'load_history'})})
+        .then(r=>r.json())
+        .then(d=>{
+            if(d.status==='success') {
+                window.isUserPremium = d.isPremium; // <-- СОХРАНЯЕМ СТАТУС
+                d.history.forEach(m=>{
+                    if(m.role!=='system') addMessage(m.parts[0].text, m.role==='user')
+                });
+            }
+        });
+    }
+
     function playAudioResponse(z){if(!z)return;try{const a=new Audio("data:audio/mp3;base64,"+z);const m=document.querySelectorAll('.msg-bot');const l=m[m.length-1];let i=null;if(l){i=document.createElement('span');i.className='material-icons-round';i.innerText='volume_up';i.style.cssText="margin-left:8px;vertical-align:middle;color:var(--primary-main);font-size:20px;";i.animate([{opacity:0.5},{opacity:1},{opacity:0.5}],{duration:1000,iterations:Infinity});l.appendChild(i)}a.play().catch(e=>{});a.onended=()=>{if(i)i.remove()}}catch(e){}}
     function blobToBase64(b){return new Promise(r=>{const z=new FileReader();z.onloadend=()=>r(z.result);z.readAsDataURL(b)})}
+    
     sendBtn.addEventListener('click',sendMessage);micBtn.addEventListener('click',toggleRecording);userInput.addEventListener('keydown',e=>{if(e.key==='Enter')sendMessage()});
 
-    // SOS
+    // SOS Logic
     const sosSteps = [{n:5,t:'ВЕЩЕЙ',d:'Найди 5 предметов одного цвета'},{n:4,t:'ОЩУЩЕНИЯ',d:'Почувствуй 4 касания'},{n:3,t:'ЗВУКА',d:'Услышь 3 звука вокруг'},{n:2,t:'ЗАПАХА',d:'Почувствуй 2 аромата'},{n:1,t:'ВКУС',d:'Ощути 1 вкус'}]; let sosIdx = 0;
     function resetSos() { sosIdx = 0; document.getElementById('sos-content-area').innerHTML = ''; document.getElementById('sos-desc-area').innerHTML = ''; const btn = document.getElementById('sos-main-btn'); btn.querySelector('span').innerText = 'Я НАШЕЛ'; btn.onclick = nextSos; }
     function startSos() { renderSosStep(); }
     function renderSosStep() { const s = sosSteps[sosIdx]; const content = document.getElementById('sos-content-area'); content.innerHTML = ''; const numDiv = document.createElement('div'); numDiv.className = 'sos-big-number'; numDiv.innerText = s.n; numDiv.style.animation = 'pop-up-letter 0.5s ease forwards'; content.appendChild(numDiv); const textLine = document.createElement('div'); textLine.className = 'sos-text-line'; s.t.split('').forEach((char, index) => { const span = document.createElement('span'); span.className = 'sos-letter'; span.innerText = char; span.style.animation = `pop-up-letter 0.4s ease forwards`; span.style.animationDelay = `${0.2 + (index * 0.05)}s`; textLine.appendChild(span); }); content.appendChild(textLine); const desc = document.getElementById('sos-desc-area'); desc.className = 'sos-desc'; desc.innerText = s.d; desc.style.animation = 'none'; desc.offsetHeight; desc.style.animation = 'fadeIn 0.5s ease forwards 0.5s'; const btn = document.getElementById('sos-main-btn'); btn.classList.remove('sos-btn-enter'); void btn.offsetWidth; btn.classList.add('sos-btn-enter'); }
     function nextSos() { if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('medium'); if (sosIdx < sosSteps.length - 1) { sosIdx++; renderSosStep(); } else { document.getElementById('sos-content-area').innerHTML = `<span class="material-icons-round" style="font-size:100px; color:var(--primary-main); animation:pop-up-letter 0.6s forwards;">check_circle</span><div class="sos-text-line" style="margin-top:20px; color:var(--text-header)">ТЫ МОЛОДЕЦ</div>`; document.getElementById('sos-desc-area').innerText = 'Ты справился. Дыши спокойно.'; const btn = document.getElementById('sos-main-btn'); btn.querySelector('span').innerText = 'В МЕНЮ'; btn.onclick = goBack; btn.classList.remove('sos-btn-enter'); void btn.offsetWidth; btn.classList.add('sos-btn-enter'); if(tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success'); } }
     
-    // Breath
+    // Breath Logic
     const breathCanvas=document.getElementById('breathCanvas'),breathCtx=breathCanvas.getContext('2d'),breathLabel=document.getElementById('breathLabel'),breathInstr=document.getElementById('breathInstruction'),playIcon=document.getElementById('playIcon'),playText=document.getElementById('playText');
     let breathAnimId,breathParticles=[],isBreathing=false,breathTimer=0,breathInterval,currentR=110,targetR=110;
     
@@ -553,7 +687,7 @@
     function toggleBreathing(){if(isBreathing){clearInterval(breathInterval);isBreathing=false;playIcon.innerText='play_arrow';playText.innerText='Продолжить'}else{isBreathing=true;playIcon.innerText='pause';playText.innerText='Пауза';breathInterval=setInterval(()=>{breathTimer++;const t=breathTimer%19;if(t<4){targetR=180;breathLabel.innerText="ВДОХ";breathInstr.innerText="Носом"}else if(t<11){targetR=190;breathLabel.innerText="ПАУЗА";breathInstr.innerText="Держим"}else{targetR=110;breathLabel.innerText="ВЫДОХ";breathInstr.innerText="Ртом"}},1000)}}
     function resetBreathing(){clearInterval(breathInterval);isBreathing=false;breathTimer=0;targetR=110;playIcon.innerText='play_arrow';playText.innerText='Старт';breathLabel.innerText='ДЫШИМ';breathInstr.innerText='Нажми Старт'}
     
-    // Diary
+    // Diary Logic
     function checkDiaryStatus() { const h = JSON.parse(localStorage.getItem('mood_history_v2') || '{}'); const today = new Date().toISOString().split('T')[0]; const icon = document.getElementById('diary-icon'); if (!h[today]) { icon.classList.add('heart-alert'); icon.innerText = 'favorite'; } else { icon.classList.remove('heart-alert'); icon.innerText = 'favorite_border'; } }
     function saveMood(level) { const h = JSON.parse(localStorage.getItem('mood_history_v2') || '{}'); const date = new Date().toISOString().split('T')[0]; h[date] = level; localStorage.setItem('mood_history_v2', JSON.stringify(h)); if(tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success'); renderDiary(); checkDiaryStatus(); }
     function renderDiary() {
@@ -574,7 +708,7 @@
         currentAngle = startAngle; slices.forEach(slice => { const sliceAngle = (slice.value / total) * 2 * Math.PI; const endAngle = currentAngle + sliceAngle; ctx.beginPath(); ctx.moveTo(cx, cy); ctx.ellipse(cx, cy, rx, ry, 0, currentAngle, endAngle); ctx.closePath(); ctx.fillStyle = slice.color; ctx.fill(); ctx.lineWidth = 1; ctx.strokeStyle = document.body.classList.contains('dark-mode') ? '#1E1E1E' : '#FFFFFF'; ctx.stroke(); currentAngle += sliceAngle; });
     }
 
-    // Balloons
+    // Balloons Logic
     const ballCanvas = document.getElementById('balloon-game-canvas'); const bCtx = ballCanvas.getContext('2d'); const dpr2 = Math.min(window.devicePixelRatio || 1, 1.5); 
     const cachedTarget = document.createElement('canvas'); const cachedDummy = document.createElement('canvas'); const balloonSize = 80; 
     cachedTarget.width = balloonSize * dpr2; cachedTarget.height = (balloonSize + 60) * dpr2; cachedDummy.width = balloonSize * dpr2; cachedDummy.height = (balloonSize + 60) * dpr2;
@@ -595,9 +729,7 @@
     checkDiaryStatus();
     initTheme(); // Применяем тему при загрузке
 
-// --- ФИНАЛЬНАЯ ЛОГИКА ЗВОНКА (БЕЗ ПОВТОРНЫХ ЗАПРОСОВ И С ПРЕРЫВАНИЕМ) ---
-    
-    // Глобальные переменные
+    // CALL LOGIC
     let vadContext, vadAnalyser, vadSource, vadStream;
     let vadInterval;
     let isSpeaking = false;
@@ -605,199 +737,88 @@
     let callMediaRecorder = null;
     let callChunks = [];
     let currentBotAudio = null; // Переменная для текущего голоса бота
-    
-    // Настройка чувствительности (10-50)
     const VAD_THRESHOLD = 30; 
 
     async function initCallUI() {
         document.getElementById('callStatus').innerText = "Подключение...";
-        
         try {
-            // 1. ПРОВЕРКА: Если микрофон уже был получен ранее, не просим снова
-            if (!vadStream || !vadStream.active) {
-                vadStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-            }
-            
-            // Настраиваем Аудио Контекст (если он закрыт или не существует)
-            if (!vadContext || vadContext.state === 'closed') {
-                vadContext = new (window.AudioContext || window.webkitAudioContext)();
-            }
+            if (!vadStream || !vadStream.active) vadStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            if (!vadContext || vadContext.state === 'closed') vadContext = new (window.AudioContext || window.webkitAudioContext)();
             if (vadContext.state === 'suspended') await vadContext.resume();
-
-            // Создаем анализатор (если нужно)
             if (!vadAnalyser) vadAnalyser = vadContext.createAnalyser();
             vadAnalyser.fftSize = 512;
-            
-            // Подключаем поток к анализатору (создаем источник заново, чтобы не было ошибок)
-            try {
-                if (vadSource) vadSource.disconnect(); // Отключаем старый, если был
-            } catch(e) {}
-            
+            try { if (vadSource) vadSource.disconnect(); } catch(e) {}
             vadSource = vadContext.createMediaStreamSource(vadStream);
             vadSource.connect(vadAnalyser);
-            
-            // Рекордер создаем заново для чистоты сессии
             callMediaRecorder = new MediaRecorder(vadStream);
             callMediaRecorder.ondataavailable = e => callChunks.push(e.data);
-            
             callMediaRecorder.onstop = async () => {
-                // Если мы ушли с экрана, не обрабатываем
                 if (!document.getElementById('call-screen').classList.contains('active')) return;
-
                 const blob = new Blob(callChunks, { type: 'audio/webm' });
-                if (blob.size < 1000) { 
-                    resetListening(); 
-                    return; 
-                }
-
+                if (blob.size < 1000) { resetListening(); return; }
                 document.getElementById('callStatus').innerText = "Думаю...";
                 document.querySelector('.ai-avatar-circle').style.transform = 'scale(0.8)';
-                
                 const base64 = await blobToBase64(blob);
-                
-                fetch(GOOGLE_SCRIPT_URL + '?act=api', {
-                    method: 'POST',
-                    body: JSON.stringify({ audio: base64, userId: userId, text: '' })
-                })
-                .then(r => r.json())
-                .then(d => {
-                    if (d.status === 'success' && d.audio) {
-                        document.getElementById('callStatus').innerText = "Говорит...";
-                        playAudioResponseInCall(d.audio);
-                    } else {
-                        resetListening();
-                    }
-                })
-                .catch(e => {
-                    resetListening();
-                });
+                fetch(GOOGLE_SCRIPT_URL + '?act=api', { method: 'POST', body: JSON.stringify({ audio: base64, userId: userId, text: '' }) }).then(r => r.json()).then(d => { if (d.status === 'success' && d.audio) { document.getElementById('callStatus').innerText = "Говорит..."; playAudioResponseInCall(d.audio); } else { resetListening(); } }).catch(e => { resetListening(); });
             };
-
             document.getElementById('callStatus').innerText = "Слушаю...";
-            // Запускаем анализ
             clearInterval(vadInterval);
             vadInterval = setInterval(analyzeVolume, 50);
-            
-        } catch (e) {
-            alert("Ошибка доступа к микрофону: " + e);
-            // Если ошибка, пробуем сбросить поток, чтобы в след. раз запросить заново
-            vadStream = null;
-            navigateTo('menu');
-        }
+        } catch (e) { alert("Ошибка доступа к микрофону: " + e); vadStream = null; navigateTo('menu'); }
     }
 
     function analyzeVolume() {
-        // Если контекст не работает или экран закрыт — ничего не делаем
         if (!vadAnalyser || !document.getElementById('call-screen').classList.contains('active')) return;
-
         const dataArray = new Uint8Array(vadAnalyser.frequencyBinCount);
         vadAnalyser.getByteFrequencyData(dataArray);
-        
-        let sum = 0;
-        for (let i = 0; i < dataArray.length; i++) sum += dataArray[i];
+        let sum = 0; for (let i = 0; i < dataArray.length; i++) sum += dataArray[i];
         const average = sum / dataArray.length;
-        
-        // Визуализация
         const scale = 1 + (average / 200); 
         const circle = document.querySelector('.ai-avatar-circle');
         if(circle) circle.style.transform = `scale(${scale})`;
-
-        // Логика VAD
         if (average > VAD_THRESHOLD) {
             if (!isSpeaking) {
-                isSpeaking = true;
-                callChunks = [];
-                // Если бот говорил — перебиваем его
-                if (currentBotAudio && !currentBotAudio.paused) {
-                    currentBotAudio.pause();
-                    currentBotAudio = null;
-                }
-                
-                if (callMediaRecorder && callMediaRecorder.state === 'inactive') {
-                    callMediaRecorder.start();
-                }
+                isSpeaking = true; callChunks = [];
+                if (currentBotAudio && !currentBotAudio.paused) { currentBotAudio.pause(); currentBotAudio = null; }
+                if (callMediaRecorder && callMediaRecorder.state === 'inactive') callMediaRecorder.start();
             }
             silenceStart = Date.now();
         } else {
             if (isSpeaking) {
                 if (Date.now() - silenceStart > 1200) {
                     isSpeaking = false;
-                    if (callMediaRecorder && callMediaRecorder.state === 'recording') {
-                        callMediaRecorder.stop();
-                        clearInterval(vadInterval);
-                    }
+                    if (callMediaRecorder && callMediaRecorder.state === 'recording') { callMediaRecorder.stop(); clearInterval(vadInterval); }
                 }
             }
         }
     }
 
     function playAudioResponseInCall(base64) {
-        // Если пользователь уже вышел, не включаем звук
         if (!document.getElementById('call-screen').classList.contains('active')) return;
-
         try {
-            // Останавливаем предыдущее аудио, если есть
-            if (currentBotAudio) {
-                currentBotAudio.pause();
-                currentBotAudio.currentTime = 0;
-            }
-
+            if (currentBotAudio) { currentBotAudio.pause(); currentBotAudio.currentTime = 0; }
             currentBotAudio = new Audio("data:audio/mp3;base64," + base64);
             currentBotAudio.play();
-            
             document.querySelector('.ai-avatar-circle').style.animation = 'pulse-avatar 1s infinite';
-            
-            currentBotAudio.onended = () => {
-                document.querySelector('.ai-avatar-circle').style.animation = 'none';
-                resetListening();
-            };
-        } catch (e) {
-            resetListening();
-        }
+            currentBotAudio.onended = () => { document.querySelector('.ai-avatar-circle').style.animation = 'none'; resetListening(); };
+        } catch (e) { resetListening(); }
     }
 
     function resetListening() {
         if (!document.getElementById('call-screen').classList.contains('active')) return;
-        
         document.getElementById('callStatus').innerText = "Слушаю...";
-        callChunks = [];
-        isSpeaking = false;
-        
-        clearInterval(vadInterval);
-        vadInterval = setInterval(analyzeVolume, 50);
+        callChunks = []; isSpeaking = false;
+        clearInterval(vadInterval); vadInterval = setInterval(analyzeVolume, 50);
     }
 
     function endCall() {
         if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('heavy');
-        
-        // 1. Останавливаем анализ (логику)
         clearInterval(vadInterval);
-        
-        // 2. МГНОВЕННО УБИВАЕМ ГОЛОС БОТА
-        if (currentBotAudio) {
-            currentBotAudio.pause();
-            currentBotAudio.currentTime = 0;
-            currentBotAudio = null;
-        }
-
-        // 3. Останавливаем запись, если шла
-        if (callMediaRecorder && callMediaRecorder.state === 'recording') {
-            callMediaRecorder.stop(); 
-            // Очищаем чанки, чтобы не отправилось после выхода
-            callChunks = []; 
-        }
-
-        // ВАЖНО: Мы НЕ вызываем vadStream.stop(), чтобы сохранить разрешение на микрофон
-        // Но мы можем приостановить контекст, чтобы экономить батарею
+        if (currentBotAudio) { currentBotAudio.pause(); currentBotAudio.currentTime = 0; currentBotAudio = null; }
+        if (callMediaRecorder && callMediaRecorder.state === 'recording') { callMediaRecorder.stop(); callChunks = []; }
         if (vadContext) vadContext.suspend();
-
-        // Сброс анимации
         const circle = document.querySelector('.ai-avatar-circle');
-        if(circle) {
-            circle.style.animation = 'pulse-avatar 2s infinite ease-in-out';
-            circle.style.transform = 'scale(1)';
-        }
-
+        if(circle) { circle.style.animation = 'pulse-avatar 2s infinite ease-in-out'; circle.style.transform = 'scale(1)'; }
         navigateTo('menu');
     }
 
@@ -811,11 +832,7 @@
         btn.classList.toggle('btn-active-state');
         const icon = btn.querySelector('span');
         icon.innerText = btn.classList.contains('btn-active-state') ? 'mic_off' : 'mic';
-        
-        // Если поток есть, выключаем/включаем дорожку
-        if (vadStream) {
-            vadStream.getAudioTracks()[0].enabled = !btn.classList.contains('btn-active-state');
-        }
+        if (vadStream) vadStream.getAudioTracks()[0].enabled = !btn.classList.contains('btn-active-state');
         if(tg.HapticFeedback) tg.HapticFeedback.selectionChanged();
     }
 </script>
