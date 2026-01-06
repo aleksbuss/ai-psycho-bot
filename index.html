@@ -8,7 +8,7 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
     <style>
         :root {
-            /* --- ПАЛИТРА FRESH MINT (Твоя оригинальная) --- */
+            /* --- ПАЛИТРА FRESH MINT --- */
             --bg-main: #F5F7FA;      
             --bg-card: #FFFFFF;      
             --text-header: #1F2937;  
@@ -136,7 +136,7 @@
         .bottom-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
        .small-card { 
             background: var(--bg-card); 
-            padding: 32px 16px;
+            padding: 32px 16px; 
             border-radius: 20px; 
             display: flex; 
             align-items: center; 
@@ -280,48 +280,61 @@
         body.dark-mode #call-screen { background: #000000; }
         body.dark-mode .ai-avatar-circle { background: linear-gradient(45deg, #FF6F00, #FF9800); box-shadow: 0 0 30px rgba(255, 111, 0, 0.3); }
 
-        /* --- PAYWALL MODAL STYLES (NEW) --- */
+        /* --- PAYWALL MODAL STYLES --- */
         .paywall-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 3000; display: none; flex-direction: column; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(10px); animation: fadeIn 0.3s; }
         .pay-card { background: linear-gradient(145deg, #1A1C20, #000); border: 1px solid #FFD700; border-radius: 24px; padding: 24px; width: 100%; max-width: 340px; text-align: center; box-shadow: 0 0 30px rgba(255, 215, 0, 0.2); position: relative; overflow: hidden; }
         .pay-card::before { content: ''; position: absolute; top: -50px; left: -50px; width: 100px; height: 100px; background: rgba(255,215,0,0.3); filter: blur(40px); border-radius: 50%; }
         .pay-icon { font-size: 48px; color: #FFD700; margin-bottom: 15px; animation: pulse-gold 2s infinite; }
         .pay-title { font-size: 22px; font-weight: 800; color: white; margin-bottom: 8px; }
         .pay-desc { font-size: 14px; color: #CCC; margin-bottom: 24px; line-height: 1.4; }
-        .plan-btn { width: 100%; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 16px; padding: 15px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: all 0.2s; }
+        .plan-btn { width: 100%; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 16px; padding: 15px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: all 0.2s; position: relative; }
         .plan-btn.popular { background: linear-gradient(90deg, #FFD700, #FDB931); border: none; color: black; }
         .plan-btn:active { transform: scale(0.98); }
         .plan-name { font-weight: 700; font-size: 16px; }
         .plan-price { font-weight: 800; font-size: 16px; }
         .plan-sub { font-size: 11px; opacity: 0.8; }
+        .save-badge { position: absolute; top: -10px; right: 10px; background: #FF3B30; color: white; font-size: 10px; font-weight: 800; padding: 4px 8px; border-radius: 8px; text-transform: uppercase; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
         @keyframes pulse-gold { 0% { text-shadow: 0 0 0 rgba(255,215,0,0); } 50% { text-shadow: 0 0 20px rgba(255,215,0,0.8); } 100% { text-shadow: 0 0 0 rgba(255,215,0,0); } }
     </style>
 </head>
 <body>
 
-    <!-- МОДАЛЬНОЕ ОКНО ОПЛАТЫ (Скрыто по умолчанию) -->
+    <!-- МОДАЛЬНОЕ ОКНО "КУПИТЬ ЗАПРОСЫ" -->
     <div id="paywall-modal" class="paywall-modal">
-        <div class="pay-card">
-            <span class="material-icons-round pay-icon">star</span>
-            <div class="pay-title">Снять ограничения</div>
-            <div class="pay-desc" id="paywall-reason-text">Лимит сообщений исчерпан. Получите полный доступ к AI Психологу.</div>
+        <div class="pay-card" style="max-width: 360px;">
+            <span class="material-icons-round pay-icon">local_fire_department</span>
+            <div class="pay-title">Пополнить энергию</div>
+            <div class="pay-desc" id="paywall-reason-text">Запросы закончились. Купите пакет, он не сгорает со временем.</div>
             
-            <div class="plan-btn" onclick="buySubscription('week')">
-                <div style="text-align:left">
-                    <div class="plan-name">Неделя</div>
-                    <div class="plan-sub">Тест-драйв</div>
+            <!-- Пакет 1 -->
+            <div class="plan-btn" onclick="buySubscription('small')">
+                <div style="text-align:left; flex:1;">
+                    <div class="plan-name">Старт</div>
+                    <div class="plan-sub">50 запросов</div>
+                </div>
+                <div class="plan-price">99 ⭐</div>
+            </div>
+
+            <!-- Пакет 2 (Выгодный) -->
+            <div class="plan-btn popular" onclick="buySubscription('medium')">
+                <div class="save-badge">ХИТ</div>
+                <div style="text-align:left; flex:1;">
+                    <div class="plan-name">Оптимальный</div>
+                    <div class="plan-sub">300 запросов</div>
                 </div>
                 <div class="plan-price">399 ⭐</div>
             </div>
 
-            <div class="plan-btn popular" onclick="buySubscription('month')">
-                <div style="text-align:left">
-                    <div class="plan-name">Месяц</div>
-                    <div class="plan-sub">Выбор большинства</div>
+            <!-- Пакет 3 (Max) -->
+            <div class="plan-btn" onclick="buySubscription('large')" style="border-color: #FFD700;">
+                <div style="text-align:left; flex:1;">
+                    <div class="plan-name">Максимальный</div>
+                    <div class="plan-sub">1000 запросов</div>
                 </div>
                 <div class="plan-price">999 ⭐</div>
             </div>
 
-            <button onclick="closePaywall()" style="background:transparent; border:none; color:#777; margin-top:10px; font-size:14px; text-decoration:underline; cursor:pointer;">Я просто посмотрю</button>
+            <button onclick="closePaywall()" style="background:transparent; border:none; color:#777; margin-top:10px; font-size:14px; text-decoration:underline; cursor:pointer;">Закрыть</button>
         </div>
     </div>
 
@@ -463,9 +476,9 @@
     function showPaywall(reason) {
         const textEl = document.getElementById('paywall-reason-text');
         if (reason === 'voice') {
-            textEl.innerText = "Голосовой режим и Звонки доступны только в полной версии.";
+            textEl.innerText = "Голосовой режим и Звонки доступны только при положительном балансе.";
         } else {
-            textEl.innerText = "Бесплатный лимит (3 сообщения) на сегодня исчерпан. Снимите ограничения.";
+            textEl.innerText = "Бесплатный лимит (3 сообщения) исчерпан. Пополните баланс.";
         }
         document.getElementById('paywall-modal').style.display = 'flex';
         if(tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('warning');
@@ -475,7 +488,7 @@
         document.getElementById('paywall-modal').style.display = 'none';
     }
 
-    function buySubscription(plan) {
+    function buySubscription(plan) { // plan: 'small', 'medium', 'large'
         tg.MainButton.showProgress();
         fetch(GOOGLE_SCRIPT_URL + '?act=api', {
             method: 'POST',
@@ -488,8 +501,8 @@
                 tg.openInvoice(data.link, (status) => {
                     if (status === 'paid') {
                         closePaywall();
-                        tg.showAlert("Подписка активирована! 🎉");
-                        window.isUserPremium = true; // Моментально обновляем UI
+                        tg.showAlert("Баланс пополнен! 🎉");
+                        loadChatHistory(); // Обновляем статус
                     }
                 });
             } else {
@@ -609,7 +622,8 @@
         
         if (d.status === 'success') {
             addMessage(d.text, false);
-            if (typeof d.isPremium !== 'undefined') window.isUserPremium = d.isPremium;
+            // Если вернулся баланс > 0, считаем премиумом
+            if (d.balance > 0) window.isUserPremium = true;
             if (d.audio) playAudioResponse(d.audio);
         } else if (d.status === 'error') {
             // ОБРАБОТКА ОШИБОК ЛИМИТОВ
@@ -627,13 +641,15 @@
 
     function handleError(){showTyping(false);sendBtn.disabled=false;micBtn.disabled=false;addMessage("⚠️ Ошибка сети",false)}
     
-    // ОБНОВЛЕННАЯ ФУНКЦИЯ ЗАГРУЗКИ (С ПРОСЛУШКОЙ PREMIUM)
+    // ОБНОВЛЕННАЯ ФУНКЦИЯ ЗАГРУЗКИ (С ПРОСЛУШКОЙ БАЛАНСА)
     function loadChatHistory(){
         fetch(GOOGLE_SCRIPT_URL+'?act=api',{method:'POST',body:JSON.stringify({userId:userId,action:'load_history'})})
         .then(r=>r.json())
         .then(d=>{
             if(d.status==='success') {
-                window.isUserPremium = d.isPremium; // <-- СОХРАНЯЕМ СТАТУС
+                // Если баланс > 0, то премиум
+                if (d.balance > 0) window.isUserPremium = true;
+                
                 d.history.forEach(m=>{
                     if(m.role!=='system') addMessage(m.parts[0].text, m.role==='user')
                 });
