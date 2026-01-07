@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>AI Психолог</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <!-- Шрифт Manrope -->
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&subset=cyrillic&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&subset=cyrillic&display=swap" rel="stylesheet">
+    
     <style>
         :root {
             /* --- ПАЛИТРА FRESH MINT --- */
@@ -68,30 +68,13 @@
             --wave-color: #FF6F00;
         }
 
-        /* Dark Mode Effects */
-        body.dark-mode .action-card, body.dark-mode .small-card, body.dark-mode .widget-card {
-            background: var(--bg-card); border: 1px solid rgba(255, 255, 255, 0.05);
-            box-shadow: 0 4px 20px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.05);
-        }
-        body.dark-mode .card-chat .icon-box, body.dark-mode .card-breath .icon-box {
-            background: linear-gradient(135deg, rgba(255, 111, 0, 0.1), rgba(0,0,0,0));
-            border: 1px solid rgba(255, 111, 0, 0.2); color: #FF8F00; box-shadow: 0 0 15px rgba(255, 111, 0, 0.1);
-        }
-        body.dark-mode .sos-btn-header {
-            background: linear-gradient(135deg, #3E2723, #1A100A); border: 1px solid rgba(255, 111, 0, 0.3); color: #FF6F00;
-            box-shadow: 0 0 10px rgba(255, 69, 0, 0.2), inset 0 0 10px rgba(0,0,0,0.5); text-shadow: 0 0 5px rgba(255, 69, 0, 0.5);
-        }
-        body.dark-mode .wave-graph { filter: drop-shadow(0 0 8px rgba(255, 111, 0, 0.4)); }
-        body.dark-mode .wave-fill { stop-opacity: 0.1; }
-        body.dark-mode .wave-stroke { stroke: #FF8F00; stroke-width: 3; }
-        body.dark-mode .small-icon.warm-icon, body.dark-mode .small-icon.mint-icon { background: rgba(255,255,255,0.03); color: #B0BEC5; }
-
+        /* --- ОБЩИЕ СТИЛИ --- */
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-
+        
         body { 
             font-family: 'Manrope', sans-serif; 
             font-weight: 500; 
-            -webkit-font-smoothing: antialiased; 
+            -webkit-font-smoothing: antialiased;
             background-color: var(--bg-main); 
             color: var(--text-body); 
             line-height: 1.5; 
@@ -100,10 +83,7 @@
             transition: background-color 0.3s, color 0.3s; 
         }
 
-        /* Принудительно заставляем кнопки и поля ввода использовать Manrope */
-        button, input, textarea, select {
-            font-family: 'Manrope', sans-serif !important;
-        }
+        button, input, textarea, select { font-family: 'Manrope', sans-serif !important; }
 
         @keyframes blink { 0%, 90%, 100% { transform: scaleY(1); } 95% { transform: scaleY(0.1); } }
         .anim-eye { transform-origin: center; animation: blink 4s infinite; }
@@ -116,6 +96,7 @@
         #gpu-activator { position: absolute; top: 0; left: 0; width: 1px; height: 1px; opacity: 0.01; pointer-events: none; z-index: -1; animation: force-gpu 1s infinite linear; will-change: transform; }
         @keyframes force-gpu { from { transform: rotate(0deg) translateZ(0); } to { transform: rotate(360deg) translateZ(0); } }
 
+        /* --- HEADER & SCREENS --- */
         header { padding: 0 20px; background: transparent; z-index: 100; display: none; align-items: center; height: 60px; flex-shrink: 0; width: 100%; }
         #back-btn { background: var(--primary-main); border: none; color: white; width: 44px; height: 44px; border-radius: 14px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); cursor: pointer; display: flex; align-items: center; justify-content: center; }
         #back-btn:active { transform: scale(0.95); }
@@ -125,26 +106,20 @@
         .screen.active { display: flex; animation: fadeUp 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
         @keyframes fadeUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
 
-        #menu-screen { padding: 24px; overflow-y: auto; padding-bottom: 100px; }
+        /* --- MENU SCREEN --- */
+        #menu-screen { padding: 24px; overflow-y: auto; padding-bottom: 110px; }
+        
         .greeting-header { margin-top: 10px; margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center; }
-        .greeting-text h1 { 
-            font-size: 28px; 
-            line-height: 1.2; 
-            color: var(--text-header); 
-            font-weight: 800; 
-            letter-spacing: -0.5px; 
-        }        
+        .greeting-text h1 { font-size: 28px; line-height: 1.2; color: var(--text-header); font-weight: 800; letter-spacing: -0.5px; }
         .greeting-text p { font-size: 16px; color: var(--text-muted); margin-top: 4px; }
         
-        /* --- SOS BUTTON (С Анимацией) --- */
         .sos-btn-header { 
             width: 54px; height: 54px; border-radius: 18px; 
             background-color: var(--warm-bg); 
             display: flex; align-items: center; justify-content: center; 
             color: var(--warm-text); font-weight: 800; font-size: 15px; border: none; 
             box-shadow: 0 4px 15px rgba(255, 183, 77, 0.25); 
-            cursor: pointer; 
-            animation: heartbeat 2s infinite ease-in-out;
+            cursor: pointer; animation: heartbeat 2s infinite ease-in-out;
         }
         .sos-btn-header:active { transform: scale(0.95); animation: none; }
 
@@ -177,9 +152,7 @@
 
         .bottom-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
         .small-card { 
-            background: var(--bg-card); 
-            padding: 32px 16px; 
-            border-radius: 20px; 
+            background: var(--bg-card); padding: 32px 16px; border-radius: 20px; 
             display: flex; align-items: center; gap: 14px; 
             box-shadow: var(--shadow-card); cursor: pointer; 
         }
@@ -187,9 +160,10 @@
         .small-icon .material-icons-round { font-size: 28px; }
         .small-card h4 { font-size: 15px; font-weight: 600; color: var(--text-header); margin: 0; }
         .small-card span { font-size: 12px; color: var(--text-muted); }
+        .warm-icon { background: var(--warm-bg); color: var(--warm-accent); }
+        .mint-icon { background: var(--primary-soft); color: var(--primary-main); }
 
-        .heart-alert { color: #EF6C00 !important; animation: heart-beat 1.5s infinite ease-in-out; z-index: 10; }
-
+        /* --- CHAT --- */
         #chat-container { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; scroll-behavior: smooth; }
         .message { max-width: 85%; padding: 14px 18px; border-radius: 20px; font-size: 15px; box-shadow: var(--shadow-card); position: relative; }
         .msg-bot { align-self: flex-start; background-color: var(--msg-bot-bg); color: var(--text-body); border-top-left-radius: 4px; }
@@ -203,7 +177,6 @@
             display: flex; align-items: center; justify-content: center; gap: 12px; 
             padding-bottom: calc(20px + env(safe-area-inset-bottom)); 
             box-sizing: border-box; 
-            /* Отступ, чтобы не налипало на меню */
             margin-bottom: 95px; 
         } 
         input[type="text"] { flex: 1; height: 54px; border-radius: 18px; border: none; padding: 0 20px; font-size: 16px; outline: none; background: var(--bg-card); color: var(--text-header); box-shadow: 0 2px 10px rgba(0,0,0,0.03); min-width: 0; }
@@ -212,6 +185,7 @@
         #micBtn.recording { background-color: var(--primary-soft); color: var(--primary-main); animation: pulse-mint 1.5s infinite; border: 1px solid var(--primary-main); }
         #sendBtn { background: var(--primary-main); color: white; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
 
+        /* --- GAMES & OTHER --- */
         #game-screen { background: var(--primary-soft); }
         canvas#breathCanvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; opacity: 0.6; }
         .game-ui-overlay { position: relative; z-index: 10; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; width: 100%; padding-bottom: 180px; pointer-events: none; }
@@ -222,6 +196,7 @@
         .btn-game-card { padding: 20px 40px; border-radius: var(--radius-card); border: none; font-size: 18px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 14px; background: var(--secondary-bg); color: var(--secondary-text); box-shadow: var(--shadow-float-blue); }
         .btn-reset-sq { width: 66px; height: 66px; border-radius: 20px; background: var(--secondary-bg); color: var(--secondary-text); border: none; box-shadow: var(--shadow-float-blue); display: flex; align-items: center; justify-content: center; cursor: pointer; }
 
+        /* SOS SCREEN */
         #sos-screen { background: var(--bg-main); justify-content: center; overflow: hidden; }
         .sos-container-3d { position: relative; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 30px; }
         .sos-title-block { display: flex; flex-direction: column; align-items: center; gap: 15px; margin-bottom: 50px; }
@@ -235,6 +210,7 @@
         .sos-desc { font-size: 18px; color: var(--text-body); margin-top: 20px; font-weight: 500; opacity: 0; animation: fadeIn 0.5s ease forwards; animation-delay: 0.4s; text-align: center; }
         @keyframes fadeIn { to { opacity: 1; } }
 
+        /* BALLOONS */
         #balloon-game-screen { background-color: var(--primary-soft); position: relative; overflow: hidden; transform: translate3d(0,0,0); }
         .game-ui-header { position: absolute; top: 0; left: 0; width: 100%; padding: 20px; z-index: 10; display: flex; justify-content: space-between; align-items: center; pointer-events: none; }
         .score-box { background: var(--bg-card); padding: 8px 16px; border-radius: 16px; box-shadow: var(--shadow-card); font-weight: 700; color: var(--primary-text); font-size: 18px; }
@@ -252,6 +228,7 @@
         .btn-game-secondary { padding: 18px 0; font-size: 18px; font-weight: 700; text-transform: uppercase; color: var(--secondary-text); background: var(--secondary-bg); border: none; border-radius: 20px; cursor: pointer; box-shadow: 0 4px 15px rgba(33, 150, 243, 0.15); width: 100%; transition: transform 0.1s; }
         .btn-game-secondary:active { transform: scale(0.96); }
 
+        /* DIARY */
         .chart-container { background: var(--bg-card); border-radius: 24px; padding: 20px; margin-bottom: 20px; box-shadow: var(--shadow-card); min-height: 350px; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding-top: 20px; }
         #pieChart { width: 270px; height: 270px; margin-bottom: 10px; margin-top: -40px; } 
         .pie-legend { display: flex; flex-direction: column; gap: 8px; width: 100%; }
@@ -268,36 +245,28 @@
         .mood-card-2 { background-color: var(--warm-bg); } .mood-card-2 .material-icons-round, .mood-card-2 span { color: #FFE082; }
         .mood-card-1 { background-color: var(--warm-bg); } .mood-card-1 .material-icons-round, .mood-card-1 span { color: var(--warm-text); }
         .history-list { display: flex; flex-direction: column; gap: 10px; }
+        .heart-alert { color: #EF6C00 !important; animation: heart-beat 1.5s infinite ease-in-out; z-index: 10; }
 
-        /* --- ПАРЯЩЕЕ МЕНЮ (АДАПТИВНОЕ) --- */
+        /* --- NAV BAR (FLOATING) --- */
         .bottom-nav { 
-            position: fixed; 
-            bottom: 24px; 
-            left: 50%; 
-            transform: translateX(-50%); 
-            width: 92%; max-width: 380px; 
-            height: 72px; 
-            background: var(--nav-bg); 
-            border-radius: 24px; 
+            position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+            width: 92%; max-width: 380px; height: 72px; 
+            background: var(--nav-bg); border-radius: 24px; 
             box-shadow: 0 10px 30px rgba(0,0,0,0.1); 
             display: flex; justify-content: space-around; align-items: center; 
-            z-index: 1000; 
-            padding-bottom: 0;
+            z-index: 1000; padding-bottom: 0;
         }
-        
-        #menu-screen, #music-screen { padding-bottom: 110px !important; }
         .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 60px; height: 100%; border: none; background: transparent; cursor: pointer; }
         .nav-icon { font-size: 28px; color: var(--nav-icon-color); transition: color 0.3s; }
         .nav-icon-active { color: var(--nav-icon-active); }
         .nav-placeholder { width: 36px; height: 36px; border-radius: 12px; border: 2px dashed var(--text-muted); opacity: 0.3; }
 
-        /* Dark Mode Game Buttons (Общие) */
         body.dark-mode .btn-game-card, body.dark-mode .btn-reset-sq {
             border: 1px solid var(--primary-main); background: #1E1E1E; color: var(--primary-main); box-shadow: 0 0 15px rgba(255, 111, 0, 0.2);
         }
         body.dark-mode #chat-nav-icon, body.dark-mode #sos-nav-icon, body.dark-mode #call-nav-icon { color: var(--nav-icon-active); }
 
-        /* --- ЗВОНОК --- */
+        /* --- CALL SCREEN --- */
         #call-screen { background: linear-gradient(135deg, #263238, #101010); color: white; z-index: 2000; }
         .call-ui-container { display: flex; flex-direction: column; height: 100%; justify-content: space-between; align-items: center; padding: 60px 30px 40px; }
         .call-header { text-align: center; }
@@ -315,7 +284,7 @@
         body.dark-mode #call-screen { background: #000000; }
         body.dark-mode .ai-avatar-circle { background: linear-gradient(45deg, #FF6F00, #FF9800); box-shadow: 0 0 30px rgba(255, 111, 0, 0.3); }
 
-        /* --- PAYWALL MODAL STYLES (PREMIUM BLACK & GOLD) --- */
+        /* --- PAYWALL MODAL (BLACK & GOLD) --- */
         .paywall-modal { 
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
             background: rgba(0,0,0,0.85); z-index: 3000; 
@@ -325,8 +294,7 @@
         }
 
         .pay-card { 
-            background: #121212; /* Черный */
-            border: 1px solid rgba(255, 255, 255, 0.1); 
+            background: #121212; border: 1px solid rgba(255, 255, 255, 0.1); 
             border-radius: 28px; padding: 30px 24px; width: 100%; max-width: 340px; 
             text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.5); 
             position: relative; overflow: hidden; 
@@ -343,27 +311,21 @@
         .pay-desc { font-size: 15px; color: #E0E0E0; margin-bottom: 30px; line-height: 1.5; font-weight: 500; }
 
         .plan-btn { 
-            width: 100%; 
-            background: rgba(255, 255, 255, 0.08); 
+            width: 100%; background: rgba(255, 255, 255, 0.08); 
             border: 1px solid rgba(255, 255, 255, 0.1); 
             border-radius: 20px; padding: 18px 20px; margin-bottom: 12px; 
             display: flex; justify-content: space-between; align-items: center; 
             cursor: pointer; transition: all 0.2s; position: relative; 
         }
-        
         .plan-btn:active { transform: scale(0.98); background: rgba(255,255,255,0.12); }
-
         .plan-name { font-weight: 700; font-size: 17px; color: #FFFFFF; }
         .plan-price { font-weight: 800; font-size: 17px; color: #FFFFFF; }
         .plan-sub { font-size: 13px; font-weight: 600; color: #FFD700; margin-top: 4px; }
-
         .plan-btn.popular { 
             background: linear-gradient(135deg, #FFD700 0%, #FFB300 100%); 
-            border: none; 
-            box-shadow: 0 4px 20px rgba(255, 215, 0, 0.3);
+            border: none; box-shadow: 0 4px 20px rgba(255, 215, 0, 0.3);
         }
-        .plan-btn.popular .plan-name { color: #000000; }
-        .plan-btn.popular .plan-price { color: #000000; }
+        .plan-btn.popular .plan-name, .plan-btn.popular .plan-price { color: #000000; }
         .plan-btn.popular .plan-sub { color: #333333; }
 
         .save-badge { 
@@ -373,7 +335,7 @@
             box-shadow: 0 4px 10px rgba(0,0,0,0.3); border: 2px solid #121212;
         }
 
-       /* --- ИСПРАВЛЕНИЯ ДЛЯ УЗКИХ И ВЫСОКИХ ЭКРАНОВ (Z Flip) --- */
+        /* --- ИСПРАВЛЕНИЯ ДЛЯ Z FLIP (УЗКИЙ ЭКРАН) --- */
         @media (max-width: 380px) {
             .input-area { padding: 10px 8px; gap: 8px; }
             .btn-sq { width: 44px; height: 44px; border-radius: 14px; }
@@ -381,67 +343,51 @@
             
             #menu-screen { 
                 padding: 16px; 
-                min-height: 100vh; /* Высота экрана */
-                
-                /* ГЛАВНОЕ ИЗМЕНЕНИЕ: ФЛЕКС-РАСПРЕДЕЛЕНИЕ */
-                display: flex; 
-                flex-direction: column;
-                justify-content: space-evenly; /* Равномерно распределяем пустоту между блоками */
-                
+                /* Растягиваем на всю высоту, но НЕ перекрываем клики */
+                min-height: 100vh;
+                display: flex; flex-direction: column;
+                justify-content: space-evenly; /* Равномерные отступы */
                 box-sizing: border-box;
-                padding-bottom: 90px; /* Отступ под меню */
+                padding-bottom: 90px;
             }
-            
-            /* Убираем жесткие отступы, теперь за них отвечает space-evenly */
-            .greeting-header, .main-grid, .widget-card { 
-                margin-bottom: 0 !important; 
-                flex-shrink: 0;
-            }
+            /* Сбрасываем лишние отступы */
+            .greeting-header, .main-grid, .widget-card { margin-bottom: 0 !important; flex-shrink: 0; }
 
-            /* Верхние карточки */
+            /* Карточки верхние */
             .action-card { padding: 16px 8px; height: 130px; } 
             .card-chat h3, .card-breath h3 { 
-                font-size: 13px !important; 
-                white-space: nowrap; 
-                margin-top: 8px;
-                letter-spacing: -0.2px;
+                font-size: 13px !important; white-space: nowrap; margin-top: 8px; letter-spacing: -0.2px; 
             }
             
-            /* Нижний блок */
+            /* Карточки нижние (горизонтальные, но высокие) */
             .bottom-grid { 
-                display: grid; 
-                grid-template-columns: 1fr 1fr;
-                gap: 12px; 
-                margin-bottom: 0; /* Отступ уже задан в padding-bottom контейнера */
+                display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 0; 
             }
-
-            /* Карточки высокие (100px) */
             .small-card { 
-                height: 100px; 
-                padding: 0 16px; 
+                height: 100px; padding: 0 16px; 
                 display: flex; align-items: center; gap: 12px; width: 100%; 
             }
-            
             .small-icon { width: 44px; height: 44px; border-radius: 14px; flex-shrink: 0; }
             .small-card h4 { font-size: 13px !important; margin-bottom: 2px; }
             .small-card span { font-size: 10px; }
             
-            /* Меню */
             .bottom-nav { height: 72px; bottom: 15px; width: 92%; }
             .nav-icon { font-size: 26px; }
+            
+            /* ВАЖНО: Делаем остальные экраны видимыми при переключении */
+            .screen.active { display: flex !important; }
         }
     </style>
 </head>
 <body>
 
-    <!-- МОДАЛЬНОЕ ОКНО "КУПИТЬ ЗАПРОСЫ" -->
+    <!-- МОДАЛЬНОЕ ОКНО -->
     <div id="paywall-modal" class="paywall-modal">
         <div class="pay-card" style="max-width: 360px;">
             <span class="material-icons-round pay-icon">local_fire_department</span>
             <div class="pay-title">Пополнить энергию</div>
             <div class="pay-desc" id="paywall-reason-text">Запросы закончились. Купите пакет, он не сгорает со временем.</div>
             
-            <!-- Пакет 1 -->
             <div class="plan-btn" onclick="buySubscription('small')">
                 <div style="text-align:left; flex:1;">
                     <div class="plan-name">Старт</div>
@@ -450,7 +396,6 @@
                 <div class="plan-price">99 ⭐</div>
             </div>
 
-            <!-- Пакет 2 (Выгодный) -->
             <div class="plan-btn popular" onclick="buySubscription('medium')">
                 <div class="save-badge">ХИТ</div>
                 <div style="text-align:left; flex:1;">
@@ -460,7 +405,6 @@
                 <div class="plan-price">399 ⭐</div>
             </div>
 
-            <!-- Пакет 3 (Max) -->
             <div class="plan-btn" onclick="buySubscription('large')" style="border-color: #FFD700;">
                 <div style="text-align:left; flex:1;">
                     <div class="plan-name">Максимальный</div>
