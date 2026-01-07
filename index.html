@@ -335,38 +335,39 @@
             box-shadow: 0 4px 10px rgba(0,0,0,0.3); border: 2px solid #121212;
         }
 
-        /* --- ИСПРАВЛЕНИЯ ДЛЯ УЗКИХ ЭКРАНОВ (Z FLIP / SE) --- */
+       /* --- ИСПРАВЛЕНИЯ ДЛЯ УЗКИХ ЭКРАНОВ (Z FLIP / SE) --- */
         @media (max-width: 380px) {
-            /* 1. Уменьшаем элементы управления */
-            .input-area { padding: 10px 8px; gap: 8px; }
-            .btn-sq { width: 44px; height: 44px; border-radius: 14px; }
-            input[type="text"] { height: 44px; font-size: 14px; padding: 0 12px; }
-            
-            /* 2. !!! ФИКС НАВИГАЦИИ !!! */
-            
-            /* Если меню НЕ активно, СКРЫВАЕМ его жестко */
-            #menu-screen:not(.active) {
-                display: none !important;
+            /* 1. ГЛАВНЫЙ ФИКС НАВИГАЦИИ */
+            /* Скрываем ВСЕ экраны по умолчанию на узких телефонах */
+            .screen { 
+                display: none !important; 
             }
 
-            /* Настройки применяем ТОЛЬКО когда меню АКТИВНО */
+            /* Показываем ЛЮБОЙ экран, только если у него есть класс active */
+            .screen.active { 
+                display: flex !important; 
+                flex-direction: column;
+            }
+
+            /* 2. НАСТРОЙКИ МЕНЮ (Применяются ТОЛЬКО когда оно активно) */
             #menu-screen.active { 
                 padding: 16px; 
-                min-height: 100vh; 
-                display: flex; 
-                flex-direction: column;
-                justify-content: space-evenly; /* Размазываем контент по высоте */
+                min-height: 100vh; /* Растягиваем на всю высоту */
+                justify-content: space-evenly; /* Равномерные отступы (убирает дыру) */
                 box-sizing: border-box;
                 padding-bottom: 90px;
             }
             
-            /* Сбрасываем лишние отступы */
-            .greeting-header { margin-bottom: 0 !important; flex-shrink: 0; }
-            .main-grid { gap: 10px; margin-bottom: 0 !important; flex-shrink: 0; }
-            .widget-card { margin-bottom: 0 !important; flex-shrink: 0; }
+            /* Сбрасываем margin, так как используем space-evenly */
+            .greeting-header, .main-grid, .widget-card { margin-bottom: 0 !important; flex-shrink: 0; }
 
-            /* 3. Верхние карточки (13px) */
-            .action-card { padding: 16px 8px; height: 125px; } 
+            /* 3. ЭЛЕМЕНТЫ УПРАВЛЕНИЯ */
+            .input-area { padding: 10px 8px; gap: 8px; }
+            .btn-sq { width: 44px; height: 44px; border-radius: 14px; }
+            input[type="text"] { height: 44px; font-size: 14px; padding: 0 12px; }
+
+            /* 4. КАРТОЧКИ */
+            .action-card { padding: 16px 8px; height: 130px; } 
             .card-chat h3, .card-breath h3 { 
                 font-size: 13px !important; 
                 white-space: nowrap; 
@@ -374,7 +375,6 @@
                 letter-spacing: -0.2px;
             }
             
-            /* 4. Нижний блок */
             .bottom-grid { 
                 display: grid; 
                 grid-template-columns: 1fr 1fr;
@@ -382,26 +382,19 @@
                 margin-bottom: 0;
             }
 
-            /* Карточки Дневник/Игра */
             .small-card { 
-                height: 90px; /* Фиксированная высота */
+                height: 90px; 
                 padding: 0 12px; 
-                display: flex; 
-                align-items: center; 
-                gap: 10px; 
-                width: 100%; 
+                display: flex; align-items: center; gap: 10px; width: 100%; 
             }
             
             .small-icon { width: 40px; height: 40px; border-radius: 12px; flex-shrink: 0; }
             .small-card h4 { font-size: 13px !important; margin-bottom: 0; }
             .small-card span { font-size: 10px; }
             
-            /* Меню */
+            /* 5. МЕНЮ */
             .bottom-nav { height: 68px; bottom: 12px; width: 94%; }
             .nav-icon { font-size: 24px; }
-            
-            /* Принудительно показываем активный экран (Чат, Дыхание и т.д.) */
-            .screen.active { display: flex !important; }
         }
     </style>
 </head>
