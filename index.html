@@ -373,7 +373,7 @@
             box-shadow: 0 4px 10px rgba(0,0,0,0.3); border: 2px solid #121212;
         }
 
-        /* --- ИСПРАВЛЕНИЯ ДЛЯ УЗКИХ ЭКРАНОВ (Z Flip / SE) --- */
+       /* --- ИСПРАВЛЕНИЯ ДЛЯ УЗКИХ И ВЫСОКИХ ЭКРАНОВ (Z Flip) --- */
         @media (max-width: 380px) {
             .input-area { padding: 10px 8px; gap: 8px; }
             .btn-sq { width: 44px; height: 44px; border-radius: 14px; }
@@ -381,19 +381,24 @@
             
             #menu-screen { 
                 padding: 16px; 
-                /* Растягиваем на всю высоту */
-                min-height: 100vh;
-                display: flex; flex-direction: column;
+                min-height: 100vh; /* Высота экрана */
+                
+                /* ГЛАВНОЕ ИЗМЕНЕНИЕ: ФЛЕКС-РАСПРЕДЕЛЕНИЕ */
+                display: flex; 
+                flex-direction: column;
+                justify-content: space-evenly; /* Равномерно распределяем пустоту между блоками */
+                
                 box-sizing: border-box;
-                padding-bottom: 0;
+                padding-bottom: 90px; /* Отступ под меню */
             }
             
-            /* Отступы между блоками */
-            .greeting-header { margin-bottom: 12px; flex-shrink: 0; }
-            .main-grid { gap: 12px; margin-bottom: 12px; flex-shrink: 0; }
-            .widget-card { margin-bottom: 12px; flex-shrink: 0; }
+            /* Убираем жесткие отступы, теперь за них отвечает space-evenly */
+            .greeting-header, .main-grid, .widget-card { 
+                margin-bottom: 0 !important; 
+                flex-shrink: 0;
+            }
 
-            /* 1. ВЕРХНИЕ КАРТОЧКИ (Чат, Дыхание) */
+            /* Верхние карточки */
             .action-card { padding: 16px 8px; height: 130px; } 
             .card-chat h3, .card-breath h3 { 
                 font-size: 13px !important; 
@@ -402,37 +407,23 @@
                 letter-spacing: -0.2px;
             }
             
-            /* 2. НИЖНИЙ БЛОК (Исправлено) */
+            /* Нижний блок */
             .bottom-grid { 
-                /* Возвращаем Grid, чтобы они стояли в 2 колонки ровно */
                 display: grid; 
                 grid-template-columns: 1fr 1fr;
                 gap: 12px; 
-                /* Этот блок займет все свободное место до меню */
-                margin-bottom: 100px; 
-                flex-grow: 1; 
-                align-content: start; /* Карточки прижимаются к верху блока */
+                margin-bottom: 0; /* Отступ уже задан в padding-bottom контейнера */
             }
 
-            /* 3. САМИ КАРТОЧКИ (Сделали их высокими) */
+            /* Карточки высокие (100px) */
             .small-card { 
-                /* Фиксируем большую высоту, чтобы убрать дырку */
                 height: 100px; 
-                padding: 0 16px; /* Отступы внутри */
-                
-                /* Выравнивание иконки и текста */
-                display: flex;
-                align-items: center;
-                gap: 12px;
-                width: 100%; /* На всю ширину ячейки */
+                padding: 0 16px; 
+                display: flex; align-items: center; gap: 12px; width: 100%; 
             }
             
             .small-icon { width: 44px; height: 44px; border-radius: 14px; flex-shrink: 0; }
-            
-            .small-card h4 { 
-                font-size: 13px !important; 
-                margin-bottom: 2px; 
-            }
+            .small-card h4 { font-size: 13px !important; margin-bottom: 2px; }
             .small-card span { font-size: 10px; }
             
             /* Меню */
