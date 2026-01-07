@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>AI Психолог</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&subset=cyrillic&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
     <style>
         :root {
@@ -86,17 +86,26 @@
         body.dark-mode .small-icon.warm-icon, body.dark-mode .small-icon.mint-icon { background: rgba(255,255,255,0.03); color: #B0BEC5; }
 
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-body { 
-            /* Ставим Manrope первым. Если он не загрузится, сработают остальные */
-            font-family: 'Manrope', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; 
+
+        
+        /* Применяем шрифт ко всему телу */
+        body { 
+            font-family: 'Manrope', sans-serif; 
             background-color: var(--bg-main); 
             color: var(--text-body); 
             line-height: 1.5; 
-            position: fixed; 
-            top: 0; left: 0; right: 0; bottom: 0; 
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0; 
             display: flex; flex-direction: column; 
             transition: background-color 0.3s, color 0.3s; 
         }
+
+        /* !!! ВАЖНОЕ ДОБАВЛЕНИЕ !!! */
+        /* Принудительно заставляем кнопки и поля ввода использовать Manrope */
+        button, input, textarea, select {
+            font-family: 'Manrope', sans-serif !important;
+        }
+
+        
         @keyframes blink { 0%, 90%, 100% { transform: scaleY(1); } 95% { transform: scaleY(0.1); } }
         .anim-eye { transform-origin: center; animation: blink 4s infinite; }
         @keyframes pulse-mint { 0% { box-shadow: 0 0 0 0 rgba(77, 182, 172, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(77, 182, 172, 0); } 100% { box-shadow: 0 0 0 0 rgba(77, 182, 172, 0); } }
@@ -163,7 +172,7 @@ body {
         .wave-stroke { stroke: var(--wave-color); }
 
         .bottom-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-       .small-card { 
+        .small-card { 
             background: var(--bg-card); 
             padding: 32px 16px; 
             border-radius: 20px; 
