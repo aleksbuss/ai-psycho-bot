@@ -5,243 +5,212 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>AI Психолог</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <!-- Подключаем шрифт Manrope -->
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
     <style>
         :root {
-            /* --- ШРИФТ --- */
-            --font-main: 'Manrope', -apple-system, BlinkMacSystemFont, sans-serif;
-
-            /* --- LIGHT THEME (Apple Style) --- */
-            --bg-main: #F2F2F7; /* Системный серый Apple */
-            --bg-card: #FFFFFF; /* Чистый белый */
-            
-            --text-header: #000000;  
-            --text-body: #3A3A3C;    
-            --text-muted: #8E8E93;   
-            
-            --primary-main: #007AFF; /* System Blue (или твой Teal) */
-            --primary-soft: #E5F1FF; 
-            --primary-text: #005ECB; 
-            
-            --secondary-bg: #F0F4F8; 
-            --secondary-accent: #5E5CE6; /* Indigo */
-            --secondary-text: #4644B8;
-            
-            --warm-bg: #FFF8E6;
-            --warm-accent: #FF9500;
-            --warm-text: #B86E00;
-
-            /* Тени стали мягче и "дороже" */
-            --shadow-card: 0 4px 12px rgba(0, 0, 0, 0.06);
-            --shadow-float: 0 8px 24px rgba(0, 0, 0, 0.12);
-            
-            --nav-bg: #FFFFFF;
-            --nav-shadow: 0 -1px 0 rgba(0,0,0,0.1); /* Тонкая линия вместо тени */
-            --nav-icon-color: #C7C7CC;
-            --nav-icon-active: #007AFF; 
-            
-            --radius-card: 22px;
-            --radius-btn-sq: 18px;
-            
-            --wave-color: #007AFF;
-        }
-
-        /* --- DARK THEME (OLED Black) --- */
-        body.dark-mode {
-            --bg-main: #000000; /* Истинный черный */
-            --bg-card: #1C1C1E; /* Темно-серый карточный */
-            
-            --text-header: #FFFFFF;  
-            --text-body: #E5E5EA;    
-            --text-muted: #8E8E93;   
-            
-            --primary-main: #0A84FF; /* Dark Mode Blue */
-            --primary-soft: rgba(10, 132, 255, 0.15); 
-            --primary-text: #66B2FF; 
-            
-            --secondary-bg: rgba(94, 92, 230, 0.15); 
-            --secondary-accent: #5E5CE6;
-            --secondary-text: #BFBFFF;
-            
-            --warm-bg: rgba(255, 159, 10, 0.15);
-            --warm-accent: #FF9F0A;
-            --warm-text: #FFD480;
-            
-            --shadow-card: 0 4px 12px rgba(0, 0, 0, 0.5);
-            --shadow-float: 0 8px 24px rgba(0, 0, 0, 0.6);
-            
-            --msg-bot-bg: #2C2C2E;
-            --msg-user-bg: #0A84FF;
+            /* --- ПАЛИТРА FRESH MINT --- */
+            --bg-main: #F5F7FA;      
+            --bg-card: #FFFFFF;      
+            --text-header: #1F2937;  
+            --text-body: #4B5563;    
+            --text-muted: #9CA3AF;   
+            --primary-main: #4DB6AC; 
+            --primary-soft: #E0F2F1; 
+            --primary-text: #00695C; 
+            --secondary-bg: #E3F2FD; 
+            --secondary-accent: #64B5F6;
+            --secondary-text: #1565C0;
+            --warm-bg: #FFF3E0;
+            --warm-accent: #FFB74D;
+            --warm-text: #EF6C00;
+            --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.04);
+            --shadow-float-blue: 0 10px 30px rgba(100, 181, 246, 0.25);
+            --icon-default: #90A4AE;
+            --msg-bot-bg: #FFFFFF;
+            --msg-user-bg: #4DB6AC;
             --msg-user-text: #FFFFFF;
-            
-            --nav-bg: #1C1C1E;
-            --nav-shadow: 0 -1px 0 rgba(255,255,255,0.1);
-            --nav-icon-color: #636366;
-            --nav-icon-active: #0A84FF;
-            
-            --wave-color: #0A84FF;
+            --nav-bg: #FFFFFF;
+            --nav-shadow: 0 -5px 20px rgba(0,0,0,0.05);
+            --nav-icon-color: #64B5F6;
+            --nav-icon-active: #FF9800; 
+            --radius-card: 24px;
+            --radius-btn-sq: 18px;
+            --wave-color: #4DB6AC;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; user-select: none; }
-        
-        body { 
-            font-family: var(--font-main); 
-            background-color: var(--bg-main); 
-            color: var(--text-body); 
-            line-height: 1.5; 
-            position: fixed; top: 0; left: 0; right: 0; bottom: 0; 
-            display: flex; flex-direction: column; 
-            transition: background-color 0.3s ease;
+        /* --- ТЁМНАЯ ТЕМА --- */
+        body.dark-mode {
+            --bg-main: #0B0C10;      
+            --bg-card: linear-gradient(145deg, #1A1C20 0%, #121316 100%);      
+            --text-header: #E0E0E0;  
+            --text-body: #9E9E9E;    
+            --text-muted: #616161;   
+            --primary-main: #FF6F00; 
+            --primary-soft: #1F2125; 
+            --primary-text: #FF8F00; 
+            --secondary-bg: #1F2125; 
+            --secondary-accent: #FF8F00;
+            --secondary-text: #FFA000;
+            --warm-bg: #2C1B10;
+            --warm-accent: #FF6F00;
+            --warm-text: #FFAB40;
+            --shadow-card: 0 10px 30px rgba(0, 0, 0, 0.7);
+            --shadow-float-blue: none;
+            --icon-default: #546E7A;
+            --msg-bot-bg: #1A1C20;
+            --msg-user-bg: #E65100;
+            --msg-user-text: #FFFFFF;
+            --nav-bg: #121316;
+            --nav-shadow: 0 -5px 20px rgba(0,0,0, 0.8);
+            --nav-icon-color: #424242;
+            --wave-color: #FF6F00;
         }
 
-        /* --- СТРУКТУРА И ЭКРАНЫ --- */
-        header { padding: 0 20px; background: transparent; z-index: 100; display: none; align-items: center; height: 60px; flex-shrink: 0; width: 100%; margin-top: 8px; }
-        #back-btn { background: var(--bg-card); border: none; color: var(--text-header); width: 44px; height: 44px; border-radius: 14px; box-shadow: var(--shadow-card); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: transform 0.1s; }
+        /* Dark Mode Effects */
+        body.dark-mode .action-card, body.dark-mode .small-card, body.dark-mode .widget-card {
+            background: var(--bg-card); border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.05);
+        }
+        body.dark-mode .card-chat .icon-box, body.dark-mode .card-breath .icon-box {
+            background: linear-gradient(135deg, rgba(255, 111, 0, 0.1), rgba(0,0,0,0));
+            border: 1px solid rgba(255, 111, 0, 0.2); color: #FF8F00; box-shadow: 0 0 15px rgba(255, 111, 0, 0.1);
+        }
+        body.dark-mode .sos-btn-header {
+            background: linear-gradient(135deg, #3E2723, #1A100A); border: 1px solid rgba(255, 111, 0, 0.3); color: #FF6F00;
+            box-shadow: 0 0 10px rgba(255, 69, 0, 0.2), inset 0 0 10px rgba(0,0,0,0.5); text-shadow: 0 0 5px rgba(255, 69, 0, 0.5);
+        }
+        body.dark-mode .wave-graph { filter: drop-shadow(0 0 8px rgba(255, 111, 0, 0.4)); }
+        body.dark-mode .wave-fill { stop-opacity: 0.1; }
+        body.dark-mode .wave-stroke { stroke: #FF8F00; stroke-width: 3; }
+        body.dark-mode .small-icon.warm-icon, body.dark-mode .small-icon.mint-icon { background: rgba(255,255,255,0.03); color: #B0BEC5; }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: var(--bg-main); color: var(--text-body); line-height: 1.5; position: fixed; top: 0; left: 0; right: 0; bottom: 0; display: flex; flex-direction: column; transition: background-color 0.3s, color 0.3s; }
+
+        @keyframes blink { 0%, 90%, 100% { transform: scaleY(1); } 95% { transform: scaleY(0.1); } }
+        .anim-eye { transform-origin: center; animation: blink 4s infinite; }
+        @keyframes pulse-mint { 0% { box-shadow: 0 0 0 0 rgba(77, 182, 172, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(77, 182, 172, 0); } 100% { box-shadow: 0 0 0 0 rgba(77, 182, 172, 0); } }
+        body.dark-mode .recording { animation-name: pulse-orange; border-color: #FF9800; }
+        @keyframes pulse-orange { 0% { box-shadow: 0 0 0 0 rgba(255, 152, 0, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(255, 152, 0, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 152, 0, 0); } }
+        @keyframes msgSlideUp { from { opacity: 0; transform: translateY(20px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
+        .msg-enter { animation: msgSlideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
+        @keyframes waveMove { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+        #gpu-activator { position: absolute; top: 0; left: 0; width: 1px; height: 1px; opacity: 0.01; pointer-events: none; z-index: -1; animation: force-gpu 1s infinite linear; will-change: transform; }
+        @keyframes force-gpu { from { transform: rotate(0deg) translateZ(0); } to { transform: rotate(360deg) translateZ(0); } }
+
+        header { padding: 0 20px; background: transparent; z-index: 100; display: none; align-items: center; height: 60px; flex-shrink: 0; width: 100%; }
+        #back-btn { background: var(--primary-main); border: none; color: white; width: 44px; height: 44px; border-radius: 14px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); cursor: pointer; display: flex; align-items: center; justify-content: center; }
         #back-btn:active { transform: scale(0.95); }
-        .header-title { font-size: 19px; font-weight: 700; margin-left: 16px; color: var(--text-header); }
+        .header-title { font-size: 18px; font-weight: 600; margin-left: 15px; color: var(--text-header); }
 
-        .screen { 
-            flex: 1; display: none; flex-direction: column; width: 100%; height: auto; overflow: hidden; position: relative; 
-            opacity: 0; transition: opacity 0.3s ease;
-        }
-        .screen.active { 
-            display: flex; opacity: 1; 
-        }
+        .screen { flex: 1; display: none; flex-direction: column; width: 100%; height: auto; overflow: hidden; position: relative; }
+        .screen.active { display: flex; animation: fadeUp 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
 
         #menu-screen { padding: 24px; overflow-y: auto; padding-bottom: 100px; }
-        
         .greeting-header { margin-top: 10px; margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center; }
-        .greeting-text h1 { font-size: 34px; line-height: 1.1; color: var(--text-header); font-weight: 800; letter-spacing: -0.5px; }
-        .greeting-text p { font-size: 16px; color: var(--text-muted); margin-top: 6px; font-weight: 500; }
-        
-        /* SOS Button (Pulsing) */
-        .sos-btn-header { 
-            width: 56px; height: 56px; border-radius: 20px; 
-            background: #FF3B30; /* System Red */
-            display: flex; align-items: center; justify-content: center; 
-            color: white; font-weight: 800; font-size: 15px; border: none; 
-            box-shadow: 0 4px 15px rgba(255, 59, 48, 0.4); 
-            cursor: pointer; animation: heartbeat 2.5s infinite ease-in-out;
-        }
-        @keyframes heartbeat { 0% { transform: scale(1); } 5% { transform: scale(1.08); } 10% { transform: scale(1); } 15% { transform: scale(1.08); } 50% { transform: scale(1); } 100% { transform: scale(1); } }
+        .greeting-text h1 { font-size: 26px; line-height: 1.3; color: var(--text-header); font-weight: 700; }
+        .greeting-text p { font-size: 16px; color: var(--text-muted); margin-top: 4px; }
+        .sos-btn-header { width: 54px; height: 54px; border-radius: 18px; background-color: var(--warm-bg); display: flex; align-items: center; justify-content: center; color: var(--warm-text); font-weight: 800; font-size: 15px; border: none; box-shadow: 0 4px 15px rgba(255, 183, 77, 0.25); cursor: pointer; }
+        .sos-btn-header:active { transform: scale(0.95); }
 
-        /* --- КАРТОЧКИ (CLEAN LOOK) --- */
         .main-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
-        
-        .action-card { 
-            background: var(--bg-card); 
-            border-radius: var(--radius-card); padding: 24px; 
-            display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; 
-            height: 160px; cursor: pointer; transition: transform 0.1s; box-shadow: var(--shadow-card);
-        }
+        .action-card { border-radius: var(--radius-card); padding: 20px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; height: 150px; cursor: pointer; transition: transform 0.1s; background-color: var(--primary-soft); }
         .action-card:active { transform: scale(0.97); }
-        .card-chat h3, .card-breath h3 { margin-top: 14px; font-size: 16px; font-weight: 700; color: var(--text-header); }
-        
-        .icon-box { 
-            width: 52px; height: 52px; border-radius: 18px; 
-            display: flex; align-items: center; justify-content: center; 
-            font-size: 26px; 
-        }
-        /* Уникальные цвета для иконок */
-        .card-chat .icon-box { background: var(--primary-soft); color: var(--primary-main); }
-        .card-breath .icon-box { background: var(--secondary-bg); color: var(--secondary-accent); }
+        .card-chat h3 { color: var(--primary-text); font-size: 15px; font-weight: 600; }
+        .card-chat .icon-box { color: var(--primary-main); width: 50px; height: 50px; border-radius: 16px; background: rgba(255,255,255,0.7); display: flex; align-items: center; justify-content: center; margin-bottom: 12px; }
+        .card-breath { background-color: var(--secondary-bg); }
+        .card-breath h3 { color: var(--secondary-text); font-size: 15px; font-weight: 600; }
+        .card-breath .icon-box { color: var(--secondary-accent); width: 50px; height: 50px; border-radius: 16px; background: rgba(255,255,255,0.7); display: flex; align-items: center; justify-content: center; margin-bottom: 12px; }
 
-        /* --- WIDGET С ВОЛНОЙ (ВОЗВРАЩЕНИЕ) --- */
-        .widget-card { 
-            background: var(--bg-card); 
-            border-radius: var(--radius-card); padding: 24px; margin-bottom: 24px; 
-            overflow: hidden; position: relative; cursor: pointer; box-shadow: var(--shadow-card);
-        }
-        .widget-header { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
-        .dot-indicator { width: 8px; height: 8px; background: var(--primary-main); border-radius: 50%; }
-        .widget-title { font-size: 14px; color: var(--text-muted); font-weight: 600; }
-        .widget-main-text { font-size: 20px; font-weight: 700; color: var(--text-header); }
-        
-        .wave-container { width: 100%; height: 50px; margin-top: 12px; overflow: hidden; position: relative; opacity: 0.8; }
-        .wave-graph { width: 200%; height: 100%; animation: waveMove 10s linear infinite; }
-        @keyframes waveMove { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+        .widget-card { background: var(--primary-soft); border-radius: var(--radius-card); padding: 20px; margin-bottom: 24px; overflow: hidden; position: relative; cursor: pointer; }
+        .widget-header { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+        .dot-indicator { width: 8px; height: 8px; background: var(--primary-main); border-radius: 50%; opacity: 0.8; }
+        .widget-title { font-size: 14px; color: var(--text-muted); }
+        .widget-main-text { font-size: 18px; font-weight: 600; color: var(--text-header); }
+        .wave-container { width: 100%; height: 50px; margin-top: 8px; overflow: hidden; position: relative; }
+        .wave-graph { width: 200%; height: 100%; opacity: 0.9; animation: waveMove 8s linear infinite; }
         .wave-fill { stop-color: var(--wave-color); }
         .wave-stroke { stroke: var(--wave-color); }
-        
+
         .bottom-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-        .small-card { 
+       .small-card { 
             background: var(--bg-card); 
-            padding: 24px 20px; border-radius: 24px; display: flex; align-items: center; gap: 16px; 
-            box-shadow: var(--shadow-card); cursor: pointer; transition: transform 0.1s;
+            padding: 32px 16px; 
+            border-radius: 20px; 
+            display: flex; 
+            align-items: center; 
+            gap: 14px; 
+            box-shadow: var(--shadow-card); 
+            cursor: pointer; 
         }
-        .small-card:active { transform: scale(0.97); }
-        .small-icon { width: 48px; height: 48px; border-radius: 16px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-        .small-icon .material-icons-round { font-size: 26px; }
-        .warm-icon { background: var(--warm-bg); color: var(--warm-accent); }
-        .mint-icon { background: var(--primary-soft); color: var(--primary-main); }
-        .small-card h4 { font-size: 16px; font-weight: 700; color: var(--text-header); margin-bottom: 2px; }
-        .small-card span { font-size: 13px; color: var(--text-muted); font-weight: 500; }
-
-        /* --- ЧАТ --- */
-        #chat-container { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; scroll-behavior: smooth; }
-        .message { max-width: 80%; padding: 14px 18px; border-radius: 22px; font-size: 16px; box-shadow: 0 2px 5px rgba(0,0,0,0.02); position: relative; line-height: 1.4; }
-        .msg-bot { align-self: flex-start; background: var(--bg-card); color: var(--text-body); border-bottom-left-radius: 6px; box-shadow: var(--shadow-card); }
-        .msg-user { align-self: flex-end; background: var(--primary-main); color: #FFFFFF; border-bottom-right-radius: 6px; }
         
-        .input-area { width: 100%; background: var(--bg-main); padding: 12px 16px; display: flex; align-items: center; gap: 12px; padding-bottom: calc(20px + env(safe-area-inset-bottom)); margin-bottom: 90px; }
-        input[type="text"] { flex: 1; height: 52px; border-radius: 20px; border: none; padding: 0 20px; font-size: 16px; outline: none; background: var(--bg-card); color: var(--text-header); transition: all 0.2s; font-family: var(--font-main); box-shadow: var(--shadow-card); }
-        .btn-sq { width: 52px; height: 52px; border-radius: 18px; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; flex-shrink: 0; box-shadow: var(--shadow-card); }
-        #micBtn { background-color: var(--bg-card); color: var(--text-muted); }
-        #micBtn.recording { background-color: #FF3B30; color: white; animation: pulse-red 1.5s infinite; }
-        @keyframes pulse-red { 0% { box-shadow: 0 0 0 0 rgba(255, 59, 48, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(255, 59, 48, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 59, 48, 0); } }
-        #sendBtn { background: var(--primary-main); color: white; }
+        .small-icon { 
+            width: 52px;
+            height: 52px;
+            border-radius: 16px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            flex-shrink: 0; 
+            overflow: visible; 
+        }
 
-        /* --- ИГРЫ И МЕЛОЧИ --- */
-        .game-controls { pointer-events: auto; display: flex; gap: 20px; margin-bottom: 20px; }
-        .btn-game-card { padding: 22px 48px; border-radius: 24px; border: none; font-size: 18px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 14px; background: var(--bg-card); color: var(--text-header); box-shadow: var(--shadow-card); }
-        .btn-reset-sq { width: 70px; height: 70px; border-radius: 24px; background: var(--bg-card); color: var(--text-header); box-shadow: var(--shadow-card); display: flex; align-items: center; justify-content: center; cursor: pointer; border: none; }
+        .small-icon .material-icons-round {
+            font-size: 28px;
+        }
 
-        /* --- НАВИГАЦИЯ --- */
-        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; height: 84px; background: var(--nav-bg); border-top: 1px solid rgba(0,0,0,0.05); box-shadow: none; display: flex; justify-content: space-around; align-items: center; z-index: 1000; padding-bottom: env(safe-area-inset-bottom); }
-        body.dark-mode .bottom-nav { border-top: 1px solid rgba(255,255,255,0.1); }
-        .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 60px; height: 100%; border: none; background: transparent; cursor: pointer; }
-        .nav-icon { font-size: 28px; color: var(--nav-icon-color); transition: color 0.2s; }
-        .nav-icon-active { color: var(--nav-icon-active); }
+        .small-card h4 { font-size: 15px; font-weight: 600; color: var(--text-header); margin: 0; }
+        .small-card span { font-size: 12px; color: var(--text-muted); }
 
-        /* --- PAYWALL MODAL (DARK & GOLD) --- */
-        .paywall-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 3000; display: none; flex-direction: column; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(10px); animation: fadeIn 0.3s; }
-        .pay-card { background: #121212; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 32px; padding: 32px 24px; width: 100%; max-width: 340px; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.6); position: relative; overflow: hidden; }
-        .pay-icon { font-size: 56px; color: #FFD700; margin-bottom: 20px; }
-        .pay-title { font-size: 24px; font-weight: 800; color: #FFFFFF; margin-bottom: 10px; }
-        .pay-desc { font-size: 15px; color: #A1A1AA; margin-bottom: 30px; line-height: 1.5; font-weight: 500; }
-        .plan-btn { width: 100%; background: rgba(255, 255, 255, 0.08); border-radius: 20px; padding: 18px 20px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: all 0.2s; position: relative; }
-        .plan-btn:active { transform: scale(0.98); background: rgba(255,255,255,0.12); }
-        .plan-name { font-weight: 700; font-size: 17px; color: #FFFFFF; }
-        .plan-price { font-weight: 800; font-size: 17px; color: #FFFFFF; }
-        .plan-sub { font-size: 13px; font-weight: 600; color: #FFD700; margin-top: 4px; }
-        .plan-btn.popular { background: linear-gradient(135deg, #FFD700 0%, #FFB300 100%); border: none; box-shadow: 0 4px 20px rgba(255, 215, 0, 0.3); }
-        .plan-btn.popular .plan-name, .plan-btn.popular .plan-price { color: #000000; }
-        .plan-btn.popular .plan-sub { color: #333333; }
-        .save-badge { position: absolute; top: -10px; right: 15px; background: #FF3B30; color: white; font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 10px; text-transform: uppercase; border: 2px solid #121212; }
+        @keyframes heart-beat { 0% { transform: scale(1.3); } 50% { transform: scale(1.6); text-shadow: 0 0 10px rgba(239, 108, 0, 0.4); } 100% { transform: scale(1.3); } }
+        .heart-alert { color: #EF6C00 !important; animation: heart-beat 1.5s infinite ease-in-out; z-index: 10; }
 
-        /* Прочие стили из оригинала */
+        #chat-container { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; scroll-behavior: smooth; }
+        .message { max-width: 85%; padding: 14px 18px; border-radius: 20px; font-size: 15px; box-shadow: var(--shadow-card); position: relative; }
+        .msg-bot { align-self: flex-start; background-color: var(--msg-bot-bg); color: var(--text-body); border-top-left-radius: 4px; }
+        .msg-user { align-self: flex-end; background-color: var(--msg-user-bg); color: var(--msg-user-text); border-top-right-radius: 4px; }
+        .typing-indicator { display: none; align-self: flex-start; background: var(--bg-card); padding: 12px; border-radius: 16px; margin-bottom: 10px; box-shadow: var(--shadow-card); }
+        .dot { height: 6px; width: 6px; background-color: #CFD8DC; border-radius: 50%; display: inline-block; animation: bounce 1.4s infinite ease-in-out both; margin: 0 2px; }
+        
+        .input-area { width: 100%; background: var(--bg-main); padding: 10px 16px; display: flex; align-items: center; justify-content: center; gap: 12px; padding-bottom: calc(20px + env(safe-area-inset-bottom)); box-sizing: border-box; margin-bottom: 95px; }
+        input[type="text"] { flex: 1; height: 54px; border-radius: 18px; border: none; padding: 0 20px; font-size: 16px; outline: none; background: var(--bg-card); color: var(--text-header); box-shadow: 0 2px 10px rgba(0,0,0,0.03); min-width: 0; }
+        .btn-sq { width: 54px; height: 54px; border-radius: var(--radius-btn-sq); border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; flex-shrink: 0; }
+        #micBtn { background-color: var(--bg-card); color: var(--icon-default); box-shadow: var(--shadow-card); }
+        #micBtn.recording { background-color: var(--primary-soft); color: var(--primary-main); animation: pulse-mint 1.5s infinite; border: 1px solid var(--primary-main); }
+        #sendBtn { background: var(--primary-main); color: white; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+
+        #game-screen { background: var(--primary-soft); }
+        canvas#breathCanvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; opacity: 0.6; }
+        .game-ui-overlay { position: relative; z-index: 10; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; width: 100%; padding-bottom: 180px; pointer-events: none; }
+        .breath-text-container { position: absolute; top: 35%; left: 0; width: 100%; transform: translateY(-50%); display: flex; flex-direction: column; align-items: center; justify-content: center; margin-bottom: 0; }
+        .breath-status { font-size: 32px; font-weight: 800; color: var(--text-header); margin-bottom: 8px; }
+        .breath-timer-text { font-size: 18px; color: var(--text-muted); }
+        .game-controls { pointer-events: auto; display: flex; gap: 20px; }
+        .btn-game-card { padding: 20px 40px; border-radius: var(--radius-card); border: none; font-size: 18px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 14px; background: var(--secondary-bg); color: var(--secondary-text); box-shadow: var(--shadow-float-blue); }
+        .btn-reset-sq { width: 66px; height: 66px; border-radius: 20px; background: var(--secondary-bg); color: var(--secondary-text); border: none; box-shadow: var(--shadow-float-blue); display: flex; align-items: center; justify-content: center; cursor: pointer; }
+
+        #sos-screen { background: var(--bg-main); justify-content: center; overflow: hidden; }
         .sos-container-3d { position: relative; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 30px; }
         .sos-title-block { display: flex; flex-direction: column; align-items: center; gap: 15px; margin-bottom: 50px; }
-        .sos-big-number { font-size: 160px; line-height: 1; font-weight: 900; color: #FF9F0A; text-shadow: 4px 4px 0 rgba(0,0,0,0.1); opacity: 0; display: block; }
+        .sos-big-number { font-size: 160px; line-height: 1; font-weight: 900; color: #FF6F00; text-shadow: 4px 4px 0 rgba(255, 111, 0, 0.2); opacity: 0; display: block; }
         .sos-text-line { display: flex; gap: 2px; font-size: 42px; font-weight: 900; text-transform: uppercase; color: var(--primary-main); letter-spacing: 2px; }
         .sos-letter { display: inline-block; opacity: 0; transform: translateY(20px); }
         @keyframes pop-up-letter { 0% { opacity: 0; transform: translateY(20px); } 100% { opacity: 1; transform: translateY(0); } }
-        .sos-btn-3d { padding: 18px 60px; font-size: 18px; font-weight: 700; text-transform: uppercase; color: #FFFFFF; background: linear-gradient(135deg, var(--primary-main), var(--primary-text)); border: none; border-radius: 20px; cursor: pointer; box-shadow: var(--shadow-float); transition: transform 0.1s; opacity: 1; min-width: 220px; }
+        .sos-btn-3d { padding: 18px 60px; font-size: 18px; font-weight: 700; text-transform: uppercase; color: #FFFFFF; background: linear-gradient(135deg, var(--primary-main), var(--primary-text)); border: none; border-radius: 20px; cursor: pointer; box-shadow: 0 10px 20px rgba(0,0,0, 0.2); transition: transform 0.1s, box-shadow 0.1s; opacity: 1; min-width: 220px; }
         .sos-btn-enter { opacity: 0; animation: pop-up-letter 0.5s ease forwards; animation-delay: 0.6s; }
-        .sos-btn-3d:active { transform: scale(0.96); }
+        .sos-btn-3d:active { transform: scale(0.96); box-shadow: 0 5px 10px rgba(0,0,0, 0.2); }
         .sos-desc { font-size: 18px; color: var(--text-body); margin-top: 20px; font-weight: 500; opacity: 0; animation: fadeIn 0.5s ease forwards; animation-delay: 0.4s; text-align: center; }
         @keyframes fadeIn { to { opacity: 1; } }
-        
-        /* Игры */
+
+        #balloon-game-screen { background-color: var(--primary-soft); position: relative; overflow: hidden; transform: translate3d(0,0,0); }
         .game-ui-header { position: absolute; top: 0; left: 0; width: 100%; padding: 20px; z-index: 10; display: flex; justify-content: space-between; align-items: center; pointer-events: none; }
         .score-box { background: var(--bg-card); padding: 8px 16px; border-radius: 16px; box-shadow: var(--shadow-card); font-weight: 700; color: var(--primary-text); font-size: 18px; }
         #back-btn-game { pointer-events: auto; background: var(--primary-main); border: none; border-radius: 14px; width: 44px; height: 44px; box-shadow: var(--shadow-card); display: flex; align-items: center; justify-content: center; color: white; }
         #game-timer { font-size: 20px; font-weight: 800; color: var(--text-header); background: var(--bg-card); padding: 8px 16px; border-radius: 16px; box-shadow: var(--shadow-card); }
-        .game-modal { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.95); z-index: 100; display: none; flex-direction: column; align-items: center; justify-content: center; padding: 40px; text-align: center; animation: fadeInScale 0.3s ease-out; }
+        .game-modal { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(5px); z-index: 100; display: none; flex-direction: column; align-items: center; justify-content: center; padding: 40px; text-align: center; animation: fadeInScale 0.3s ease-out; }
         @keyframes fadeInScale { from{opacity:0;transform:scale(0.9)} to{opacity:1;transform:scale(1)} }
-        body.dark-mode .game-modal { background: rgba(20, 20, 20, 0.95); }
+        body.dark-mode .game-modal { background: rgba(30, 30, 30, 0.9); }
         .cup-icon { font-size: 80px; color: #FFD700; margin-bottom: 20px; filter: drop-shadow(0 4px 10px rgba(255, 215, 0, 0.4)); animation: pulse-mint 2s infinite; }
         .score-big { font-size: 60px; font-weight: 800; color: var(--primary-text); line-height: 1; margin-bottom: 10px; }
         .score-label { font-size: 16px; color: var(--text-muted); margin-bottom: 30px; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
@@ -250,40 +219,133 @@
         .btn-game-primary:active { transform: scale(0.96); }
         .btn-game-secondary { padding: 18px 0; font-size: 18px; font-weight: 700; text-transform: uppercase; color: var(--secondary-text); background: var(--secondary-bg); border: none; border-radius: 20px; cursor: pointer; box-shadow: 0 4px 15px rgba(33, 150, 243, 0.15); width: 100%; transition: transform 0.1s; }
         .btn-game-secondary:active { transform: scale(0.96); }
-        
-        /* Дневник */
+
         .chart-container { background: var(--bg-card); border-radius: 24px; padding: 20px; margin-bottom: 20px; box-shadow: var(--shadow-card); min-height: 350px; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding-top: 20px; }
         #pieChart { width: 270px; height: 270px; margin-bottom: 10px; margin-top: -40px; } 
         .pie-legend { display: flex; flex-direction: column; gap: 8px; width: 100%; }
         .legend-item { display: flex; justify-content: space-between; align-items: center; font-size: 14px; font-weight: 600; color: var(--text-body); }
         .legend-marker { width: 12px; height: 12px; border-radius: 4px; display: inline-block; margin-right: 8px; }
         .mood-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-bottom: 30px; }
-        .mood-item { border-radius: 16px; padding: 12px 4px; display: flex; flex-direction: column; align-items: center; justify-content: center; box-shadow: var(--shadow-card); cursor: pointer; transition: transform 0.1s; background: var(--bg-card); }
+        .mood-item { border-radius: 16px; padding: 12px 4px; display: flex; flex-direction: column; align-items: center; justify-content: center; box-shadow: var(--shadow-card); cursor: pointer; transition: transform 0.1s; }
         .mood-item:active { transform: scale(0.95); }
         .mood-item .material-icons-round { font-size: 32px; margin-bottom: 6px; }
         .mood-item span { font-size: 10px; font-weight: 700; text-align: center; line-height: 1.2; }
-        .mood-card-5 .material-icons-round, .mood-card-5 span { color: var(--primary-main); }
-        .mood-card-4 .material-icons-round, .mood-card-4 span { color: #80CBC4; }
-        .mood-card-3 .material-icons-round, .mood-card-3 span { color: var(--secondary-accent); }
-        .mood-card-2 .material-icons-round, .mood-card-2 span { color: #FFE082; }
-        .mood-card-1 .material-icons-round, .mood-card-1 span { color: var(--warm-text); }
+        .mood-card-5 { background-color: var(--primary-soft); } .mood-card-5 .material-icons-round, .mood-card-5 span { color: var(--primary-main); }
+        .mood-card-4 { background-color: var(--primary-soft); } .mood-card-4 .material-icons-round, .mood-card-4 span { color: #80CBC4; }
+        .mood-card-3 { background-color: var(--secondary-bg); } .mood-card-3 .material-icons-round, .mood-card-3 span { color: var(--secondary-accent); }
+        .mood-card-2 { background-color: var(--warm-bg); } .mood-card-2 .material-icons-round, .mood-card-2 span { color: #FFE082; }
+        .mood-card-1 { background-color: var(--warm-bg); } .mood-card-1 .material-icons-round, .mood-card-1 span { color: var(--warm-text); }
         .history-list { display: flex; flex-direction: column; gap: 10px; }
-        
-        /* Звонок */
-        #call-screen { background: linear-gradient(135deg, #1C1C1E, #000000); color: white; z-index: 2000; }
+
+        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; height: 80px; background: var(--nav-bg); border-top-left-radius: 24px; border-top-right-radius: 24px; box-shadow: var(--nav-shadow); display: flex; justify-content: space-around; align-items: center; z-index: 1000; padding-bottom: env(safe-area-inset-bottom); }
+        .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 60px; height: 100%; border: none; background: transparent; cursor: pointer; }
+        .nav-icon { font-size: 28px; color: var(--nav-icon-color); transition: color 0.3s; }
+        .nav-icon-active { color: var(--nav-icon-active); }
+        .nav-placeholder { width: 36px; height: 36px; border-radius: 12px; border: 2px dashed var(--text-muted); opacity: 0.3; }
+
+        @media (max-width: 380px) {
+            .input-area { padding: 10px 8px; gap: 8px; }
+            .btn-sq { width: 44px; height: 44px; border-radius: 14px; }
+            input[type="text"] { height: 44px; font-size: 14px; padding: 0 12px; }
+            #menu-screen { padding: 16px; padding-bottom: 90px; }
+            .main-grid, .bottom-grid { gap: 10px; }
+            .action-card { padding: 12px 6px; } 
+            .card-chat h3, .card-breath h3 { font-size: 13px; white-space: nowrap; }
+            .small-card { padding: 32px 8px; gap: 8px; }
+            .small-icon { width: 42px; height: 42px; border-radius: 12px; }
+            .small-icon .material-icons-round { font-size: 24px; }
+            .small-card h4 { font-size: 13px; white-space: nowrap; }
+            .small-card span { font-size: 10px; white-space: nowrap; }
+        }
+
+        body.dark-mode .btn-game-card, body.dark-mode .btn-reset-sq {
+            border: 1px solid var(--primary-main); background: #1E1E1E; color: var(--primary-main); box-shadow: 0 0 15px rgba(255, 111, 0, 0.2);
+        }
+        body.dark-mode #chat-nav-icon, body.dark-mode #sos-nav-icon, body.dark-mode #call-nav-icon { color: var(--nav-icon-active); }
+
+        #call-screen { background: linear-gradient(135deg, #263238, #101010); color: white; z-index: 2000; }
         .call-ui-container { display: flex; flex-direction: column; height: 100%; justify-content: space-between; align-items: center; padding: 60px 30px 40px; }
         .call-header { text-align: center; }
-        .call-name { font-size: 32px; font-weight: 700; margin-top: 8px; letter-spacing: 0.5px; }
+        .call-name { font-size: 28px; font-weight: 700; margin-top: 8px; letter-spacing: 0.5px; }
         .call-status { font-size: 16px; opacity: 0.7; font-weight: 500; }
         .call-visual-area { flex: 1; display: flex; align-items: center; justify-content: center; width: 100%; }
-        .ai-avatar-circle { width: 180px; height: 180px; border-radius: 50%; background: linear-gradient(45deg, var(--primary-main), #00C6FF); display: flex; align-items: center; justify-content: center; box-shadow: 0 0 60px rgba(0, 122, 255, 0.4); animation: pulse-avatar 2s infinite ease-in-out; }
-        @keyframes pulse-avatar { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(0, 122, 255, 0.2); } 50% { transform: scale(1.05); box-shadow: 0 0 0 30px rgba(0, 122, 255, 0); } 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(0, 122, 255, 0); } }
-        .call-controls-row { display: flex; align-items: center; justify-content: center; gap: 30px; width: 100%; margin-bottom: 20px; }
-        .btn-round-control { width: 64px; height: 64px; border-radius: 50%; border: none; background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(10px); color: white; display: flex; align-items: center; justify-content: center; font-size: 28px; cursor: pointer; transition: all 0.2s; }
+        .ai-avatar-circle { width: 160px; height: 160px; border-radius: 50%; background: linear-gradient(45deg, var(--primary-main), var(--primary-text)); display: flex; align-items: center; justify-content: center; box-shadow: 0 0 30px rgba(77, 182, 172, 0.4); animation: pulse-avatar 2s infinite ease-in-out; }
+        @keyframes pulse-avatar { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.2); } 50% { transform: scale(1.05); box-shadow: 0 0 0 20px rgba(255, 255, 255, 0); } 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); } }
+        .call-controls-row { display: flex; align-items: center; justify-content: center; gap: 25px; width: 100%; margin-bottom: 20px; }
+        .btn-round-control { width: 60px; height: 60px; border-radius: 50%; border: none; background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(10px); color: white; display: flex; align-items: center; justify-content: center; font-size: 24px; cursor: pointer; transition: all 0.2s; }
         .btn-round-control:active { background: rgba(255, 255, 255, 0.3); transform: scale(0.95); }
         .btn-active-state { background: white; color: #333; }
-        .btn-round-end { width: 80px; height: 80px; border-radius: 50%; border: none; background: #FF3B30; color: white; display: flex; align-items: center; justify-content: center; font-size: 36px; cursor: pointer; box-shadow: 0 4px 20px rgba(255, 59, 48, 0.4); transition: transform 0.1s; }
+        .btn-round-end { width: 75px; height: 75px; border-radius: 50%; border: none; background: #FF3B30; color: white; display: flex; align-items: center; justify-content: center; font-size: 32px; cursor: pointer; box-shadow: 0 4px 15px rgba(255, 59, 48, 0.4); transition: transform 0.1s; }
         .btn-round-end:active { transform: scale(0.9); }
+        body.dark-mode #call-screen { background: #000000; }
+        body.dark-mode .ai-avatar-circle { background: linear-gradient(45deg, #FF6F00, #FF9800); box-shadow: 0 0 30px rgba(255, 111, 0, 0.3); }
+
+        /* --- PAYWALL MODAL STYLES (PREMIUM DARK) --- */
+        .paywall-modal { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: rgba(0,0,0,0.85); /* Задний фон темнее */
+            z-index: 3000; display: none; flex-direction: column; 
+            align-items: center; justify-content: center; padding: 20px; 
+            backdrop-filter: blur(15px); animation: fadeIn 0.3s; 
+        }
+
+        .pay-card { 
+            background: #121212; /* Глубокий черный цвет карточки */
+            border: 1px solid rgba(255, 255, 255, 0.1); 
+            border-radius: 28px; padding: 30px 24px; width: 100%; max-width: 340px; 
+            text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.5); 
+            position: relative; overflow: hidden; 
+        }
+
+        /* Золотое свечение сверху */
+        .pay-card::before { 
+            content: ''; position: absolute; top: -60px; left: 50%; transform: translateX(-50%);
+            width: 120px; height: 120px; background: rgba(255, 215, 0, 0.25); 
+            filter: blur(50px); border-radius: 50%; pointer-events: none;
+        }
+
+        .pay-icon { font-size: 56px; color: #FFD700; margin-bottom: 20px; filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.4)); }
+        
+        /* Заголовки теперь ярко-белые */
+        .pay-title { font-size: 24px; font-weight: 800; color: #FFFFFF; margin-bottom: 10px; letter-spacing: 0.5px; }
+        .pay-desc { font-size: 15px; color: #E0E0E0; margin-bottom: 30px; line-height: 1.5; font-weight: 500; }
+
+        /* Обычные кнопки (темные) */
+        .plan-btn { 
+            width: 100%; 
+            background: rgba(255, 255, 255, 0.08); /* Полупрозрачный серый */
+            border: 1px solid rgba(255, 255, 255, 0.1); 
+            border-radius: 20px; padding: 18px 20px; margin-bottom: 12px; 
+            display: flex; justify-content: space-between; align-items: center; 
+            cursor: pointer; transition: all 0.2s; position: relative; 
+        }
+        
+        .plan-btn:active { transform: scale(0.98); background: rgba(255,255,255,0.12); }
+
+        /* Текст внутри кнопок */
+        .plan-name { font-weight: 700; font-size: 17px; color: #FFFFFF; } /* Название белое */
+        .plan-price { font-weight: 800; font-size: 17px; color: #FFFFFF; } /* Цена белая */
+        .plan-sub { font-size: 13px; font-weight: 600; color: #FFD700; margin-top: 4px; } /* ЗАПРОСЫ ЗОЛОТЫЕ */
+
+        /* Активная (Популярная) кнопка - Желтая */
+        .plan-btn.popular { 
+            background: linear-gradient(135deg, #FFD700 0%, #FFB300 100%); 
+            border: none; 
+            box-shadow: 0 4px 20px rgba(255, 215, 0, 0.3);
+        }
+        
+        /* Текст внутри желтой кнопки (должен быть темным для контраста) */
+        .plan-btn.popular .plan-name { color: #000000; }
+        .plan-btn.popular .plan-price { color: #000000; }
+        .plan-btn.popular .plan-sub { color: #333333; } /* Тут запросы темно-серые, чтобы читались на желтом */
+
+        /* Бейджик ХИТ */
+        .save-badge { 
+            position: absolute; top: -10px; right: 15px; 
+            background: #D32F2F; color: white; font-size: 11px; font-weight: 800; 
+            padding: 4px 10px; border-radius: 12px; text-transform: uppercase; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3); border: 2px solid #121212;
+        }
     </style>
 </head>
 <body>
@@ -458,10 +520,10 @@
     const userId=tg.initDataUnsafe?.user?.id||'test_'+Math.floor(Math.random()*1000);
     const userName=tg.initDataUnsafe?.user?.first_name||'Друг';
 
-    // --- PREMIUM STATUS ---
+    // --- PREMIUM STATUS (НОВОЕ) ---
     window.isUserPremium = false;
 
-    // --- PAYWALL LOGIC ---
+    // --- PAYWALL LOGIC (НОВОЕ) ---
     function showPaywall(reason) {
         const textEl = document.getElementById('paywall-reason-text');
         if (reason === 'voice') {
@@ -477,7 +539,7 @@
         document.getElementById('paywall-modal').style.display = 'none';
     }
 
-    function buySubscription(plan) { 
+    function buySubscription(plan) { // plan: 'small', 'medium', 'large'
         tg.MainButton.showProgress();
         fetch(GOOGLE_SCRIPT_URL + '?act=api', {
             method: 'POST',
@@ -491,7 +553,7 @@
                     if (status === 'paid') {
                         closePaywall();
                         tg.showAlert("Баланс пополнен! 🎉");
-                        loadChatHistory(); 
+                        loadChatHistory(); // Обновляем статус
                     }
                 });
             } else {
@@ -537,6 +599,7 @@
     const pageTitle=document.getElementById('page-title');
 
     function navigateTo(n) {
+        // --- БЛОКИРОВКА ЗВОНКА (НОВОЕ) ---
         if (n === 'call') {
             if (!window.isUserPremium) { 
                 showPaywall('voice');
@@ -550,6 +613,7 @@
         resetSos();
         screens[n].classList.add('active');
 
+        // Логика меню и звонка
         const nav = document.querySelector('.bottom-nav');
         if (n === 'call') {
             nav.style.display = 'none';
@@ -588,6 +652,7 @@
     const chatContainer=document.getElementById('chat-container'),userInput=document.getElementById('userInput'),sendBtn=document.getElementById('sendBtn'),micBtn=document.getElementById('micBtn'),typingIndicator=document.getElementById('typing');
     let mediaRecorder=null,audioChunks=[],isRecording=false;
     
+    // Запускаем загрузку истории
     loadChatHistory();
     
     function scrollToBottom(){chatContainer.scrollTop=chatContainer.scrollHeight}
@@ -600,6 +665,7 @@
     
     function sendVoiceRequest(z){addMessage("🎤 <i>Аудио...</i>",true);showTyping(true);sendBtn.disabled=true;micBtn.disabled=true;fetch(GOOGLE_SCRIPT_URL+'?act=api',{method:'POST',body:JSON.stringify({audio:z,userId:userId,text:''})}).then(r=>r.json()).then(handleResponse).catch(handleError)}
     
+    // ОБНОВЛЕННАЯ ФУНКЦИЯ ОТВЕТА
     function handleResponse(d) {
         showTyping(false);
         sendBtn.disabled = false;
@@ -607,12 +673,18 @@
         
         if (d.status === 'success') {
             addMessage(d.text, false);
-            if (typeof d.isPremium !== 'undefined') window.isUserPremium = d.isPremium;
+            // Если вернулся баланс > 0, считаем премиумом
+            if (d.balance > 0) window.isUserPremium = true;
             if (d.audio) playAudioResponse(d.audio);
         } else if (d.status === 'error') {
-            if (d.error_code === 'limit_reached') showPaywall('limit');
-            else if (d.error_code === 'voice_blocked') showPaywall('voice');
-            else addMessage("⚠️ " + d.text, false);
+            // ОБРАБОТКА ОШИБОК ЛИМИТОВ
+            if (d.error_code === 'limit_reached') {
+                showPaywall('limit');
+            } else if (d.error_code === 'voice_blocked') {
+                showPaywall('voice');
+            } else {
+                addMessage("⚠️ " + d.text, false);
+            }
         } else {
             addMessage("⚠️ " + d.text, false);
         }
@@ -620,12 +692,15 @@
 
     function handleError(){showTyping(false);sendBtn.disabled=false;micBtn.disabled=false;addMessage("⚠️ Ошибка сети",false)}
     
+    // ОБНОВЛЕННАЯ ФУНКЦИЯ ЗАГРУЗКИ (С ПРОСЛУШКОЙ БАЛАНСА)
     function loadChatHistory(){
         fetch(GOOGLE_SCRIPT_URL+'?act=api',{method:'POST',body:JSON.stringify({userId:userId,action:'load_history'})})
         .then(r=>r.json())
         .then(d=>{
             if(d.status==='success') {
+                // Если баланс > 0, то премиум
                 if (d.balance > 0) window.isUserPremium = true;
+                
                 d.history.forEach(m=>{
                     if(m.role!=='system') addMessage(m.parts[0].text, m.role==='user')
                 });
