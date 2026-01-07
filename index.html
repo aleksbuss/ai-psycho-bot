@@ -264,21 +264,23 @@
         .mood-card-1 { background-color: var(--warm-bg); } .mood-card-1 .material-icons-round, .mood-card-1 span { color: var(--warm-text); }
         .history-list { display: flex; flex-direction: column; gap: 10px; }
 
-/* --- ПАРЯЩЕЕ МЕНЮ (Floating Nav) --- */
+/* --- ПАРЯЩЕЕ МЕНЮ (АДАПТИВНОЕ) --- */
         .bottom-nav { 
             position: fixed; 
-            bottom: 20px; /* Отступ от низа */
-            left: 20px;   /* Отступ слева */
-            right: 20px;  /* Отступ справа (чтобы было по центру) */
-            width: auto;  /* Ширина авто */
-            height: 75px; 
+            bottom: 24px; 
+            left: 50%; /* Ставим точку отсчета в центр экрана */
+            transform: translateX(-50%); /* Сдвигаем меню ровно на его половину влево */
+            
+            width: 92%;       /* Занимает 92% ширины на узких телефонах */
+            max-width: 380px; /* НО никогда не становится шире 380px (для Z Fold/Tablet) */
+            
+            height: 72px; 
             background: var(--nav-bg); 
-            border-radius: 24px; /* Полное закругление */
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1); /* Красивая тень снизу */
+            border-radius: 24px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1); 
             display: flex; justify-content: space-around; align-items: center; 
             z-index: 1000; 
-            /* Убираем отступ для iPhone полоски, так как меню висит в воздухе */
-            padding-bottom: 0; 
+            padding-bottom: 0;
         }
         
         /* Корректировка отступа контента, чтобы меню не перекрывало контент */
@@ -287,19 +289,32 @@
         .nav-icon-active { color: var(--nav-icon-active); }
         .nav-placeholder { width: 36px; height: 36px; border-radius: 12px; border: 2px dashed var(--text-muted); opacity: 0.3; }
 
+        /* --- АДАПТАЦИЯ ПОД МЕЛКИЕ ЭКРАНЫ (Flip, SE) --- */
         @media (max-width: 380px) {
+            /* Уменьшаем инпуты и кнопки */
             .input-area { padding: 10px 8px; gap: 8px; }
-            .btn-sq { width: 44px; height: 44px; border-radius: 14px; }
-            input[type="text"] { height: 44px; font-size: 14px; padding: 0 12px; }
-            #menu-screen { padding: 16px; padding-bottom: 90px; }
+            .btn-sq { width: 48px; height: 48px; border-radius: 16px; }
+            input[type="text"] { height: 48px; font-size: 14px; padding: 0 16px; }
+            
+            #menu-screen { padding: 16px; padding-bottom: 100px; }
             .main-grid, .bottom-grid { gap: 10px; }
-            .action-card { padding: 12px 6px; } 
-            .card-chat h3, .card-breath h3 { font-size: 13px; white-space: nowrap; }
-            .small-card { padding: 32px 8px; gap: 8px; }
-            .small-icon { width: 42px; height: 42px; border-radius: 12px; }
-            .small-icon .material-icons-round { font-size: 24px; }
-            .small-card h4 { font-size: 13px; white-space: nowrap; }
-            .small-card span { font-size: 10px; white-space: nowrap; }
+            
+            .action-card { padding: 16px 10px; height: 140px; } 
+            .card-chat h3, .card-breath h3 { font-size: 14px; margin-top: 10px; }
+            
+            .small-card { padding: 20px 12px; gap: 10px; }
+            .small-icon { width: 44px; height: 44px; border-radius: 14px; }
+            .small-card h4 { font-size: 14px; }
+            .small-card span { font-size: 11px; }
+
+            /* Корректируем меню для узких экранов */
+            .bottom-nav {
+                width: 96%; /* Чуть шире к краям */
+                bottom: 10px; /* Чуть ниже */
+                height: 65px; /* Чуть компактнее по высоте */
+                border-radius: 20px;
+            }
+            .nav-icon { font-size: 24px; } /* Иконки чуть меньше */
         }
 
         body.dark-mode .btn-game-card, body.dark-mode .btn-reset-sq {
