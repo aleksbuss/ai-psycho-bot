@@ -40,7 +40,7 @@
             --wave-color: #4DB6AC;
         }
 
-        /* --- ТЁМНАЯ ТЕМА --- */
+        /* --- ТЁМНАЯ ТЕМА (ВОССТАНОВЛЕНО ИЗ ВЕРСИИ 1) --- */
         body.dark-mode {
             --bg-main: #0B0C10;      
             --bg-card: linear-gradient(145deg, #1A1C20 0%, #121316 100%);      
@@ -67,6 +67,34 @@
             --nav-icon-color: #424242;
             --wave-color: #FF6F00;
         }
+
+        /* --- ВОССТАНОВЛЕННЫЕ ЭФФЕКТЫ ТЁМНОЙ ТЕМЫ (ИЗ ВЕРСИИ 1) --- */
+        body.dark-mode .action-card, body.dark-mode .small-card, body.dark-mode .widget-card {
+            background: var(--bg-card); 
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.05);
+        }
+        
+        body.dark-mode .card-chat .icon-box, body.dark-mode .card-breath .icon-box {
+            background: linear-gradient(135deg, rgba(255, 111, 0, 0.1), rgba(0,0,0,0));
+            border: 1px solid rgba(255, 111, 0, 0.2); 
+            color: #FF8F00; 
+            box-shadow: 0 0 15px rgba(255, 111, 0, 0.1);
+        }
+
+        /* SOS Кнопка в темной теме (сохранена анимация V2, но возвращены цвета V1) */
+        body.dark-mode .sos-btn-header {
+            background: linear-gradient(135deg, #3E2723, #1A100A); 
+            border: 1px solid rgba(255, 111, 0, 0.3); 
+            color: #FF6F00;
+            box-shadow: 0 0 10px rgba(255, 69, 0, 0.2), inset 0 0 10px rgba(0,0,0,0.5); 
+            text-shadow: 0 0 5px rgba(255, 69, 0, 0.5);
+        }
+
+        body.dark-mode .wave-graph { filter: drop-shadow(0 0 8px rgba(255, 111, 0, 0.4)); }
+        body.dark-mode .wave-fill { stop-opacity: 0.1; }
+        body.dark-mode .wave-stroke { stroke: #FF8F00; stroke-width: 3; }
+        body.dark-mode .small-icon.warm-icon, body.dark-mode .small-icon.mint-icon { background: rgba(255,255,255,0.03); color: #B0BEC5; }
 
         /* --- ОБЩИЕ СТИЛИ --- */
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
