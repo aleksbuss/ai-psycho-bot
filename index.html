@@ -315,23 +315,45 @@
         .nav-icon-active { color: var(--nav-icon-active); }
         .nav-placeholder { width: 36px; height: 36px; border-radius: 12px; border: 2px dashed var(--text-muted); opacity: 0.3; }
 
-        /* --- АДАПТАЦИЯ ПОД МЕЛКИЕ ЭКРАНЫ (Flip, SE) --- */
+        /* --- ИСПРАВЛЕНИЯ ДЛЯ УЗКИХ ЭКРАНОВ (< 380px) --- */
         @media (max-width: 380px) {
-            /* Уменьшаем инпуты и кнопки */
             .input-area { padding: 10px 8px; gap: 8px; }
-            .btn-sq { width: 48px; height: 48px; border-radius: 16px; }
-            input[type="text"] { height: 48px; font-size: 14px; padding: 0 16px; }
+            .btn-sq { width: 44px; height: 44px; border-radius: 14px; }
+            input[type="text"] { height: 44px; font-size: 14px; padding: 0 12px; }
             
-            #menu-screen { padding: 16px; padding-bottom: 100px; }
-            .main-grid, .bottom-grid { gap: 10px; }
+            #menu-screen { 
+                padding: 16px; 
+                padding-bottom: 90px; /* Чуть уменьшили отступ снизу */
+                display: flex; flex-direction: column; min-height: 100vh; /* Растягиваем на всю высоту */
+            }
             
-            .action-card { padding: 16px 10px; height: 140px; }     
+            /* Уменьшаем отступы между блоками */
+            .main-grid, .bottom-grid { gap: 12px; margin-bottom: 16px; }
+            .widget-card { margin-bottom: 16px; }
+
+            /* Исправляем перенос "Чат поддержки" */
+            .action-card { padding: 16px 8px; height: 140px; } 
             .card-chat h3, .card-breath h3 { 
-                    color: var(--primary-text); 
-                    font-size: 17px; /* Было 15px */
-                    font-weight: 700; /* Жирный */
-                    margin-top: 10px; /* Чуть подвинем, если текст стал больше */
+                font-size: 13px; /* Уменьшили шрифт */
+                white-space: nowrap; /* Запретили перенос */
+                margin-top: 8px;
+            }
+            
+            /* Убираем дырку внизу: делаем нижние карточки выше */
+            .small-card { 
+                padding: 24px 12px; /* Увеличили вертикальный паддинг */
+                gap: 8px; 
+                flex: 1; /* Заставляем их растягиваться */
+            }
+            .small-icon { width: 40px; height: 40px; border-radius: 12px; }
+            .small-card h4 { font-size: 13px; margin-bottom: 2px; }
+            .small-card span { font-size: 10px; }
+            
+            /* Чуть компактнее меню */
+            .bottom-nav { height: 65px; bottom: 10px; }
         }
+
+            
         /* Для второй карточки цвет текста свой, поэтому оставим это правило, но обновим вес */
         .card-breath h3 { color: var(--secondary-text); }            
             .small-card { padding: 20px 12px; gap: 10px; }
