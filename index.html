@@ -373,7 +373,7 @@
             box-shadow: 0 4px 10px rgba(0,0,0,0.3); border: 2px solid #121212;
         }
 
-        /* --- ИСПРАВЛЕНИЯ ДЛЯ УЗКИХ ЭКРАНОВ (Z Flip / SE) --- */
+        /* --- ИСПРАВЛЕНИЯ ДЛЯ УЗКИХ И ДЛИННЫХ ЭКРАНОВ (Z Flip) --- */
         @media (max-width: 380px) {
             .input-area { padding: 10px 8px; gap: 8px; }
             .btn-sq { width: 44px; height: 44px; border-radius: 14px; }
@@ -381,15 +381,23 @@
             
             #menu-screen { 
                 padding: 16px; 
-                padding-bottom: 90px;
-                display: flex; flex-direction: column; min-height: 100vh;
+                /* 1. Растягиваем экран на полную высоту устройства */
+                min-height: 100vh; 
+                /* Используем dvh для точного учета панелей браузера, если поддерживается, иначе vh */
+                min-height: 100dvh; 
+                display: flex; 
+                flex-direction: column;
+                box-sizing: border-box;
+                padding-bottom: 0; /* Отступ переносим в bottom-grid */
             }
             
-            .main-grid, .bottom-grid { gap: 12px; margin-bottom: 16px; }
-            .widget-card { margin-bottom: 16px; }
+            /* Верхние блоки */
+            .greeting-header { margin-bottom: 20px; }
+            .main-grid { gap: 12px; margin-bottom: 12px; flex-shrink: 0; }
+            .widget-card { margin-bottom: 12px; flex-shrink: 0; }
 
-            /* 1. Верхние карточки (Чат, Дыхание) - 13px */
-            .action-card { padding: 16px 8px; height: 140px; } 
+            /* Шрифты для верхних карточек (13px) */
+            .action-card { padding: 16px 8px; height: 130px; } 
             .card-chat h3, .card-breath h3 { 
                 font-size: 13px !important; 
                 white-space: nowrap; 
@@ -397,23 +405,39 @@
                 letter-spacing: -0.2px;
             }
             
-            /* 2. Нижние карточки (Дневник, Игра) - 13px */
-            .small-card { 
-                padding: 24px 12px; 
-                gap: 8px; 
-                flex: 1; 
+            /* 2. РЕШЕНИЕ ПРОБЛЕМЫ ПУСТОТЫ */
+            .bottom-grid { 
+                gap: 12px; 
+                /* Заставляем этот блок занять ВСЁ свободное место снизу */
+                flex-grow: 1; 
+                margin-bottom: 100px; /* Отступ под меню (72px + зазор) */
             }
-            .small-icon { width: 40px; height: 40px; border-radius: 12px; }
+
+            .small-card { 
+                /* Карточка растягивается на всю высоту сетки */
+                height: 100%; 
+                padding: 0 12px; /* Убираем вертикальный паддинг, центрируем флексом */
+                gap: 8px; 
+                flex-direction: column; /* Иконка сверху, текст снизу (красивее для высоких карточек) */
+                justify-content: center;
+                text-align: center;
+            }
+            
+            .small-icon { width: 42px; height: 42px; border-radius: 14px; margin-bottom: 4px; }
             
             .small-card h4 { 
                 font-size: 13px !important; 
-                margin-bottom: 2px; 
+                margin-bottom: 0; 
             }
             .small-card span { font-size: 10px; }
             
-            /* Меню компактнее */
-            .bottom-nav { height: 65px; bottom: 10px; }
-            .nav-icon { font-size: 24px; }
+            /* 3. Увеличиваем меню (как ты просил) */
+            .bottom-nav { 
+                height: 72px; /* Стандартный размер */
+                bottom: 15px; 
+                width: 90%;
+            }
+            .nav-icon { font-size: 26px; }
         }
     </style>
 </head>
