@@ -5,14 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>AI Психолог</title>
     
-    <!-- DEPENDENCIES -->
+    <!-- ============================================ -->
+    <!-- 📦 DEPENDENCIES                              -->
+    <!-- ============================================ -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&subset=cyrillic&display=swap" rel="stylesheet">
     
+    <!-- ============================================ -->
+    <!-- 🎨 STYLESHEET (CSS)                          -->
+    <!-- ============================================ -->
     <style>
-        /* --- GLOBAL VARIABLES --- */
         :root {
+            /* Light Theme (Fresh Mint) */
             --bg-main: #F5F7FA;      
             --bg-card: #FFFFFF;      
             --text-header: #1F2937;  
@@ -41,7 +46,7 @@
             --wave-color: #4DB6AC;
         }
 
-        /* --- DARK MODE --- */
+        /* Dark Theme Configuration */
         body.dark-mode {
             --bg-main: #0B0C10;      
             --bg-card: linear-gradient(145deg, #1A1C20 0%, #121316 100%);      
@@ -81,6 +86,14 @@
             box-shadow: 0 0 15px rgba(255, 111, 0, 0.1);
         }
 
+        body.dark-mode .sos-btn-header {
+            background: linear-gradient(135deg, #3E2723, #1A100A); 
+            border: 1px solid rgba(255, 111, 0, 0.3); 
+            color: #FF6F00;
+            box-shadow: 0 0 10px rgba(255, 69, 0, 0.2), inset 0 0 10px rgba(0,0,0,0.5); 
+            text-shadow: 0 0 5px rgba(255, 69, 0, 0.5);
+        }
+
         body.dark-mode .wave-graph { filter: drop-shadow(0 0 8px rgba(255, 111, 0, 0.4)); }
         body.dark-mode .wave-fill { stop-opacity: 0.1; }
         body.dark-mode .wave-stroke { stroke: #FF8F00; stroke-width: 3; }
@@ -108,6 +121,11 @@
         @keyframes fadeInScale { from{opacity:0;transform:scale(0.9)} to{opacity:1;transform:scale(1)} }
         @keyframes pulse-avatar { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.2); } 50% { transform: scale(1.05); box-shadow: 0 0 0 20px rgba(255, 255, 255, 0); } 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); } }
         @keyframes floatStar { 0% { transform: translateY(0px) rotate(0deg); } 50% { transform: translateY(-3px) rotate(3deg); } 100% { transform: translateY(0px) rotate(0deg); } }
+        @keyframes heartbeat { 
+            0% { transform: scale(1); box-shadow: 0 4px 15px rgba(255, 183, 77, 0.25); } 
+            50% { transform: scale(1.08); box-shadow: 0 0 20px rgba(255, 183, 77, 0.6); } 
+            100% { transform: scale(1); box-shadow: 0 4px 15px rgba(255, 183, 77, 0.25); } 
+        }
 
         .msg-enter { animation: msgSlideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
         #gpu-activator { position: absolute; top: 0; left: 0; width: 1px; height: 1px; opacity: 0.01; pointer-events: none; z-index: -1; animation: force-gpu 1s infinite linear; will-change: transform; }
@@ -125,7 +143,7 @@
         /* --- MENU SCREEN & NEW HEADER --- */
         #menu-screen { padding: 24px; overflow-y: auto; padding-bottom: 110px; }
 
-        /* NEW BALANCE CARD (Replaces SOS header) */
+        /* UPDATED BALANCE CARD (FIXED STYLE) */
         .balance-card {
             background: var(--primary-soft);
             border-radius: var(--radius-card);
@@ -144,21 +162,38 @@
         .balance-text h1 { font-size: 24px; line-height: 1.2; color: var(--text-header); font-weight: 800; letter-spacing: -0.5px; margin: 0; }
         .balance-text p { font-size: 14px; color: var(--text-muted); margin-top: 4px; font-weight: 500; }
         
-        .balance-visual { display: flex; flex-direction: column; align-items: center; justify-content: center; min-width: 60px; }
+        /* New "Badge" style for the star section */
+        .balance-visual { 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            min-width: 70px;
+            background: rgba(255, 255, 255, 0.6); /* Glassy background */
+            border-radius: 20px;
+            padding: 12px 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+            border: 1px solid rgba(255,255,255,0.8);
+        }
+        body.dark-mode .balance-visual { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255,255,255,0.1); }
+
+        /* The BIG Star Icon */
         .star-3d-icon { 
-            width: 48px; height: 48px; 
-            filter: drop-shadow(0 4px 6px rgba(255, 179, 0, 0.3)); 
+            width: 52px; height: 52px; 
+            filter: drop-shadow(0 4px 8px rgba(255, 179, 0, 0.4)); 
             animation: floatStar 4s ease-in-out infinite; 
+            margin-bottom: 2px;
         }
+        
+        /* The Counter below the star */
         .balance-count { 
-            margin-top: 2px; 
-            font-size: 14px; font-weight: 800; 
-            color: #FF8F00; 
-            background: rgba(255, 255, 255, 0.6); 
-            padding: 2px 8px; border-radius: 10px; 
-            backdrop-filter: blur(4px);
+            font-size: 15px; font-weight: 800; 
+            color: #E65100; 
+            padding: 0;
+            margin-top: 4px;
+            letter-spacing: 0.5px;
         }
-        body.dark-mode .balance-count { background: rgba(0, 0, 0, 0.3); color: #FFB300; }
+        body.dark-mode .balance-count { color: #FFB300; }
 
         /* Other Menu Items */
         .main-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
@@ -381,21 +416,25 @@
                 <p>Что поддержит вас сегодня?</p>
             </div>
             <div class="balance-visual">
-                <!-- 3D Star Icon (SVG) -->
+                <!-- UPDATED 3D STAR ICON (Rounded, Glossy) -->
                 <svg class="star-3d-icon" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <defs>
                         <linearGradient id="starGradient" x1="50%" y1="0%" x2="50%" y2="100%">
-                            <stop offset="0%" stop-color="#FFD700"/>
-                            <stop offset="100%" stop-color="#FFA000"/>
+                            <stop offset="0%" stop-color="#FFEB3B"/> <!-- Bright Yellow -->
+                            <stop offset="100%" stop-color="#FF9800"/> <!-- Deep Gold/Orange -->
                         </linearGradient>
-                        <filter id="starShadow" x="-20%" y="-20%" width="140%" height="140%">
-                            <feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="rgba(255, 160, 0, 0.4)"/>
+                        <filter id="starShadow" x="-50%" y="-50%" width="200%" height="200%">
+                            <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="rgba(255, 152, 0, 0.5)"/>
                         </filter>
                     </defs>
-                    <path d="M256 32L325 182L488 202L368 316L399 480L256 400L113 480L144 316L24 202L187 182L256 32Z" 
-                          fill="url(#starGradient)" stroke="#F57C00" stroke-width="12" stroke-linejoin="round" filter="url(#starShadow)"/>
+                    <!-- Rounded Star Path for "Puffy" look -->
+                    <path d="M256 32L312 165L455 175C465 176 469 188 461 195L351 288L386 427C388 437 377 445 369 439L256 368L143 439C135 445 124 437 126 427L161 288L51 195C43 188 47 176 57 175L200 165L256 32Z" 
+                          fill="url(#starGradient)" stroke="#F57C00" stroke-width="20" stroke-linejoin="round" stroke-linecap="round" filter="url(#starShadow)"/>
+                    <!-- Glossy Shine effect -->
+                    <path d="M256 50L300 160L420 170C430 171 430 180 425 185L330 260" 
+                          fill="none" stroke="rgba(255,255,255,0.6)" stroke-width="15" stroke-linecap="round" filter="url(#starShadow)"/>
                 </svg>
-                <!-- Counter -->
+                <!-- UPDATED COUNTER (Clean text without pill) -->
                 <div class="balance-count">
                     <span id="userBalanceDisplay">0</span>
                 </div>
@@ -640,7 +679,6 @@
             addMessage(d.text, false);
             if (typeof d.isPremium !== 'undefined') window.isUserPremium = d.isPremium;
             if (d.audio) playAudioResponse(d.audio);
-            // UPDATE BALANCE UI IF RETURNED
             if (d.balance !== undefined) {
                 const balEl = document.getElementById('userBalanceDisplay');
                 if(balEl) balEl.innerText = d.balance;
@@ -660,7 +698,6 @@
         .then(d=>{
             if(d.status==='success') {
                 if (d.balance > 0) window.isUserPremium = true;
-                // UPDATE BALANCE UI
                 const balEl = document.getElementById('userBalanceDisplay');
                 if(balEl && d.balance !== undefined) balEl.innerText = d.balance;
                 
