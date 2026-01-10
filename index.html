@@ -375,14 +375,48 @@
 
     <div id="error-console" style="position:fixed; top:0; left:0; width:100%; padding:20px; background:rgba(255,0,0,0.9); color:white; z-index:9999; display:none; font-family:monospace; font-size:12px;"></div>
 
-    <div id="paywall-modal" class="paywall-modal">
+    <<div id="paywall-modal" class="paywall-modal">
         <div class="pay-card" style="max-width: 360px;">
             <span class="material-icons-round pay-icon">local_fire_department</span>
             <div class="pay-title">Пополнить энергию</div>
-            <div class="pay-desc" id="paywall-reason-text">Запросы закончились. Купите пакет, он не сгорает со временем.</div>
-            <div class="plan-btn" onclick="buySubscription('small')"><div style="text-align:left; flex:1;"><div class="plan-name">Старт</div><div class="plan-sub">50 запросов</div></div><div class="plan-price">99 ⭐</div></div>
-            <div class="plan-btn popular" onclick="buySubscription('medium')"><div class="save-badge">ХИТ</div><div style="text-align:left; flex:1;"><div class="plan-name">Оптимальный</div><div class="plan-sub">300 запросов</div></div><div class="plan-price">399 ⭐</div></div>
-            <div class="plan-btn" onclick="buySubscription('large')" style="border-color: #FFD700;"><div style="text-align:left; flex:1;"><div class="plan-name">Максимальный</div><div class="plan-sub">1000 запросов</div></div><div class="plan-price">999 ⭐</div></div>
+            <!-- Текст изменен, так как бесплатных больше нет -->
+            <div class="pay-desc" id="paywall-reason-text">Для продолжения общения необходимо пополнить баланс.</div>
+            
+            <!-- НОВАЯ КНОПКА: МИКРО ТАРИФ -->
+            <div class="plan-btn" onclick="buySubscription('micro')" style="border-color: rgba(255,255,255,0.3);">
+                <div style="text-align:left; flex:1;">
+                    <div class="plan-name">Тест</div>
+                    <div class="plan-sub">1 запрос</div>
+                </div>
+                <div class="plan-price">1 ⭐</div>
+            </div>
+            <!-- КОНЕЦ НОВОЙ КНОПКИ -->
+
+            <div class="plan-btn" onclick="buySubscription('small')">
+                <div style="text-align:left; flex:1;">
+                    <div class="plan-name">Старт</div>
+                    <div class="plan-sub">50 запросов</div>
+                </div>
+                <div class="plan-price">99 ⭐</div>
+            </div>
+
+            <div class="plan-btn popular" onclick="buySubscription('medium')">
+                <div class="save-badge">ХИТ</div>
+                <div style="text-align:left; flex:1;">
+                    <div class="plan-name">Оптимальный</div>
+                    <div class="plan-sub">300 запросов</div>
+                </div>
+                <div class="plan-price">399 ⭐</div>
+            </div>
+
+            <div class="plan-btn" onclick="buySubscription('large')" style="border-color: #FFD700;">
+                <div style="text-align:left; flex:1;">
+                    <div class="plan-name">Максимальный</div>
+                    <div class="plan-sub">1000 запросов</div>
+                </div>
+                <div class="plan-price">999 ⭐</div>
+            </div>
+
             <button onclick="closePaywall()" style="background:transparent; border:none; color:#777; margin-top:10px; font-size:14px; text-decoration:underline; cursor:pointer;">Закрыть</button>
         </div>
     </div>
