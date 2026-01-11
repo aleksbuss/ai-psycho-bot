@@ -5,19 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>AI Психолог</title>
     
-    <!-- ============================================ -->
-    <!-- 📦 DEPENDENCIES                              -->
-    <!-- ============================================ -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&subset=cyrillic&display=swap" rel="stylesheet">
     
-    <!-- ============================================ -->
-    <!-- 🎨 STYLESHEET: VIBRANT SERENITY (FIXED)      -->
-    <!-- ============================================ -->
     <style>
         :root {
-            /* --- COLOR PALETTE (VIBRANT) --- */
+            /* --- COLOR PALETTE: VIBRANT SERENITY --- */
             --bg-main: #F0F4F8;      
             --bg-card: #FFFFFF;      
             --text-header: #1E293B;  
@@ -44,7 +38,7 @@
             --msg-user-bg: linear-gradient(135deg, #6366F1, #8B5CF6);
             --msg-user-text: #FFFFFF;
             
-            --nav-bg: rgba(255, 255, 255, 0.85); 
+            --nav-bg: rgba(255, 255, 255, 0.9); 
             --nav-shadow: 0 -10px 40px rgba(0,0,0,0.05);
             --nav-icon-color: #94A3B8;
             --nav-icon-active: #6366F1; 
@@ -53,10 +47,9 @@
             --radius-btn-sq: 22px;
             --wave-color: #2DD4BF;
 
-            /* --- SPACING VARIABLES (NEW) --- */
-            --gap-section: 16px; /* Стандартный отступ между блоками */
-            --gap-grid: 16px;    /* Отступ внутри сетки */
-            --pad-screen: 24px;  /* Отступ от краев экрана */
+            /* Spacing Defaults */
+            --pad-screen: 20px;
+            --gap-grid: 16px;
         }
 
         /* --- DARK THEME --- */
@@ -80,51 +73,62 @@
             --msg-bot-bg: #1E293B;
             --msg-user-bg: linear-gradient(135deg, #4F46E5, #7C3AED);
             --msg-user-text: #FFFFFF;
-            --nav-bg: rgba(30, 41, 59, 0.85);
+            --nav-bg: rgba(30, 41, 59, 0.9);
             --nav-shadow: 0 -10px 40px rgba(0,0,0, 0.6);
             --nav-icon-color: #64748B;
             --nav-icon-active: #A5B4FC;
             --wave-color: #5EEAD4;
         }
 
-        /* --- BASE RESET & FONTS --- */
+        /* --- BASE --- */
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-        body { font-family: 'Manrope', sans-serif; font-weight: 600; -webkit-font-smoothing: antialiased; background-color: var(--bg-main); color: var(--text-body); line-height: 1.5; position: fixed; top: 0; left: 0; right: 0; bottom: 0; display: flex; flex-direction: column; transition: background-color 0.4s, color 0.4s; }
+        body { font-family: 'Manrope', sans-serif; font-weight: 600; -webkit-font-smoothing: antialiased; background-color: var(--bg-main); color: var(--text-body); line-height: 1.5; position: fixed; top: 0; left: 0; right: 0; bottom: 0; width: 100%; height: 100%; overflow: hidden; transition: background-color 0.4s, color 0.4s; }
         button, input, textarea, select { font-family: 'Manrope', sans-serif !important; }
 
-        /* --- LAYOUT STRUCTURE --- */
-        .screen { flex: 1; display: none; flex-direction: column; width: 100%; height: auto; overflow: hidden; position: relative; }
-        .screen.active { display: flex; animation: fadeUp 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
+        /* --- SCREEN ARCHITECTURE (FIXED OVERLAY ISSUE) --- */
+        /* This ensures screens act like separate pages, not appended blocks */
+        .screen { 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+            background-color: var(--bg-main); 
+            z-index: 100; /* Above base layer */
+            display: none; 
+            flex-direction: column; 
+            overflow-y: auto; 
+            padding-bottom: 0; /* Reset */
+        }
         
-        /* HEADER & NAVIGATION */
-        header { padding: 0 20px; background: transparent; z-index: 100; display: none; align-items: center; height: 50px; flex-shrink: 0; width: 100%; margin-top: 10px;}
+        .screen.active { 
+            display: flex; 
+            animation: fadeUp 0.4s cubic-bezier(0.16, 1, 0.3, 1); 
+            z-index: 200; /* Active screen is always on top */
+        }
+
+        /* Menu Screen Specifics for Even Spacing */
+        #menu-screen {
+            z-index: 150; /* Base level */
+            padding: var(--pad-screen);
+            padding-bottom: 100px; /* Space for nav */
+            /* Flex layout to distribute vertical space */
+            display: flex;
+            flex-direction: column;
+            gap: 16px; 
+        }
+
+        /* --- HEADER --- */
+        header { padding: 0 20px; background: transparent; z-index: 500; display: none; align-items: center; height: 50px; flex-shrink: 0; width: 100%; margin-top: 10px; position: relative;}
         #back-btn { background: var(--bg-card); border: none; color: var(--text-header); width: 40px; height: 40px; border-radius: 14px; box-shadow: var(--shadow-card); cursor: pointer; display: flex; align-items: center; justify-content: center; }
         #back-btn:active { transform: scale(0.95); }
         .header-title { font-size: 20px; font-weight: 700; margin-left: 15px; color: var(--text-header); letter-spacing: -0.5px; }
 
-        .bottom-nav { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: 92%; max-width: 380px; height: 72px; background: var(--nav-bg); border-radius: 28px; box-shadow: var(--nav-shadow); display: flex; justify-content: space-around; align-items: center; z-index: 1000; padding-bottom: 0; border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
-        .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 60px; height: 100%; border: none; background: transparent; cursor: pointer; }
-        .nav-icon { font-size: 28px; color: var(--nav-icon-color); transition: color 0.3s; }
-        .nav-icon-active { color: var(--nav-icon-active); filter: drop-shadow(0 0 8px rgba(99, 102, 241, 0.4)); }
-
-        /* --- MENU SCREEN ADJUSTMENTS --- */
-        #menu-screen { 
-            padding: var(--pad-screen); 
-            overflow-y: auto; 
-            padding-bottom: 110px; 
-            /* Fix for layout flow */
-            display: flex;
-            flex-direction: column;
-            gap: var(--gap-section); /* Using gap instead of margins */
-        }
-        
-        /* 1. COMPACT BALANCE CARD (Greeting) */
+        /* --- COMPONENT: BALANCE CARD --- */
         .balance-card {
             background: var(--bg-card);
             border-radius: var(--radius-card);
             padding: 20px 24px;
-            /* Remove margin because parent has gap */
-            margin: 0; 
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -133,112 +137,84 @@
             transition: transform 0.1s;
             box-shadow: var(--shadow-card);
             border: 1px solid rgba(0,0,0,0.03);
-            min-height: 100px;
+            /* Slightly more compact */
+            flex-shrink: 0; 
         }
         .balance-card:active { transform: scale(0.98); }
-        
         .balance-text { flex: 1; padding-right: 10px; }
         .balance-text h1 { 
-            font-size: 22px; /* Reduced from 26px */
-            line-height: 1.2; 
+            font-size: 22px; 
+            line-height: 1.1; 
             color: var(--text-header); 
             font-weight: 800; 
             letter-spacing: -0.5px; 
             margin: 0; 
-            /* Force single line logic if possible, or tight wrapping */
         }
-        .balance-text p { font-size: 14px; color: var(--text-muted); margin-top: 4px; font-weight: 600; }
-        
-        .balance-visual { 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            justify-content: center; 
-            min-width: 64px; /* Reduced width */
-            background: var(--primary-soft);
-            border-radius: 18px;
-            padding: 8px 6px;
-        }
+        .balance-text p { font-size: 13px; color: var(--text-muted); margin-top: 4px; font-weight: 600; }
+        .balance-visual { display: flex; flex-direction: column; align-items: center; justify-content: center; min-width: 64px; background: var(--primary-soft); border-radius: 18px; padding: 8px 6px; }
         body.dark-mode .balance-visual { background: rgba(255, 255, 255, 0.05); }
-        .star-3d-icon { width: 42px; height: 42px; filter: drop-shadow(0 4px 12px rgba(251, 146, 60, 0.5)); animation: floatStar 5s ease-in-out infinite; margin-bottom: 2px; }
+        .star-3d-icon { width: 40px; height: 40px; filter: drop-shadow(0 4px 12px rgba(251, 146, 60, 0.5)); animation: floatStar 5s ease-in-out infinite; margin-bottom: 2px; }
         .balance-count { font-size: 14px; font-weight: 800; color: var(--text-header); padding: 0; }
 
-        /* 2. MAIN GRID (Chat & Breathe) */
-        .main-grid { 
-            display: grid; 
-            grid-template-columns: 1fr 1fr; 
-            gap: var(--gap-grid); 
-            margin: 0; /* Handled by parent gap */
-        }
-        .action-card { border-radius: var(--radius-card); padding: 16px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; height: 140px; cursor: pointer; transition: transform 0.1s; background-color: var(--bg-card); box-shadow: var(--shadow-card); border: 1px solid rgba(0,0,0,0.03); }
+        /* --- COMPONENT: GRID ACTIONS --- */
+        .main-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--gap-grid); flex-shrink: 0; }
+        .action-card { border-radius: var(--radius-card); padding: 16px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; height: 130px; cursor: pointer; transition: transform 0.1s; background-color: var(--bg-card); box-shadow: var(--shadow-card); border: 1px solid rgba(0,0,0,0.03); }
         .action-card:active { transform: scale(0.97); }
-        .card-chat h3, .card-breath h3 { color: var(--text-header); font-size: 15px; font-weight: 700; letter-spacing: -0.3px; margin-top: 8px;}
-        .card-chat .icon-box, .card-breath .icon-box { color: #FFFFFF; width: 50px; height: 50px; border-radius: 18px; display: flex; align-items: center; justify-content: center; margin-bottom: 8px; }
+        .card-chat h3, .card-breath h3 { color: var(--text-header); font-size: 14px; font-weight: 700; letter-spacing: -0.2px; margin-top: 8px;}
+        .card-chat .icon-box, .card-breath .icon-box { color: #FFFFFF; width: 48px; height: 48px; border-radius: 18px; display: flex; align-items: center; justify-content: center; margin-bottom: 6px; }
         .card-chat .icon-box { background: linear-gradient(135deg, #6366F1, #8B5CF6); box-shadow: 0 8px 20px -5px rgba(99, 102, 241, 0.5); }
         .card-breath .icon-box { background: linear-gradient(135deg, #2DD4BF, #0F766E); box-shadow: 0 8px 20px -5px rgba(45, 212, 191, 0.5); }
-        
-        /* 3. MEDITATION WIDGET (EXPANDED SINE WAVE) */
+
+        /* --- COMPONENT: WIDGET (FIXED SINE) --- */
         .widget-card { 
             background: var(--bg-card); 
             border-radius: var(--radius-card); 
-            padding: 24px; 
-            margin: 0;
+            padding: 20px; 
             overflow: hidden; 
             position: relative; 
             cursor: pointer; 
             box-shadow: var(--shadow-card); 
             border: 1px solid rgba(0,0,0,0.03); 
-            
-            /* CRITICAL FIX: Explicit Height Increase */
-            height: 180px; 
+            height: 170px; /* Forced height for good wave visibility */
             display: flex;
             flex-direction: column;
+            flex-shrink: 0;
         }
-        .widget-header { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; z-index: 2; }
+        .widget-header { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; z-index: 2; }
         .dot-indicator { width: 8px; height: 8px; background: var(--secondary-accent); border-radius: 50%; box-shadow: 0 0 10px var(--secondary-accent); }
-        .widget-title { font-size: 14px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
-        .widget-main-text { font-size: 22px; font-weight: 700; color: var(--text-header); z-index: 2; }
-        
-        /* WAVE FIX: Position absolute bottom to fill space */
-        .wave-container { 
-            position: absolute; 
-            bottom: 0; 
-            left: 0; 
-            width: 100%; 
-            height: 90px; /* Taller area for the wave */
-            overflow: hidden; 
-            z-index: 1;
-        }
-        .wave-graph { 
-            width: 200%; 
-            height: 100%; 
-            opacity: 0.8; 
-            animation: waveMove 10s linear infinite; 
-            transform-origin: bottom;
-        }
+        .widget-title { font-size: 13px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
+        .widget-main-text { font-size: 20px; font-weight: 700; color: var(--text-header); z-index: 2; }
+        .wave-container { position: absolute; bottom: 0; left: 0; width: 100%; height: 90px; overflow: hidden; z-index: 1; }
+        .wave-graph { width: 200%; height: 100%; opacity: 0.8; animation: waveMove 10s linear infinite; transform-origin: bottom; }
         .wave-fill { stop-color: var(--wave-color); }
         .wave-stroke { stroke: var(--wave-color); }
 
-        /* 4. BOTTOM GRID */
-        .bottom-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--gap-grid); margin: 0; }
-        .small-card { background: var(--bg-card); padding: 20px 16px; border-radius: 22px; display: flex; align-items: center; gap: 12px; box-shadow: var(--shadow-card); cursor: pointer; border: 1px solid rgba(0,0,0,0.03); min-height: 100px; }
-        .small-icon { width: 44px; height: 44px; border-radius: 14px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: visible; }
-        .small-icon .material-icons-round { font-size: 24px; }
-        .small-card h4 { font-size: 15px; font-weight: 700; color: var(--text-header); margin: 0; line-height: 1.2; }
-        .small-card span { font-size: 12px; color: var(--text-muted); font-weight: 600; }
+        /* --- COMPONENT: BOTTOM GRID --- */
+        .bottom-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--gap-grid); flex-grow: 1; /* Pushes content to fill space */ align-items: stretch; }
+        .small-card { background: var(--bg-card); padding: 16px; border-radius: 22px; display: flex; align-items: center; gap: 10px; box-shadow: var(--shadow-card); cursor: pointer; border: 1px solid rgba(0,0,0,0.03); height: 100%; min-height: 90px; }
+        .small-icon { width: 42px; height: 42px; border-radius: 14px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: visible; }
+        .small-icon .material-icons-round { font-size: 22px; }
+        .small-card h4 { font-size: 14px; font-weight: 700; color: var(--text-header); margin: 0; line-height: 1.2; }
+        .small-card span { font-size: 11px; color: var(--text-muted); font-weight: 600; }
         .warm-icon { background: var(--warm-bg); color: var(--warm-accent); }
         .mint-icon { background: var(--primary-soft); color: var(--primary-main); }
 
-        /* --- OTHER SCREENS (Chat, SOS, Games) --- */
-        /* [Keeping these largely the same, just adapting to new palette/shapes] */
-        
-        #chat-container { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; scroll-behavior: smooth; }
+        /* --- BOTTOM NAV --- */
+        .bottom-nav { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: 92%; max-width: 380px; height: 72px; background: var(--nav-bg); border-radius: 28px; box-shadow: var(--nav-shadow); display: flex; justify-content: space-around; align-items: center; z-index: 1000; padding-bottom: 0; border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+        .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 60px; height: 100%; border: none; background: transparent; cursor: pointer; }
+        .nav-icon { font-size: 28px; color: var(--nav-icon-color); transition: color 0.3s; }
+        .nav-icon-active { color: var(--nav-icon-active); filter: drop-shadow(0 0 8px rgba(99, 102, 241, 0.4)); }
+
+        /* --- CHAT, GAME, DIARY SCREENS --- */
+        #chat-container { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; scroll-behavior: smooth; padding-bottom: 20px; }
         .message { max-width: 85%; padding: 16px 20px; border-radius: 24px; font-size: 16px; box-shadow: var(--shadow-card); position: relative; line-height: 1.6; }
         .msg-bot { align-self: flex-start; background-color: var(--msg-bot-bg); color: var(--text-body); border-bottom-left-radius: 4px; }
         .msg-user { align-self: flex-end; background: var(--msg-user-bg); color: var(--msg-user-text); border-bottom-right-radius: 4px; box-shadow: 0 8px 20px -5px rgba(99, 102, 241, 0.4); }
         .typing-indicator { display: none; align-self: flex-start; background: var(--bg-card); padding: 16px; border-radius: 20px; margin-bottom: 10px; box-shadow: var(--shadow-card); }
         .dot { height: 8px; width: 8px; background-color: var(--primary-main); border-radius: 50%; display: inline-block; animation: bounce 1.4s infinite ease-in-out both; margin: 0 3px; }
-        .input-area { width: 100%; background: var(--bg-main); padding: 10px 16px; display: flex; align-items: center; justify-content: center; gap: 12px; padding-bottom: calc(20px + env(safe-area-inset-bottom)); box-sizing: border-box; margin-bottom: 95px; } 
+        .input-area { width: 100%; background: var(--bg-main); padding: 10px 16px; display: flex; align-items: center; justify-content: center; gap: 12px; padding-bottom: calc(20px + env(safe-area-inset-bottom)); box-sizing: border-box; margin-bottom: 0; position: absolute; bottom: 0; left: 0; z-index: 501; } 
+        #chat-screen { padding-bottom: 80px; } /* Space for input */
+        
         input[type="text"] { flex: 1; height: 56px; border-radius: 20px; border: none; padding: 0 20px; font-size: 16px; outline: none; background: var(--bg-card); color: var(--text-header); box-shadow: var(--shadow-card); min-width: 0; }
         .btn-sq { width: 56px; height: 56px; border-radius: var(--radius-btn-sq); border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; flex-shrink: 0; }
         #micBtn { background-color: var(--bg-card); color: var(--icon-default); box-shadow: var(--shadow-card); }
@@ -246,7 +222,7 @@
         #sendBtn { background: linear-gradient(135deg, var(--primary-main), #8B5CF6); box-shadow: 0 8px 20px -6px rgba(99, 102, 241, 0.4); color: white; }
         #sendBtn:active { transform: scale(0.95); }
 
-        #game-screen { background: var(--bg-main); }
+        #game-screen, #balloon-game-screen { background: var(--bg-main); }
         canvas#breathCanvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; opacity: 0.8; }
         .game-ui-overlay { position: relative; z-index: 10; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; width: 100%; padding-bottom: 180px; pointer-events: none; }
         .breath-text-container { position: absolute; top: 35%; left: 0; width: 100%; transform: translateY(-50%); display: flex; flex-direction: column; align-items: center; justify-content: center; margin-bottom: 0; }
@@ -353,41 +329,39 @@
         #gpu-activator { position: absolute; top: 0; left: 0; width: 1px; height: 1px; opacity: 0.01; pointer-events: none; z-index: -1; animation: force-gpu 1s infinite linear; will-change: transform; }
 
         /* ========================================= */
-        /* 📱 RESPONSIVE LOGIC (THE FIX)             */
+        /* 📱 RESPONSIVE LOGIC (Z-FOLD 3 FIX)        */
         /* ========================================= */
         
-        /* 1. SMALL/NARROW SCREENS (Fold 3 Cover, SE) */
+        /* Narrow Screens (Fold 3 Cover, iPhone SE) */
         @media (max-width: 380px) {
             :root {
-                --gap-section: 12px; /* Уменьшаем отступы между блоками */
-                --gap-grid: 10px;    /* Уменьшаем дырки в сетке */
-                --pad-screen: 16px;  /* Отступ от краев, чтобы не прилипало */
+                --gap-grid: 12px; 
+                --pad-screen: 16px;
             }
             
-            #menu-screen { padding-top: 10px; } /* Чуть выше контент */
-            
-            .balance-card { 
-                padding: 16px; 
-                min-height: 90px;
+            #menu-screen {
+                justify-content: space-between; /* MAGIC FIX for spacing */
+                min-height: 100dvh; /* Force full height so space-between works */
             }
+            
+            /* Make text wrap nicely */
             .balance-text h1 { 
-                font-size: 20px; /* Еще меньше шрифт для одной строки */
+                font-size: 20px; 
+                white-space: nowrap; 
+                overflow: hidden; 
+                text-overflow: ellipsis;
+                max-width: 160px;
             }
-            .action-card { height: 120px; padding: 12px; }
-            .card-chat .icon-box, .card-breath .icon-box { width: 44px; height: 44px; margin-bottom: 6px; }
-            .widget-card { padding: 16px; height: 160px; } /* Синус все равно большой */
-            .small-card { padding: 16px; min-height: 80px; }
+            
+            .balance-card { padding: 16px; margin-bottom: 0; }
+            .main-grid { margin-bottom: 0; }
+            .action-card { height: 110px; padding: 12px; }
+            .card-chat .icon-box, .card-breath .icon-box { width: 42px; height: 42px; margin-bottom: 4px; }
+            .widget-card { height: 150px; padding: 16px; margin-bottom: 0; }
+            .bottom-grid { gap: 12px; margin-bottom: 0; }
+            .small-card { padding: 12px; }
             .small-icon { width: 36px; height: 36px; }
-            .nav-icon { font-size: 24px; }
-            .bottom-nav { height: 60px; }
-        }
-
-        /* 2. TALL/LARGE SCREENS (Pro Max, Android Flagships) */
-        @media (min-height: 800px) {
-            :root {
-                --gap-section: 24px; /* Даем воздуха на больших экранах */
-                --gap-grid: 20px;
-            }
+            .bottom-nav { height: 64px; }
         }
     </style>
 </head>
@@ -447,19 +421,18 @@
 
     <div id="menu-screen" class="screen active">
         
-        <!-- NEW HEADER: REPLACED SOS WITH BALANCE CARD -->
+        <!-- HEADER -->
         <div class="balance-card" onclick="showPaywall('top_up')">
             <div class="balance-text">
-                <h1><span id="greetingText">Доброе утро</span>, <span id="userNameDisplay">User</span></h1>
+                <h1><span id="greetingText">Доброе утро</span>,<br><span id="userNameDisplay">User</span></h1>
                 <p>Что поддержит вас сегодня?</p>
             </div>
             <div class="balance-visual">
-                <!-- UPDATED 3D STAR ICON (Golden/Orange Rich) -->
                 <svg class="star-3d-icon" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <defs>
                         <linearGradient id="starGradient" x1="50%" y1="0%" x2="50%" y2="100%">
-                            <stop offset="0%" stop-color="#FCD34D"/> <!-- Gold Light -->
-                            <stop offset="100%" stop-color="#F59E0B"/> <!-- Gold Dark -->
+                            <stop offset="0%" stop-color="#FCD34D"/>
+                            <stop offset="100%" stop-color="#F59E0B"/> 
                         </linearGradient>
                         <filter id="starShadow" x="-50%" y="-50%" width="200%" height="200%">
                             <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="rgba(245, 158, 11, 0.4)"/>
@@ -470,22 +443,17 @@
                     <path d="M256 50L300 160L420 170C430 171 430 180 425 185L330 260" 
                           fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="12" stroke-linecap="round" filter="url(#starShadow)"/>
                 </svg>
-                
-                <div class="balance-count">
-                    <span id="userBalanceDisplay">0</span>
-                </div>
+                <div class="balance-count"><span id="userBalanceDisplay">0</span></div>
             </div>
         </div>
-        <!-- END NEW HEADER -->
 
         <div class="main-grid">
             <div class="action-card card-chat" onclick="navigateTo('chat')"><div class="icon-box"><span class="material-icons-round">chat_bubble_outline</span></div><h3>Чат поддержки</h3></div>
             <div class="action-card card-breath" onclick="navigateTo('game')"><div class="icon-box"><span class="material-icons-round">air</span></div><h3>Дыхание</h3></div>
         </div>
         
-        <!-- INCREASED SIZE & FIXED SINE WAVE -->
         <div class="widget-card" onclick="navigateTo('video')">
-            <div class="widget-header"><div class="dot-indicator"></div><div style="font-size:14px;color:var(--text-muted)">Медитации</div></div>
+            <div class="widget-header"><div class="dot-indicator"></div><div style="font-size:13px;color:var(--text-muted)">Медитации</div></div>
             <div class="widget-main-text">Спокойствие</div>
             <div class="wave-container"><svg class="wave-graph" viewBox="0 0 600 50" preserveAspectRatio="none"><defs><linearGradient id="grad1" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" class="wave-fill" style="stop-opacity:0.6"/><stop offset="100%" class="wave-fill" style="stop-opacity:0"/></linearGradient></defs><path d="M0,25 Q75,5 150,25 T300,25 T450,25 T600,25 V50 H0 Z" fill="url(#grad1)"/><path d="M0,25 Q75,5 150,25 T300,25 T450,25 T600,25" class="wave-stroke" stroke-width="2" fill="none"/></svg></div>
         </div>
@@ -646,11 +614,23 @@
         try {
             if (n === 'call' && !window.isUserPremium) { showPaywall('voice'); return; }
 
-            Object.values(screens).forEach(e => { if(e) e.classList.remove('active'); });
+            // FORCE HIDE ALL
+            Object.values(screens).forEach(e => { 
+                if(e) {
+                    e.classList.remove('active'); 
+                    e.style.display = 'none'; // Forced inline style cleanup
+                }
+            });
+            
             stopBalloonGame();
             stopBreathingAnimationLoop();
             resetSos();
-            if(screens[n]) screens[n].classList.add('active');
+            
+            // SHOW TARGET
+            if(screens[n]) {
+                screens[n].style.display = 'flex'; // Pre-set display
+                screens[n].classList.add('active');
+            }
 
             const nav = document.querySelector('.bottom-nav');
             if (n === 'call') {
