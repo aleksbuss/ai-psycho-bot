@@ -11,7 +11,7 @@
     
     <style>
         :root {
-            /* --- COLOR PALETTE: VIBRANT SERENITY --- */
+            /* --- COLOR PALETTE --- */
             --bg-main: #F0F4F8;      
             --bg-card: #FFFFFF;      
             --text-header: #1E293B;  
@@ -30,7 +30,6 @@
             --warm-accent: #FB923C; 
             --warm-text: #C2410C;
             
-            /* UI Effects */
             --shadow-card: 0 10px 40px -10px rgba(99, 102, 241, 0.15);
             --icon-default: #CBD5E1;
             
@@ -46,10 +45,6 @@
             --radius-card: 28px;
             --radius-btn-sq: 22px;
             --wave-color: #2DD4BF;
-
-            /* Spacing Defaults */
-            --pad-screen: 20px;
-            --gap-grid: 16px;
         }
 
         /* --- DARK THEME --- */
@@ -85,8 +80,7 @@
         body { font-family: 'Manrope', sans-serif; font-weight: 600; -webkit-font-smoothing: antialiased; background-color: var(--bg-main); color: var(--text-body); line-height: 1.5; position: fixed; top: 0; left: 0; right: 0; bottom: 0; width: 100%; height: 100%; overflow: hidden; transition: background-color 0.4s, color 0.4s; }
         button, input, textarea, select { font-family: 'Manrope', sans-serif !important; }
 
-        /* --- SCREEN ARCHITECTURE (FIXED OVERLAY ISSUE) --- */
-        /* This ensures screens act like separate pages, not appended blocks */
+        /* --- SCREENS (FIXED: FULL OVERLAY) --- */
         .screen { 
             position: fixed; 
             top: 0; 
@@ -94,37 +88,41 @@
             width: 100%; 
             height: 100%; 
             background-color: var(--bg-main); 
-            z-index: 100; /* Above base layer */
+            z-index: 2000; /* Highest priority */
             display: none; 
             flex-direction: column; 
             overflow-y: auto; 
-            padding-bottom: 0; /* Reset */
         }
         
         .screen.active { 
             display: flex; 
-            animation: fadeUp 0.4s cubic-bezier(0.16, 1, 0.3, 1); 
-            z-index: 200; /* Active screen is always on top */
+            animation: fadeUp 0.3s ease-out; 
         }
 
-        /* Menu Screen Specifics for Even Spacing */
+        /* --- MENU LAYOUT (FIXED: EVEN SPACING) --- */
         #menu-screen {
-            z-index: 150; /* Base level */
-            padding: var(--pad-screen);
+            z-index: 100; /* Base level */
+            padding: 20px;
             padding-bottom: 100px; /* Space for nav */
-            /* Flex layout to distribute vertical space */
+            
+            /* FLEXBOX MAGIC FOR DISTRIBUTION */
             display: flex;
             flex-direction: column;
-            gap: 16px; 
+            justify-content: space-between; /* This pushes blocks apart evenly */
+            min-height: 100%; /* Take full height */
+            box-sizing: border-box;
         }
 
-        /* --- HEADER --- */
-        header { padding: 0 20px; background: transparent; z-index: 500; display: none; align-items: center; height: 50px; flex-shrink: 0; width: 100%; margin-top: 10px; position: relative;}
-        #back-btn { background: var(--bg-card); border: none; color: var(--text-header); width: 40px; height: 40px; border-radius: 14px; box-shadow: var(--shadow-card); cursor: pointer; display: flex; align-items: center; justify-content: center; }
-        #back-btn:active { transform: scale(0.95); }
-        .header-title { font-size: 20px; font-weight: 700; margin-left: 15px; color: var(--text-header); letter-spacing: -0.5px; }
+        /* If screen is very tall (Fold 3), limit max gap so it doesn't look weird */
+        @media (min-height: 700px) {
+            #menu-screen {
+                justify-content: space-evenly; /* Even better for tall screens */
+            }
+        }
 
-        /* --- COMPONENT: BALANCE CARD --- */
+        /* --- COMPONENTS --- */
+        
+        /* 1. Greeting Card */
         .balance-card {
             background: var(--bg-card);
             border-radius: var(--radius-card);
@@ -134,38 +132,84 @@
             align-items: center;
             position: relative;
             cursor: pointer;
-            transition: transform 0.1s;
             box-shadow: var(--shadow-card);
             border: 1px solid rgba(0,0,0,0.03);
-            /* Slightly more compact */
             flex-shrink: 0; 
+            min-height: 100px;
         }
         .balance-card:active { transform: scale(0.98); }
         .balance-text { flex: 1; padding-right: 10px; }
-        .balance-text h1 { 
-            font-size: 22px; 
-            line-height: 1.1; 
-            color: var(--text-header); 
-            font-weight: 800; 
-            letter-spacing: -0.5px; 
-            margin: 0; 
-        }
+        .balance-text h1 { font-size: 22px; line-height: 1.1; color: var(--text-header); font-weight: 800; letter-spacing: -0.5px; margin: 0; }
         .balance-text p { font-size: 13px; color: var(--text-muted); margin-top: 4px; font-weight: 600; }
         .balance-visual { display: flex; flex-direction: column; align-items: center; justify-content: center; min-width: 64px; background: var(--primary-soft); border-radius: 18px; padding: 8px 6px; }
         body.dark-mode .balance-visual { background: rgba(255, 255, 255, 0.05); }
         .star-3d-icon { width: 40px; height: 40px; filter: drop-shadow(0 4px 12px rgba(251, 146, 60, 0.5)); animation: floatStar 5s ease-in-out infinite; margin-bottom: 2px; }
         .balance-count { font-size: 14px; font-weight: 800; color: var(--text-header); padding: 0; }
 
-        /* --- COMPONENT: GRID ACTIONS --- */
-        .main-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--gap-grid); flex-shrink: 0; }
-        .action-card { border-radius: var(--radius-card); padding: 16px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; height: 130px; cursor: pointer; transition: transform 0.1s; background-color: var(--bg-card); box-shadow: var(--shadow-card); border: 1px solid rgba(0,0,0,0.03); }
-        .action-card:active { transform: scale(0.97); }
-        .card-chat h3, .card-breath h3 { color: var(--text-header); font-size: 14px; font-weight: 700; letter-spacing: -0.2px; margin-top: 8px;}
-        .card-chat .icon-box, .card-breath .icon-box { color: #FFFFFF; width: 48px; height: 48px; border-radius: 18px; display: flex; align-items: center; justify-content: center; margin-bottom: 6px; }
+        /* 2. Top Grid (Chat/Breathe) AND 3. Bottom Grid (Diary/Game) - UNIFIED STYLE */
+        .main-grid, .bottom-grid { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 16px; 
+            flex-shrink: 0;
+            width: 100%;
+        }
+
+        /* Unified Card Style for uniformity */
+        .action-card, .small-card { 
+            background-color: var(--bg-card); 
+            border-radius: var(--radius-card); 
+            padding: 16px; 
+            display: flex; 
+            flex-direction: column; /* Consistent alignment */
+            justify-content: center; 
+            align-items: center; 
+            text-align: center; 
+            
+            /* FIXED HEIGHT FOR SYMMETRY */
+            height: 130px; 
+            min-height: 130px; 
+            
+            cursor: pointer; 
+            transition: transform 0.1s; 
+            box-shadow: var(--shadow-card); 
+            border: 1px solid rgba(0,0,0,0.03); 
+        }
+        
+        .action-card:active, .small-card:active { transform: scale(0.97); }
+
+        /* Icons & Text Styling */
+        .card-chat h3, .card-breath h3, .small-card h4 { 
+            color: var(--text-header); 
+            font-size: 14px; 
+            font-weight: 700; 
+            letter-spacing: -0.2px; 
+            margin-top: 10px; 
+            margin-bottom: 0;
+        }
+        
+        .card-chat .icon-box, .card-breath .icon-box, .small-icon { 
+            width: 48px; 
+            height: 48px; 
+            border-radius: 18px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            color: #FFFFFF;
+        }
+
+        /* Specific Colors */
         .card-chat .icon-box { background: linear-gradient(135deg, #6366F1, #8B5CF6); box-shadow: 0 8px 20px -5px rgba(99, 102, 241, 0.5); }
         .card-breath .icon-box { background: linear-gradient(135deg, #2DD4BF, #0F766E); box-shadow: 0 8px 20px -5px rgba(45, 212, 191, 0.5); }
+        
+        /* Bottom Card Specifics (To match structure) */
+        .small-card { flex-direction: column; gap: 0; } /* Reset row layout */
+        .small-card span { font-size: 11px; color: var(--text-muted); font-weight: 600; margin-top: 2px;}
+        .warm-icon { background: var(--warm-bg); color: var(--warm-accent); }
+        .mint-icon { background: var(--primary-soft); color: var(--primary-main); }
+        .small-icon .material-icons-round { font-size: 24px; }
 
-        /* --- COMPONENT: WIDGET (FIXED SINE) --- */
+        /* 3. Widget (Meditation) - Slightly Taller */
         .widget-card { 
             background: var(--bg-card); 
             border-radius: var(--radius-card); 
@@ -175,7 +219,8 @@
             cursor: pointer; 
             box-shadow: var(--shadow-card); 
             border: 1px solid rgba(0,0,0,0.03); 
-            height: 170px; /* Forced height for good wave visibility */
+            height: 160px; /* Distinct height */
+            min-height: 160px;
             display: flex;
             flex-direction: column;
             flex-shrink: 0;
@@ -189,23 +234,18 @@
         .wave-fill { stop-color: var(--wave-color); }
         .wave-stroke { stroke: var(--wave-color); }
 
-        /* --- COMPONENT: BOTTOM GRID --- */
-        .bottom-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--gap-grid); flex-grow: 1; /* Pushes content to fill space */ align-items: stretch; }
-        .small-card { background: var(--bg-card); padding: 16px; border-radius: 22px; display: flex; align-items: center; gap: 10px; box-shadow: var(--shadow-card); cursor: pointer; border: 1px solid rgba(0,0,0,0.03); height: 100%; min-height: 90px; }
-        .small-icon { width: 42px; height: 42px; border-radius: 14px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: visible; }
-        .small-icon .material-icons-round { font-size: 22px; }
-        .small-card h4 { font-size: 14px; font-weight: 700; color: var(--text-header); margin: 0; line-height: 1.2; }
-        .small-card span { font-size: 11px; color: var(--text-muted); font-weight: 600; }
-        .warm-icon { background: var(--warm-bg); color: var(--warm-accent); }
-        .mint-icon { background: var(--primary-soft); color: var(--primary-main); }
+        /* --- HEADER & NAV --- */
+        header { padding: 0 20px; background: transparent; z-index: 2100; display: none; align-items: center; height: 50px; flex-shrink: 0; width: 100%; margin-top: 10px; position: relative;}
+        #back-btn { background: var(--bg-card); border: none; color: var(--text-header); width: 40px; height: 40px; border-radius: 14px; box-shadow: var(--shadow-card); cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        #back-btn:active { transform: scale(0.95); }
+        .header-title { font-size: 20px; font-weight: 700; margin-left: 15px; color: var(--text-header); letter-spacing: -0.5px; }
 
-        /* --- BOTTOM NAV --- */
         .bottom-nav { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: 92%; max-width: 380px; height: 72px; background: var(--nav-bg); border-radius: 28px; box-shadow: var(--nav-shadow); display: flex; justify-content: space-around; align-items: center; z-index: 1000; padding-bottom: 0; border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
         .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 60px; height: 100%; border: none; background: transparent; cursor: pointer; }
         .nav-icon { font-size: 28px; color: var(--nav-icon-color); transition: color 0.3s; }
         .nav-icon-active { color: var(--nav-icon-active); filter: drop-shadow(0 0 8px rgba(99, 102, 241, 0.4)); }
 
-        /* --- CHAT, GAME, DIARY SCREENS --- */
+        /* --- INTERNAL SCREENS CONTENT --- */
         #chat-container { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; scroll-behavior: smooth; padding-bottom: 20px; }
         .message { max-width: 85%; padding: 16px 20px; border-radius: 24px; font-size: 16px; box-shadow: var(--shadow-card); position: relative; line-height: 1.6; }
         .msg-bot { align-self: flex-start; background-color: var(--msg-bot-bg); color: var(--text-body); border-bottom-left-radius: 4px; }
@@ -213,7 +253,7 @@
         .typing-indicator { display: none; align-self: flex-start; background: var(--bg-card); padding: 16px; border-radius: 20px; margin-bottom: 10px; box-shadow: var(--shadow-card); }
         .dot { height: 8px; width: 8px; background-color: var(--primary-main); border-radius: 50%; display: inline-block; animation: bounce 1.4s infinite ease-in-out both; margin: 0 3px; }
         .input-area { width: 100%; background: var(--bg-main); padding: 10px 16px; display: flex; align-items: center; justify-content: center; gap: 12px; padding-bottom: calc(20px + env(safe-area-inset-bottom)); box-sizing: border-box; margin-bottom: 0; position: absolute; bottom: 0; left: 0; z-index: 501; } 
-        #chat-screen { padding-bottom: 80px; } /* Space for input */
+        #chat-screen { padding-bottom: 80px; } 
         
         input[type="text"] { flex: 1; height: 56px; border-radius: 20px; border: none; padding: 0 20px; font-size: 16px; outline: none; background: var(--bg-card); color: var(--text-header); box-shadow: var(--shadow-card); min-width: 0; }
         .btn-sq { width: 56px; height: 56px; border-radius: var(--radius-btn-sq); border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; flex-shrink: 0; }
@@ -332,35 +372,38 @@
         /* 📱 RESPONSIVE LOGIC (Z-FOLD 3 FIX)        */
         /* ========================================= */
         
-        /* Narrow Screens (Fold 3 Cover, iPhone SE) */
+        /* Narrow Screens */
         @media (max-width: 380px) {
-            :root {
-                --gap-grid: 12px; 
-                --pad-screen: 16px;
-            }
             
             #menu-screen {
-                justify-content: space-between; /* MAGIC FIX for spacing */
-                min-height: 100dvh; /* Force full height so space-between works */
+                padding: 16px;
+                padding-bottom: 90px;
+                /* Even spacing for Z Fold */
+                justify-content: space-between; 
             }
             
-            /* Make text wrap nicely */
+            /* Compact Header Text */
             .balance-text h1 { 
-                font-size: 20px; 
+                font-size: 19px; 
                 white-space: nowrap; 
                 overflow: hidden; 
                 text-overflow: ellipsis;
-                max-width: 160px;
+                max-width: 150px;
             }
             
-            .balance-card { padding: 16px; margin-bottom: 0; }
-            .main-grid { margin-bottom: 0; }
-            .action-card { height: 110px; padding: 12px; }
-            .card-chat .icon-box, .card-breath .icon-box { width: 42px; height: 42px; margin-bottom: 4px; }
-            .widget-card { height: 150px; padding: 16px; margin-bottom: 0; }
-            .bottom-grid { gap: 12px; margin-bottom: 0; }
-            .small-card { padding: 12px; }
-            .small-icon { width: 36px; height: 36px; }
+            /* Ensure cards are uniform */
+            .action-card, .small-card { 
+                height: 125px; 
+                min-height: 125px;
+                padding: 12px;
+            }
+            
+            .card-chat .icon-box, .card-breath .icon-box, .small-icon { 
+                width: 42px; height: 42px; 
+                margin-bottom: 4px; 
+            }
+            
+            .widget-card { height: 150px; min-height: 150px; padding: 16px; }
             .bottom-nav { height: 64px; }
         }
     </style>
