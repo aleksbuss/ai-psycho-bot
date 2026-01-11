@@ -13,221 +13,118 @@
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&subset=cyrillic&display=swap" rel="stylesheet">
     
     <!-- ============================================ -->
-    <!-- 🎨 STYLESHEET: VIBRANT SERENITY              -->
+    <!-- 🎨 STYLESHEET: VIBRANT SERENITY (FIXED)      -->
     <!-- ============================================ -->
     <style>
         :root {
-            /* --- LIGHT THEME: VIBRANT DAY --- */
-            /* Фон: Очень светлый, но с оттенком лаванды, чтобы не был скучным */
+            /* --- COLOR PALETTE (VIBRANT) --- */
             --bg-main: #F0F4F8;      
             --bg-card: #FFFFFF;      
-            
-            /* Текст: Насыщенный темно-синий (Индиго) вместо черного */
             --text-header: #1E293B;  
             --text-body: #475569;    
             --text-muted: #94A3B8;   
             
-            /* PRIMARY: ELECTRIC VIOLET (Энергия и спокойствие) */
-            --primary-main: #6366F1; /* Indigo 500 */
-            --primary-soft: #EEF2FF; /* Indigo 50 */
-            --primary-text: #4338CA; /* Indigo 700 */
+            --primary-main: #6366F1; 
+            --primary-soft: #EEF2FF; 
+            --primary-text: #4338CA; 
             
-            /* SECONDARY: COOL TEAL (Свежесть) */
             --secondary-bg: #F0FDFA; 
-            --secondary-accent: #2DD4BF; /* Teal 400 */
+            --secondary-accent: #2DD4BF; 
             --secondary-text: #0F766E;
             
-            /* WARM: CORAL SUNSET (Тепло, не агрессия) */
             --warm-bg: #FFF7ED;
-            --warm-accent: #FB923C; /* Orange 400 */
+            --warm-accent: #FB923C; 
             --warm-text: #C2410C;
             
             /* UI Effects */
-            --shadow-card: 0 10px 40px -10px rgba(99, 102, 241, 0.15); /* Цветная тень */
-            --shadow-glow: 0 0 20px rgba(99, 102, 241, 0.4);
+            --shadow-card: 0 10px 40px -10px rgba(99, 102, 241, 0.15);
             --icon-default: #CBD5E1;
             
-            /* Chat */
             --msg-bot-bg: #FFFFFF;
-            --msg-user-bg: linear-gradient(135deg, #6366F1, #8B5CF6); /* Градиент */
+            --msg-user-bg: linear-gradient(135deg, #6366F1, #8B5CF6);
             --msg-user-text: #FFFFFF;
             
-            /* Nav */
-            --nav-bg: rgba(255, 255, 255, 0.85); /* Glassmorphism */
+            --nav-bg: rgba(255, 255, 255, 0.85); 
             --nav-shadow: 0 -10px 40px rgba(0,0,0,0.05);
             --nav-icon-color: #94A3B8;
             --nav-icon-active: #6366F1; 
             
-            --radius-card: 28px; /* Более округлые формы = дружелюбнее */
+            --radius-card: 28px;
             --radius-btn-sq: 22px;
             --wave-color: #2DD4BF;
+
+            /* --- SPACING VARIABLES (NEW) --- */
+            --gap-section: 16px; /* Стандартный отступ между блоками */
+            --gap-grid: 16px;    /* Отступ внутри сетки */
+            --pad-screen: 24px;  /* Отступ от краев экрана */
         }
 
-        /* --- DARK THEME: DEEP SPACE --- */
+        /* --- DARK THEME --- */
         body.dark-mode {
-            /* Фон: Глубокий, насыщенный темно-синий (не серый!) */
             --bg-main: #0F172A;      
             --bg-card: #1E293B;      
-            
             --text-header: #F1F5F9;  
             --text-body: #CBD5E1;    
             --text-muted: #64748B;   
-            
-            /* Primary: Светящийся неон */
             --primary-main: #818CF8; 
-            --primary-soft: #1E293B; /* Сливается с картой */
+            --primary-soft: #1E293B; 
             --primary-text: #E0E7FF; 
-            
-            /* Secondary */
             --secondary-bg: #134E4A; 
             --secondary-accent: #5EEAD4;
             --secondary-text: #CCFBF1;
-            
-            /* Warm */
             --warm-bg: #431407;
             --warm-accent: #FB923C;
             --warm-text: #FFEDD5;
-            
             --shadow-card: 0 10px 40px -10px rgba(0, 0, 0, 0.5);
-            --shadow-glow: 0 0 25px rgba(129, 140, 248, 0.3);
             --icon-default: #475569;
-            
             --msg-bot-bg: #1E293B;
             --msg-user-bg: linear-gradient(135deg, #4F46E5, #7C3AED);
             --msg-user-text: #FFFFFF;
-            
-            --nav-bg: rgba(30, 41, 59, 0.85); /* Glass dark */
+            --nav-bg: rgba(30, 41, 59, 0.85);
             --nav-shadow: 0 -10px 40px rgba(0,0,0, 0.6);
             --nav-icon-color: #64748B;
             --nav-icon-active: #A5B4FC;
-            
             --wave-color: #5EEAD4;
         }
 
-        /* --- MODERN UI OVERRIDES --- */
-        
-        /* Glassmorphism for Bottom Nav & Modal */
-        .bottom-nav, .paywall-modal, .game-modal {
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-        }
-        
-        /* Gradients for buttons */
-        #sendBtn, .sos-btn-3d, .btn-game-primary, .plan-btn.popular {
-            background: linear-gradient(135deg, var(--primary-main), #8B5CF6);
-            box-shadow: 0 8px 20px -6px rgba(99, 102, 241, 0.4);
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-        #sendBtn:active, .sos-btn-3d:active, .btn-game-primary:active {
-            transform: scale(0.95);
-            box-shadow: 0 4px 10px -4px rgba(99, 102, 241, 0.4);
-        }
-
-        /* Dark Mode fixes to make it pop */
-        body.dark-mode .action-card, 
-        body.dark-mode .small-card, 
-        body.dark-mode .widget-card, 
-        body.dark-mode .balance-card {
-            background: rgba(30, 41, 59, 0.6); /* Semi-transparent */
-            border: 1px solid rgba(255, 255, 255, 0.08); 
-            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-        }
-        
-        body.dark-mode .card-chat .icon-box, 
-        body.dark-mode .card-breath .icon-box {
-            background: rgba(255, 255, 255, 0.08);
-            border: none;
-            color: var(--text-header);
-        }
-
-        /* SOS Button looks powerful now */
-        body.dark-mode .sos-btn-header {
-            background: linear-gradient(135deg, #7C2D12, #431407); 
-            border: 1px solid rgba(251, 146, 60, 0.3); 
-            color: #FB923C;
-        }
-
-        /* Avatar Glow */
-        body.dark-mode .ai-avatar-circle { 
-            background: linear-gradient(135deg, #4F46E5, #EC4899); 
-            box-shadow: 0 0 40px rgba(99, 102, 241, 0.4); 
-        }
-        
-        /* Screen Backgrounds for Games (Gradient Mesh style) */
-        #game-screen, #balloon-game-screen {
-            background: radial-gradient(circle at 50% 10%, var(--secondary-bg), var(--bg-main));
-        }
-
-        /* --- BASE --- */
+        /* --- BASE RESET & FONTS --- */
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
         body { font-family: 'Manrope', sans-serif; font-weight: 600; -webkit-font-smoothing: antialiased; background-color: var(--bg-main); color: var(--text-body); line-height: 1.5; position: fixed; top: 0; left: 0; right: 0; bottom: 0; display: flex; flex-direction: column; transition: background-color 0.4s, color 0.4s; }
         button, input, textarea, select { font-family: 'Manrope', sans-serif !important; }
 
-        /* --- VIBRANT ANIMATIONS --- */
-        @keyframes blink { 0%, 90%, 100% { transform: scaleY(1); } 95% { transform: scaleY(0.1); } }
+        /* --- LAYOUT STRUCTURE --- */
+        .screen { flex: 1; display: none; flex-direction: column; width: 100%; height: auto; overflow: hidden; position: relative; }
+        .screen.active { display: flex; animation: fadeUp 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
         
-        /* Vibrant Pulse (Violet) */
-        @keyframes pulse-mint { 
-            0% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.7); } 
-            70% { box-shadow: 0 0 0 15px rgba(99, 102, 241, 0); } 
-            100% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0); } 
-        }
-        
-        /* Warm Pulse (Orange/Coral) */
-        @keyframes pulse-orange { 
-            0% { box-shadow: 0 0 0 0 rgba(251, 146, 60, 0.7); } 
-            70% { box-shadow: 0 0 0 15px rgba(251, 146, 60, 0); } 
-            100% { box-shadow: 0 0 0 0 rgba(251, 146, 60, 0); } 
-        }
-        
-        @keyframes msgSlideUp { from { opacity: 0; transform: translateY(30px) scale(0.9); } to { opacity: 1; transform: translateY(0) scale(1); } }
-        @keyframes waveMove { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
-        @keyframes force-gpu { from { transform: rotate(0deg) translateZ(0); } to { transform: rotate(360deg) translateZ(0); } }
-        @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes pop-up-letter { 0% { opacity: 0; transform: translateY(30px); transform: scale(0.5); } 80% { transform: scale(1.1); } 100% { opacity: 1; transform: translateY(0) scale(1); } }
-        @keyframes fadeIn { to { opacity: 1; } }
-        @keyframes fadeInScale { from{opacity:0;transform:scale(0.8)} to{opacity:1;transform:scale(1)} }
-        
-        @keyframes pulse-avatar { 
-            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.4); } 
-            50% { transform: scale(1.05); box-shadow: 0 0 0 25px rgba(99, 102, 241, 0); } 
-            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(99, 102, 241, 0); } 
-        }
-        
-        @keyframes floatStar { 0% { transform: translateY(0px) rotate(0deg); } 50% { transform: translateY(-6px) rotate(5deg); } 100% { transform: translateY(0px) rotate(0deg); } }
-        
-        @keyframes heartbeat { 
-            0% { transform: scale(1); box-shadow: 0 4px 15px rgba(251, 146, 60, 0.3); } 
-            15% { transform: scale(1.2); }
-            30% { transform: scale(1); }
-            45% { transform: scale(1.15); }
-            60% { transform: scale(1); }
-            100% { transform: scale(1); box-shadow: 0 4px 15px rgba(251, 146, 60, 0.3); } 
-        }
-
-        .msg-enter { animation: msgSlideUp 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
-        #gpu-activator { position: absolute; top: 0; left: 0; width: 1px; height: 1px; opacity: 0.01; pointer-events: none; z-index: -1; animation: force-gpu 1s infinite linear; will-change: transform; }
-
-        /* --- HEADER --- */
-        header { padding: 0 20px; background: transparent; z-index: 100; display: none; align-items: center; height: 60px; flex-shrink: 0; width: 100%; }
-        #back-btn { background: var(--bg-card); border: none; color: var(--text-header); width: 44px; height: 44px; border-radius: 14px; box-shadow: var(--shadow-card); cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        /* HEADER & NAVIGATION */
+        header { padding: 0 20px; background: transparent; z-index: 100; display: none; align-items: center; height: 50px; flex-shrink: 0; width: 100%; margin-top: 10px;}
+        #back-btn { background: var(--bg-card); border: none; color: var(--text-header); width: 40px; height: 40px; border-radius: 14px; box-shadow: var(--shadow-card); cursor: pointer; display: flex; align-items: center; justify-content: center; }
         #back-btn:active { transform: scale(0.95); }
         .header-title { font-size: 20px; font-weight: 700; margin-left: 15px; color: var(--text-header); letter-spacing: -0.5px; }
 
-        /* --- SCREENS --- */
-        .screen { flex: 1; display: none; flex-direction: column; width: 100%; height: auto; overflow: hidden; position: relative; }
-        .screen.active { display: flex; animation: fadeUp 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
+        .bottom-nav { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: 92%; max-width: 380px; height: 72px; background: var(--nav-bg); border-radius: 28px; box-shadow: var(--nav-shadow); display: flex; justify-content: space-around; align-items: center; z-index: 1000; padding-bottom: 0; border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+        .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 60px; height: 100%; border: none; background: transparent; cursor: pointer; }
+        .nav-icon { font-size: 28px; color: var(--nav-icon-color); transition: color 0.3s; }
+        .nav-icon-active { color: var(--nav-icon-active); filter: drop-shadow(0 0 8px rgba(99, 102, 241, 0.4)); }
 
-        /* --- MENU SCREEN & NEW HEADER --- */
-        #menu-screen { padding: 24px; overflow-y: auto; padding-bottom: 110px; }
-
-        /* UPDATED BALANCE CARD (Premium Look) */
+        /* --- MENU SCREEN ADJUSTMENTS --- */
+        #menu-screen { 
+            padding: var(--pad-screen); 
+            overflow-y: auto; 
+            padding-bottom: 110px; 
+            /* Fix for layout flow */
+            display: flex;
+            flex-direction: column;
+            gap: var(--gap-section); /* Using gap instead of margins */
+        }
+        
+        /* 1. COMPACT BALANCE CARD (Greeting) */
         .balance-card {
             background: var(--bg-card);
             border-radius: var(--radius-card);
-            padding: 24px;
-            margin-top: 10px;
-            margin-bottom: 30px;
+            padding: 20px 24px;
+            /* Remove margin because parent has gap */
+            margin: 0; 
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -236,71 +133,105 @@
             transition: transform 0.1s;
             box-shadow: var(--shadow-card);
             border: 1px solid rgba(0,0,0,0.03);
+            min-height: 100px;
         }
         .balance-card:active { transform: scale(0.98); }
         
-        .balance-text h1 { font-size: 26px; line-height: 1.2; color: var(--text-header); font-weight: 800; letter-spacing: -1px; margin: 0; }
-        .balance-text p { font-size: 15px; color: var(--text-muted); margin-top: 6px; font-weight: 600; }
+        .balance-text { flex: 1; padding-right: 10px; }
+        .balance-text h1 { 
+            font-size: 22px; /* Reduced from 26px */
+            line-height: 1.2; 
+            color: var(--text-header); 
+            font-weight: 800; 
+            letter-spacing: -0.5px; 
+            margin: 0; 
+            /* Force single line logic if possible, or tight wrapping */
+        }
+        .balance-text p { font-size: 14px; color: var(--text-muted); margin-top: 4px; font-weight: 600; }
         
-        /* New "Badge" style for the star section */
         .balance-visual { 
             display: flex; 
             flex-direction: column; 
             align-items: center; 
             justify-content: center; 
-            min-width: 76px;
+            min-width: 64px; /* Reduced width */
             background: var(--primary-soft);
-            border-radius: 22px;
-            padding: 12px 10px;
+            border-radius: 18px;
+            padding: 8px 6px;
         }
         body.dark-mode .balance-visual { background: rgba(255, 255, 255, 0.05); }
+        .star-3d-icon { width: 42px; height: 42px; filter: drop-shadow(0 4px 12px rgba(251, 146, 60, 0.5)); animation: floatStar 5s ease-in-out infinite; margin-bottom: 2px; }
+        .balance-count { font-size: 14px; font-weight: 800; color: var(--text-header); padding: 0; }
 
-        /* The BIG Star Icon - MORE VIBRANT */
-        .star-3d-icon { 
-            width: 52px; height: 52px; 
-            filter: drop-shadow(0 4px 12px rgba(251, 146, 60, 0.5)); 
-            animation: floatStar 5s ease-in-out infinite; 
-            margin-bottom: 4px;
+        /* 2. MAIN GRID (Chat & Breathe) */
+        .main-grid { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: var(--gap-grid); 
+            margin: 0; /* Handled by parent gap */
         }
-        
-        /* The Counter below the star */
-        .balance-count { 
-            font-size: 16px; font-weight: 800; 
-            color: var(--text-header); 
-            padding: 0;
-            margin-top: 2px;
-        }
-
-        /* Other Menu Items */
-        .main-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
-        .action-card { border-radius: var(--radius-card); padding: 20px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; height: 160px; cursor: pointer; transition: transform 0.1s; background-color: var(--bg-card); box-shadow: var(--shadow-card); border: 1px solid rgba(0,0,0,0.03); }
+        .action-card { border-radius: var(--radius-card); padding: 16px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; height: 140px; cursor: pointer; transition: transform 0.1s; background-color: var(--bg-card); box-shadow: var(--shadow-card); border: 1px solid rgba(0,0,0,0.03); }
         .action-card:active { transform: scale(0.97); }
-        .card-chat h3 { color: var(--text-header); font-size: 16px; font-weight: 700; letter-spacing: -0.3px; margin-top: 8px;}
-        .card-chat .icon-box { color: #FFFFFF; width: 56px; height: 56px; border-radius: 20px; background: linear-gradient(135deg, #6366F1, #8B5CF6); display: flex; align-items: center; justify-content: center; margin-bottom: 12px; box-shadow: 0 8px 20px -5px rgba(99, 102, 241, 0.5); }
+        .card-chat h3, .card-breath h3 { color: var(--text-header); font-size: 15px; font-weight: 700; letter-spacing: -0.3px; margin-top: 8px;}
+        .card-chat .icon-box, .card-breath .icon-box { color: #FFFFFF; width: 50px; height: 50px; border-radius: 18px; display: flex; align-items: center; justify-content: center; margin-bottom: 8px; }
+        .card-chat .icon-box { background: linear-gradient(135deg, #6366F1, #8B5CF6); box-shadow: 0 8px 20px -5px rgba(99, 102, 241, 0.5); }
+        .card-breath .icon-box { background: linear-gradient(135deg, #2DD4BF, #0F766E); box-shadow: 0 8px 20px -5px rgba(45, 212, 191, 0.5); }
         
-        .card-breath h3 { color: var(--text-header); font-size: 16px; font-weight: 700; letter-spacing: -0.3px; margin-top: 8px;}
-        .card-breath .icon-box { color: #FFFFFF; width: 56px; height: 56px; border-radius: 20px; background: linear-gradient(135deg, #2DD4BF, #0F766E); display: flex; align-items: center; justify-content: center; margin-bottom: 12px; box-shadow: 0 8px 20px -5px rgba(45, 212, 191, 0.5); }
-        
-        .widget-card { background: var(--bg-card); border-radius: var(--radius-card); padding: 24px; margin-bottom: 24px; overflow: hidden; position: relative; cursor: pointer; box-shadow: var(--shadow-card); border: 1px solid rgba(0,0,0,0.03); }
-        .widget-header { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+        /* 3. MEDITATION WIDGET (EXPANDED SINE WAVE) */
+        .widget-card { 
+            background: var(--bg-card); 
+            border-radius: var(--radius-card); 
+            padding: 24px; 
+            margin: 0;
+            overflow: hidden; 
+            position: relative; 
+            cursor: pointer; 
+            box-shadow: var(--shadow-card); 
+            border: 1px solid rgba(0,0,0,0.03); 
+            
+            /* CRITICAL FIX: Explicit Height Increase */
+            height: 180px; 
+            display: flex;
+            flex-direction: column;
+        }
+        .widget-header { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; z-index: 2; }
         .dot-indicator { width: 8px; height: 8px; background: var(--secondary-accent); border-radius: 50%; box-shadow: 0 0 10px var(--secondary-accent); }
         .widget-title { font-size: 14px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
-        .widget-main-text { font-size: 20px; font-weight: 700; color: var(--text-header); }
-        .wave-container { width: 100%; height: 50px; margin-top: 12px; overflow: hidden; position: relative; }
-        .wave-graph { width: 200%; height: 100%; opacity: 0.8; animation: waveMove 10s linear infinite; }
+        .widget-main-text { font-size: 22px; font-weight: 700; color: var(--text-header); z-index: 2; }
+        
+        /* WAVE FIX: Position absolute bottom to fill space */
+        .wave-container { 
+            position: absolute; 
+            bottom: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 90px; /* Taller area for the wave */
+            overflow: hidden; 
+            z-index: 1;
+        }
+        .wave-graph { 
+            width: 200%; 
+            height: 100%; 
+            opacity: 0.8; 
+            animation: waveMove 10s linear infinite; 
+            transform-origin: bottom;
+        }
         .wave-fill { stop-color: var(--wave-color); }
         .wave-stroke { stroke: var(--wave-color); }
 
-        .bottom-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-        .small-card { background: var(--bg-card); padding: 24px 20px; border-radius: 22px; display: flex; align-items: center; gap: 16px; box-shadow: var(--shadow-card); cursor: pointer; border: 1px solid rgba(0,0,0,0.03); }
-        .small-icon { width: 48px; height: 48px; border-radius: 16px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: visible; }
-        .small-icon .material-icons-round { font-size: 26px; }
-        .small-card h4 { font-size: 16px; font-weight: 700; color: var(--text-header); margin: 0; }
-        .small-card span { font-size: 13px; color: var(--text-muted); font-weight: 600; }
+        /* 4. BOTTOM GRID */
+        .bottom-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--gap-grid); margin: 0; }
+        .small-card { background: var(--bg-card); padding: 20px 16px; border-radius: 22px; display: flex; align-items: center; gap: 12px; box-shadow: var(--shadow-card); cursor: pointer; border: 1px solid rgba(0,0,0,0.03); min-height: 100px; }
+        .small-icon { width: 44px; height: 44px; border-radius: 14px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: visible; }
+        .small-icon .material-icons-round { font-size: 24px; }
+        .small-card h4 { font-size: 15px; font-weight: 700; color: var(--text-header); margin: 0; line-height: 1.2; }
+        .small-card span { font-size: 12px; color: var(--text-muted); font-weight: 600; }
         .warm-icon { background: var(--warm-bg); color: var(--warm-accent); }
         .mint-icon { background: var(--primary-soft); color: var(--primary-main); }
 
-        /* --- CHAT --- */
+        /* --- OTHER SCREENS (Chat, SOS, Games) --- */
+        /* [Keeping these largely the same, just adapting to new palette/shapes] */
+        
         #chat-container { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; scroll-behavior: smooth; }
         .message { max-width: 85%; padding: 16px 20px; border-radius: 24px; font-size: 16px; box-shadow: var(--shadow-card); position: relative; line-height: 1.6; }
         .msg-bot { align-self: flex-start; background-color: var(--msg-bot-bg); color: var(--text-body); border-bottom-left-radius: 4px; }
@@ -312,9 +243,9 @@
         .btn-sq { width: 56px; height: 56px; border-radius: var(--radius-btn-sq); border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; flex-shrink: 0; }
         #micBtn { background-color: var(--bg-card); color: var(--icon-default); box-shadow: var(--shadow-card); }
         #micBtn.recording { background-color: var(--secondary-bg); color: var(--secondary-accent); animation: pulse-mint 1.5s infinite; border: 1px solid var(--secondary-accent); }
-        #sendBtn { color: white; }
+        #sendBtn { background: linear-gradient(135deg, var(--primary-main), #8B5CF6); box-shadow: 0 8px 20px -6px rgba(99, 102, 241, 0.4); color: white; }
+        #sendBtn:active { transform: scale(0.95); }
 
-        /* --- SOS & GAMES --- */
         #game-screen { background: var(--bg-main); }
         canvas#breathCanvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; opacity: 0.8; }
         .game-ui-overlay { position: relative; z-index: 10; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; width: 100%; padding-bottom: 180px; pointer-events: none; }
@@ -324,15 +255,16 @@
         .game-controls { pointer-events: auto; display: flex; gap: 20px; }
         .btn-game-card { padding: 20px 40px; border-radius: var(--radius-card); border: none; font-size: 18px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 14px; background: var(--bg-card); color: var(--primary-main); box-shadow: var(--shadow-card); }
         .btn-reset-sq { width: 66px; height: 66px; border-radius: 20px; background: var(--bg-card); color: var(--text-muted); border: none; box-shadow: var(--shadow-card); display: flex; align-items: center; justify-content: center; cursor: pointer; }
-        
+
         #sos-screen { background: var(--bg-main); justify-content: center; overflow: hidden; }
         .sos-container-3d { position: relative; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 30px; }
         .sos-title-block { display: flex; flex-direction: column; align-items: center; gap: 15px; margin-bottom: 50px; }
         .sos-big-number { font-size: 180px; line-height: 1; font-weight: 900; background: linear-gradient(135deg, var(--warm-accent), #EF4444); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 10px 20px rgba(249, 115, 22, 0.4)); opacity: 0; display: block; }
         .sos-text-line { display: flex; gap: 4px; font-size: 36px; font-weight: 800; text-transform: uppercase; color: var(--text-header); letter-spacing: 2px; }
         .sos-letter { display: inline-block; opacity: 0; transform: translateY(20px); }
-        .sos-btn-3d { padding: 22px 60px; font-size: 20px; font-weight: 800; text-transform: uppercase; color: #FFFFFF; border: none; border-radius: 24px; cursor: pointer; opacity: 1; min-width: 240px; letter-spacing: 1px; }
+        .sos-btn-3d { padding: 22px 60px; font-size: 20px; font-weight: 800; text-transform: uppercase; color: #FFFFFF; background: linear-gradient(135deg, var(--primary-main), #8B5CF6); border: none; border-radius: 24px; cursor: pointer; opacity: 1; min-width: 240px; letter-spacing: 1px; box-shadow: 0 8px 20px -6px rgba(99, 102, 241, 0.4); }
         .sos-btn-enter { opacity: 0; animation: pop-up-letter 0.5s ease forwards; animation-delay: 0.6s; }
+        .sos-btn-3d:active { transform: scale(0.95); }
         .sos-desc { font-size: 20px; color: var(--text-body); margin-top: 20px; font-weight: 600; opacity: 0; animation: fadeIn 0.5s ease forwards; animation-delay: 0.4s; text-align: center; }
 
         #balloon-game-screen { background-color: var(--bg-main); position: relative; overflow: hidden; transform: translate3d(0,0,0); }
@@ -343,19 +275,17 @@
         #game-timer { font-size: 22px; font-weight: 800; color: var(--text-header); background: rgba(255,255,255,0.8); backdrop-filter: blur(10px); padding: 10px 20px; border-radius: 18px; box-shadow: var(--shadow-card); }
         body.dark-mode #game-timer { background: rgba(30, 41, 59, 0.8); }
         
-        .game-modal { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.7); z-index: 100; display: none; flex-direction: column; align-items: center; justify-content: center; padding: 40px; text-align: center; animation: fadeInScale 0.3s ease-out; }
+        .game-modal { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); z-index: 100; display: none; flex-direction: column; align-items: center; justify-content: center; padding: 40px; text-align: center; animation: fadeInScale 0.3s ease-out; }
         body.dark-mode .game-modal { background: rgba(15, 23, 42, 0.8); }
-        
         .cup-icon { font-size: 100px; color: #FFD700; margin-bottom: 20px; filter: drop-shadow(0 0 30px rgba(255, 215, 0, 0.6)); animation: pulse-mint 2s infinite; }
         .score-big { font-size: 80px; font-weight: 900; color: var(--text-header); line-height: 1; margin-bottom: 10px; letter-spacing: -2px; }
         .score-label { font-size: 18px; color: var(--text-muted); margin-bottom: 30px; text-transform: uppercase; letter-spacing: 2px; font-weight: 700; }
         .new-record-badge { background: var(--warm-accent); color: white; padding: 8px 16px; border-radius: 12px; font-weight: 800; font-size: 14px; margin-bottom: 15px; display: inline-block; box-shadow: 0 4px 15px rgba(251, 146, 60, 0.4); }
-        
-        .btn-game-primary { padding: 22px 0; font-size: 18px; font-weight: 800; text-transform: uppercase; color: #FFFFFF; border: none; border-radius: 24px; cursor: pointer; width: 100%; }
+        .btn-game-primary { padding: 22px 0; font-size: 18px; font-weight: 800; text-transform: uppercase; color: #FFFFFF; background: linear-gradient(135deg, var(--primary-main), #8B5CF6); border: none; border-radius: 24px; cursor: pointer; width: 100%; box-shadow: 0 8px 20px -6px rgba(99, 102, 241, 0.4); }
+        .btn-game-primary:active { transform: scale(0.95); }
         .btn-game-secondary { padding: 22px 0; font-size: 18px; font-weight: 700; text-transform: uppercase; color: var(--text-body); background: var(--bg-card); border: none; border-radius: 24px; cursor: pointer; box-shadow: var(--shadow-card); width: 100%; transition: transform 0.1s; }
         .btn-game-secondary:active { transform: scale(0.96); }
 
-        /* --- DIARY --- */
         .chart-container { background: var(--bg-card); border-radius: 28px; padding: 24px; margin-bottom: 24px; box-shadow: var(--shadow-card); min-height: 350px; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding-top: 24px; border: 1px solid rgba(0,0,0,0.03); }
         #pieChart { width: 280px; height: 280px; margin-bottom: 10px; margin-top: -30px; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.1)); } 
         .pie-legend { display: flex; flex-direction: column; gap: 10px; width: 100%; }
@@ -374,13 +304,6 @@
         .history-list { display: flex; flex-direction: column; gap: 12px; }
         .heart-alert { color: #F43F5E !important; animation: heart-beat 1.5s infinite ease-in-out; z-index: 10; filter: drop-shadow(0 0 5px rgba(244, 63, 94, 0.5)); }
 
-        /* --- BOTTOM NAV --- */
-        .bottom-nav { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); width: 92%; max-width: 380px; height: 76px; background: var(--nav-bg); border-radius: 28px; box-shadow: var(--nav-shadow); display: flex; justify-content: space-around; align-items: center; z-index: 1000; padding-bottom: 0; border: 1px solid rgba(255,255,255,0.1); }
-        .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 60px; height: 100%; border: none; background: transparent; cursor: pointer; }
-        .nav-icon { font-size: 28px; color: var(--nav-icon-color); transition: color 0.3s; }
-        .nav-icon-active { color: var(--nav-icon-active); filter: drop-shadow(0 0 8px rgba(99, 102, 241, 0.4)); }
-
-        /* --- CALL SCREEN --- */
         #call-screen { background: linear-gradient(135deg, #1E1B4B, #0F172A); color: white; z-index: 2000; }
         .call-ui-container { display: flex; flex-direction: column; height: 100%; justify-content: space-between; align-items: center; padding: 60px 30px 40px; }
         .call-header { text-align: center; }
@@ -395,8 +318,7 @@
         .btn-round-end { width: 80px; height: 80px; border-radius: 50%; border: none; background: #EF4444; color: white; display: flex; align-items: center; justify-content: center; font-size: 36px; cursor: pointer; box-shadow: 0 8px 30px rgba(239, 68, 68, 0.4); transition: transform 0.1s; }
         .btn-round-end:active { transform: scale(0.9); }
 
-        /* --- PAYWALL --- */
-        .paywall-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.85); z-index: 3000; display: none; flex-direction: column; align-items: center; justify-content: center; padding: 20px; animation: fadeIn 0.3s; }
+        .paywall-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.85); z-index: 3000; display: none; flex-direction: column; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); animation: fadeIn 0.3s; }
         .pay-card { background: #1E293B; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 32px; padding: 32px 24px; width: 100%; max-width: 360px; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.6); position: relative; overflow: hidden; }
         .pay-card::before { content: ''; position: absolute; top: -80px; left: 50%; transform: translateX(-50%); width: 160px; height: 160px; background: rgba(99, 102, 241, 0.3); filter: blur(60px); border-radius: 50%; pointer-events: none; }
         .pay-icon { font-size: 64px; color: #FBBF24; margin-bottom: 24px; filter: drop-shadow(0 0 20px rgba(251, 191, 36, 0.4)); }
@@ -407,29 +329,65 @@
         .plan-name { font-weight: 700; font-size: 18px; color: #FFFFFF; }
         .plan-price { font-weight: 800; font-size: 18px; color: #FFFFFF; }
         .plan-sub { font-size: 13px; font-weight: 600; color: #FBBF24; margin-top: 4px; }
-        .plan-btn.popular { border: none; box-shadow: 0 10px 30px rgba(99, 102, 241, 0.3); }
-        .plan-btn.popular .plan-name, .plan-btn.popular .plan-price { color: #FFFFFF; }
-        .plan-btn.popular .plan-sub { color: #E0E7FF; }
+        .plan-btn.popular { background: linear-gradient(135deg, #FBBF24 0%, #F59E0B 100%); border: none; box-shadow: 0 10px 30px rgba(251, 191, 36, 0.3); }
+        .plan-btn.popular .plan-name, .plan-btn.popular .plan-price { color: #000000; }
+        .plan-btn.popular .plan-sub { color: #333333; }
         .save-badge { position: absolute; top: -12px; right: 15px; background: #EF4444; color: white; font-size: 12px; font-weight: 800; padding: 6px 12px; border-radius: 12px; text-transform: uppercase; box-shadow: 0 4px 10px rgba(0,0,0,0.3); border: 2px solid #1E293B; }
 
-       /* --- RESPONSIVE FIXES --- */
+        /* --- ANIMATIONS --- */
+        @keyframes blink { 0%, 90%, 100% { transform: scaleY(1); } 95% { transform: scaleY(0.1); } }
+        @keyframes pulse-mint { 0% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.7); } 70% { box-shadow: 0 0 0 15px rgba(99, 102, 241, 0); } 100% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0); } }
+        @keyframes pulse-orange { 0% { box-shadow: 0 0 0 0 rgba(251, 146, 60, 0.7); } 70% { box-shadow: 0 0 0 15px rgba(251, 146, 60, 0); } 100% { box-shadow: 0 0 0 0 rgba(251, 146, 60, 0); } }
+        @keyframes msgSlideUp { from { opacity: 0; transform: translateY(30px) scale(0.9); } to { opacity: 1; transform: translateY(0) scale(1); } }
+        @keyframes waveMove { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+        @keyframes force-gpu { from { transform: rotate(0deg) translateZ(0); } to { transform: rotate(360deg) translateZ(0); } }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes pop-up-letter { 0% { opacity: 0; transform: translateY(30px); transform: scale(0.5); } 80% { transform: scale(1.1); } 100% { opacity: 1; transform: translateY(0) scale(1); } }
+        @keyframes fadeIn { to { opacity: 1; } }
+        @keyframes fadeInScale { from{opacity:0;transform:scale(0.8)} to{opacity:1;transform:scale(1)} }
+        @keyframes pulse-avatar { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.4); } 50% { transform: scale(1.05); box-shadow: 0 0 0 25px rgba(99, 102, 241, 0); } 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(99, 102, 241, 0); } }
+        @keyframes floatStar { 0% { transform: translateY(0px) rotate(0deg); } 50% { transform: translateY(-6px) rotate(5deg); } 100% { transform: translateY(0px) rotate(0deg); } }
+        @keyframes heartbeat { 0% { transform: scale(1); box-shadow: 0 4px 15px rgba(251, 146, 60, 0.3); } 15% { transform: scale(1.2); } 30% { transform: scale(1); } 45% { transform: scale(1.15); } 60% { transform: scale(1); } 100% { transform: scale(1); box-shadow: 0 4px 15px rgba(251, 146, 60, 0.3); } }
+
+        .msg-enter { animation: msgSlideUp 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+        #gpu-activator { position: absolute; top: 0; left: 0; width: 1px; height: 1px; opacity: 0.01; pointer-events: none; z-index: -1; animation: force-gpu 1s infinite linear; will-change: transform; }
+
+        /* ========================================= */
+        /* 📱 RESPONSIVE LOGIC (THE FIX)             */
+        /* ========================================= */
+        
+        /* 1. SMALL/NARROW SCREENS (Fold 3 Cover, SE) */
         @media (max-width: 380px) {
-            .screen { display: none !important; }
-            .screen.active { display: flex !important; flex-direction: column; }
-            #menu-screen.active { padding: 16px; min-height: 100vh; justify-content: space-evenly; box-sizing: border-box; padding-bottom: 90px; }
-            .greeting-header, .main-grid, .widget-card { margin-bottom: 0 !important; flex-shrink: 0; }
-            .input-area { padding: 10px 8px; gap: 8px; }
-            .btn-sq { width: 44px; height: 44px; border-radius: 14px; }
-            input[type="text"] { height: 44px; font-size: 14px; padding: 0 12px; }
-            .action-card { padding: 16px 8px; height: 130px; } 
-            .card-chat h3, .card-breath h3 { font-size: 13px !important; white-space: nowrap; margin-top: 6px; letter-spacing: -0.2px; }
-            .bottom-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 0; }
-            .small-card { height: 90px; padding: 0 12px; display: flex; align-items: center; gap: 10px; width: 100%; }
-            .small-icon { width: 40px; height: 40px; border-radius: 12px; flex-shrink: 0; }
-            .small-card h4 { font-size: 13px !important; margin-bottom: 0; }
-            .small-card span { font-size: 10px; }
-            .bottom-nav { height: 68px; bottom: 12px; width: 94%; }
+            :root {
+                --gap-section: 12px; /* Уменьшаем отступы между блоками */
+                --gap-grid: 10px;    /* Уменьшаем дырки в сетке */
+                --pad-screen: 16px;  /* Отступ от краев, чтобы не прилипало */
+            }
+            
+            #menu-screen { padding-top: 10px; } /* Чуть выше контент */
+            
+            .balance-card { 
+                padding: 16px; 
+                min-height: 90px;
+            }
+            .balance-text h1 { 
+                font-size: 20px; /* Еще меньше шрифт для одной строки */
+            }
+            .action-card { height: 120px; padding: 12px; }
+            .card-chat .icon-box, .card-breath .icon-box { width: 44px; height: 44px; margin-bottom: 6px; }
+            .widget-card { padding: 16px; height: 160px; } /* Синус все равно большой */
+            .small-card { padding: 16px; min-height: 80px; }
+            .small-icon { width: 36px; height: 36px; }
             .nav-icon { font-size: 24px; }
+            .bottom-nav { height: 60px; }
+        }
+
+        /* 2. TALL/LARGE SCREENS (Pro Max, Android Flagships) */
+        @media (min-height: 800px) {
+            :root {
+                --gap-section: 24px; /* Даем воздуха на больших экранах */
+                --gap-grid: 20px;
+            }
         }
     </style>
 </head>
@@ -492,7 +450,7 @@
         <!-- NEW HEADER: REPLACED SOS WITH BALANCE CARD -->
         <div class="balance-card" onclick="showPaywall('top_up')">
             <div class="balance-text">
-                <h1><span id="greetingText">Доброе утро</span>,<br><span id="userNameDisplay">User</span></h1>
+                <h1><span id="greetingText">Доброе утро</span>, <span id="userNameDisplay">User</span></h1>
                 <p>Что поддержит вас сегодня?</p>
             </div>
             <div class="balance-visual">
@@ -524,11 +482,14 @@
             <div class="action-card card-chat" onclick="navigateTo('chat')"><div class="icon-box"><span class="material-icons-round">chat_bubble_outline</span></div><h3>Чат поддержки</h3></div>
             <div class="action-card card-breath" onclick="navigateTo('game')"><div class="icon-box"><span class="material-icons-round">air</span></div><h3>Дыхание</h3></div>
         </div>
+        
+        <!-- INCREASED SIZE & FIXED SINE WAVE -->
         <div class="widget-card" onclick="navigateTo('video')">
             <div class="widget-header"><div class="dot-indicator"></div><div style="font-size:14px;color:var(--text-muted)">Медитации</div></div>
-            <div style="font-size:18px;font-weight:600;color:var(--text-header)">Спокойствие</div>
+            <div class="widget-main-text">Спокойствие</div>
             <div class="wave-container"><svg class="wave-graph" viewBox="0 0 600 50" preserveAspectRatio="none"><defs><linearGradient id="grad1" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" class="wave-fill" style="stop-opacity:0.6"/><stop offset="100%" class="wave-fill" style="stop-opacity:0"/></linearGradient></defs><path d="M0,25 Q75,5 150,25 T300,25 T450,25 T600,25 V50 H0 Z" fill="url(#grad1)"/><path d="M0,25 Q75,5 150,25 T300,25 T450,25 T600,25" class="wave-stroke" stroke-width="2" fill="none"/></svg></div>
         </div>
+
         <div class="bottom-grid">
             <div class="small-card" onclick="navigateTo('music')"><div class="small-icon warm-icon"><span id="diary-icon" class="material-icons-round">favorite_border</span></div><div><h4>Дневник</h4><span>Состояние</span></div></div>
             <div class="small-card" onclick="navigateTo('balloons')"><div class="small-icon mint-icon"><span class="material-icons-round">sports_esports</span></div><div><h4>Игра</h4><span>Шарики</span></div></div>
