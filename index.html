@@ -13,105 +13,170 @@
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&subset=cyrillic&display=swap" rel="stylesheet">
     
     <!-- ============================================ -->
-    <!-- 🎨 STYLESHEET (CSS)                          -->
+    <!-- 🎨 STYLESHEET (CSS) - SAFE HARBOR PALETTE    -->
     <!-- ============================================ -->
     <style>
         :root {
-            /* Light Theme (Fresh Mint) */
-            --bg-main: #F5F7FA;      
+            /* --- LIGHT THEME: "MORNING CALM" --- */
+            /* Основа: Мягкий светло-серый, теплее чем белый */
+            --bg-main: #F2F4F6;      
             --bg-card: #FFFFFF;      
-            --text-header: #1F2937;  
-            --text-body: #4B5563;    
-            --text-muted: #9CA3AF;   
-            --primary-main: #4DB6AC; 
-            --primary-soft: #E0F2F1; 
-            --primary-text: #00695C; 
-            --secondary-bg: #E3F2FD; 
-            --secondary-accent: #64B5F6;
-            --secondary-text: #1565C0;
+            
+            /* Текст: Темно-синий сланец (не черный) для снижения контраста */
+            --text-header: #263238;  
+            --text-body: #455A64;    
+            --text-muted: #90A4AE;   
+            
+            /* Основной цвет: Успокаивающий серо-голубой (Blue Grey) */
+            --primary-main: #607D8B; 
+            --primary-soft: #ECEFF1; 
+            --primary-text: #37474F; 
+            
+            /* Вторичный: Шалфей (Sage) - природа и дыхание */
+            --secondary-bg: #E8F5E9; 
+            --secondary-accent: #81C784;
+            --secondary-text: #2E7D32;
+            
+            /* Теплый акцент: Мягкий абрикос (вместо сигнального оранжевого) */
             --warm-bg: #FFF3E0;
             --warm-accent: #FFB74D;
-            --warm-text: #EF6C00;
-            --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.04);
-            --icon-default: #90A4AE;
+            --warm-text: #E65100;
+            
+            /* Тени: Цветные, мягкие, рассеянные */
+            --shadow-card: 0 8px 24px rgba(69, 90, 100, 0.08);
+            --icon-default: #B0BEC5;
+            
+            /* Чат */
             --msg-bot-bg: #FFFFFF;
-            --msg-user-bg: #4DB6AC;
+            --msg-user-bg: #607D8B;
             --msg-user-text: #FFFFFF;
+            
+            /* Навигация */
             --nav-bg: #FFFFFF;
             --nav-shadow: 0 -5px 20px rgba(0,0,0,0.05);
-            --nav-icon-color: #64B5F6;
-            --nav-icon-active: #FF9800; 
+            --nav-icon-color: #90A4AE;
+            --nav-icon-active: #607D8B; 
+            
             --radius-card: 24px;
             --radius-btn-sq: 18px;
-            --wave-color: #4DB6AC;
+            --wave-color: #81C784; /* Зеленая волна для дыхания */
         }
 
-        /* Dark Theme Configuration */
+        /* --- DARK THEME: "DEEP SANCTUARY" --- */
         body.dark-mode {
-            --bg-main: #0B0C10;      
-            --bg-card: linear-gradient(145deg, #1A1C20 0%, #121316 100%);      
-            --text-header: #E0E0E0;  
-            --text-body: #9E9E9E;    
-            --text-muted: #616161;   
-            --primary-main: #FF6F00; 
-            --primary-soft: #1F2125; 
-            --primary-text: #FF8F00; 
-            --secondary-bg: #1F2125; 
-            --secondary-accent: #FF8F00;
-            --secondary-text: #FFA000;
-            --warm-bg: #2C1B10;
-            --warm-accent: #FF6F00;
-            --warm-text: #FFAB40;
-            --shadow-card: 0 10px 30px rgba(0, 0, 0, 0.7);
+            /* Фон: Глубокий Gunmetal (Сине-серый), а не чистый черный */
+            --bg-main: #1C2329;      
+            --bg-card: #263238; /* Плоский цвет, без резких градиентов */     
+            
+            /* Текст: Светло-серый, избегаем чистого белого (#FFF) */
+            --text-header: #ECEFF1;  
+            --text-body: #B0BEC5;    
+            --text-muted: #78909C;   
+            
+            /* Основной: Светлый сланец */
+            --primary-main: #90A4AE; 
+            --primary-soft: #37474F; 
+            --primary-text: #ECEFF1; 
+            
+            /* Вторичный: Мягкий зеленый свет */
+            --secondary-bg: #37474F; 
+            --secondary-accent: #81C784;
+            --secondary-text: #A5D6A7;
+            
+            /* Теплый: Приглушенный янтарь */
+            --warm-bg: #3E2723;
+            --warm-accent: #FFCC80;
+            --warm-text: #FFAB91;
+            
+            --shadow-card: 0 10px 30px rgba(0, 0, 0, 0.4);
             --icon-default: #546E7A;
-            --msg-bot-bg: #1A1C20;
-            --msg-user-bg: #E65100;
+            
+            --msg-bot-bg: #263238;
+            --msg-user-bg: #546E7A;
             --msg-user-text: #FFFFFF;
-            --nav-bg: #121316;
-            --nav-shadow: 0 -5px 20px rgba(0,0,0, 0.8);
-            --nav-icon-color: #424242;
-            --wave-color: #FF6F00;
+            
+            --nav-bg: #212B33;
+            --nav-shadow: 0 -5px 20px rgba(0,0,0, 0.5);
+            --nav-icon-color: #546E7A;
+            --nav-icon-active: #CFD8DC;
+            
+            --wave-color: #546E7A; /* Спокойная волна */
         }
 
-        body.dark-mode .action-card, body.dark-mode .small-card, body.dark-mode .widget-card, body.dark-mode .balance-card {
+        /* ИСПРАВЛЕНИЯ ДЛЯ ТЕМНОЙ ТЕМЫ (Убираем агрессию) */
+        
+        body.dark-mode .action-card, 
+        body.dark-mode .small-card, 
+        body.dark-mode .widget-card, 
+        body.dark-mode .balance-card {
             background: var(--bg-card); 
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            box-shadow: 0 4px 20px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.05);
+            border: 1px solid rgba(255, 255, 255, 0.05); /* Еле заметная граница */
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
         }
         
-        body.dark-mode .card-chat .icon-box, body.dark-mode .card-breath .icon-box {
-            background: linear-gradient(135deg, rgba(255, 111, 0, 0.1), rgba(0,0,0,0));
-            border: 1px solid rgba(255, 111, 0, 0.2); 
-            color: #FF8F00; 
-            box-shadow: 0 0 15px rgba(255, 111, 0, 0.1);
+        /* Убираем оранжевое свечение у иконок чата и дыхания */
+        body.dark-mode .card-chat .icon-box, 
+        body.dark-mode .card-breath .icon-box {
+            background: rgba(255, 255, 255, 0.05);
+            border: none; 
+            color: var(--text-header); 
+            box-shadow: none;
         }
 
+        /* Кнопка SOS: Делаем ее надежной, а не опасной */
         body.dark-mode .sos-btn-header {
-            background: linear-gradient(135deg, #3E2723, #1A100A); 
-            border: 1px solid rgba(255, 111, 0, 0.3); 
-            color: #FF6F00;
-            box-shadow: 0 0 10px rgba(255, 69, 0, 0.2), inset 0 0 10px rgba(0,0,0,0.5); 
-            text-shadow: 0 0 5px rgba(255, 69, 0, 0.5);
+            background: var(--secondary-bg); 
+            border: 1px solid rgba(255, 255, 255, 0.1); 
+            color: var(--secondary-text);
+            box-shadow: none;
+            text-shadow: none;
         }
 
-        body.dark-mode .wave-graph { filter: drop-shadow(0 0 8px rgba(255, 111, 0, 0.4)); }
+        /* Волна: Мягкое свечение вместо "кислоты" */
+        body.dark-mode .wave-graph { filter: drop-shadow(0 0 8px rgba(129, 199, 132, 0.2)); }
         body.dark-mode .wave-fill { stop-opacity: 0.1; }
-        body.dark-mode .wave-stroke { stroke: #FF8F00; stroke-width: 3; }
-        body.dark-mode .small-icon.warm-icon, body.dark-mode .small-icon.mint-icon { background: rgba(255,255,255,0.03); color: #B0BEC5; }
-        body.dark-mode .recording { animation-name: pulse-orange; border-color: #FF9800; }
-        body.dark-mode .game-modal { background: rgba(30, 30, 30, 0.9); }
-        body.dark-mode #call-screen { background: #000000; }
-        body.dark-mode .ai-avatar-circle { background: linear-gradient(45deg, #FF6F00, #FF9800); box-shadow: 0 0 30px rgba(255, 111, 0, 0.3); }
+        body.dark-mode .wave-stroke { stroke: var(--secondary-accent); stroke-width: 3; }
+        
+        body.dark-mode .small-icon.warm-icon, 
+        body.dark-mode .small-icon.mint-icon { 
+            background: rgba(255,255,255,0.05); 
+            color: var(--text-muted); 
+        }
+        
+        /* Запись голоса: Мягкая пульсация */
+        body.dark-mode .recording { animation-name: pulse-mint; border-color: var(--secondary-accent); color: var(--secondary-accent); }
+        
+        body.dark-mode .game-modal { background: rgba(28, 35, 41, 0.95); }
+        
+        /* Экран звонка: Глубокий градиент */
+        body.dark-mode #call-screen { background: linear-gradient(180deg, #1C2329 0%, #101010 100%); }
+        
+        /* Аватар: Спокойный градиент (Blue to Green) вместо Огня */
+        body.dark-mode .ai-avatar-circle { 
+            background: linear-gradient(135deg, #607D8B, #81C784); 
+            box-shadow: 0 0 30px rgba(129, 199, 132, 0.2); 
+        }
 
         /* --- BASE --- */
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
         body { font-family: 'Manrope', sans-serif; font-weight: 500; -webkit-font-smoothing: antialiased; background-color: var(--bg-main); color: var(--text-body); line-height: 1.5; position: fixed; top: 0; left: 0; right: 0; bottom: 0; display: flex; flex-direction: column; transition: background-color 0.3s, color 0.3s; }
         button, input, textarea, select { font-family: 'Manrope', sans-serif !important; }
 
-        /* --- ANIMATIONS --- */
+        /* --- ANIMATIONS (UPDATED FOR CALM) --- */
         @keyframes blink { 0%, 90%, 100% { transform: scaleY(1); } 95% { transform: scaleY(0.1); } }
-        @keyframes pulse-mint { 0% { box-shadow: 0 0 0 0 rgba(77, 182, 172, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(77, 182, 172, 0); } 100% { box-shadow: 0 0 0 0 rgba(77, 182, 172, 0); } }
-        @keyframes pulse-orange { 0% { box-shadow: 0 0 0 0 rgba(255, 152, 0, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(255, 152, 0, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 152, 0, 0); } }
+        
+        @keyframes pulse-mint { 
+            0% { box-shadow: 0 0 0 0 rgba(129, 199, 132, 0.7); } 
+            70% { box-shadow: 0 0 0 10px rgba(129, 199, 132, 0); } 
+            100% { box-shadow: 0 0 0 0 rgba(129, 199, 132, 0); } 
+        }
+        
+        @keyframes pulse-orange { 
+            0% { box-shadow: 0 0 0 0 rgba(255, 183, 77, 0.7); } 
+            70% { box-shadow: 0 0 0 10px rgba(255, 183, 77, 0); } 
+            100% { box-shadow: 0 0 0 0 rgba(255, 183, 77, 0); } 
+        }
+        
         @keyframes msgSlideUp { from { opacity: 0; transform: translateY(20px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
         @keyframes waveMove { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
         @keyframes force-gpu { from { transform: rotate(0deg) translateZ(0); } to { transform: rotate(360deg) translateZ(0); } }
@@ -119,8 +184,15 @@
         @keyframes pop-up-letter { 0% { opacity: 0; transform: translateY(20px); } 100% { opacity: 1; transform: translateY(0); } }
         @keyframes fadeIn { to { opacity: 1; } }
         @keyframes fadeInScale { from{opacity:0;transform:scale(0.9)} to{opacity:1;transform:scale(1)} }
-        @keyframes pulse-avatar { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.2); } 50% { transform: scale(1.05); box-shadow: 0 0 0 20px rgba(255, 255, 255, 0); } 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); } }
+        
+        @keyframes pulse-avatar { 
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.2); } 
+            50% { transform: scale(1.05); box-shadow: 0 0 0 20px rgba(255, 255, 255, 0); } 
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); } 
+        }
+        
         @keyframes floatStar { 0% { transform: translateY(0px) rotate(0deg); } 50% { transform: translateY(-3px) rotate(3deg); } 100% { transform: translateY(0px) rotate(0deg); } }
+        
         @keyframes heartbeat { 
             0% { transform: scale(1); box-shadow: 0 4px 15px rgba(255, 183, 77, 0.25); } 
             50% { transform: scale(1.08); box-shadow: 0 0 20px rgba(255, 183, 77, 0.6); } 
@@ -188,12 +260,11 @@
         /* The Counter below the star */
         .balance-count { 
             font-size: 15px; font-weight: 800; 
-            color: #E65100; 
+            color: var(--warm-text); 
             padding: 0;
             margin-top: 4px;
             letter-spacing: 0.5px;
         }
-        body.dark-mode .balance-count { color: #FFB300; }
 
         /* Other Menu Items */
         .main-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
@@ -252,7 +323,7 @@
         #sos-screen { background: var(--bg-main); justify-content: center; overflow: hidden; }
         .sos-container-3d { position: relative; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 30px; }
         .sos-title-block { display: flex; flex-direction: column; align-items: center; gap: 15px; margin-bottom: 50px; }
-        .sos-big-number { font-size: 160px; line-height: 1; font-weight: 900; color: #FF6F00; text-shadow: 4px 4px 0 rgba(255, 111, 0, 0.2); opacity: 0; display: block; }
+        .sos-big-number { font-size: 160px; line-height: 1; font-weight: 900; color: var(--warm-text); text-shadow: 4px 4px 0 rgba(0,0,0,0.05); opacity: 0; display: block; }
         .sos-text-line { display: flex; gap: 2px; font-size: 42px; font-weight: 900; text-transform: uppercase; color: var(--primary-main); letter-spacing: 2px; }
         .sos-letter { display: inline-block; opacity: 0; transform: translateY(20px); }
         .sos-btn-3d { padding: 18px 60px; font-size: 18px; font-weight: 700; text-transform: uppercase; color: #FFFFFF; background: linear-gradient(135deg, var(--primary-main), var(--primary-text)); border: none; border-radius: 20px; cursor: pointer; box-shadow: 0 10px 20px rgba(0,0,0, 0.2); transition: transform 0.1s, box-shadow 0.1s; opacity: 1; min-width: 220px; }
@@ -416,25 +487,23 @@
                 <p>Что поддержит вас сегодня?</p>
             </div>
             <div class="balance-visual">
-                <!-- UPDATED 3D STAR ICON (Rounded, Glossy) -->
+                <!-- UPDATED 3D STAR ICON (Rounded, Softer) -->
                 <svg class="star-3d-icon" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <defs>
                         <linearGradient id="starGradient" x1="50%" y1="0%" x2="50%" y2="100%">
-                            <stop offset="0%" stop-color="#FFEB3B"/> <!-- Bright Yellow -->
-                            <stop offset="100%" stop-color="#FF9800"/> <!-- Deep Gold/Orange -->
+                            <stop offset="0%" stop-color="#FFF59D"/> <!-- Pale Yellow -->
+                            <stop offset="100%" stop-color="#FFCA28"/> <!-- Soft Amber -->
                         </linearGradient>
                         <filter id="starShadow" x="-50%" y="-50%" width="200%" height="200%">
-                            <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="rgba(255, 152, 0, 0.5)"/>
+                            <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="rgba(255, 152, 0, 0.3)"/>
                         </filter>
                     </defs>
-                    <!-- Rounded Star Path for "Puffy" look -->
                     <path d="M256 32L312 165L455 175C465 176 469 188 461 195L351 288L386 427C388 437 377 445 369 439L256 368L143 439C135 445 124 437 126 427L161 288L51 195C43 188 47 176 57 175L200 165L256 32Z" 
-                          fill="url(#starGradient)" stroke="#F57C00" stroke-width="20" stroke-linejoin="round" stroke-linecap="round" filter="url(#starShadow)"/>
-                    <!-- Glossy Shine effect -->
+                          fill="url(#starGradient)" stroke="#FFB74D" stroke-width="20" stroke-linejoin="round" stroke-linecap="round" filter="url(#starShadow)"/>
                     <path d="M256 50L300 160L420 170C430 171 430 180 425 185L330 260" 
                           fill="none" stroke="rgba(255,255,255,0.6)" stroke-width="15" stroke-linecap="round" filter="url(#starShadow)"/>
                 </svg>
-                <!-- UPDATED COUNTER (Clean text without pill) -->
+                
                 <div class="balance-count">
                     <span id="userBalanceDisplay">0</span>
                 </div>
@@ -732,7 +801,7 @@
             this.r=110+Math.random()*20;
             this.size = Math.random() * 6 + 2; 
             this.speed=Math.random()*0.02+0.005;
-            this.color=`rgba(100,181,246,${Math.random()*0.5})`;
+            this.color=`rgba(129, 199, 132, ${Math.random()*0.4})`; // UPDATED: Calm Greenish
         }
         update(r){
             this.angle+=this.speed;
@@ -780,9 +849,19 @@
     const ballCanvas = document.getElementById('balloon-game-canvas'); const bCtx = ballCanvas.getContext('2d'); const dpr2 = Math.min(window.devicePixelRatio || 1, 1.5); 
     const cachedTarget = document.createElement('canvas'); const cachedDummy = document.createElement('canvas'); const balloonSize = 80; 
     cachedTarget.width = balloonSize * dpr2; cachedTarget.height = (balloonSize + 60) * dpr2; cachedDummy.width = balloonSize * dpr2; cachedDummy.height = (balloonSize + 60) * dpr2;
-    function preDrawBalloon(ctx, type) { ctx.scale(dpr2, dpr2); const cx = balloonSize/2; const cy = balloonSize/2; const r = 35; ctx.beginPath(); ctx.moveTo(cx, cy+r); ctx.bezierCurveTo(cx+10, cy+r+20, cx-10, cy+r+40, cx, cy+r+60); ctx.strokeStyle = 'rgba(0,0,0,0.15)'; ctx.lineWidth = 2; ctx.stroke(); if (type === 'target') { let g = ctx.createLinearGradient(cx, cy-r, cx, cy+r); g.addColorStop(0, '#81D4FA'); g.addColorStop(1, '#FFF59D'); ctx.fillStyle = g; } else { ctx.fillStyle = '#CFD8DC'; } ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI*2); ctx.fill(); ctx.beginPath(); ctx.moveTo(cx, cy+r-2); ctx.lineTo(cx-6, cy+r+8); ctx.lineTo(cx+6, cy+r+8); ctx.fill(); ctx.beginPath(); ctx.arc(cx, cy, r-10, -0.2*Math.PI, 0.1*Math.PI); ctx.strokeStyle = 'rgba(255,255,255,0.6)'; ctx.lineWidth = 3; ctx.lineCap = 'round'; ctx.stroke(); ctx.setTransform(1, 0, 0, 1, 0, 0); }
+    function preDrawBalloon(ctx, type) { ctx.scale(dpr2, dpr2); const cx = balloonSize/2; const cy = balloonSize/2; const r = 35; ctx.beginPath(); ctx.moveTo(cx, cy+r); ctx.bezierCurveTo(cx+10, cy+r+20, cx-10, cy+r+40, cx, cy+r+60); ctx.strokeStyle = 'rgba(0,0,0,0.15)'; ctx.lineWidth = 2; ctx.stroke(); 
+        if (type === 'target') { 
+            let g = ctx.createLinearGradient(cx, cy-r, cx, cy+r); 
+            g.addColorStop(0, '#81D4FA'); g.addColorStop(1, '#FFF59D'); // Softened Gradient
+            ctx.fillStyle = g; 
+        } else { ctx.fillStyle = '#CFD8DC'; } 
+        ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI*2); ctx.fill(); ctx.beginPath(); ctx.moveTo(cx, cy+r-2); ctx.lineTo(cx-6, cy+r+8); ctx.lineTo(cx+6, cy+r+8); ctx.fill(); ctx.beginPath(); ctx.arc(cx, cy, r-10, -0.2*Math.PI, 0.1*Math.PI); ctx.strokeStyle = 'rgba(255,255,255,0.6)'; ctx.lineWidth = 3; ctx.lineCap = 'round'; ctx.stroke(); ctx.setTransform(1, 0, 0, 1, 0, 0); 
+    }
     preDrawBalloon(cachedTarget.getContext('2d'), 'target'); preDrawBalloon(cachedDummy.getContext('2d'), 'dummy');
-    const MAX_BALLOONS = 100; const pool = new Array(MAX_BALLOONS).fill(null).map(() => ({active: false, x: 0, y: 0, baseX: 0, baseSpeed: 0, wobble: 0, type: 'dummy'})); const MAX_PARTICLES = 150; const particles = new Array(MAX_PARTICLES).fill(null).map(()=>({active:false, x:0, y:0, vx:0, vy:0, life:0, color:'#000'})); const particleColors = ['#FFD700', '#FF6B6B', '#4ECDC4', '#45B7D1']; let bScore = 0, gameStartTime = 0, isGameRunning = false, lastFrameTime = 0;
+    const MAX_BALLOONS = 100; const pool = new Array(MAX_BALLOONS).fill(null).map(() => ({active: false, x: 0, y: 0, baseX: 0, baseSpeed: 0, wobble: 0, type: 'dummy'})); const MAX_PARTICLES = 150; const particles = new Array(MAX_PARTICLES).fill(null).map(()=>({active:false, x:0, y:0, vx:0, vy:0, life:0, color:'#000'})); 
+    // UPDATED: Pastel Colors
+    const particleColors = ['#FFCC80', '#A5D6A7', '#90CAF9', '#CE93D8']; 
+    let bScore = 0, gameStartTime = 0, isGameRunning = false, lastFrameTime = 0;
     function initBalloonGame() { document.getElementById('game-over-modal').style.display = 'none'; document.getElementById('record-badge').style.display = 'none'; document.getElementById('game-icon').style.display = 'none'; ballCanvas.width = window.innerWidth * dpr2; ballCanvas.height = window.innerHeight * dpr2; bCtx.scale(dpr2, dpr2); pool.forEach(b => b.active = false); particles.forEach(p => p.active = false); bScore = 0; document.getElementById('balloon-score').innerText = 0; document.getElementById('game-timer').innerText = "02:00"; ballCanvas.addEventListener('touchstart', popBalloon, {passive: false}); ballCanvas.addEventListener('mousedown', popBalloon); gameStartTime = Date.now(); lastFrameTime = performance.now(); isGameRunning = true; requestAnimationFrame(runBalloonLoop); }
     function stopBalloonGame() { isGameRunning = false; ballCanvas.removeEventListener('touchstart', popBalloon); ballCanvas.removeEventListener('mousedown', popBalloon); }
     function endGame() { isGameRunning = false; const savedScore = parseInt(localStorage.getItem('balloon_highscore') || '0'); let isNewRecord = bScore > savedScore; if (isNewRecord) { localStorage.setItem('balloon_highscore', bScore); } document.getElementById('final-score').innerText = bScore; if (isNewRecord) { document.getElementById('record-badge').style.display = 'inline-block'; document.getElementById('game-icon').style.display = 'block'; if(tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success'); } else { if(tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('warning'); } document.getElementById('game-over-modal').style.display = 'flex'; }
