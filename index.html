@@ -212,18 +212,26 @@
         .screen.active { display: flex; animation: fadeUp 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
 
      
-        /* --- MENU SCREEN & SPACING FIX --- */
+     /* --- MENU SCREEN & SPACING FIX (CORRECTED) --- */
+        
+        /* 1. Базовые настройки меню (без display) */
         #menu-screen { 
             padding: 24px 20px; 
             padding-bottom: 110px; 
-            
-            /* 🔥 МАГИЯ ОТСТУПОВ: Делаем их одинаковыми везде */
-            display: flex;
-            flex-direction: column;
-            gap: 24px; /* Единый зазор между Хедером, Чатом, Виджетом и т.д. */
-            
-            /* Для Z Flip (узкий экран) чуть уменьшим бока */
             box-sizing: border-box;
+            width: 100%;
+        }
+
+        /* 2. Включаем Flex и отступы ТОЛЬКО когда экран активен */
+        #menu-screen.active {
+            display: flex;          /* Важно: Flex включается только тут */
+            flex-direction: column;
+            gap: 24px;              /* Те самые красивые отступы */
+        }
+
+        /* Убираем старые отступы у детей */
+        .balance-card, .main-grid, .widget-card, .bottom-grid {
+            margin: 0 !important; 
             width: 100%;
         }
 
