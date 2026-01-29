@@ -46,62 +46,133 @@
             --wave-color: #4DB6AC;
         }
 
-        /* Dark Theme Configuration */
+  /* ============================================ */
+        /* 🌑 DARK THEME (Midnight Calm) - Z FLIP OPT   */
+        /* ============================================ */
         body.dark-mode {
-            --bg-main: #0B0C10;      
-            --bg-card: linear-gradient(145deg, #1A1C20 0%, #121316 100%);      
-            --text-header: #E0E0E0;  
-            --text-body: #9E9E9E;    
-            --text-muted: #616161;   
-            --primary-main: #FF6F00; 
-            --primary-soft: #1F2125; 
-            --primary-text: #FF8F00; 
-            --secondary-bg: #1F2125; 
-            --secondary-accent: #FF8F00;
-            --secondary-text: #FFA000;
-            --warm-bg: #2C1B10;
-            --warm-accent: #FF6F00;
+            /* Палитра: Deep Slate & Vivid Accents */
+            --bg-main: #121418;      
+            --bg-card: #1F2229;      
+            --text-header: #FFFFFF;  
+            --text-body: #B0B3B8;    
+            --text-muted: #6E727A;   
+            
+            /* Основные акценты */
+            --primary-main: #6C5DD3; /* Фиолетовый (Чат) */
+            --primary-soft: #1F2229; 
+            --primary-text: #FFFFFF; 
+            
+            /* Вторичные акценты */
+            --secondary-bg: #1F2229; 
+            --secondary-accent: #00BFA5; /* Бирюзовый (Дыхание) */
+            --secondary-text: #E0F2F1;
+
+            /* Теплые цвета (Звезды/Дневник) */
+            --warm-bg: #2C2F36;
+            --warm-accent: #FFD700;
             --warm-text: #FFAB40;
-            --shadow-card: 0 10px 30px rgba(0, 0, 0, 0.7);
-            --icon-default: #546E7A;
-            --msg-bot-bg: #1A1C20;
-            --msg-user-bg: #E65100;
+
+            /* Тени и UI */
+            --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.4);
+            --icon-default: #6E727A;
+            --msg-bot-bg: #2C2F36;
+            --msg-user-bg: #6C5DD3;
             --msg-user-text: #FFFFFF;
-            --nav-bg: #121316;
-            --nav-shadow: 0 -5px 20px rgba(0,0,0, 0.8);
-            --nav-icon-color: #424242;
-            --wave-color: #FF6F00;
+            
+            /* Навигация */
+            --nav-bg: #1F2229;
+            --nav-shadow: 0 -5px 20px rgba(0,0,0, 0.5);
+            --nav-icon-color: #585C66;
+            --nav-icon-active: #FFFFFF;
+            
+            /* Визуал */
+            --wave-color: #00BFA5;
+            --radius-card: 24px;
         }
 
-        body.dark-mode .action-card, body.dark-mode .small-card, body.dark-mode .widget-card, body.dark-mode .balance-card {
-            background: var(--bg-card); 
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            box-shadow: 0 4px 20px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.05);
-        }
+        /* --- ГЛОБАЛЬНЫЕ ПЕРЕОПРЕДЕЛЕНИЯ ДЛЯ TEMNOЙ ТЕМЫ --- */
         
-        body.dark-mode .card-chat .icon-box, body.dark-mode .card-breath .icon-box {
-            background: linear-gradient(135deg, rgba(255, 111, 0, 0.1), rgba(0,0,0,0));
-            border: 1px solid rgba(255, 111, 0, 0.2); 
-            color: #FF8F00; 
-            box-shadow: 0 0 15px rgba(255, 111, 0, 0.1);
+        /* 1. Карточки: Убираем оранжевые рамки, делаем матовыми */
+        body.dark-mode .action-card, 
+        body.dark-mode .small-card, 
+        body.dark-mode .widget-card, 
+        body.dark-mode .balance-card {
+            background: var(--bg-card); 
+            border: 1px solid rgba(255, 255, 255, 0.06); /* Тонкая серая обводка */
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
         }
 
+        /* 2. Иконки действий: ГРАДИЕНТЫ (как на фото) */
+        /* ЧАТ - Фиолетовый градиент */
+        body.dark-mode .card-chat .icon-box {
+            background: linear-gradient(135deg, #7F5AF0, #6C5DD3);
+            border: none; 
+            color: #FFFFFF; 
+            box-shadow: 0 6px 15px rgba(108, 93, 211, 0.35);
+        }
+        /* ДЫХАНИЕ - Бирюзовый градиент */
+        body.dark-mode .card-breath .icon-box {
+            background: linear-gradient(135deg, #2EC4B6, #20B2AA);
+            border: none;
+            color: #FFFFFF;
+            box-shadow: 0 6px 15px rgba(32, 178, 170, 0.35);
+        }
+
+        /* 3. SOS кнопка: Нейтрализуем оранжевый, делаем строгим */
         body.dark-mode .sos-btn-header {
-            background: linear-gradient(135deg, #3E2723, #1A100A); 
-            border: 1px solid rgba(255, 111, 0, 0.3); 
-            color: #FF6F00;
-            box-shadow: 0 0 10px rgba(255, 69, 0, 0.2), inset 0 0 10px rgba(0,0,0,0.5); 
-            text-shadow: 0 0 5px rgba(255, 69, 0, 0.5);
+            background: #2C2F36; 
+            border: 1px solid rgba(255,255,255,0.1); 
+            color: #E2E4E9;
+            box-shadow: none; 
+            text-shadow: none;
         }
 
-        body.dark-mode .wave-graph { filter: drop-shadow(0 0 8px rgba(255, 111, 0, 0.4)); }
-        body.dark-mode .wave-fill { stop-opacity: 0.1; }
-        body.dark-mode .wave-stroke { stroke: #FF8F00; stroke-width: 3; }
-        body.dark-mode .small-icon.warm-icon, body.dark-mode .small-icon.mint-icon { background: rgba(255,255,255,0.03); color: #B0BEC5; }
-        body.dark-mode .recording { animation-name: pulse-orange; border-color: #FF9800; }
-        body.dark-mode .game-modal { background: rgba(30, 30, 30, 0.9); }
+        /* 4. Графики и Волны */
+        body.dark-mode .wave-graph { filter: drop-shadow(0 0 5px rgba(0, 191, 165, 0.3)); }
+        body.dark-mode .wave-fill { stop-opacity: 0.15; }
+        body.dark-mode .wave-stroke { stroke: #00BFA5; stroke-width: 2; }
+        
+        /* 5. Мелкие иконки внизу */
+        body.dark-mode .small-icon.warm-icon, 
+        body.dark-mode .small-icon.mint-icon { 
+            background: rgba(255,255,255,0.05); 
+            color: #8D939D; 
+        }
+
+        /* 6. Баланс (исправляем оранжевый счетчик) */
+        body.dark-mode .balance-visual { 
+            background: rgba(255, 255, 255, 0.05); 
+            border: 1px solid rgba(255,255,255,0.08); 
+        }
+        body.dark-mode .balance-count { 
+            color: #FFFFFF; 
+        }
+
+        /* 7. Экраны звонка и игры */
+        body.dark-mode .recording { animation-name: pulse-mint; border-color: #00BFA5; }
+        body.dark-mode .game-modal { background: rgba(18, 20, 24, 0.95); }
         body.dark-mode #call-screen { background: #000000; }
-        body.dark-mode .ai-avatar-circle { background: linear-gradient(45deg, #FF6F00, #FF9800); box-shadow: 0 0 30px rgba(255, 111, 0, 0.3); }
+        body.dark-mode .ai-avatar-circle { 
+            background: linear-gradient(45deg, #6C5DD3, #00BFA5); 
+            box-shadow: 0 0 30px rgba(108, 93, 211, 0.3); 
+        }
+
+        /* --- Z FLIP & NARROW SCREEN FIXES (350px width) --- */
+        /* Специальная оптимизация для твоего телефона */
+        @media (max-width: 360px) {
+            body.dark-mode .balance-text h1 { font-size: 20px; letter-spacing: -0.5px; }
+            body.dark-mode .action-card { padding: 14px 8px; height: 125px; }
+            /* Уменьшаем иконки, чтобы влез текст */
+            body.dark-mode .card-chat .icon-box, 
+            body.dark-mode .card-breath .icon-box { 
+                width: 42px; height: 42px; margin-bottom: 8px;
+            }
+            body.dark-mode .card-chat h3,
+            body.dark-mode .card-breath h3 { font-size: 13px; margin-top: 4px; }
+            
+            body.dark-mode .small-card { padding: 0 10px; gap: 8px; }
+            body.dark-mode .small-icon { width: 38px; height: 38px; }
+        }
 
         /* --- BASE --- */
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
@@ -175,7 +246,7 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.03);
             border: 1px solid rgba(255,255,255,0.8);
         }
-        body.dark-mode .balance-visual { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255,255,255,0.1); }
+     
 
         /* The BIG Star Icon */
         .star-3d-icon { 
@@ -193,7 +264,7 @@
             margin-top: 4px;
             letter-spacing: 0.5px;
         }
-        body.dark-mode .balance-count { color: #FFB300; }
+
 
         /* Other Menu Items */
         .main-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
