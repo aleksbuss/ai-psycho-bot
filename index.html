@@ -572,6 +572,73 @@
             .bottom-nav { height: 68px; bottom: 12px; width: 94%; }
             .nav-icon { font-size: 24px; }
         }
+
+        /* --- BREATH SLIDER STYLES --- */
+        .breath-slider-wrapper {
+            width: 90%;
+            max-width: 320px;
+            margin-bottom: 30px; /* Отступ от кнопок */
+            background: rgba(255, 255, 255, 0.15); /* Стекло */
+            backdrop-filter: blur(10px);
+            padding: 16px 20px;
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+            animation: fadeIn 0.5s ease-out;
+            pointer-events: auto; /* Чтобы ползунок работал */
+        }
+
+        /* Темная тема - чуть темнее стекло */
+        body.dark-mode .breath-slider-wrapper {
+            background: rgba(30, 33, 40, 0.6);
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .slider-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text-header);
+        }
+        
+        #breathTotalTime { color: var(--text-muted); font-weight: 500; font-size: 12px; }
+
+        /* Сам ползунок */
+        input[type=range] {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 6px;
+            background: rgba(0,0,0,0.1);
+            border-radius: 5px;
+            outline: none;
+            margin-bottom: 8px;
+        }
+        
+        body.dark-mode input[type=range] { background: rgba(255,255,255,0.2); }
+
+        /* Бегунок (Thumb) */
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--primary-main);
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+            border: 2px solid #FFFFFF;
+        }
+
+        .slider-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            color: var(--text-muted);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
     </style>
 </head>
 <body>
@@ -693,7 +760,21 @@
 
     <div id="video-screen" class="screen"><div style="padding:24px;"><h2>Практики</h2><div class="small-card" onclick="alert('Скоро!')"><div class="small-icon mint-icon"><span class="material-icons-round">self_improvement</span></div><div><h4>Осознанность</h4><span>5 минут</span></div></div></div></div>
     
-    <div id="game-screen" class="screen"><canvas id="breathCanvas"></canvas><div class="game-ui-overlay"><div class="breath-text-container"><div class="breath-status" id="breathLabel">ДЫШИМ</div><div class="breath-timer-text" id="breathInstruction">Нажми Старт</div></div><div class="game-controls"><button class="btn-game-card" id="breathStartBtn" onclick="toggleBreathing()"><span class="material-icons-round" id="playIcon">play_arrow</span><span id="playText">Старт</span></button><button class="btn-reset-sq" onclick="resetBreathing()"><span class="material-icons-round">refresh</span></button></div></div></div>
+    <div id="game-screen" class="screen"><canvas id="breathCanvas"></canvas><div class="game-ui-overlay"><div class="breath-text-container"><div class="breath-status" id="breathLabel">ДЫШИМ</div><div class="breath-timer-text" id="breathInstruction">Нажми Старт</div></div>
+        <!-- ВСТАВИТЬ ЭТО ПЕРЕД <div class="game-controls"> -->
+        
+        <div class="breath-slider-wrapper">
+            <div class="slider-info">
+                <span id="breathModeName">Сон (4-7-8)</span>
+                <span id="breathTotalTime">19 сек/цикл</span>
+            </div>
+            <input type="range" id="breathSlider" min="0" max="7" value="0" step="1" oninput="updateBreathMode(this.value)">
+            <div class="slider-labels">
+                <span>Релакс</span>
+                <span>Энергия</span>
+            </div>
+        </div>
+        <div class="game-controls"><button class="btn-game-card" id="breathStartBtn" onclick="toggleBreathing()"><span class="material-icons-round" id="playIcon">play_arrow</span><span id="playText">Старт</span></button><button class="btn-reset-sq" onclick="resetBreathing()"><span class="material-icons-round">refresh</span></button></div></div></div>
 
     <div id="music-screen" class="screen">
         <div style="padding:24px; overflow-y:auto; padding-bottom: 90px;">
@@ -974,9 +1055,115 @@
     function startBreathingAnimationLoop(){if(!breathAnimId && breathCanvas) animateBreath()}
     function stopBreathingAnimationLoop(){if(breathAnimId) cancelAnimationFrame(breathAnimId);breathAnimId=null}
     function animateBreath(){if(!breathCtx)return; breathCtx.clearRect(0,0,breathCanvas.width,breathCanvas.height);currentR+=(targetR-currentR)*0.02;breathParticles.forEach(p=>{p.update(currentR);p.draw()});breathAnimId=requestAnimationFrame(animateBreath)}
-    function toggleBreathing(){if(isBreathing){clearInterval(breathInterval);isBreathing=false;playIcon.innerText='play_arrow';playText.innerText='Продолжить'}else{isBreathing=true;playIcon.innerText='pause';playText.innerText='Пауза';breathInterval=setInterval(()=>{breathTimer++;const t=breathTimer%19;if(t<4){targetR=180;breathLabel.innerText="ВДОХ";breathInstr.innerText="Носом"}else if(t<11){targetR=190;breathLabel.innerText="ПАУЗА";breathInstr.innerText="Держим"}else{targetR=110;breathLabel.innerText="ВЫДОХ";breathInstr.innerText="Ртом"}},1000)}}
-    function resetBreathing(){clearInterval(breathInterval);isBreathing=false;breathTimer=0;targetR=110;if(playIcon) playIcon.innerText='play_arrow';if(playText) playText.innerText='Старт';if(breathLabel) breathLabel.innerText='ДЫШИМ';if(breathInstr) breathInstr.innerText='Нажми Старт'}
-    
+   // ==========================================
+    // 🌬️ НОВАЯ ЛОГИКА ДЫХАНИЯ (СЛАЙДЕР)
+    // ==========================================
+
+    // Настройки 8 режимов (Вдох - Задержка - Выдох)
+    const BREATH_PRESETS = [
+        { name: "Сон (4-7-8)", in: 4, hold: 7, out: 8 },      
+        { name: "Квадрат (4-4-4)", in: 4, hold: 4, out: 4 },  
+        { name: "Когерентность", in: 5, hold: 0, out: 5 },    
+        { name: "Равновесие", in: 4, hold: 0, out: 4 },       
+        { name: "Легкость", in: 3, hold: 0, out: 3 },         
+        { name: "Тонус", in: 2.5, hold: 0, out: 2.5 },        
+        { name: "Энергия", in: 2, hold: 0, out: 2 },          
+        { name: "Вим Хоф", in: 1.5, hold: 0, out: 1.5 }       
+    ];
+
+    let currentPresetIdx = 0;   // Текущий выбранный режим (по умолчанию 0)
+    let breathTimeElapsed = 0;  // Счетчик времени с точностью до долей секунды
+
+    // Функция, которую вызывает ползунок (HTML oninput)
+    function updateBreathMode(val) {
+        currentPresetIdx = parseInt(val);
+        const p = BREATH_PRESETS[currentPresetIdx];
+        
+        // 1. Обновляем текст
+        if(document.getElementById('breathModeName')) {
+            document.getElementById('breathModeName').innerText = p.name;
+        }
+        if(document.getElementById('breathTotalTime')) {
+            const total = p.in + p.hold + p.out;
+            document.getElementById('breathTotalTime').innerText = total + " сек/цикл";
+        }
+
+        // 2. Если анимация уже идет — перезапускаем её мягко с новым ритмом
+        if (isBreathing) {
+            resetBreathingStateOnly();
+            startBreathingTimer();
+        }
+        
+        // 3. Вибрация для тактильного отклика
+        if(tg.HapticFeedback) tg.HapticFeedback.selectionChanged();
+    }
+
+    // Кнопка СТАРТ / ПАУЗА
+    function toggleBreathing() {
+        if (isBreathing) {
+            // Пауза
+            clearInterval(breathInterval);
+            isBreathing = false;
+            if(playIcon) playIcon.innerText = 'play_arrow';
+            if(playText) playText.innerText = 'Продолжить';
+        } else {
+            // Старт
+            isBreathing = true;
+            if(playIcon) playIcon.innerText = 'pause';
+            if(playText) playText.innerText = 'Пауза';
+            startBreathingTimer();
+        }
+    }
+
+    // Внутренняя функция таймера (тик каждые 100мс)
+    function startBreathingTimer() {
+        clearInterval(breathInterval); // На всякий случай чистим старый
+        const p = BREATH_PRESETS[currentPresetIdx];
+        
+        breathInterval = setInterval(() => {
+            breathTimeElapsed += 0.1; // Шаг 0.1 секунды
+            
+            const totalCycle = p.in + p.hold + p.out;
+            const t = breathTimeElapsed % totalCycle; // Где мы внутри цикла
+
+            if (t < p.in) {
+                // ВДОХ
+                targetR = 190; 
+                if(breathLabel) breathLabel.innerText = "ВДОХ";
+                if(breathInstr) breathInstr.innerText = "Носом";
+            } else if (t < (p.in + p.hold)) {
+                // ЗАДЕРЖКА
+                targetR = 200; 
+                if(breathLabel) breathLabel.innerText = "ПАУЗА";
+                if(breathInstr) breathInstr.innerText = "Держим";
+            } else {
+                // ВЫДОХ
+                targetR = 110; 
+                if(breathLabel) breathLabel.innerText = "ВЫДОХ";
+                if(breathInstr) breathInstr.innerText = "Ртом";
+            }
+        }, 100); 
+    }
+
+    // Сброс только таймеров (без остановки UI, если меняем режим на лету)
+    function resetBreathingStateOnly() {
+        clearInterval(breathInterval);
+        breathTimeElapsed = 0;
+        targetR = 110;
+        if(breathLabel) breathLabel.innerText = 'ДЫШИМ'; // Возвращаем исходный текст, но он тут же сменится таймером
+        if(breathInstr) breathInstr.innerText = 'Нажми Старт';
+    }
+
+    // Кнопка СБРОС (Reset) - Полная остановка
+    function resetBreathing() {
+        resetBreathingStateOnly();
+        isBreathing = false;
+        breathTimeElapsed = 0;
+        if(playIcon) playIcon.innerText = 'play_arrow';
+        if(playText) playText.innerText = 'Старт';
+        if(breathLabel) breathLabel.innerText = 'ДЫШИМ';
+        if(breathInstr) breathInstr.innerText = 'Нажми Старт';
+    }
     function checkDiaryStatus() { const h = JSON.parse(localStorage.getItem('mood_history_v2') || '{}'); const today = new Date().toISOString().split('T')[0]; const icon = document.getElementById('diary-icon'); if(icon){ if (!h[today]) { icon.classList.add('heart-alert'); icon.innerText = 'favorite'; } else { icon.classList.remove('heart-alert'); icon.innerText = 'favorite_border'; } } }
     function saveMood(level) { const h = JSON.parse(localStorage.getItem('mood_history_v2') || '{}'); const date = new Date().toISOString().split('T')[0]; h[date] = level; localStorage.setItem('mood_history_v2', JSON.stringify(h)); if(tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success'); renderDiary(); checkDiaryStatus(); }
     function renderDiary() {
