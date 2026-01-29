@@ -369,17 +369,106 @@
         #micBtn.recording { background-color: var(--primary-soft); color: var(--primary-main); animation: pulse-mint 1.5s infinite; border: 1px solid var(--primary-main); }
         #sendBtn { background: var(--primary-main); color: white; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
 
-        /* --- SOS & GAMES --- */
-        #game-screen { background: var(--primary-soft); }
-        canvas#breathCanvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; opacity: 0.6; }
-        .game-ui-overlay { position: relative; z-index: 10; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; width: 100%; padding-bottom: 180px; pointer-events: none; }
-        .breath-text-container { position: absolute; top: 35%; left: 0; width: 100%; transform: translateY(-50%); display: flex; flex-direction: column; align-items: center; justify-content: center; margin-bottom: 0; }
-        .breath-status { font-size: 32px; font-weight: 800; color: var(--text-header); margin-bottom: 8px; }
-        .breath-timer-text { font-size: 18px; color: var(--text-muted); }
-        .game-controls { pointer-events: auto; display: flex; gap: 20px; }
-        .btn-game-card { padding: 20px 40px; border-radius: var(--radius-card); border: none; font-size: 18px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 14px; background: var(--secondary-bg); color: var(--secondary-text); box-shadow: var(--shadow-float-blue); }
-        .btn-reset-sq { width: 66px; height: 66px; border-radius: 20px; background: var(--secondary-bg); color: var(--secondary-text); border: none; box-shadow: var(--shadow-float-blue); display: flex; align-items: center; justify-content: center; cursor: pointer; }
+      /* --- SOS & GAMES --- */
         
+        /* 1. ЭКРАН ДЫХАНИЯ (Обновленный) */
+        #game-screen { 
+            /* Светлая тема: Мягкий мятный */
+            background: var(--primary-soft); 
+            position: relative; 
+        }
+
+        /* 🔥 ТЕМНАЯ ТЕМА: Глубокий черный космос, чтобы кнопки выделялись */
+        body.dark-mode #game-screen {
+            background: radial-gradient(circle at center, #1B1E25 0%, #000000 100%);
+        }
+
+        canvas#breathCanvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; opacity: 0.6; }
+        
+        /* Контейнер UI Дыхания */
+        .game-ui-overlay { 
+            position: relative; 
+            z-index: 10; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: flex-end; /* Кнопки прижаты к низу */
+            height: 100%; 
+            width: 100%; 
+            padding-bottom: 140px; /* Отступ снизу (чтобы не налезло на навбар, если он есть) */
+            pointer-events: none; 
+        }
+
+        .breath-text-container { 
+            position: absolute; 
+            top: 40%; 
+            left: 0; 
+            width: 100%; 
+            transform: translateY(-50%); 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            margin-bottom: 0; 
+        }
+        
+        .breath-status { font-size: 38px; font-weight: 800; color: var(--text-header); margin-bottom: 4px; letter-spacing: -1px; }
+        .breath-timer-text { font-size: 16px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
+
+        /* 🔥 НОВЫЕ КНОПКИ ДЫХАНИЯ (Стиль Навигации) */
+        .game-controls { 
+            pointer-events: auto; 
+            display: flex; 
+            gap: 16px; 
+            width: 90%; 
+            max-width: 340px; /* Ограничитель ширины для Z Flip */
+        }
+
+        /* Кнопка СТАРТ - Большая таблетка */
+        .btn-game-card { 
+            flex: 1; 
+            height: 72px; 
+            border-radius: 24px; 
+            border: none; 
+            
+            /* Цвета как у Навигации */
+            background: var(--nav-bg); 
+            color: var(--text-header);
+            box-shadow: var(--shadow-card); 
+            
+            font-size: 18px; 
+            font-weight: 700; 
+            cursor: pointer; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            gap: 12px; 
+            transition: transform 0.1s; 
+        }
+        /* Иконка внутри старта (цветная) */
+        .btn-game-card .material-icons-round { color: var(--primary-main); font-size: 28px; }
+
+        /* Кнопка СБРОС - Квадратная таблетка */
+        .btn-reset-sq { 
+            width: 72px; 
+            height: 72px; 
+            border-radius: 24px; 
+            border: none; 
+            
+            /* Цвета как у Навигации */
+            background: var(--nav-bg); 
+            color: var(--text-muted); 
+            box-shadow: var(--shadow-card); 
+            
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+        .btn-reset-sq .material-icons-round { font-size: 28px; }
+
+        /* --- SOS SCREEN (Без изменений) --- */
         #sos-screen { background: var(--bg-main); justify-content: center; overflow: hidden; }
         .sos-container-3d { position: relative; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 30px; }
         .sos-title-block { display: flex; flex-direction: column; align-items: center; gap: 15px; margin-bottom: 50px; }
@@ -391,6 +480,7 @@
         .sos-btn-3d:active { transform: scale(0.96); box-shadow: 0 5px 10px rgba(0,0,0, 0.2); }
         .sos-desc { font-size: 18px; color: var(--text-body); margin-top: 20px; font-weight: 500; opacity: 0; animation: fadeIn 0.5s ease forwards; animation-delay: 0.4s; text-align: center; }
 
+        /* --- BALLOON GAME (Без изменений) --- */
         #balloon-game-screen { background-color: var(--primary-soft); position: relative; overflow: hidden; transform: translate3d(0,0,0); }
         .game-ui-header { position: absolute; top: 0; left: 0; width: 100%; padding: 20px; z-index: 10; display: flex; justify-content: space-between; align-items: center; pointer-events: none; }
         .score-box { background: var(--bg-card); padding: 8px 16px; border-radius: 16px; box-shadow: var(--shadow-card); font-weight: 700; color: var(--primary-text); font-size: 18px; }
