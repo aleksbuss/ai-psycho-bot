@@ -875,11 +875,13 @@
 
     const tg=window.Telegram.WebApp; 
     tg.expand();
-    const userId=tg.initDataUnsafe?.user?.id||'test_'+Math.floor(Math.random()*1000);
-    const userName=tg.initDataUnsafe?.user?.first_name||'Друг';
+    
+    const userId = tg.initDataUnsafe?.user?.id || 'test_' + Math.floor(Math.random()*1000);
+    const userName = tg.initDataUnsafe?.user?.first_name || 'Друг';
 
     window.isUserPremium = false;
 
+    // --- PAYWALL ---
     function showPaywall(reason) {
         const textEl = document.getElementById('paywall-reason-text');
         if (reason === 'voice') textEl.innerText = "Голосовой режим и Звонки доступны только при положительном балансе.";
@@ -912,6 +914,7 @@
         .catch(e => { tg.MainButton.hideProgress(); alert("Ошибка сети"); });
     }
 
+    // --- THEME ---
     function initTheme() {
         const savedTheme = localStorage.getItem('app_theme');
         if (savedTheme === 'dark') {
@@ -929,11 +932,13 @@
         if (document.getElementById('music-screen').classList.contains('active')) renderDiary();
     }
 
+    // --- GREETING ---
     const hour = new Date().getHours();
     let greeting = (hour >= 0 && hour < 5) ? 'Доброй ночи' : (hour >= 5 && hour < 12) ? 'Доброе утро' : (hour >= 12 && hour < 17) ? 'Добрый день' : 'Добрый вечер';
     document.getElementById('greetingText').innerText = greeting;
     document.getElementById('userNameDisplay').innerText = userName;
 
+    // --- NAVIGATION ---
     const screens={menu:document.getElementById('menu-screen'),chat:document.getElementById('chat-screen'),video:document.getElementById('video-screen'),music:document.getElementById('music-screen'),game:document.getElementById('game-screen'),sos:document.getElementById('sos-screen'),balloons:document.getElementById('balloon-game-screen'),call:document.getElementById('call-screen')};
     const header=document.getElementById('main-header');
     const pageTitle=document.getElementById('page-title');
@@ -944,8 +949,9 @@
 
             Object.values(screens).forEach(e => { if(e) e.classList.remove('active'); });
             stopBalloonGame();
-            stopBreathingAnimationLoop();
+            if (isBreathing) resetBreathing(); // Останавливаем дыхание при уходе
             resetSos();
+            
             if(screens[n]) screens[n].classList.add('active');
 
             const nav = document.querySelector('.bottom-nav');
@@ -974,21 +980,24 @@
 
             const t = {chat:'Чат', video:'Медитации', music:'Дневник', game:'Дыхание', sos:'Заземление'};
             if (pageTitle && t[n]) pageTitle.innerText = t[n];
+            
             if (n === 'chat') setTimeout(scrollToBottom, 200);
             if (n === 'game') {
                 resizeBreathCanvas();
-                startBreathingAnimationLoop();
+                animateBreath(); // Запускаем цикл отрисовки (но не таймер)
             }
             if (n === 'music') renderDiary();
             if (n === 'sos') startSos();
         } catch(e) {
-            console.error("Navigation Error:", e);
-            document.getElementById('error-console').style.display = 'block';
-            document.getElementById('error-console').innerHTML += `Nav Error: ${e.message}<br>`;
+            console.error("Nav Error:", e);
         }
     }    
-    function goBack(){if(screens.game && screens.game.classList.contains('active'))resetBreathing();navigateTo('menu')}
+    function goBack(){
+        if(screens.game && screens.game.classList.contains('active')) resetBreathing();
+        navigateTo('menu');
+    }
 
+    // --- CHAT LOGIC ---
     const chatContainer=document.getElementById('chat-container'),userInput=document.getElementById('userInput'),sendBtn=document.getElementById('sendBtn'),micBtn=document.getElementById('micBtn'),typingIndicator=document.getElementById('typing');
     let mediaRecorder=null,audioChunks=[],isRecording=false;
     
@@ -1050,6 +1059,7 @@
     
     sendBtn.addEventListener('click',sendMessage);micBtn.addEventListener('click',toggleRecording);userInput.addEventListener('keydown',e=>{if(e.key==='Enter')sendMessage()});
 
+    // --- SOS LOGIC ---
     const sosSteps = [{n:5,t:'ВЕЩЕЙ',d:'Найди 5 предметов одного цвета'},{n:4,t:'ОЩУЩЕНИЯ',d:'Почувствуй 4 касания'},{n:3,t:'ЗВУКА',d:'Услышь 3 звука вокруг'},{n:2,t:'ЗАПАХА',d:'Почувствуй 2 аромата'},{n:1,t:'ВКУС',d:'Ощути 1 вкус'}]; let sosIdx = 0;
     function resetSos() { sosIdx = 0; if(document.getElementById('sos-content-area')) document.getElementById('sos-content-area').innerHTML = ''; if(document.getElementById('sos-desc-area')) document.getElementById('sos-desc-area').innerHTML = ''; const btn = document.getElementById('sos-main-btn'); if(btn){ btn.querySelector('span').innerText = 'Я НАШЕЛ'; btn.onclick = nextSos; } }
     function startSos() { renderSosStep(); }
@@ -1058,17 +1068,33 @@
     
     function sendUserIdToServer() { if (userId.toString().startsWith('test_')) return; fetch(GOOGLE_SCRIPT_URL + '?act=api', { method: 'POST', body: JSON.stringify({ action: 'user_joined', initData: tg.initData }) }); }
     
+    // --- BREATH LOGIC ---
     const breathCanvas=document.getElementById('breathCanvas'),breathCtx=breathCanvas.getContext('2d'),breathLabel=document.getElementById('breathLabel'),breathInstr=document.getElementById('breathInstruction'),playIcon=document.getElementById('playIcon'),playText=document.getElementById('playText');
-    let breathAnimId,breathParticles=[],isBreathing=false,breathTimer=0,breathInterval,currentR=110,targetR=110;
+    let breathAnimId,breathParticles=[],isBreathing=false,breathTimer=0,breathInterval;
+    let currentR = 110, targetR = 110; 
 
-    
+    // 🔥 УМНЫЕ РАЗМЕРЫ (Один раз и навсегда)
+    let screenScale = Math.min(window.innerWidth, window.innerHeight);
+    let minBaseR = screenScale * 0.22; 
+    let maxBaseR = screenScale * 0.38; 
+
+    // Обновляем при ресайзе
+    window.addEventListener('resize', () => {
+        if(breathCanvas) {
+            breathCanvas.width = window.innerWidth;
+            breathCanvas.height = window.innerHeight;
+            screenScale = Math.min(window.innerWidth, window.innerHeight);
+            minBaseR = screenScale * 0.22;
+            maxBaseR = screenScale * 0.38;
+            if (!isBreathing) targetR = minBaseR;
+        }
+    });
+
     class Particle {
         constructor(){
             this.angle = Math.random() * Math.PI * 2;
-            // Начальный радиус зависит от ширины экрана (адаптивность)
             const minR = Math.min(window.innerWidth, window.innerHeight) * 0.25; 
             this.r = minR + Math.random() * 20;
-            
             this.size = Math.random() * 6 + 2; 
             this.speed = Math.random() * 0.02 + 0.005;
             this.color = `rgba(100,181,246,${Math.random()*0.5})`;
@@ -1077,9 +1103,8 @@
             this.angle += this.speed;
             let d = r + Math.sin(Date.now()/500) * 10;
             this.r += (d - this.r) * 0.05;
-            
             this.x = breathCanvas.width / 2 + Math.cos(this.angle) * this.r;
-            // 🔥 ЦЕНТР Y: Строго 33% высоты (совпадает с CSS top: 33%)
+            // Центр Y - 33%
             this.y = (breathCanvas.height * 0.33) + Math.sin(this.angle) * this.r;
         }
         draw(){
@@ -1091,14 +1116,19 @@
     }
 
     function resizeBreathCanvas(){if(!breathCanvas)return; breathCanvas.width=window.innerWidth;breathCanvas.height=window.innerHeight;breathParticles=Array.from({length:150},()=>new Particle())}
-    function startBreathingAnimationLoop(){if(!breathAnimId && breathCanvas) animateBreath()}
-    function stopBreathingAnimationLoop(){if(breathAnimId) cancelAnimationFrame(breathAnimId);breathAnimId=null}
-    function animateBreath(){if(!breathCtx)return; breathCtx.clearRect(0,0,breathCanvas.width,breathCanvas.height);currentR+=(targetR-currentR)*0.02;breathParticles.forEach(p=>{p.update(currentR);p.draw()});breathAnimId=requestAnimationFrame(animateBreath)}
-   // ==========================================
+    
+    function animateBreath(){
+        if(!breathCtx)return; 
+        breathCtx.clearRect(0,0,breathCanvas.width,breathCanvas.height);
+        currentR+=(targetR-currentR)*0.02;
+        breathParticles.forEach(p=>{p.update(currentR);p.draw()});
+        breathAnimId=requestAnimationFrame(animateBreath)
+    }
+
+    // ==========================================
     // 🌬️ НОВАЯ ЛОГИКА ДЫХАНИЯ (СЛАЙДЕР)
     // ==========================================
 
-    // Настройки 8 режимов (Вдох - Задержка - Выдох)
     const BREATH_PRESETS = [
         { name: "Сон (4-7-8)", in: 4, hold: 7, out: 8 },      
         { name: "Квадрат (4-4-4)", in: 4, hold: 4, out: 4 },  
@@ -1110,43 +1140,31 @@
         { name: "Вим Хоф", in: 1.5, hold: 0, out: 1.5 }       
     ];
 
-    let currentPresetIdx = 0;   // Текущий выбранный режим (по умолчанию 0)
-    let breathTimeElapsed = 0;  // Счетчик времени с точностью до долей секунды
+    let currentPresetIdx = 0;   
+    let breathTimeElapsed = 0; 
 
-    // Функция, которую вызывает ползунок (HTML oninput)
     function updateBreathMode(val) {
         currentPresetIdx = parseInt(val);
         const p = BREATH_PRESETS[currentPresetIdx];
-        
-        // 1. Обновляем текст
-        if(document.getElementById('breathModeName')) {
-            document.getElementById('breathModeName').innerText = p.name;
-        }
+        if(document.getElementById('breathModeName')) document.getElementById('breathModeName').innerText = p.name;
         if(document.getElementById('breathTotalTime')) {
             const total = p.in + p.hold + p.out;
             document.getElementById('breathTotalTime').innerText = total + " сек/цикл";
         }
-
-        // 2. Если анимация уже идет — перезапускаем её мягко с новым ритмом
         if (isBreathing) {
             resetBreathingStateOnly();
             startBreathingTimer();
         }
-        
-        // 3. Вибрация для тактильного отклика
         if(tg.HapticFeedback) tg.HapticFeedback.selectionChanged();
     }
 
-    // Кнопка СТАРТ / ПАУЗА
     function toggleBreathing() {
         if (isBreathing) {
-            // Пауза
             clearInterval(breathInterval);
             isBreathing = false;
             if(playIcon) playIcon.innerText = 'play_arrow';
             if(playText) playText.innerText = 'Продолжить';
         } else {
-            // Старт
             isBreathing = true;
             if(playIcon) playIcon.innerText = 'pause';
             if(playText) playText.innerText = 'Пауза';
@@ -1154,69 +1172,24 @@
         }
     }
 
-   // 🔥 УМНЫЕ РАЗМЕРЫ
-    // Вычисляем размеры круга от ширины экрана.
-    // minBaseR - минимальный круг (Выдох)
-    // maxBaseR - максимальный круг (Вдох)
-    // Это гарантирует, что на S24 круг не станет гигантским, а на Z Flip влезет.
-    let screenScale = Math.min(window.innerWidth, window.innerHeight);
-    let minBaseR = screenScale * 0.22; // 22% от ширины
-    let maxBaseR = screenScale * 0.38; // 38% от ширины
-
-    // Пересчет при ресайзе (повороте экрана)
-    window.addEventListener('resize', () => {
-        if(breathCanvas) {
-            breathCanvas.width = window.innerWidth;
-            breathCanvas.height = window.innerHeight;
-            screenScale = Math.min(window.innerWidth, window.innerHeight);
-            minBaseR = screenScale * 0.22;
-            maxBaseR = screenScale * 0.38;
-        }
-    });
-
-   // 🔥 УМНЫЕ РАЗМЕРЫ
-    // Вычисляем размеры круга от ширины экрана.
-    // minBaseR - минимальный круг (Выдох)
-    // maxBaseR - максимальный круг (Вдох)
-    // Это гарантирует, что на S24 круг не станет гигантским, а на Z Flip влезет.
-    let screenScale = Math.min(window.innerWidth, window.innerHeight);
-    let minBaseR = screenScale * 0.22; // 22% от ширины
-    let maxBaseR = screenScale * 0.38; // 38% от ширины
-
-    // Пересчет при ресайзе (повороте экрана)
-    window.addEventListener('resize', () => {
-        if(breathCanvas) {
-            breathCanvas.width = window.innerWidth;
-            breathCanvas.height = window.innerHeight;
-            screenScale = Math.min(window.innerWidth, window.innerHeight);
-            minBaseR = screenScale * 0.22;
-            maxBaseR = screenScale * 0.38;
-        }
-    });
-
-    // Обновленная функция таймера с динамическими радиусами
     function startBreathingTimer() {
         clearInterval(breathInterval); 
         const p = BREATH_PRESETS[currentPresetIdx];
         
         breathInterval = setInterval(() => {
             breathTimeElapsed += 0.1;
-            
             const totalCycle = p.in + p.hold + p.out;
             const t = breathTimeElapsed % totalCycle;
 
             if (t < p.in) {
-                // ВДОХ -> Растем до maxBaseR
                 targetR = maxBaseR; 
                 if(breathLabel) breathLabel.innerText = "ВДОХ";
                 if(breathInstr) breathInstr.innerText = "Носом";
             } else if (t < (p.in + p.hold)) {
-                // ЗАДЕРЖКА -> Чуть больше макс. (эффект напряжения)
                 targetR = maxBaseR + 10; 
                 if(breathLabel) breathLabel.innerText = "ПАУЗА";
                 if(breathInstr) breathInstr.innerText = "Держим";
             } else {
-                // ВЫДОХ -> Сжимаемся до minBaseR
                 targetR = minBaseR; 
                 if(breathLabel) breathLabel.innerText = "ВЫДОХ";
                 if(breathInstr) breathInstr.innerText = "Ртом";
@@ -1224,16 +1197,14 @@
         }, 100); 
     }
     
-    // ВАЖНО: Обнови функцию resetBreathingStateOnly, чтобы сбрасывать на minBaseR
     function resetBreathingStateOnly() {
         clearInterval(breathInterval);
         breathTimeElapsed = 0;
-        targetR = minBaseR; // Исходный размер
+        targetR = minBaseR; 
         if(breathLabel) breathLabel.innerText = 'ДЫШИМ';
         if(breathInstr) breathInstr.innerText = 'Нажми Старт';
     }
 
-    // Кнопка СБРОС (Reset) - Полная остановка
     function resetBreathing() {
         resetBreathingStateOnly();
         isBreathing = false;
@@ -1243,6 +1214,8 @@
         if(breathLabel) breathLabel.innerText = 'ДЫШИМ';
         if(breathInstr) breathInstr.innerText = 'Нажми Старт';
     }
+
+    // --- DIARY LOGIC ---
     function checkDiaryStatus() { const h = JSON.parse(localStorage.getItem('mood_history_v2') || '{}'); const today = new Date().toISOString().split('T')[0]; const icon = document.getElementById('diary-icon'); if(icon){ if (!h[today]) { icon.classList.add('heart-alert'); icon.innerText = 'favorite'; } else { icon.classList.remove('heart-alert'); icon.innerText = 'favorite_border'; } } }
     function saveMood(level) { const h = JSON.parse(localStorage.getItem('mood_history_v2') || '{}'); const date = new Date().toISOString().split('T')[0]; h[date] = level; localStorage.setItem('mood_history_v2', JSON.stringify(h)); if(tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success'); renderDiary(); checkDiaryStatus(); }
     function renderDiary() {
@@ -1264,6 +1237,7 @@
         currentAngle = startAngle; slices.forEach(slice => { const sliceAngle = (slice.value / total) * 2 * Math.PI; const endAngle = currentAngle + sliceAngle; ctx.beginPath(); ctx.moveTo(cx, cy); ctx.ellipse(cx, cy, rx, ry, 0, currentAngle, endAngle); ctx.closePath(); ctx.fillStyle = slice.color; ctx.fill(); ctx.lineWidth = 1; ctx.strokeStyle = document.body.classList.contains('dark-mode') ? '#1E1E1E' : '#FFFFFF'; ctx.stroke(); currentAngle += sliceAngle; });
     }
 
+    // --- GAME LOGIC ---
     const ballCanvas = document.getElementById('balloon-game-canvas'); const bCtx = ballCanvas.getContext('2d'); const dpr2 = Math.min(window.devicePixelRatio || 1, 1.5); 
     const cachedTarget = document.createElement('canvas'); const cachedDummy = document.createElement('canvas'); const balloonSize = 80; 
     cachedTarget.width = balloonSize * dpr2; cachedTarget.height = (balloonSize + 60) * dpr2; cachedDummy.width = balloonSize * dpr2; cachedDummy.height = (balloonSize + 60) * dpr2;
@@ -1278,9 +1252,7 @@
     function runBalloonLoop(timestamp) { if (!isGameRunning) return; const elapsedTotal = (Date.now() - gameStartTime) / 1000; const timeLeft = Math.max(0, 120 - elapsedTotal); const m = Math.floor(timeLeft / 60).toString().padStart(2, '0'); const s = Math.floor(timeLeft % 60).toString().padStart(2, '0'); document.getElementById('game-timer').innerText = `${m}:${s}`; if (timeLeft <= 0) { endGame(); return; } let dt = (timestamp - lastFrameTime) / 1000; lastFrameTime = timestamp; if (dt > 0.1) dt = 0.1; bCtx.clearRect(0, 0, window.innerWidth, window.innerHeight); const speedMultiplier = 1 + (Math.floor(elapsedTotal / 30) * 0.2); if (Math.random() < 0.06 * (dt * 60)) { spawnBalloon(); } for (let i = 0; i < MAX_BALLOONS; i++) { const b = pool[i]; if (!b.active) continue; const moveStep = b.baseSpeed * speedMultiplier * (dt * 60); b.y -= moveStep; b.x = b.baseX + Math.sin(timestamp * 0.005 + b.wobble) * 50; const img = b.type === 'target' ? cachedTarget : cachedDummy; bCtx.drawImage(img, 0, 0, img.width, img.height, (b.x - 40)|0, (b.y - 40)|0, 80, 140); if (b.y < -150) b.active = false; } for(let i=0; i<MAX_PARTICLES; i++){ const p=particles[i]; if(!p.active)continue; p.x += p.vx * (dt*60); p.y += p.vy * (dt*60); p.vy += 0.5 * (dt*60); p.life -= 0.02 * (dt*60); bCtx.globalAlpha = p.life; bCtx.fillStyle = p.color; bCtx.fillRect((p.x)|0, (p.y)|0, 6, 6); bCtx.globalAlpha = 1.0; if(p.life <= 0) p.active = false; } requestAnimationFrame(runBalloonLoop); }
     function popBalloon(e) { e.preventDefault(); const rect = ballCanvas.getBoundingClientRect(); let points = []; if (e.changedTouches) { for (let i = 0; i < e.changedTouches.length; i++) { points.push({ x: e.changedTouches[i].clientX - rect.left, y: e.changedTouches[i].clientY - rect.top }); } } else { points.push({ x: e.clientX - rect.left, y: e.clientY - rect.top }); } points.forEach(p => { for (let i = 0; i < MAX_BALLOONS; i++) { const b = pool[i]; if (!b.active) continue; const dist = Math.sqrt((p.x - b.x)**2 + (p.y - b.y)**2); if (dist < 70) { if (b.type === 'target') { b.active = false; bScore++; document.getElementById('balloon-score').innerText = bScore; explodeConfetti(b.x, b.y); if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light'); } break; } } }); }
     
-    checkDiaryStatus();
-    initTheme(); 
-
+    // --- CALL / VAD LOGIC ---
     let vadContext, vadAnalyser, vadSource, vadStream;
     let vadInterval;
     let isSpeaking = false;
@@ -1386,6 +1358,10 @@
         if (vadStream) vadStream.getAudioTracks()[0].enabled = !btn.classList.contains('btn-active-state');
         if(tg.HapticFeedback) tg.HapticFeedback.selectionChanged();
     }
+
+    // INIT
+    checkDiaryStatus();
+    initTheme(); 
 </script>
 </body>
 </html>
