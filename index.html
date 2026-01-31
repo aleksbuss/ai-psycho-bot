@@ -385,28 +385,48 @@
 
         canvas#breathCanvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; opacity: 0.6; }
         
-    /* --- BREATH SCREEN FIXED LAYOUT (S24 Ultra & Z Flip Safe) --- */
+/* --- BREATH SCREEN LAYOUT (Top-Center-Bottom) --- */
         
-        /* 1. Контейнер UI: Прижимаем всё управление к низу */
+        /* 1. Контейнер UI */
         .game-ui-overlay { 
             position: relative; 
             z-index: 10; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            justify-content: flex-end; /* Важно: Всегда внизу */
             height: 100%; 
             width: 100%; 
-            
-            /* Отступ снизу: учитываем нижнюю навигацию + безопасную зону */
-            padding-bottom: 120px; 
-            pointer-events: none; 
+            pointer-events: none; /* Пропускаем клики сквозь пустые места */
         }
 
-        /* 2. Текст (ВДОХ/ВЫДОХ): Фиксируем в верхней ТРЕТИ экрана */
+        /* 2. СЛАЙДЕР (Настройки) - ПЕРЕМЕЩЕН НАВЕРХ */
+        .breath-slider-wrapper {
+            position: absolute;
+            top: 14%; /* Отступ сверху (под шапкой и челкой) */
+            left: 50%;
+            transform: translateX(-50%); /* Центрируем по горизонтали */
+            
+            width: 85%; 
+            max-width: 340px;
+            
+            background: rgba(255, 255, 255, 0.15); 
+            backdrop-filter: blur(12px); 
+            -webkit-backdrop-filter: blur(12px);
+            
+            padding: 14px 20px;
+            border-radius: 24px;
+            border: 1px solid rgba(255,255,255,0.15);
+            pointer-events: auto; /* Включаем клики */
+            box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+            z-index: 20;
+        }
+        
+        body.dark-mode .breath-slider-wrapper {
+            background: rgba(20, 25, 35, 0.6);
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+
+        /* 3. ТЕКСТ (ВДОХ/ВЫДОХ) - ПЕРЕМЕЩЕН В ЦЕНТР */
         .breath-text-container { 
             position: absolute; 
-            top: 33%; /* Золотое сечение для верхней части */
+            top: 50%; /* Ровно середина экрана */
             left: 0; 
             width: 100%; 
             transform: translateY(-50%); 
@@ -418,7 +438,7 @@
         }
         
         .breath-status { 
-            font-size: 38px; /* Крупно и четко */
+            font-size: 42px; /* Чуть крупнее, так как места больше */
             font-weight: 800; 
             color: var(--text-header); 
             margin-bottom: 2px; 
@@ -426,35 +446,19 @@
             text-shadow: 0 4px 20px rgba(0,0,0,0.1); 
         }
 
-        /* 3. Слайдер: Компактный и красивый */
-        .breath-slider-wrapper {
-            width: 85%; /* Чуть уже, чтобы не прилипал к краям */
-            max-width: 340px;
-            margin-bottom: 24px; /* Отступ до кнопок */
-            
-            background: rgba(255, 255, 255, 0.15); 
-            backdrop-filter: blur(12px); 
-            -webkit-backdrop-filter: blur(12px);
-            
-            padding: 14px 20px;
-            border-radius: 24px;
-            border: 1px solid rgba(255,255,255,0.15);
-            pointer-events: auto;
-            box-shadow: 0 4px 24px rgba(0,0,0,0.08);
-        }
-        
-        body.dark-mode .breath-slider-wrapper {
-            background: rgba(20, 25, 35, 0.6);
-            border: 1px solid rgba(255,255,255,0.08);
-        }
-
-        /* 4. Кнопки: Монолитный блок */
+        /* 4. КНОПКИ - ОСТАЮТСЯ ВНИЗУ */
         .game-controls { 
+            position: absolute;
+            bottom: 50px; /* Отступ от нижнего края */
+            left: 50%;
+            transform: translateX(-50%);
+            
             pointer-events: auto; 
             display: flex; 
             gap: 12px; 
             width: 85%; 
             max-width: 360px;
+            z-index: 20;
         }
 
         /* Кнопка СТАРТ - Большая таблетка */
@@ -1104,8 +1108,9 @@
             let d = r + Math.sin(Date.now()/500) * 10;
             this.r += (d - this.r) * 0.05;
             this.x = breathCanvas.width / 2 + Math.cos(this.angle) * this.r;
-            // Центр Y - 33%
-            this.y = (breathCanvas.height * 0.33) + Math.sin(this.angle) * this.r;
+            
+            // 🔥 ИЗМЕНЕНИЕ: ЦЕНТР ТЕПЕРЬ 50% (0.5), чтобы быть посередине между слайдером и кнопками
+            this.y = (breathCanvas.height * 0.5) + Math.sin(this.angle) * this.r;
         }
         draw(){
             breathCtx.fillStyle = this.color;
