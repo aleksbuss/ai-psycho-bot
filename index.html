@@ -385,48 +385,48 @@
 
         canvas#breathCanvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; opacity: 0.6; }
         
-/* --- BREATH SCREEN LAYOUT (Top-Center-Bottom) --- */
+/* --- BREATH SCREEN LAYOUT (FINAL FIX) --- */
         
-        /* 1. Контейнер UI */
+        /* 1. Контейнер */
         .game-ui-overlay { 
             position: relative; 
             z-index: 10; 
             height: 100%; 
             width: 100%; 
-            pointer-events: none; /* Пропускаем клики сквозь пустые места */
+            pointer-events: none; 
         }
 
-        /* 2. СЛАЙДЕР (Настройки) - ПЕРЕМЕЩЕН НАВЕРХ */
+        /* 2. СЛАЙДЕР: Прибиваем к верху (в пикселях, чтобы не улетал) */
         .breath-slider-wrapper {
             position: absolute;
-            top: 14%; /* Отступ сверху (под шапкой и челкой) */
+            top: 75px; /* Фиксированный отступ от верха (сразу под заголовком) */
             left: 50%;
-            transform: translateX(-50%); /* Центрируем по горизонтали */
+            transform: translateX(-50%);
             
-            width: 85%; 
+            width: 90%; 
             max-width: 340px;
             
             background: rgba(255, 255, 255, 0.15); 
             backdrop-filter: blur(12px); 
             -webkit-backdrop-filter: blur(12px);
             
-            padding: 14px 20px;
+            padding: 12px 20px; /* Чуть компактнее */
             border-radius: 24px;
             border: 1px solid rgba(255,255,255,0.15);
-            pointer-events: auto; /* Включаем клики */
+            pointer-events: auto;
             box-shadow: 0 4px 24px rgba(0,0,0,0.08);
             z-index: 20;
         }
         
         body.dark-mode .breath-slider-wrapper {
-            background: rgba(20, 25, 35, 0.6);
+            background: rgba(20, 25, 35, 0.7);
             border: 1px solid rgba(255,255,255,0.08);
         }
 
-        /* 3. ТЕКСТ (ВДОХ/ВЫДОХ) - ПЕРЕМЕЩЕН В ЦЕНТР */
+        /* 3. ТЕКСТ: Центр смещен чуть выше (42%), чтобы быть между слайдером и кнопками */
         .breath-text-container { 
             position: absolute; 
-            top: 50%; /* Ровно середина экрана */
+            top: 42%; 
             left: 0; 
             width: 100%; 
             transform: translateY(-50%); 
@@ -438,25 +438,25 @@
         }
         
         .breath-status { 
-            font-size: 42px; /* Чуть крупнее, так как места больше */
+            font-size: 44px; /* Крупный статус */
             font-weight: 800; 
             color: var(--text-header); 
-            margin-bottom: 2px; 
-            letter-spacing: -0.5px;
+            margin-bottom: 0; 
+            letter-spacing: -1px;
             text-shadow: 0 4px 20px rgba(0,0,0,0.1); 
         }
 
-        /* 4. КНОПКИ - ОСТАЮТСЯ ВНИЗУ */
+        /* 4. КНОПКИ: Поднимаем на 130px, чтобы не наезжали на навбар */
         .game-controls { 
             position: absolute;
-            bottom: 50px; /* Отступ от нижнего края */
+            bottom: 130px; /* ВАЖНО: Это выше, чем нижнее меню (которое ~100px) */
             left: 50%;
             transform: translateX(-50%);
             
             pointer-events: auto; 
             display: flex; 
             gap: 12px; 
-            width: 85%; 
+            width: 90%; 
             max-width: 360px;
             z-index: 20;
         }
@@ -1109,8 +1109,8 @@
             this.r += (d - this.r) * 0.05;
             this.x = breathCanvas.width / 2 + Math.cos(this.angle) * this.r;
             
-            // 🔥 ИЗМЕНЕНИЕ: ЦЕНТР ТЕПЕРЬ 50% (0.5), чтобы быть посередине между слайдером и кнопками
-            this.y = (breathCanvas.height * 0.5) + Math.sin(this.angle) * this.r;
+            // 🔥 ЦЕНТР Y: 42% (0.42), чтобы совпадать с текстом и быть ровно посередине свободной зоны
+            this.y = (breathCanvas.height * 0.42) + Math.sin(this.angle) * this.r;
         }
         draw(){
             breathCtx.fillStyle = this.color;
