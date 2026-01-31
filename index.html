@@ -385,23 +385,28 @@
 
         canvas#breathCanvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; opacity: 0.6; }
         
-        /* Контейнер UI Дыхания */
+    /* --- BREATH SCREEN FIXED LAYOUT (S24 Ultra & Z Flip Safe) --- */
+        
+        /* 1. Контейнер UI: Прижимаем всё управление к низу */
         .game-ui-overlay { 
             position: relative; 
             z-index: 10; 
             display: flex; 
             flex-direction: column; 
             align-items: center; 
-            justify-content: flex-end; /* Кнопки прижаты к низу */
+            justify-content: flex-end; /* Важно: Всегда внизу */
             height: 100%; 
             width: 100%; 
-            padding-bottom: 140px; /* Отступ снизу (чтобы не налезло на навбар, если он есть) */
+            
+            /* Отступ снизу: учитываем нижнюю навигацию + безопасную зону */
+            padding-bottom: 120px; 
             pointer-events: none; 
         }
 
+        /* 2. Текст (ВДОХ/ВЫДОХ): Фиксируем в верхней ТРЕТИ экрана */
         .breath-text-container { 
             position: absolute; 
-            top: 40%; 
+            top: 33%; /* Золотое сечение для верхней части */
             left: 0; 
             width: 100%; 
             transform: translateY(-50%); 
@@ -409,19 +414,47 @@
             flex-direction: column; 
             align-items: center; 
             justify-content: center; 
-            margin-bottom: 0; 
+            z-index: 5;
         }
         
-        .breath-status { font-size: 38px; font-weight: 800; color: var(--text-header); margin-bottom: 4px; letter-spacing: -1px; }
-        .breath-timer-text { font-size: 16px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
+        .breath-status { 
+            font-size: 38px; /* Крупно и четко */
+            font-weight: 800; 
+            color: var(--text-header); 
+            margin-bottom: 2px; 
+            letter-spacing: -0.5px;
+            text-shadow: 0 4px 20px rgba(0,0,0,0.1); 
+        }
 
-        /* 🔥 НОВЫЕ КНОПКИ ДЫХАНИЯ (Стиль Навигации) */
+        /* 3. Слайдер: Компактный и красивый */
+        .breath-slider-wrapper {
+            width: 85%; /* Чуть уже, чтобы не прилипал к краям */
+            max-width: 340px;
+            margin-bottom: 24px; /* Отступ до кнопок */
+            
+            background: rgba(255, 255, 255, 0.15); 
+            backdrop-filter: blur(12px); 
+            -webkit-backdrop-filter: blur(12px);
+            
+            padding: 14px 20px;
+            border-radius: 24px;
+            border: 1px solid rgba(255,255,255,0.15);
+            pointer-events: auto;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+        }
+        
+        body.dark-mode .breath-slider-wrapper {
+            background: rgba(20, 25, 35, 0.6);
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+
+        /* 4. Кнопки: Монолитный блок */
         .game-controls { 
             pointer-events: auto; 
             display: flex; 
-            gap: 16px; 
-            width: 90%; 
-            max-width: 340px; /* Ограничитель ширины для Z Flip */
+            gap: 12px; 
+            width: 85%; 
+            max-width: 360px;
         }
 
         /* Кнопка СТАРТ - Большая таблетка */
@@ -1027,26 +1060,32 @@
     
     const breathCanvas=document.getElementById('breathCanvas'),breathCtx=breathCanvas.getContext('2d'),breathLabel=document.getElementById('breathLabel'),breathInstr=document.getElementById('breathInstruction'),playIcon=document.getElementById('playIcon'),playText=document.getElementById('playText');
     let breathAnimId,breathParticles=[],isBreathing=false,breathTimer=0,breathInterval,currentR=110,targetR=110;
+
     
-    class Particle{
+    class Particle {
         constructor(){
-            this.angle=Math.random()*Math.PI*2;
-            this.r=110+Math.random()*20;
+            this.angle = Math.random() * Math.PI * 2;
+            // Начальный радиус зависит от ширины экрана (адаптивность)
+            const minR = Math.min(window.innerWidth, window.innerHeight) * 0.25; 
+            this.r = minR + Math.random() * 20;
+            
             this.size = Math.random() * 6 + 2; 
-            this.speed=Math.random()*0.02+0.005;
-            this.color=`rgba(100,181,246,${Math.random()*0.5})`;
+            this.speed = Math.random() * 0.02 + 0.005;
+            this.color = `rgba(100,181,246,${Math.random()*0.5})`;
         }
         update(r){
-            this.angle+=this.speed;
-            let d=r+Math.sin(Date.now()/500)*10;
-            this.r+=(d-this.r)*0.05;
-            this.x=breathCanvas.width/2+Math.cos(this.angle)*this.r;
-            this.y=(breathCanvas.height * 0.35) + Math.sin(this.angle)*this.r;
+            this.angle += this.speed;
+            let d = r + Math.sin(Date.now()/500) * 10;
+            this.r += (d - this.r) * 0.05;
+            
+            this.x = breathCanvas.width / 2 + Math.cos(this.angle) * this.r;
+            // 🔥 ЦЕНТР Y: Строго 33% высоты (совпадает с CSS top: 33%)
+            this.y = (breathCanvas.height * 0.33) + Math.sin(this.angle) * this.r;
         }
         draw(){
-            breathCtx.fillStyle=this.color;
+            breathCtx.fillStyle = this.color;
             breathCtx.beginPath();
-            breathCtx.arc(this.x,this.y,this.size,0,Math.PI*2);
+            breathCtx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
             breathCtx.fill();
         }
     }
@@ -1115,42 +1154,82 @@
         }
     }
 
-    // Внутренняя функция таймера (тик каждые 100мс)
+   // 🔥 УМНЫЕ РАЗМЕРЫ
+    // Вычисляем размеры круга от ширины экрана.
+    // minBaseR - минимальный круг (Выдох)
+    // maxBaseR - максимальный круг (Вдох)
+    // Это гарантирует, что на S24 круг не станет гигантским, а на Z Flip влезет.
+    let screenScale = Math.min(window.innerWidth, window.innerHeight);
+    let minBaseR = screenScale * 0.22; // 22% от ширины
+    let maxBaseR = screenScale * 0.38; // 38% от ширины
+
+    // Пересчет при ресайзе (повороте экрана)
+    window.addEventListener('resize', () => {
+        if(breathCanvas) {
+            breathCanvas.width = window.innerWidth;
+            breathCanvas.height = window.innerHeight;
+            screenScale = Math.min(window.innerWidth, window.innerHeight);
+            minBaseR = screenScale * 0.22;
+            maxBaseR = screenScale * 0.38;
+        }
+    });
+
+   // 🔥 УМНЫЕ РАЗМЕРЫ
+    // Вычисляем размеры круга от ширины экрана.
+    // minBaseR - минимальный круг (Выдох)
+    // maxBaseR - максимальный круг (Вдох)
+    // Это гарантирует, что на S24 круг не станет гигантским, а на Z Flip влезет.
+    let screenScale = Math.min(window.innerWidth, window.innerHeight);
+    let minBaseR = screenScale * 0.22; // 22% от ширины
+    let maxBaseR = screenScale * 0.38; // 38% от ширины
+
+    // Пересчет при ресайзе (повороте экрана)
+    window.addEventListener('resize', () => {
+        if(breathCanvas) {
+            breathCanvas.width = window.innerWidth;
+            breathCanvas.height = window.innerHeight;
+            screenScale = Math.min(window.innerWidth, window.innerHeight);
+            minBaseR = screenScale * 0.22;
+            maxBaseR = screenScale * 0.38;
+        }
+    });
+
+    // Обновленная функция таймера с динамическими радиусами
     function startBreathingTimer() {
-        clearInterval(breathInterval); // На всякий случай чистим старый
+        clearInterval(breathInterval); 
         const p = BREATH_PRESETS[currentPresetIdx];
         
         breathInterval = setInterval(() => {
-            breathTimeElapsed += 0.1; // Шаг 0.1 секунды
+            breathTimeElapsed += 0.1;
             
             const totalCycle = p.in + p.hold + p.out;
-            const t = breathTimeElapsed % totalCycle; // Где мы внутри цикла
+            const t = breathTimeElapsed % totalCycle;
 
             if (t < p.in) {
-                // ВДОХ
-                targetR = 190; 
+                // ВДОХ -> Растем до maxBaseR
+                targetR = maxBaseR; 
                 if(breathLabel) breathLabel.innerText = "ВДОХ";
                 if(breathInstr) breathInstr.innerText = "Носом";
             } else if (t < (p.in + p.hold)) {
-                // ЗАДЕРЖКА
-                targetR = 200; 
+                // ЗАДЕРЖКА -> Чуть больше макс. (эффект напряжения)
+                targetR = maxBaseR + 10; 
                 if(breathLabel) breathLabel.innerText = "ПАУЗА";
                 if(breathInstr) breathInstr.innerText = "Держим";
             } else {
-                // ВЫДОХ
-                targetR = 110; 
+                // ВЫДОХ -> Сжимаемся до minBaseR
+                targetR = minBaseR; 
                 if(breathLabel) breathLabel.innerText = "ВЫДОХ";
                 if(breathInstr) breathInstr.innerText = "Ртом";
             }
         }, 100); 
     }
-
-    // Сброс только таймеров (без остановки UI, если меняем режим на лету)
+    
+    // ВАЖНО: Обнови функцию resetBreathingStateOnly, чтобы сбрасывать на minBaseR
     function resetBreathingStateOnly() {
         clearInterval(breathInterval);
         breathTimeElapsed = 0;
-        targetR = 110;
-        if(breathLabel) breathLabel.innerText = 'ДЫШИМ'; // Возвращаем исходный текст, но он тут же сменится таймером
+        targetR = minBaseR; // Исходный размер
+        if(breathLabel) breathLabel.innerText = 'ДЫШИМ';
         if(breathInstr) breathInstr.innerText = 'Нажми Старт';
     }
 
