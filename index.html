@@ -676,6 +676,112 @@
             text-transform: uppercase;
             letter-spacing: 1px;
         }
+
+    
+    
+    
+    /* --- MUSIC PLAYER STYLES --- */
+        .player-container {
+            padding: 24px 20px;
+            padding-bottom: 110px;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        /* Карточка плеера (Сверху) */
+        .player-visual-card {
+            background: var(--primary-soft);
+            border-radius: 32px;
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            box-shadow: var(--shadow-card);
+            position: relative;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+        
+        body.dark-mode .player-visual-card {
+            background: var(--bg-card);
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        /* Круглая иконка/обложка */
+        .music-icon-circle {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: var(--bg-main);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 16px;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.05);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        
+        .music-icon-circle .material-icons-round { font-size: 40px; color: var(--primary-main); }
+        
+        /* Анимация вращения при проигрывании */
+        .playing-anim .music-icon-circle { transform: scale(1.1); box-shadow: 0 0 30px rgba(77, 182, 172, 0.4); }
+        body.dark-mode .playing-anim .music-icon-circle { box-shadow: 0 0 30px rgba(108, 93, 211, 0.4); }
+
+        #player-track-title { font-size: 20px; font-weight: 700; color: var(--text-header); margin-bottom: 16px; line-height: 1.3; }
+
+        .btn-player-mini {
+            width: 64px; height: 64px;
+            border-radius: 50%;
+            background: var(--primary-main);
+            color: white;
+            border: none;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 32px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+        .btn-player-mini:active { transform: scale(0.9); }
+
+        /* Прогресс бар */
+        .player-progress-container {
+            width: 100%; height: 6px; background: rgba(0,0,0,0.05);
+            border-radius: 10px; margin-top: 24px; cursor: pointer; position: relative;
+        }
+        body.dark-mode .player-progress-container { background: rgba(255,255,255,0.1); }
+        .player-progress-bar { height: 100%; background: var(--primary-main); width: 0%; border-radius: 10px; transition: width 0.1s linear; }
+
+        /* Плейлист (Список) */
+        .playlist-container {
+            display: flex; flex-direction: column; gap: 12px;
+            overflow-y: auto; flex: 1;
+        }
+
+        .track-item {
+            display: flex; align-items: center; gap: 14px;
+            background: var(--bg-card);
+            padding: 16px; border-radius: 20px;
+            cursor: pointer;
+            transition: transform 0.1s, background-color 0.2s;
+            box-shadow: var(--shadow-card);
+        }
+        .track-item:active { transform: scale(0.98); }
+        
+        /* Активный трек */
+        .track-item.active-track { border: 2px solid var(--primary-main); background: var(--primary-soft); }
+        body.dark-mode .track-item.active-track { background: rgba(108, 93, 211, 0.1); border-color: #6C5DD3; }
+
+        .track-icon-box {
+            width: 42px; height: 42px; border-radius: 14px;
+            background: var(--bg-main); color: var(--text-muted);
+            display: flex; align-items: center; justify-content: center;
+        }
+        .track-info h4 { font-size: 15px; font-weight: 700; color: var(--text-header); margin: 0; }
+        .track-info span { font-size: 12px; color: var(--text-muted); }
+    
+    
     </style>
 </head>
 <body>
@@ -795,7 +901,35 @@
         </div>
     </div>
 
-    <div id="video-screen" class="screen"><div style="padding:24px;"><h2>Практики</h2><div class="small-card" onclick="alert('Скоро!')"><div class="small-icon mint-icon"><span class="material-icons-round">self_improvement</span></div><div><h4>Осознанность</h4><span>5 минут</span></div></div></div></div>
+    <!-- ЭКРАН МЕДИТАЦИИ (ОБНОВЛЕННЫЙ) -->
+    <div id="video-screen" class="screen">
+        <div class="player-container">
+            
+            <!-- Карточка Плеера -->
+            <div class="player-visual-card">
+                <div class="music-icon-circle">
+                    <span class="material-icons-round" id="player-main-icon">music_note</span>
+                </div>
+                <h2 id="player-track-title">Выберите трек</h2>
+                <div class="player-controls-row">
+                    <button class="btn-player-mini" onclick="toggleMusic()"><span class="material-icons-round" id="player-btn-icon">play_arrow</span></button>
+                </div>
+                <!-- Прогресс бар -->
+                <div class="player-progress-container" onclick="seekAudio(event)">
+                    <div class="player-progress-bar" id="player-progress"></div>
+                </div>
+            </div>
+
+            <!-- Список треков -->
+            <h3 style="margin: 20px 0 10px 0; padding-left: 4px; font-size: 18px; color: var(--text-header);">Плейлист</h3>
+            <div class="playlist-container" id="playlist-box">
+                <!-- Треки добавятся через JS -->
+            </div>
+        </div>
+    </div>
+
+
+    
     
     <div id="game-screen" class="screen"><canvas id="breathCanvas"></canvas><div class="game-ui-overlay"><div class="breath-text-container"><div class="breath-status" id="breathLabel">ДЫШИМ</div><div class="breath-timer-text" id="breathInstruction">Нажми Старт</div></div>
         <!-- ВСТАВИТЬ ЭТО ПЕРЕД <div class="game-controls"> -->
@@ -1071,6 +1205,132 @@
     function nextSos() { if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('medium'); if (sosIdx < sosSteps.length - 1) { sosIdx++; renderSosStep(); } else { document.getElementById('sos-content-area').innerHTML = `<span class="material-icons-round" style="font-size:100px; color:var(--primary-main); animation:pop-up-letter 0.6s forwards;">check_circle</span><div class="sos-text-line" style="margin-top:20px; color:var(--text-header)">ТЫ МОЛОДЕЦ</div>`; document.getElementById('sos-desc-area').innerText = 'Ты справился. Дыши спокойно.'; const btn = document.getElementById('sos-main-btn'); btn.querySelector('span').innerText = 'В МЕНЮ'; btn.onclick = goBack; btn.classList.remove('sos-btn-enter'); void btn.offsetWidth; btn.classList.add('sos-btn-enter'); if(tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success'); } }
     
     function sendUserIdToServer() { if (userId.toString().startsWith('test_')) return; fetch(GOOGLE_SCRIPT_URL + '?act=api', { method: 'POST', body: JSON.stringify({ action: 'user_joined', initData: tg.initData }) }); }
+
+
+    // ==========================================
+    // 🎵 МЕДИТАЦИЯ И МУЗЫКА
+    // ==========================================
+    
+    // 1. СПИСОК ТРЕКОВ (Настрой под свои файлы!)
+    // file: имя файла в папке audio (без папки, только имя)
+    const meditationTracks = [
+        { title: "Шум дождя", author: "Природа", file: "rain.mp3", duration: "10:00" },
+        { title: "Лесной ручей", author: "Релакс", file: "forest.mp3", duration: "05:30" },
+        { title: "Космический эмбиент", author: "Deep Space", file: "space.mp3", duration: "08:00" }
+    ];
+
+    let currentTrackIndex = -1;
+    let audioPlayer = new Audio();
+    let isPlaying = false;
+    let progressInterval;
+
+    // Инициализация (вызывается при старте)
+    function initMusicPlayer() {
+        const list = document.getElementById('playlist-box');
+        if(!list) return;
+        list.innerHTML = '';
+        
+        meditationTracks.forEach((track, index) => {
+            const div = document.createElement('div');
+            div.className = 'track-item';
+            div.id = `track-${index}`;
+            div.onclick = () => playTrack(index);
+            div.innerHTML = `
+                <div class="track-icon-box"><span class="material-icons-round">play_arrow</span></div>
+                <div class="track-info">
+                    <h4>${track.title}</h4>
+                    <span>${track.author} • ${track.duration}</span>
+                </div>
+            `;
+            list.appendChild(div);
+        });
+
+        // События аудио
+        audioPlayer.onended = () => { isPlaying = false; updatePlayerUI(); };
+        audioPlayer.ontimeupdate = updateProgressBar;
+    }
+
+    function playTrack(index) {
+        if (currentTrackIndex === index && isPlaying) {
+            pauseMusic();
+            return;
+        }
+
+        // Если выбрали новый трек
+        currentTrackIndex = index;
+        const track = meditationTracks[index];
+        
+        // 🔥 ПУТЬ К ФАЙЛУ (Относительный)
+        audioPlayer.src = `./audio/${track.file}`;
+        
+        audioPlayer.play().then(() => {
+            isPlaying = true;
+            updatePlayerUI();
+        }).catch(e => alert("Не удалось загрузить трек. Проверьте имя файла на GitHub."));
+    }
+
+    function toggleMusic() {
+        if (currentTrackIndex === -1) {
+            playTrack(0); // Если ничего не выбрано, играем первый
+            return;
+        }
+        if (isPlaying) pauseMusic();
+        else audioPlayer.play().then(() => { isPlaying = true; updatePlayerUI(); });
+    }
+
+    function pauseMusic() {
+        audioPlayer.pause();
+        isPlaying = false;
+        updatePlayerUI();
+    }
+
+    function updatePlayerUI() {
+        // 1. Обновляем верхнюю карточку
+        const titleEl = document.getElementById('player-track-title');
+        const iconEl = document.getElementById('player-btn-icon');
+        const cardEl = document.querySelector('.player-visual-card');
+        
+        if (currentTrackIndex !== -1) {
+            titleEl.innerText = meditationTracks[currentTrackIndex].title;
+        }
+        
+        if (isPlaying) {
+            iconEl.innerText = 'pause';
+            cardEl.classList.add('playing-anim');
+        } else {
+            iconEl.innerText = 'play_arrow';
+            cardEl.classList.remove('playing-anim');
+        }
+
+        // 2. Подсветка в плейлисте
+        document.querySelectorAll('.track-item').forEach((el, idx) => {
+            if (idx === currentTrackIndex) {
+                el.classList.add('active-track');
+                el.querySelector('.material-icons-round').innerText = isPlaying ? 'graphic_eq' : 'play_arrow';
+            } else {
+                el.classList.remove('active-track');
+                el.querySelector('.material-icons-round').innerText = 'play_arrow';
+            }
+        });
+    }
+
+    function updateProgressBar() {
+        if (!audioPlayer.duration) return;
+        const pct = (audioPlayer.currentTime / audioPlayer.duration) * 100;
+        document.getElementById('player-progress').style.width = pct + '%';
+    }
+
+    function seekAudio(e) {
+        if (!audioPlayer.duration) return;
+        const container = e.currentTarget;
+        const clickX = e.offsetX;
+        const width = container.clientWidth;
+        const duration = audioPlayer.duration;
+        audioPlayer.currentTime = (clickX / width) * duration;
+    }
+
+
+
     
     // --- BREATH LOGIC ---
     const breathCanvas=document.getElementById('breathCanvas'),breathCtx=breathCanvas.getContext('2d'),breathLabel=document.getElementById('breathLabel'),breathInstr=document.getElementById('breathInstruction'),playIcon=document.getElementById('playIcon'),playText=document.getElementById('playText');
@@ -1366,7 +1626,8 @@
 
     // INIT
     checkDiaryStatus();
-    initTheme(); 
+    initTheme();
+    initMusicPlayer();
 </script>
 </body>
 </html>
