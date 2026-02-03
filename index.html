@@ -180,6 +180,20 @@
         button, input, textarea, select { font-family: 'Manrope', sans-serif !important; }
 
         /* --- ANIMATIONS --- */
+        /* Анимация загрузки баланса */
+        @keyframes spin-loader { 
+            0% { transform: rotate(0deg); } 
+            100% { transform: rotate(360deg); } 
+        }
+        .balance-loader {
+            display: inline-block;
+            animation: spin-loader 1.2s linear infinite;
+            font-size: 16px !important; /* Размер подгоняем под цифры */
+            opacity: 0.6;
+            vertical-align: middle;
+        }
+        
+        
         @keyframes blink { 0%, 90%, 100% { transform: scaleY(1); } 95% { transform: scaleY(0.1); } }
         @keyframes pulse-mint { 0% { box-shadow: 0 0 0 0 rgba(77, 182, 172, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(77, 182, 172, 0); } 100% { box-shadow: 0 0 0 0 rgba(77, 182, 172, 0); } }
         @keyframes pulse-orange { 0% { box-shadow: 0 0 0 0 rgba(255, 152, 0, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(255, 152, 0, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 152, 0, 0); } }
@@ -1157,14 +1171,16 @@
     
     function handleResponse(d) {
         showTyping(false); sendBtn.disabled = false; micBtn.disabled = false;
+        
         if (d.status === 'success') {
             addMessage(d.text, false);
+            
+            // 🔥 ОБНОВЛЕНИЕ: Сохраняем баланс в кэш
+            if (d.balance !== undefined) updateLocalBalance(d.balance);
+            
             if (typeof d.isPremium !== 'undefined') window.isUserPremium = d.isPremium;
             if (d.audio) playAudioResponse(d.audio);
-            if (d.balance !== undefined) {
-                const balEl = document.getElementById('userBalanceDisplay');
-                if(balEl) balEl.innerText = d.balance;
-            }
+            
         } else if (d.status === 'error') {
             if (d.error_code === 'limit_reached') showPaywall('limit');
             else if (d.error_code === 'voice_blocked') showPaywall('voice');
@@ -1173,15 +1189,48 @@
     }
 
     function handleError(){showTyping(false);sendBtn.disabled=false;micBtn.disabled=false;addMessage("⚠️ Ошибка сети",false)}
+
+
+
+    // --- УМНЫЙ БАЛАНС (КЭШ + ЗАГРУЗКА) ---
+    
+    function initBalanceDisplay() {
+        const balEl = document.getElementById('userBalanceDisplay');
+        if (!balEl) return;
+
+        // 1. Пробуем достать баланс из памяти телефона
+        const cachedBal = localStorage.getItem('user_balance_cache');
+        
+        if (cachedBal !== null && cachedBal !== "undefined") {
+            // Если нашли - показываем мгновенно
+            balEl.innerText = cachedBal;
+            window.isUserPremium = parseInt(cachedBal) > 0;
+        } else {
+            // Если пусто - показываем крутилку
+            balEl.innerHTML = '<span class="material-icons-round balance-loader">sync</span>';
+        }
+    }
+
+    function updateLocalBalance(val) {
+        if (val === undefined || val === null) return;
+        // Сохраняем в память
+        localStorage.setItem('user_balance_cache', val);
+        
+        // Обновляем экран
+        const balEl = document.getElementById('userBalanceDisplay');
+        if (balEl) balEl.innerText = val;
+        
+        // Обновляем логику доступа
+        window.isUserPremium = parseInt(val) > 0;
+    }
     
     function loadChatHistory(){
         fetch(GOOGLE_SCRIPT_URL+'?act=api',{method:'POST',body:JSON.stringify({initData:tg.initData,action:'load_history'})})
         .then(r=>r.json())
         .then(d=>{
             if(d.status==='success') {
-                if (d.balance > 0) window.isUserPremium = true;
-                const balEl = document.getElementById('userBalanceDisplay');
-                if(balEl && d.balance !== undefined) balEl.innerText = d.balance;
+                // 🔥 ОБНОВЛЕНИЕ: Сохраняем баланс в кэш
+                if (d.balance !== undefined) updateLocalBalance(d.balance);
                 
                 if (d.history && Array.isArray(d.history)) {
                     d.history.forEach(m=>{
