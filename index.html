@@ -9,19 +9,6 @@
     <!-- 📦 DEPENDENCIES                              -->
     <!-- ============================================ -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-
-
-    <script>
-    // Добавьте это в самом начале скрипта
-    alert(window.Telegram.WebApp.initData); 
-
-    const tg = window.Telegram.WebApp; 
-    tg.expand();
-    // ... ваш код дальше ...
-</script>
-
-
-    
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&subset=cyrillic&display=swap" rel="stylesheet">
     
@@ -1037,13 +1024,6 @@
     </nav>
 
 <script>
-
-
-
-
-
-
-    
     // 🔴 INSERT YOUR GOOGLE APPS SCRIPT URL HERE 🔴
     const GOOGLE_SCRIPT_URL="https://script.google.com/macros/s/AKfycbyXqB6VVOwd4cg_GtenaKkY-VtXMLCeq2gfSNEN6BxysXOLWLWL80VmyoUO-6B46Rnf/exec";
     
@@ -1054,25 +1034,8 @@
        return false;
     };
 
-  const tg = window.Telegram.WebApp; 
+    const tg=window.Telegram.WebApp; 
     tg.expand();
-
-    // 🔒 SECURITY GATE: БЛОКИРОВКА БРАУЗЕРОВ
-    // Если initData пустая, значит мы не в Telegram -> Уничтожаем интерфейс
-    if (!tg.initData) {
-        document.body.innerHTML = `
-            <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;background:#000;color:#fff;font-family:sans-serif;text-align:center;padding:20px;">
-                <span style="font-size:60px;margin-bottom:20px;">🛡️</span>
-                <h2>Доступ запрещен</h2>
-                <p>Это приложение работает только внутри Telegram.</p>
-                <p style="opacity:0.6;margin-top:10px;">Откройте бота @твой_бот и нажмите кнопку меню.</p>
-            </div>
-        `;
-        // Выбрасываем ошибку, чтобы остановить выполнение скриптов ниже
-        throw new Error("Security Violation: Access outside Telegram is blocked.");
-    }
-
-   
     
     const userId = tg.initDataUnsafe?.user?.id || 'test_' + Math.floor(Math.random()*1000);
     const userName = tg.initDataUnsafe?.user?.first_name || 'Друг';
