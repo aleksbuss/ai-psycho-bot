@@ -213,7 +213,7 @@
         .streak-badge { position: absolute; top: -4px; right: -4px; background: #FF6D00; color: white; font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 8px; display: none; animation: streak-fire 1.5s infinite; }
 
         /* --- CHAT --- */
-        #chat-container { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; scroll-behavior: smooth; }
+        #chat-container { flex: 1; padding: 20px; padding-bottom: 100px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; scroll-behavior: smooth; }
         .message { max-width: 85%; padding: 14px 18px; border-radius: 20px; font-size: 15px; box-shadow: var(--shadow-card); position: relative; word-wrap: break-word; }
         .message strong { font-weight: 700; }
         .message em { font-style: italic; }
@@ -238,7 +238,7 @@
         .prompt-chip:active { transform: scale(0.95); background: var(--primary-soft); }
         body.dark-mode .prompt-chip { background: var(--bg-card); border-color: rgba(108,93,211,0.4); color: var(--text-body); }
 
-        .input-area { width: 100%; background: var(--bg-main); padding: 10px 16px; display: flex; align-items: center; justify-content: center; gap: 12px; padding-bottom: calc(20px + env(safe-area-inset-bottom)); box-sizing: border-box; margin-bottom: 95px; } 
+        .input-area { width: 100%; background: transparent; padding: 10px 16px; display: flex; align-items: center; justify-content: center; gap: 12px; padding-bottom: calc(20px + env(safe-area-inset-bottom)); box-sizing: border-box; margin-bottom: 95px; } 
         input[type="text"] { flex: 1; height: 54px; border-radius: 18px; border: none; padding: 0 20px; font-size: 16px; outline: none; background: var(--bg-card); color: var(--text-header); box-shadow: 0 2px 10px rgba(0,0,0,0.03); min-width: 0; }
         .btn-sq { width: 54px; height: 54px; border-radius: var(--radius-btn-sq); border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; flex-shrink: 0; }
         #micBtn { background-color: var(--bg-card); color: var(--icon-default); box-shadow: var(--shadow-card); }
@@ -469,8 +469,8 @@
         .referral-close { background: none; border: none; color: var(--text-muted); font-size: 14px; cursor: pointer; }
 
         /* --- WEEKLY REPORT MODAL --- */
-        .report-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 6000; display: none; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(10px); overflow-y: auto; }
-        .report-card { background: var(--bg-card); border-radius: 28px; padding: 30px 24px; max-width: 360px; width: 100%; box-shadow: 0 20px 50px rgba(0,0,0,0.3); max-height: 80vh; overflow-y: auto; }
+        .report-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 6000; display: none; align-items: flex-end; justify-content: center; padding: 0; backdrop-filter: blur(10px); }
+        .report-card { background: var(--bg-card); border-radius: 28px 28px 0 0; padding: 30px 24px; padding-bottom: 40px; max-width: 100%; width: 100%; box-shadow: 0 -10px 50px rgba(0,0,0,0.3); max-height: 85vh; overflow-y: auto; -webkit-overflow-scrolling: touch; animation: coverVerticalIn 0.35s cubic-bezier(0.32, 0.72, 0, 1) forwards; }
         .report-card h2 { font-size: 20px; font-weight: 800; color: var(--text-header); margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
         .report-content { font-size: 14px; color: var(--text-body); line-height: 1.7; }
         .report-loading { text-align: center; padding: 40px 0; }
@@ -526,8 +526,8 @@
         </div>
         <div class="onboarding-slide next" data-slide="3">
             <div style="font-size:80px;">✨</div>
-            <div class="ob-title">5 сообщений — бесплатно</div>
-            <div class="ob-desc">Попробуй прямо сейчас. Никаких подписок. Плати только за то, что используешь.</div>
+            <div class="ob-title">5 звёзд — в подарок</div>
+            <div class="ob-desc">Мы дарим вам 5 ⭐ на старте. Каждый запрос = 1 звезда. Пригласите друга — получите ещё 3!</div>
         </div>
     </div>
     <div class="onboarding-bottom">
@@ -773,7 +773,7 @@
 
         <!-- Weekly Report -->
         <button class="weekly-report-btn" onclick="requestWeeklyReport()">
-            <span class="material-icons-round">auto_awesome</span> Получить AI-отчёт за неделю
+            <span class="material-icons-round">auto_awesome</span> AI-отчёт за неделю (1 ⭐)
         </button>
 
         <div class="chart-container"><canvas id="pieChart"></canvas><div id="chart-legend" class="pie-legend"></div><div id="empty-chart-msg" style="position:absolute;color:var(--text-muted);font-size:14px;text-align:center;display:none;">Нет данных<br>Отметьте состояние</div></div>
@@ -860,7 +860,7 @@ const tg = window.Telegram.WebApp;
 tg.expand();
 const userId = tg.initDataUnsafe?.user?.id || 'test_' + Math.floor(Math.random()*1000);
 const userName = tg.initDataUnsafe?.user?.first_name || 'Друг';
-const botUsername = 'your_bot_username'; // Замени на username своего бота
+const botUsername = tg.initDataUnsafe?.bot?.username || 'LastAIPanicBot';
 
 window.isUserPremium = false;
 let soundsEnabled = localStorage.getItem('sounds_enabled') !== 'false';
@@ -936,6 +936,7 @@ window.addEventListener('offline', () => document.getElementById('offlineBanner'
 function showPaywall(reason) {
     const textEl = document.getElementById('paywall-reason-text');
     if (reason === 'voice') textEl.innerText = "Голосовой режим и Звонки доступны только при положительном балансе.";
+    else if (reason === 'report') textEl.innerText = "Для AI-отчёта необходима 1 ⭐. Пополните баланс.";
     else textEl.innerText = "Для продолжения общения необходимо пополнить баланс.";
     document.getElementById('paywall-modal').style.display = 'flex';
     if(tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('warning');
@@ -1145,6 +1146,7 @@ function sendMessage() {
     hidePromptChips();
     addMessage(t, true);
     userInput.value = '';
+    userInput.blur(); // Скрыть клавиатуру
     sendBtn.disabled = true;
     showTyping(true);
     playSound('send');
@@ -1265,7 +1267,7 @@ function startSos() { renderSosStep(); }
 function renderSosStep() { const s = sosSteps[sosIdx]; const content = document.getElementById('sos-content-area'); if(!content) return; content.innerHTML = ''; const numDiv = document.createElement('div'); numDiv.className = 'sos-big-number'; numDiv.innerText = s.n; numDiv.style.animation = 'pop-up-letter 0.5s ease forwards'; content.appendChild(numDiv); const textLine = document.createElement('div'); textLine.className = 'sos-text-line'; s.t.split('').forEach((char, index) => { const span = document.createElement('span'); span.className = 'sos-letter'; span.innerText = char; span.style.animation = `pop-up-letter 0.4s ease forwards`; span.style.animationDelay = `${0.2 + (index * 0.05)}s`; textLine.appendChild(span); }); content.appendChild(textLine); const desc = document.getElementById('sos-desc-area'); desc.className = 'sos-desc'; desc.innerText = s.d; desc.style.animation = 'none'; desc.offsetHeight; desc.style.animation = 'fadeIn 0.5s ease forwards 0.5s'; const btn = document.getElementById('sos-main-btn'); btn.classList.remove('sos-btn-enter'); void btn.offsetWidth; btn.classList.add('sos-btn-enter'); }
 function nextSos() { if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('medium'); if (sosIdx < sosSteps.length - 1) { sosIdx++; renderSosStep(); } else { document.getElementById('sos-content-area').innerHTML = `<span class="material-icons-round" style="font-size:100px;color:var(--primary-main);animation:pop-up-letter 0.6s forwards;">check_circle</span><div class="sos-text-line" style="margin-top:20px;color:var(--text-header)">ТЫ МОЛОДЕЦ</div>`; document.getElementById('sos-desc-area').innerText = 'Ты справился. Дыши спокойно.'; const btn = document.getElementById('sos-main-btn'); btn.querySelector('span').innerText = 'В МЕНЮ'; btn.onclick = goBack; btn.classList.remove('sos-btn-enter'); void btn.offsetWidth; btn.classList.add('sos-btn-enter'); if(tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success'); checkAchievements(); } }
 
-function sendUserIdToServer() { if (userId.toString().startsWith('test_')) return; fetch(GOOGLE_SCRIPT_URL + '?act=api', { method: 'POST', body: JSON.stringify({ action: 'user_joined', initData: tg.initData }) }); }
+function sendUserIdToServer() { if (userId.toString().startsWith('test_')) return; const startParam = tg.initDataUnsafe?.start_param || ''; const referrerId = startParam.startsWith('ref_') ? startParam.replace('ref_', '') : null; fetch(GOOGLE_SCRIPT_URL + '?act=api', { method: 'POST', body: JSON.stringify({ action: 'user_joined', initData: tg.initData, referrerId: referrerId }) }); }
 
 // ============================================
 // 🎵 MUSIC PLAYER
@@ -1453,6 +1455,9 @@ function draw3DPieChart(slices) {
 // 📊 WEEKLY AI REPORT
 // ============================================
 function requestWeeklyReport() {
+    const currentBal = parseInt(localStorage.getItem('user_balance_cache') || '0');
+    if (currentBal < 1) { showPaywall('report'); return; }
+    
     const modal = document.getElementById('reportModal');
     const content = document.getElementById('reportContent');
     modal.style.display = 'flex';
@@ -1464,7 +1469,10 @@ function requestWeeklyReport() {
     
     fetch(GOOGLE_SCRIPT_URL + '?act=api', { method: 'POST', body: JSON.stringify({ initData: tg.initData, action: 'weekly_report', moodData: moodSummary }) })
     .then(r => r.json()).then(d => {
-        if (d.status === 'success' && d.text) { content.innerHTML = '<div class="report-content">' + parseMd(d.text) + '</div>'; }
+        if (d.status === 'success' && d.text) {
+            content.innerHTML = '<div class="report-content">' + parseMd(d.text) + '</div>';
+            if (d.balance !== undefined) updateLocalBalance(d.balance);
+        }
         else { content.innerHTML = '<p style="color:var(--text-muted);text-align:center;">Недостаточно данных для отчёта. Пользуйтесь дневником хотя бы 3 дня.</p>'; }
     }).catch(() => { content.innerHTML = '<p style="color:var(--text-muted);text-align:center;">Ошибка сети</p>'; });
 }
