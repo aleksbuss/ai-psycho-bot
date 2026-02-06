@@ -214,7 +214,7 @@
         .streak-badge { position: absolute; top: -4px; right: -4px; background: #FF6D00; color: white; font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 8px; display: none; animation: streak-fire 1.5s infinite; }
 
         /* --- CHAT --- */
-        #chat-container { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; scroll-behavior: smooth; }
+        #chat-container { flex: 1; padding: 20px; padding-bottom: 190px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; scroll-behavior: smooth; }
         .message { max-width: 85%; padding: 14px 18px; border-radius: 20px; font-size: 15px; box-shadow: var(--shadow-card); position: relative; word-wrap: break-word; }
         .message strong { font-weight: 700; }
         .message em { font-style: italic; }
@@ -239,7 +239,8 @@
         .prompt-chip:active { transform: scale(0.95); background: var(--primary-soft); }
         body.dark-mode .prompt-chip { background: var(--bg-card); border-color: rgba(108,93,211,0.4); color: var(--text-body); }
 
-        .input-area { width: 100%; background: transparent; padding: 10px 16px; display: flex; align-items: center; justify-content: center; gap: 12px; padding-bottom: calc(20px + env(safe-area-inset-bottom)); box-sizing: border-box; margin-bottom: 95px; } 
+        .input-area { position: fixed; bottom: 100px; left: 0; width: 100%; background: transparent; padding: 10px 16px; display: flex; align-items: center; justify-content: center; gap: 12px; box-sizing: border-box; z-index: 999; pointer-events: none; } 
+        .input-area > * { pointer-events: auto; }
         input[type="text"] { flex: 1; height: 54px; border-radius: 18px; border: none; padding: 0 20px; font-size: 16px; outline: none; background: var(--bg-card); color: var(--text-header); box-shadow: 0 2px 10px rgba(0,0,0,0.03); min-width: 0; }
         .btn-sq { width: 54px; height: 54px; border-radius: var(--radius-btn-sq); border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; flex-shrink: 0; }
         #micBtn { background-color: var(--bg-card); color: var(--icon-default); box-shadow: var(--shadow-card); }
@@ -484,7 +485,7 @@
             .screen { display: none !important; }
             .screen.active { display: flex !important; flex-direction: column; }
             #menu-screen.active { padding: 16px; min-height: 100vh; justify-content: space-evenly; box-sizing: border-box; padding-bottom: 90px; }
-            .input-area { padding: 8px 8px; gap: 8px; }
+            .input-area { padding: 8px 8px; gap: 8px; bottom: 84px; }
             .btn-sq { width: 44px; height: 44px; border-radius: 14px; }
             input[type="text"] { height: 44px; font-size: 14px; padding: 0 12px; }
             .action-card { padding: 16px 8px; height: 130px; } 
