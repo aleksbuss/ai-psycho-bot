@@ -512,9 +512,115 @@
             .nav-icon { font-size: 24px; }
             .achievements-grid { grid-template-columns: repeat(3, 1fr); }
         }
+/* 📢 SUBSCRIPTION GATE OVERLAY */
+.sub-overlay {
+    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+    background: var(--bg-main);
+    z-index: 99999;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 32px 24px;
+    text-align: center;
+    transition: opacity 0.4s ease, transform 0.4s ease;
+}
+.sub-overlay.hiding {
+    opacity: 0; transform: scale(0.95);
+    pointer-events: none;
+}
+.sub-icon {
+    width: 100px; height: 100px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #0088cc, #33b5e5);
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 28px;
+    box-shadow: 0 8px 32px rgba(0,136,204,0.3);
+}
+.sub-icon .material-icons-round { font-size: 48px; color: #fff; }
+.sub-title {
+    font-size: 22px; font-weight: 700;
+    color: var(--text-main);
+    margin-bottom: 12px;
+    line-height: 1.3;
+}
+.sub-desc {
+    font-size: 15px; color: var(--text-muted);
+    line-height: 1.6;
+    margin-bottom: 32px;
+    max-width: 320px;
+}
+.sub-channel-name {
+    display: inline-block;
+    background: rgba(0,136,204,0.1);
+    color: #0088cc;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: 24px;
+}
+.sub-btn-primary {
+    width: 100%; max-width: 300px;
+    padding: 16px 24px;
+    border: none; border-radius: 14px;
+    font-size: 16px; font-weight: 700;
+    cursor: pointer;
+    background: linear-gradient(135deg, #0088cc, #0077b5);
+    color: #fff;
+    box-shadow: 0 4px 20px rgba(0,136,204,0.3);
+    margin-bottom: 12px;
+    transition: transform 0.2s, box-shadow 0.2s;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.sub-btn-primary:active { transform: scale(0.97); }
+.sub-btn-secondary {
+    width: 100%; max-width: 300px;
+    padding: 14px 24px;
+    border: 2px solid var(--border);
+    border-radius: 14px;
+    font-size: 15px; font-weight: 600;
+    cursor: pointer;
+    background: transparent;
+    color: var(--text-main);
+    transition: background 0.2s;
+}
+.sub-btn-secondary:active { background: var(--bg-card); }
+.sub-btn-secondary.checking {
+    opacity: 0.6; pointer-events: none;
+}
+.sub-spinner {
+    width: 18px; height: 18px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: subSpin 0.8s linear infinite;
+    display: none;
+}
+.sub-btn-secondary.checking .sub-spinner { display: inline-block; }
+@keyframes subSpin { to { transform: rotate(360deg); } }
+
     </style>
 </head>
 <body>
+
+<!-- 📢 SUBSCRIPTION GATE (блокирует всё до подписки на канал) -->
+<div class="sub-overlay" id="subOverlay" style="display:none;">
+    <div class="sub-icon">
+        <span class="material-icons-round">campaign</span>
+    </div>
+    <div class="sub-title">Подпишитесь на канал</div>
+    <div class="sub-desc">
+        Чтобы пользоваться приложением, нужно подписаться на наш Telegram-канал. Там мы делимся полезными материалами о ментальном здоровье&nbsp;🧘
+    </div>
+    <div class="sub-channel-name" id="subChannelName">@channel</div>
+    <button class="sub-btn-primary" id="subOpenChannel" onclick="openRequiredChannel()">
+        <span class="material-icons-round" style="font-size:20px;">telegram</span>
+        Открыть канал
+    </button>
+    <button class="sub-btn-secondary" id="subCheckBtn" onclick="recheckSubscription()">
+        <span class="sub-spinner" id="subSpinner"></span>
+        <span id="subCheckText">Я подписался — проверить</span>
+    </button>
+</div>
 
 <!-- OFFLINE BANNER -->
 <div class="offline-banner" id="offlineBanner">⚡ Нет подключения к интернету</div>
@@ -1133,8 +1239,83 @@ const typingIndicator = document.getElementById('typing');
 const typingStatus = document.getElementById('typingStatus');
 let mediaRecorder = null, audioChunks = [], isRecording = false;
 let fetchTimeout = null;
+let _requiredChannel = '';
 
-loadChatHistory();
+// 📢 SUBSCRIPTION GATE — проверяем подписку при запуске
+(async function initWithSubscriptionCheck() {
+    try {
+        const resp = await fetch(GOOGLE_SCRIPT_URL + '?act=api', {
+            method: 'POST',
+            body: JSON.stringify({ initData: tg.initData, action: 'check_subscription' })
+        });
+        const d = await resp.json();
+        
+        if (d.status === 'ok' && d.subscribed === false) {
+            // Не подписан — показываем gate
+            _requiredChannel = d.channel || '@channel';
+            showSubscriptionGate(_requiredChannel);
+            return; // НЕ загружаем приложение
+        }
+    } catch(e) {
+        // При ошибке сети — пропускаем проверку, не блокируем
+    }
+    
+    // Подписан или ошибка — загружаем как обычно
+    loadChatHistory();
+})();
+
+function showSubscriptionGate(channel) {
+    document.getElementById('subChannelName').textContent = channel;
+    document.getElementById('subOverlay').style.display = 'flex';
+    _requiredChannel = channel;
+}
+
+function openRequiredChannel() {
+    // Открываем канал через Telegram deeplink
+    var username = _requiredChannel.replace('@', '');
+    if (tg.openTelegramLink) {
+        tg.openTelegramLink('https://t.me/' + username);
+    } else {
+        window.open('https://t.me/' + username, '_blank');
+    }
+    if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
+}
+
+async function recheckSubscription() {
+    var btn = document.getElementById('subCheckBtn');
+    var txt = document.getElementById('subCheckText');
+    btn.classList.add('checking');
+    txt.textContent = 'Проверяю...';
+    
+    try {
+        const resp = await fetch(GOOGLE_SCRIPT_URL + '?act=api', {
+            method: 'POST',
+            body: JSON.stringify({ initData: tg.initData, action: 'check_subscription' })
+        });
+        const d = await resp.json();
+        
+        if (d.status === 'ok' && d.subscribed === true) {
+            // Подписался! Скрываем overlay с анимацией
+            if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+            var overlay = document.getElementById('subOverlay');
+            overlay.classList.add('hiding');
+            setTimeout(function() { overlay.style.display = 'none'; }, 400);
+            
+            // Запускаем приложение
+            loadChatHistory();
+        } else {
+            // Всё ещё не подписан
+            if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('error');
+            txt.textContent = 'Вы ещё не подписаны 😔';
+            setTimeout(function() { txt.textContent = 'Я подписался — проверить'; }, 2500);
+        }
+    } catch(e) {
+        txt.textContent = 'Ошибка сети. Попробуйте ещё раз';
+        setTimeout(function() { txt.textContent = 'Я подписался — проверить'; }, 2500);
+    }
+    
+    btn.classList.remove('checking');
+}
 
 function scrollToBottom() { if(chatContainer) chatContainer.scrollTop = chatContainer.scrollHeight; }
 
@@ -1230,6 +1411,7 @@ function handleResponse(d) {
         if (d.audio) playAudioResponse(d.audio);
         checkAchievements();
     } else if (d.status === 'error') {
+        if (d.error_code === 'not_subscribed') { showSubscriptionGate(d.channel || _requiredChannel || '@channel'); return; }
         if (d.error_code === 'limit_reached') showPaywall('limit');
         else if (d.error_code === 'voice_blocked') showPaywall('voice');
         else addMessage("⚠️ " + d.text, false);
@@ -1312,16 +1494,11 @@ function sendUserIdToServer() { if (userId.toString().startsWith('test_')) retur
 // 🎵 MUSIC PLAYER
 // ============================================
 const meditationTracks = [
-    
-    { title: "Глубокая декомпрессия", author: "Релакс", file: "готовый.mp3", duration: "12:49" },
-    { title: "Нейросброс", author: "Релакс", file: "2.mp3", duration: "10:53" },
-    { title: "Телесная свобода", author: "Релакс", file: "третий.mp3", duration: "13:27" },
-    { title: "Внутренняя тишина", author: "Релакс", file: "четвертый.mp3", duration: "11:07" },
-    { title: "Источник тепла", author: "Релакс", file: "пятый.mp3", duration: "12:57" },
-    { title: "Снятие зажимов", author: "Релакс", file: "шестой.mp3", duration: "14:02" },
-    { title: "Точка баланса", author: "Релакс", file: "седьмой.mp3", duration: "13:17" },
-    { title: "Абсолютная прозрачность", author: "Релакс", file: "восьмой.mp3", duration: "13:51" },
-    
+    { title: "Шум дождя", author: "Природа", file: "relax.mp3", duration: "04:51" },
+    { title: "Лесной ручей", author: "Релакс", file: "meditation.mp3", duration: "02:31" },
+    { title: "Ночной костёр", author: "Природа", file: "fire.mp3", duration: "05:00" },
+    { title: "Океанские волны", author: "Релакс", file: "ocean.mp3", duration: "06:12" },
+    { title: "Утренние птицы", author: "Природа", file: "birds.mp3", duration: "04:30" },
 ];
 let currentTrackIndex = -1, audioPlayer = new Audio(), isPlaying = false;
 
