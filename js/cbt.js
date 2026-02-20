@@ -18,18 +18,17 @@ function getCbtAdvice() {
         method: 'POST',
         body: JSON.stringify({
             initData: tg.initData,
-            action: 'chat',
-            message: `[КПТ-УПРАЖНЕНИЕ] Помоги найти альтернативную мысль.\nСитуация: ${sit}\nАвтоматическая мысль: ${thought}\nЭмоция: ${emotion || 'не указана'}\n\nДай краткий (2-3 предложения) альтернативный взгляд на ситуацию, используя технику когнитивной реструктуризации. Будь тёплым и поддерживающим.`
+            text: `[КПТ-УПРАЖНЕНИЕ] Помоги найти альтернативную мысль.\nСитуация: ${sit}\nАвтоматическая мысль: ${thought}\nЭмоция: ${emotion || 'не указана'}\n\nДай краткий (2-3 предложения) альтернативный взгляд на ситуацию, используя технику когнитивной реструктуризации. Будь тёплым и поддерживающим.`
         })
     })
     .then(r => r.json())
     .then(d => {
-        if (d.reply) {
-            if (box) box.textContent = d.reply;
+        if (d.text && d.status === 'success') {
+            if (box) box.textContent = d.text;
             if (d.balance !== undefined) updateLocalBalance(d.balance);
         } else if (d.error_code === 'not_subscribed') {
             showSubscriptionGate(d.channel || _requiredChannel || '@channel');
-        } else if (d.error_code === 'no_credits') {
+        } else if (d.error_code === 'no_credits' || d.error_code === 'limit_reached') {
             showPaywall('cbt');
         } else {
             if (box) box.textContent = 'Не удалось получить ответ. Попробуйте позже.';
