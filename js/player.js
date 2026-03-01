@@ -22,7 +22,27 @@ function initMusicPlayer() {
     audioPlayer.onended = () => { if (currentTrackIndex < meditationTracks.length - 1) playTrack(currentTrackIndex + 1); else { isPlaying = false; updatePlayerUI(); } };
     audioPlayer.ontimeupdate = updateProgressBar;
 }
-function playTrack(index) { if (currentTrackIndex === index && isPlaying) { pauseMusic(); return; } currentTrackIndex = index; audioPlayer.src = `./audio/${meditationTracks[index].file}`; audioPlayer.volume = (document.getElementById('volumeSlider')?.value || 80) / 100; audioPlayer.play().then(() => { isPlaying = true; updatePlayerUI(); }).catch(e => {}); }
+function playTrack(index) { 
+    if (currentTrackIndex === index && isPlaying) { 
+        pauseMusic(); 
+        return; 
+    } 
+    currentTrackIndex = index; 
+    
+    // Добавляем ?v=2 чтобы пробить кэш Телеграма
+    const trackUrl = `./audio/${meditationTracks[index].file}?v=2`;
+    audioPlayer.src = trackUrl; 
+    audioPlayer.volume = (document.getElementById('volumeSlider')?.value || 80) / 100; 
+    
+    audioPlayer.play().then(() => { 
+        isPlaying = true; 
+        updatePlayerUI(); 
+    }).catch(e => {
+        // Если трек не запустился, выводим алерт с ТОЧНЫМ путем
+        alert(`Ошибка! Плеер пытается скачать файл по ссылке:\n\n${audioPlayer.src}\n\nНо сервер отвечает, что файла там нет.`);
+        console.error("Ошибка воспроизведения:", e);
+    }); 
+}
 function toggleMusic() { if (currentTrackIndex === -1) { playTrack(0); return; } if (isPlaying) pauseMusic(); else audioPlayer.play().then(() => { isPlaying = true; updatePlayerUI(); }); }
 function pauseMusic() { audioPlayer.pause(); isPlaying = false; updatePlayerUI(); }
 function updatePlayerUI() {
