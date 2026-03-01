@@ -1,15 +1,14 @@
 // 🎵 MUSIC PLAYER
 // ============================================
 const meditationTracks = [
-    { title: "Глубокая декомпрессия", author: "Релакс", file: "готовый.mp3", duration: "12:49" },
-    { title: "Нейросброс", author: "Релакс", file: "2.mp3", duration: "10:53" },
-    { title: "Внутренняя тишина", author: "Релакс", file: "третий.mp3", duration: "13:27" },
-    { title: "Телесная свобода", author: "Релакс", file: "третий.mp3", duration: "13:27" },
-    { title: "Внутренняя тишина", author: "Релакс", file: "четвертый.mp3", duration: "11:07" },
-    { title: "Источник тепла", author: "Релакс", file: "пятый.mp3", duration: "12:57" },
-    { title: "Снятие зажимов", author: "Релакс", file: "шестой.mp3", duration: "14:02" },
-    { title: "Точка баланса", author: "Релакс", file: "седьмой.mp3", duration: "13:17" },
-    { title: "Абсолютная прозрачность", author: "Релакс", file: "восьмой.mp3", duration: "13:51" },
+    { title: "Глубокая декомпрессия", author: "Релакс", file: "track1.mp3", duration: "12:49" },
+    { title: "Нейросброс", author: "Релакс", file: "track2.mp3", duration: "10:53" },
+    { title: "Внутренняя тишина", author: "Релакс", file: "track3.mp3", duration: "13:27" },
+    { title: "Телесная свобода", author: "Релакс", file: "track4.mp3", duration: "13:27" },
+    { title: "Источник тепла", author: "Релакс", file: "track5.mp3", duration: "11:07" },
+    { title: "Снятие зажимов", author: "Релакс", file: "track6.mp3", duration: "12:57" },
+    { title: "Точка баланса", author: "Релакс", file: "track7.mp3", duration: "14:02" },
+    { title: "Абсолютная прозрачность", author: "Релакс", file: "track8.mp3", duration: "13:17" }
 ];
 let currentTrackIndex = -1, audioPlayer = new Audio(), isPlaying = false;
 
