@@ -469,8 +469,36 @@
         .track-info h4 { font-size: 15px; font-weight: 700; color: var(--text-header); margin: 0; }
         .track-info span { font-size: 12px; color: var(--text-muted); }
 
-        /* --- BOTTOM NAV --- */
-        .bottom-nav { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); width: 92%; max-width: 380px; height: 72px; background: var(--nav-bg); border-radius: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); display: flex; justify-content: space-around; align-items: center; z-index: 1000; }
+       
+/* --- BOTTOM NAV --- */
+.bottom-nav { 
+    position: fixed; 
+    bottom: 0; /* Прижимаем к низу, чтобы под ним ничего не проезжало */
+    left: 50%; 
+    transform: translateX(-50%); 
+    width: 100%; /* На всю ширину экрана */
+    max-width: 430px; 
+    
+    /* Увеличили высоту и добавили поддержку "челки" снизу на iPhone */
+    height: calc(78px + env(safe-area-inset-bottom, 0px)); 
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    
+    border-radius: 28px 28px 0 0; /* Скругляем только верх */
+    display: flex; justify-content: space-around; align-items: center; z-index: 1000; 
+    
+    /* Эффект матового стекла (Glassmorphism) */
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-top: 1px solid rgba(255, 255, 255, 0.7); /* Легкий белый блик сверху */
+    box-shadow: 0 -6px 24px rgba(0, 0, 0, 0.06); /* Мягкая тень вверх */
+}
+
+body.dark-mode .bottom-nav {
+    background: rgba(31, 34, 41, 0.85);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 -6px 24px rgba(0, 0, 0, 0.4);
+}
         .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 60px; height: 100%; border: none; background: transparent; cursor: pointer; }
         .nav-icon { font-size: 28px; color: var(--nav-icon-color); transition: color 0.3s; }
         .nav-icon-active { color: var(--nav-icon-active); }
@@ -546,7 +574,10 @@
             .input-area { padding: 8px; gap: 8px; bottom: 84px; }
             .btn-sq { width: 44px; height: 44px; border-radius: 14px; }
             input[type="text"] { height: 44px; font-size: 14px; padding: 0 12px; }
-            .bottom-nav { height: 64px; bottom: 12px; width: 94%; border-radius: 20px; }
+           
+   
+            .bottom-nav { height: calc(68px + env(safe-area-inset-bottom, 0px)); bottom: 0; width: 100%; border-radius: 24px 24px 0 0; padding-bottom: env(safe-area-inset-bottom, 0px);   
+}
             .nav-icon { font-size: 24px; }
             .achievements-grid { grid-template-columns: repeat(3, 1fr); }
             .mood-grid { gap: 5px; }
@@ -579,7 +610,7 @@
             .small-card { padding: 10px; gap: 8px; }
             .small-icon { width: 36px; height: 36px; }
             .small-card h4 { font-size: 12px; }
-            .bottom-nav { height: 56px; bottom: 8px; border-radius: 16px; }
+            .bottom-nav { height: calc(60px + env(safe-area-inset-bottom, 0px)); bottom: 0; width: 100%; border-radius: 20px 20px 0 0; padding-bottom: env(safe-area-inset-bottom, 0px); 
             .nav-icon { font-size: 22px; }
             .breath-status { font-size: 26px; }
             .game-controls { bottom: 100px; }
