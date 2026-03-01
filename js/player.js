@@ -29,8 +29,10 @@ function playTrack(index) {
     } 
     currentTrackIndex = index; 
     
-    // Добавляем ?v=2 чтобы пробить кэш Телеграма
-    const trackUrl = `./audio/${meditationTracks[index].file}?v=2`;
+    // ЧИСТАЯ ССЫЛКА: без точек, слешей и версий. 
+    // Если player.js лежит в папке js, а audio в корне, иногда нужен абсолютный путь
+    const trackUrl = `https://aleksbuss.github.io/ai-psycho-bot/audio/${meditationTracks[index].file}`;
+    
     audioPlayer.src = trackUrl; 
     audioPlayer.volume = (document.getElementById('volumeSlider')?.value || 80) / 100; 
     
@@ -38,8 +40,7 @@ function playTrack(index) {
         isPlaying = true; 
         updatePlayerUI(); 
     }).catch(e => {
-        // Если трек не запустился, выводим алерт с ТОЧНЫМ путем
-        alert(`Ошибка! Плеер пытается скачать файл по ссылке:\n\n${audioPlayer.src}\n\nНо сервер отвечает, что файла там нет.`);
+        alert(`Ошибка! Сервер не нашел файл:\n\n${audioPlayer.src}`);
         console.error("Ошибка воспроизведения:", e);
     }); 
 }
