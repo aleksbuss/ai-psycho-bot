@@ -1,7 +1,7 @@
 // ============================================
 // ⚙️ CONFIG & GLOBALS
 // ============================================
-const GOOGLE_SCRIPT_URL="https://script.google.com/macros/s/AKfycbyXqB6VVOwd4cg_GtenaKkY-VtXMLCeq2gfSNEN6BxysXOLWLWL80VmyoUO-6B46Rnf/exec";
+const GOOGLE_SCRIPT_URL = "https://bez-paniki-api.aleksbuss.workers.dev/api";
 
 window.onerror = function(msg, url, line) {
    document.getElementById('error-console').style.display='block';
