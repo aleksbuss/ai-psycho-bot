@@ -1,4 +1,4 @@
-        :root {
+:root {
             --bg-main: #F5F7FA;      
             --bg-card: #FFFFFF;      
             --text-header: #1F2937;  
@@ -644,7 +644,7 @@ body.dark-mode .bottom-nav {
 /* --- NEW FEATURES --- */
 
 /* Analytics Screen */
-.analytics-container { padding: 24px 20px; padding-bottom: 110px; overflow-y: auto; }
+.analytics-container { flex: 1; min-height: 0; padding: 24px 20px; padding-bottom: 110px; overflow-y: auto; }
 .analytics-card { background: var(--bg-card); border-radius: 20px; padding: 20px; box-shadow: var(--shadow-card); margin-bottom: 16px; overflow: hidden; }
 .analytics-card h3 { font-size: 16px; font-weight: 700; color: var(--text-header); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
 .analytics-chart { width: 100%; height: 160px; position: relative; display: block; box-sizing: border-box; }
@@ -657,7 +657,7 @@ body.dark-mode .analytics-stat-value { color: #9B8CE8; }
 .analytics-empty .material-icons-round { font-size: 48px; margin-bottom: 12px; opacity: 0.3; }
 
 /* CBT Screen */
-.cbt-container { padding: 24px 20px; padding-bottom: 110px; overflow-y: auto; }
+.cbt-container { flex: 1; min-height: 0; padding: 24px 20px; padding-bottom: 110px; overflow-y: auto; }
 .cbt-intro { text-align: center; margin-bottom: 24px; }
 .cbt-intro h2 { font-size: 20px; font-weight: 800; color: var(--text-header); margin-bottom: 8px; }
 .cbt-intro p { font-size: 14px; color: var(--text-muted); line-height: 1.5; }
@@ -677,7 +677,7 @@ body.dark-mode .cbt-btn { background: #6C5DD3; }
 .cbt-history-item .cbt-thought { font-size: 13px; color: var(--text-body); margin-top: 4px; }
 
 /* Ritual Screen */
-.ritual-container { padding: 24px 20px; padding-bottom: 110px; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; text-align: center; }
+.ritual-container { flex: 1; min-height: 0; padding: 24px 20px; padding-bottom: 110px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; overflow-y: auto; }
 .ritual-step-icon { font-size: 60px; margin-bottom: 20px; opacity: 0; animation: fadeInScale 0.5s forwards; }
 .ritual-step-title { font-size: 22px; font-weight: 800; color: var(--text-header); margin-bottom: 10px; }
 .ritual-step-desc { font-size: 14px; color: var(--text-muted); margin-bottom: 30px; max-width: 280px; line-height: 1.5; }
@@ -701,7 +701,7 @@ body.dark-mode .ritual-mood-item.selected { border-color: #6C5DD3; background: r
 .ritual-complete-icon { font-size: 64px; }
 
 /* Sleep Tracker */
-.sleep-container { padding: 24px 20px; padding-bottom: 110px; overflow-y: auto; }
+.sleep-container { flex: 1; min-height: 0; padding: 24px 20px; padding-bottom: 110px; overflow-y: auto; }
 .sleep-card { background: var(--bg-card); border-radius: 20px; padding: 20px; box-shadow: var(--shadow-card); margin-bottom: 16px; }
 .sleep-card h3 { font-size: 16px; font-weight: 700; color: var(--text-header); margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
 .sleep-input-row { display: flex; gap: 12px; margin-bottom: 14px; }
@@ -720,7 +720,7 @@ body.dark-mode .sleep-save-btn { background: #6C5DD3; }
 .sleep-history-item:last-child { border-bottom: none; }
 
 /* Affirmation Cards */
-.affirmation-container { padding: 24px 20px; padding-bottom: 110px; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; }
+.affirmation-container { flex: 1; min-height: 0; padding: 24px 20px; padding-bottom: 110px; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow-y: auto; }
 .affirmation-card-stack { position: relative; width: 100%; max-width: 340px; height: 400px; perspective: 1000px; }
 .affirmation-card { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: 28px; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px 30px; text-align: center; transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; }
 .affirmation-card.active { z-index: 3; opacity: 1; transform: scale(1); }
@@ -829,3 +829,46 @@ body.dark-mode .sleep-save-btn { background: #6C5DD3; }
 .sub-btn-secondary.checking .sub-spinner { display: inline-block; }
 @keyframes subSpin { to { transform: rotate(360deg); } }
 
+
+/* ============================================
+   🌙 DARK MODE — Native Form Elements Fix
+   ============================================ */
+
+body.dark-mode { color-scheme: dark; }
+
+/* Sleep */
+body.dark-mode .sleep-card { background: #1F2229; box-shadow: 0 4px 24px rgba(0,0,0,0.4); }
+body.dark-mode .sleep-time-input { background: #2C2F36 !important; color: #FFFFFF !important; border-color: rgba(108,93,211,0.3); }
+body.dark-mode .sleep-time-input::-webkit-calendar-picker-indicator { filter: invert(1); }
+body.dark-mode .sleep-quality-btn { background: #2C2F36; border-color: rgba(255,255,255,0.08); }
+body.dark-mode .sleep-input-group label { color: #6E727A; }
+
+/* Analytics */
+body.dark-mode .analytics-card { background: #1F2229; box-shadow: 0 4px 24px rgba(0,0,0,0.4); }
+body.dark-mode .analytics-stat { background: rgba(108,93,211,0.1); }
+
+/* CBT */
+body.dark-mode .cbt-field textarea { background: #2C2F36 !important; color: #E2E4E9 !important; border-color: rgba(108,93,211,0.3); }
+body.dark-mode .cbt-field textarea::placeholder { color: #6E727A; }
+body.dark-mode .cbt-field label { color: #FFFFFF; }
+body.dark-mode .cbt-intro h2 { color: #FFFFFF; }
+body.dark-mode .cbt-intro p { color: #6E727A; }
+
+/* Ritual */
+body.dark-mode .ritual-step-title { color: #FFFFFF; }
+body.dark-mode .ritual-step-desc { color: #B0B3B8; }
+
+/* Affirmations */
+body.dark-mode .aff-nav-btn { background: #1F2229; box-shadow: 0 4px 24px rgba(0,0,0,0.4); }
+body.dark-mode .aff-nav-btn .material-icons-round { color: #FFFFFF; }
+body.dark-mode .aff-counter { color: #6E727A; }
+
+/* Global native elements */
+body.dark-mode select,
+body.dark-mode input[type="time"],
+body.dark-mode input[type="date"],
+body.dark-mode input[type="text"],
+body.dark-mode input[type="number"] { background-color: #2C2F36 !important; color: #FFFFFF !important; border-color: rgba(255,255,255,0.1) !important; }
+body.dark-mode textarea { background-color: #2C2F36 !important; color: #E2E4E9 !important; }
+body.dark-mode textarea::placeholder,
+body.dark-mode input::placeholder { color: #6E727A !important; }
