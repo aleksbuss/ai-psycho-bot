@@ -610,7 +610,7 @@ body.dark-mode .bottom-nav {
             .small-card { padding: 10px; gap: 8px; }
             .small-icon { width: 36px; height: 36px; }
             .small-card h4 { font-size: 12px; }
-            .bottom-nav { height: calc(60px + env(safe-area-inset-bottom, 0px)); bottom: 0; width: 100%; border-radius: 20px 20px 0 0; padding-bottom: env(safe-area-inset-bottom, 0px); 
+            .bottom-nav { height: calc(60px + env(safe-area-inset-bottom, 0px)); bottom: 0; width: 100%; border-radius: 20px 20px 0 0; padding-bottom: env(safe-area-inset-bottom, 0px); }
             .nav-icon { font-size: 22px; }
             .breath-status { font-size: 26px; }
             .game-controls { bottom: 100px; }
@@ -831,39 +831,26 @@ body.dark-mode .sleep-save-btn { background: #6C5DD3; }
 
 
 /* ============================================
-   🌙 DARK MODE — Native Form Elements Fix
+   DARK MODE — Native Form Elements
    ============================================ */
-
 body.dark-mode { color-scheme: dark; }
-
-/* Sleep */
 body.dark-mode .sleep-card { background: #1F2229; box-shadow: 0 4px 24px rgba(0,0,0,0.4); }
 body.dark-mode .sleep-time-input { background: #2C2F36 !important; color: #FFFFFF !important; border-color: rgba(108,93,211,0.3); }
 body.dark-mode .sleep-time-input::-webkit-calendar-picker-indicator { filter: invert(1); }
 body.dark-mode .sleep-quality-btn { background: #2C2F36; border-color: rgba(255,255,255,0.08); }
 body.dark-mode .sleep-input-group label { color: #6E727A; }
-
-/* Analytics */
 body.dark-mode .analytics-card { background: #1F2229; box-shadow: 0 4px 24px rgba(0,0,0,0.4); }
 body.dark-mode .analytics-stat { background: rgba(108,93,211,0.1); }
-
-/* CBT */
 body.dark-mode .cbt-field textarea { background: #2C2F36 !important; color: #E2E4E9 !important; border-color: rgba(108,93,211,0.3); }
 body.dark-mode .cbt-field textarea::placeholder { color: #6E727A; }
 body.dark-mode .cbt-field label { color: #FFFFFF; }
 body.dark-mode .cbt-intro h2 { color: #FFFFFF; }
 body.dark-mode .cbt-intro p { color: #6E727A; }
-
-/* Ritual */
 body.dark-mode .ritual-step-title { color: #FFFFFF; }
 body.dark-mode .ritual-step-desc { color: #B0B3B8; }
-
-/* Affirmations */
 body.dark-mode .aff-nav-btn { background: #1F2229; box-shadow: 0 4px 24px rgba(0,0,0,0.4); }
 body.dark-mode .aff-nav-btn .material-icons-round { color: #FFFFFF; }
 body.dark-mode .aff-counter { color: #6E727A; }
-
-/* Global native elements */
 body.dark-mode select,
 body.dark-mode input[type="time"],
 body.dark-mode input[type="date"],
