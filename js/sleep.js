@@ -6,7 +6,7 @@ let sleepQuality = 0;
 function selectSleepQuality(q) {
     sleepQuality = q;
     document.querySelectorAll('.sleep-quality-btn').forEach((btn, i) => {
-        btn.classList.toggle('selected', i + 1 <= q);
+        btn.classList.toggle('selected', i + 1 === q);
     });
     if (tg.HapticFeedback) tg.HapticFeedback.selectionChanged();
 }
@@ -25,17 +25,27 @@ function saveSleep() {
     const [wH, wM] = wakeup.split(':').map(Number);
     let duration = (wH * 60 + wM) - (bH * 60 + bM);
     if (duration < 0) duration += 24 * 60; // overnight
-    const hours = Math.floor(duration / 60);
-    const mins = duration % 60;
     
     const entries = JSON.parse(localStorage.getItem('sleep_entries') || '[]');
-    entries.unshift({
+    
+    // Одна запись в день — заменяем если уже есть
+    const todayKey = new Date().toISOString().split('T')[0];
+    const existingIdx = entries.findIndex(e => e.date.split('T')[0] === todayKey);
+    
+    const newEntry = {
         date: new Date().toISOString(),
         bedtime: bedtime,
         wakeup: wakeup,
         duration: duration,
         quality: sleepQuality
-    });
+    };
+    
+    if (existingIdx >= 0) {
+        entries[existingIdx] = newEntry;
+    } else {
+        entries.unshift(newEntry);
+    }
+    
     if (entries.length > 60) entries.length = 60;
     localStorage.setItem('sleep_entries', JSON.stringify(entries));
     
@@ -93,17 +103,19 @@ function drawSleepChart() {
     canvas.style.width = w + 'px'; canvas.style.height = h + 'px';
     ctx.scale(dpr, dpr);
     
-    const pad = { top: 15, right: 10, bottom: 25, left: 10 };
+    const pad = { top: 15, right: 24, bottom: 25, left: 24 };
     const cw = w - pad.left - pad.right;
     const ch = h - pad.top - pad.bottom;
     const isDark = document.body.classList.contains('dark-mode');
     
-    // Draw bars
-    const barW = Math.min(cw / entries.length - 4, 30);
+    // Draw bars — равномерно внутри области, не выходя за padding
+    const barW = Math.min(cw / entries.length * 0.65, 30);
     const maxH = 10 * 60; // 10 hours max
+    const step = cw / entries.length;
     
     entries.forEach((e, i) => {
-        const x = pad.left + (i / (entries.length - 1)) * cw - barW / 2;
+        const cx = pad.left + step * i + step / 2;
+        const x = cx - barW / 2;
         const barH = Math.min(e.duration / maxH, 1) * ch;
         const y = pad.top + ch - barH;
         
@@ -129,7 +141,7 @@ function drawSleepChart() {
         ctx.fillStyle = isDark ? '#6E727A' : '#9B9488';
         ctx.font = '9px Manrope'; ctx.textAlign = 'center';
         const hrs = Math.floor(e.duration / 60);
-        ctx.fillText(hrs + 'ч', x + barW / 2, h - 5);
+        ctx.fillText(hrs + 'ч', cx, h - 5);
     });
 }
 
