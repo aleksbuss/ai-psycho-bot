@@ -104,7 +104,7 @@ function handleResponse(d) {
         addMessage(d.text, false, true); // typewriter enabled
         if (d.balance !== undefined) updateLocalBalance(d.balance);
         if (typeof d.isPremium !== 'undefined') window.isUserPremium = d.isPremium;
-        if (d.audio) playAudioResponse(d.audio);
+        if (d.audio) playAudioResponse(d.audio, d.audioMime);
         checkAchievements();
     } else if (d.status === 'error') {
         if (d.error_code === 'not_subscribed') { showSubscriptionGate(d.channel || _requiredChannel || '@channel'); return; }
@@ -157,10 +157,10 @@ function clearChatHistory() {
     }
 }
 
-function playAudioResponse(z) {
+function playAudioResponse(z, mime) {
     if (!z) return;
     try {
-        const a = new Audio("data:audio/mp3;base64," + z);
+        const a = new Audio("data:" + (mime || "audio/wav") + ";base64," + z);
         const m = document.querySelectorAll('.msg-bot');
         const l = m[m.length - 1];
         let i = null;
