@@ -161,7 +161,7 @@ async function handleRecordingComplete() {
         if (d.status === 'success' && d.audio) {
             isProcessing = false;
             setCallStatus("Отвечает...");
-            playAudioResponseInCall(d.audio);
+            playAudioResponseInCall(d.audio, d.audioMime);
         } else {
             isProcessing = false;
             startListening();
@@ -175,7 +175,7 @@ async function handleRecordingComplete() {
 // ============================================
 // 🔊 ВОСПРОИЗВЕДЕНИЕ ОТВЕТА
 // ============================================
-function playAudioResponseInCall(base64) {
+function playAudioResponseInCall(base64, mime) {
     if (!document.getElementById('call-screen').classList.contains('active')) return;
 
     try {
@@ -184,7 +184,7 @@ function playAudioResponseInCall(base64) {
             currentBotAudio.currentTime = 0;
         }
 
-        currentBotAudio = new Audio("data:audio/mp3;base64," + base64);
+        currentBotAudio = new Audio("data:" + (mime || "audio/wav") + ";base64," + base64);
         isBotSpeaking = true;
 
         const circle = document.querySelector('.ai-avatar-circle');
