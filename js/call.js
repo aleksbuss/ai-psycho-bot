@@ -95,24 +95,21 @@ function interruptBotAudio() {
     if (!currentBotAudio) return;
 
     isBotSpeaking = false;
-    const audio = currentBotAudio;
+    const { source, gainNode } = currentBotAudio;
+    currentBotAudio = null;
 
     const fadeSteps = 10;
     const fadeInterval = 15;
     let step = 0;
-    const startVolume = audio.volume;
     const fade = setInterval(() => {
         step++;
-        audio.volume = Math.max(0, startVolume * (1 - step / fadeSteps));
+        gainNode.gain.value = Math.max(0, 1 - step / fadeSteps);
         if (step >= fadeSteps) {
             clearInterval(fade);
-            audio.pause();
-            audio.currentTime = 0;
-            audio.volume = 1;
+            try { source.stop(); } catch(e) {}
         }
     }, fadeInterval);
 
-    currentBotAudio = null;
     const circle = document.querySelector('.ai-avatar-circle');
     if (circle) circle.style.animation = 'none';
 }
@@ -173,33 +170,52 @@ async function handleRecordingComplete() {
 }
 
 // ============================================
-// 🔊 ВОСПРОИЗВЕДЕНИЕ ОТВЕТА
+// 🔊 ВОСПРОИЗВЕДЕНИЕ ОТВЕТА (через Web Audio API)
 // ============================================
-function playAudioResponseInCall(base64, mime) {
+function playAudioResponseInCall(base64, _mime) {
     if (!document.getElementById('call-screen').classList.contains('active')) return;
 
+    if (currentBotAudio) {
+        try { currentBotAudio.source.stop(); } catch(e) {}
+        currentBotAudio = null;
+    }
+
     try {
-        if (currentBotAudio) {
-            currentBotAudio.pause();
-            currentBotAudio.currentTime = 0;
-        }
+        const binary = atob(base64);
+        const bytes = new Uint8Array(binary.length);
+        for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
 
-        currentBotAudio = new Audio("data:" + (mime || "audio/wav") + ";base64," + base64);
-        isBotSpeaking = true;
+        vadContext.resume().then(() => {
+            vadContext.decodeAudioData(bytes.buffer, (audioBuffer) => {
+                if (!document.getElementById('call-screen').classList.contains('active')) return;
 
-        const circle = document.querySelector('.ai-avatar-circle');
-        if (circle) circle.style.animation = 'pulse-avatar 1s infinite';
+                const source = vadContext.createBufferSource();
+                const gainNode = vadContext.createGain();
+                source.buffer = audioBuffer;
+                source.connect(gainNode);
+                gainNode.connect(vadContext.destination);
 
-        currentBotAudio.play().catch(() => {
-            isBotSpeaking = false;
-            startListening();
+                currentBotAudio = { source, gainNode };
+                isBotSpeaking = true;
+
+                const circle = document.querySelector('.ai-avatar-circle');
+                if (circle) circle.style.animation = 'pulse-avatar 1s infinite';
+
+                source.onended = () => {
+                    if (currentBotAudio && currentBotAudio.source === source) {
+                        currentBotAudio = null;
+                    }
+                    isBotSpeaking = false;
+                    if (circle) circle.style.animation = 'none';
+                    startListening();
+                };
+
+                source.start(0);
+            }, () => {
+                isBotSpeaking = false;
+                startListening();
+            });
         });
-
-        currentBotAudio.onended = () => {
-            isBotSpeaking = false;
-            if (circle) circle.style.animation = 'none';
-            startListening();
-        };
     } catch (e) {
         isBotSpeaking = false;
         startListening();
@@ -234,7 +250,7 @@ function endCall() {
     isProcessing = false;
 
     if (currentBotAudio) {
-        currentBotAudio.pause();
+        try { currentBotAudio.source.stop(); } catch(e) {}
         currentBotAudio = null;
     }
     if (callMediaRecorder && callMediaRecorder.state === 'recording') {
