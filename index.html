@@ -6,7 +6,28 @@
     <title>AI Психолог</title>
     <!-- v4.0 - modular architecture -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script async src="https://tganalytics.xyz/index.js" onload="telegramAnalytics.init({ token: 'eyJhcHBfbmFtZSI6ImJlel9wYW5pa2kiLCJhcHBfdXJsIjoiaHR0cHM6Ly90Lm1lL2FpcGFuaWNfYm90IiwiYXBwX2RvbWFpbiI6Imh0dHBzOi8vYnVzaG1hcmsuY2MifQ==!JGaft8zaNy9fD5CydAd6CaSi1dmxIIjHVpuyrmSU8DI=', appName: 'bez_paniki' })" type="text/javascript"></script>
+
+    <!-- Google Analytics (Требование Telegram Apps Center) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-YRYZFQSZVN"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-YRYZFQSZVN');
+    </script>
+
+    <!-- Telegram Mini Apps Analytics -->
+    <script>
+        window.initAnalytics = function() {
+            if (window.telegramAnalytics) {
+                window.telegramAnalytics.init({
+                    token: 'eyJhcHBfbmFtZSI6ImJlel9wYW5pa2lfdjEiLCJhcHBfdXJsIjoiaHR0cHM6Ly90Lm1lL2FpcGFuaWNfYm90IiwiYXBwX2RvbWFpbiI6Imh0dHBzOi8vYWxla3NidXNzLmdpdGh1Yi5pby9haS1wc3ljaG8tYm90LyJ9!fBDplEZV9HWOxhtYzO88IS1soQcpEgiSiu3DvBh7TT4=',
+                    appName: 'bez_paniki_v1'
+                });
+            }
+        };
+    </script>
+    <script async src="https://tganalytics.xyz/index.js" onload="initAnalytics()" type="text/javascript"></script>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&subset=cyrillic&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/styles.css">
